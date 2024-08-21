@@ -1,10 +1,7 @@
+// 修改 Main.kt
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.Modifier
@@ -13,25 +10,41 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.rememberWindowState
 import view.LoginScene
-
+import view.StudentScene
+import view.HomeScene
+import view.StudentStatusScene
+import view.component.TopNavBar
+import NaviItem
+import Navis
 
 @Composable
 @Preview
 fun App() {
-    var text by remember { mutableStateOf("Hello, World!") }
+    var currentScene by remember { mutableStateOf("LoginScene") }
 
     MaterialTheme {
-        Box(modifier=Modifier.fillMaxSize())
-        { LoginScene() }
+        Column(modifier = Modifier.fillMaxSize()) {
+            if (currentScene != "LoginScene") {
+                TopNavBar(naviItems = Navis, onItemSelected = { item -> currentScene = item.path })
+            }
+            Box(modifier = Modifier.fillMaxSize()) {
+                when (currentScene) {
+                    "LoginScene" -> LoginScene(onLoginSuccess = { currentScene = "StudentScene" })
+                    "StudentScene" -> StudentScene(onNavigate = { path -> currentScene = path })
+                    "/home" -> HomeScene()
+                    "/student_status" -> StudentStatusScene()
+                    // 添加更多场景
+                }
+            }
+        }
     }
-
-
 }
 
 fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
-        state = rememberWindowState(size = DpSize(1064.dp, 600.dp)) // 设置窗口初始大小)
-    ){ App()
+        state = rememberWindowState(size = DpSize(1064.dp, 600.dp)) // 设置窗口初始大小
+    ) {
+        App()
     }
 }
