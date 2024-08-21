@@ -14,6 +14,7 @@ public class DataBase {
         Configuration configuration = new Configuration().configure();
         sessionFactory = configuration
                 .addAnnotatedClass(User.class)
+                .addAnnotatedClass(StoreItem.class)
                 .buildSessionFactory();
         session = sessionFactory.openSession();
 
