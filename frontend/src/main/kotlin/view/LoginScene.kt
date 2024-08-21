@@ -17,7 +17,7 @@ import view.component.pageTitle
 import module.LoginModule
 
 @Composable
-fun LoginScene() {
+fun LoginScene(onLoginSuccess: () -> Unit) {
     var username by remember { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     val loginModule = LoginModule()
@@ -78,6 +78,7 @@ fun LoginScene() {
                                 Button(
                                     onClick = {
                                         loginModule.onLoginClick(username, password)
+                                        onLoginSuccess()
                                     },
                                     colors = ButtonDefaults.buttonColors(
                                         backgroundColor = Color(0xFF006400),
