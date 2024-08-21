@@ -1,30 +1,27 @@
-package scene
+package view
 
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.*
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import scene.component.pageTitle
+import androidx.compose.ui.draw.shadow
+import view.component.pageTitle
+import module.LoginModule
 
 @Composable
 fun LoginScene() {
     var username by remember { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center)
+    val loginModule = LoginModule()
+    Box(Modifier.fillMaxSize().shadow(8.dp), contentAlignment = Alignment.Center)
     {
         Box(
             Modifier.size(1064.dp, 600.dp)
@@ -75,11 +72,12 @@ fun LoginScene() {
                                     onValueChange = { password = it },
                                     label = { Text("密码") },
                                     modifier = Modifier.fillMaxWidth(),
-                                    visualTransformation = VisualTransformation.None,
+                                    visualTransformation = PasswordVisualTransformation(),
                                     singleLine = true
                                 )
                                 Button(
                                     onClick = {
+                                        loginModule.onLoginClick(username, password)
                                     },
                                     colors = ButtonDefaults.buttonColors(
                                         backgroundColor = Color(0xFF006400),
@@ -111,11 +109,13 @@ fun LoginScene() {
                     }
 
                 }
-                Row{
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                ) {
                     Image(
                         painterResource("p2.jpg"),
                         contentDescription = "SEU Sidebar",
-                        modifier=Modifier.fillMaxWidth().fillMaxHeight()
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
 

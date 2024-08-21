@@ -1,7 +1,5 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,7 +12,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.rememberWindowState
-import scene.LoginScene
+import view.LoginScene
 
 
 @Composable
@@ -31,8 +29,9 @@ fun App() {
 }
 
 fun main() = application {
-    val state = rememberWindowState(size = DpSize(1400.dp, 800.dp))
-    Window(onCloseRequest = ::exitApplication) {
-        App()
+    Window(
+        onCloseRequest = ::exitApplication,
+        state = rememberWindowState(size = DpSize(1064.dp, 600.dp)) // 设置窗口初始大小)
+    ){ App()
     }
 }
