@@ -13,6 +13,7 @@ dependencies {
     implementation("mysql:mysql-connector-java:8.0.33")
     implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
     implementation("org.hibernate.orm:hibernate-core:6.2.7.Final")
+    implementation("io.netty:netty-all:4.1.97.Final")
 
 }
 

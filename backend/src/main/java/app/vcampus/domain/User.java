@@ -1,3 +1,4 @@
+
 package app.vcampus.domain;
 
 import jakarta.persistence.*;
