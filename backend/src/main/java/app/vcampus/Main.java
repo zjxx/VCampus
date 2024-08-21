@@ -17,7 +17,7 @@ public class Main {
         }
         dataBase.close();
 
-        NettyServer nettyServer = new NettyServer(8086);
+        NettyServer nettyServer = new NettyServer(8066);
         nettyServer.start();
     }
 }
