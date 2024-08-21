@@ -19,5 +19,6 @@ public class Main {
 
         NettyServer nettyServer = new NettyServer(8066);
         nettyServer.start();
+        int a;
     }
 }
