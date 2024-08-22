@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 public class RouteMapping {
     private final Map<String, Function<String, String>> routes = new HashMap<>();
@@ -17,8 +18,9 @@ public class RouteMapping {
         if (handler != null) {
             return handler.apply(jsonData);
         } else {
-            Response response = new Response("Unsupported request type: " + type);
-            return new Gson().toJson(response);
+            JsonObject responseMessage = new JsonObject();
+            responseMessage.addProperty("message", "Unsupported request type: " + type);
+            return new Gson().toJson(responseMessage);
         }
     }
 }
