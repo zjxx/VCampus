@@ -1,9 +1,13 @@
 package app.vcampus.controller;
 
+import app.vcampus.domain.User;
+import app.vcampus.enums.UserType;
 import app.vcampus.interfaces.loginRequest;
-import app.vcampus.utils.Response;
+import app.vcampus.utils.DataBase;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
+import java.util.List;
 
 public class UserController {
     private final Gson gson = new Gson();
@@ -12,14 +16,20 @@ public class UserController {
         // 解析 JSON 数据
         loginRequest request = gson.fromJson(jsonData, loginRequest.class);
 
-        // 处理登录逻辑，应查询数据库验证用户名和密码，这边只做示例
-        String processedMessage = "Login successful for user: "+request.getUsername();
-
+        DataBase db = new DataBase();
+        db.init();
+        List<User> users = db.getWhere(User.class,"username",request.getUsername());
+        db.close();
+        for (User user : users) {
+            if(user.getPassword().equals(request.getPassword())){
+                JsonObject data = new JsonObject();
+                data.addProperty("status", "success");
+                data.addProperty("role", UserType.fromIndex((int) user.getRole()));
+                return gson.toJson(data);
+            }
+        }
         JsonObject data = new JsonObject();
-        data.addProperty("message", processedMessage);
-        data.addProperty("status", "success");//假设登录成功
-        data.addProperty("role", "student");//假设查询发现是学生
-
+        data.addProperty("status", "fail");
         return gson.toJson(data);
     }
 }

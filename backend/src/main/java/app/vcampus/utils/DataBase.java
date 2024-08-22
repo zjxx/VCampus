@@ -1,4 +1,5 @@
 package app.vcampus.utils;
+
 import jakarta.persistence.criteria.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -8,16 +9,16 @@ import app.vcampus.domain.*;
 import java.util.List;
 
 public class DataBase {
-    private SessionFactory sessionFactory ;
-    private  Session session ;
-    public void init(){
+    private SessionFactory sessionFactory;
+    private Session session;
+
+    public void init() {
         Configuration configuration = new Configuration().configure();
         sessionFactory = configuration
                 .addAnnotatedClass(User.class)
                 .addAnnotatedClass(StoreItem.class)
                 .buildSessionFactory();
         session = sessionFactory.openSession();
-
     }
 
     public DataBase() {
@@ -25,15 +26,24 @@ public class DataBase {
     }
 
 
-    public List<User> getWhereName(String name) {
+    /**
+     * Retrieves a list of entities of the specified class where the given attribute matches the provided value.
+     *
+     * @param <T> the type of the entity
+     * @param clazz the class of the entity
+     * @param attributeName the name of the attribute to filter by
+     * @param value the value of the attribute to match
+     * @return a list of entities that match the specified attribute and value
+     */
+    public <T> List<T> getWhere(Class<T> clazz, String attributeName, Object value) {
         CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<User> criteria = builder.createQuery(User.class);
-        Root<User> itemRoot = criteria.from(User.class);
-        criteria.where(builder.equal(itemRoot.get("username"), name));
+        CriteriaQuery<T> criteria = builder.createQuery(clazz);
+        Root<T> itemRoot = criteria.from(clazz);
+        criteria.where(builder.equal(itemRoot.get(attributeName), value));
         return session.createQuery(criteria).getResultList();
     }
 
-    public void close(){
+    public void close() {
         session.close();
         sessionFactory.close();
     }
