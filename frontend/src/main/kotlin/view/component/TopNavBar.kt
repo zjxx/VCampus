@@ -1,4 +1,6 @@
+// 修改 TopNavBar.kt
 package view.component
+
 import androidx.compose.foundation.background
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.clickable
@@ -17,23 +19,29 @@ import androidx.compose.ui.graphics.vector.ImageVector
 fun TopNavBar(naviItems: List<NaviItem>, onItemSelected: (NaviItem) -> Unit) {
     var selectedItem by remember { mutableStateOf<NaviItem?>(null) }
 
-    Row(modifier = Modifier.fillMaxWidth().height(56.dp).background(Color(0xFF006400)),horizontalArrangement = Arrangement.Center, // 水平居中
-        verticalAlignment = Alignment.CenterVertically)  {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .background(Color(0xFF006400)),
+        horizontalArrangement = Arrangement.Start, // 水平从左到右排列
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         naviItems.forEach { item ->
-            Column(
+            Row(
                 modifier = Modifier
                     .padding(horizontal = 8.dp, vertical = 4.dp)
                     .clickable {
                         selectedItem = item
                         onItemSelected(item)
                     }
-                    .background(if (item == selectedItem) Color(0xFF006400) else Color.Transparent)
+                    .background(if (item == selectedItem) Color(0xFF004d00) else Color.Transparent)
                     .padding(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(imageVector = item.icon, contentDescription = item.name)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = item.name, fontSize = 14.sp)
+                Icon(imageVector = item.icon, contentDescription = item.name, tint = Color.White)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(text = item.name, fontSize = 14.sp, color = Color.White)
             }
         }
     }
