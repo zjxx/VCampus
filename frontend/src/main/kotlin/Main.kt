@@ -14,25 +14,38 @@ import view.StudentScene
 import view.HomeScene
 import view.StudentStatusScene
 import view.component.TopNavBar
-import NaviItem
-import Navis
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 
 @Composable
 @Preview
 fun App() {
     var currentScene by remember { mutableStateOf("LoginScene") }
+    var naviItems by remember { mutableStateOf(emptyList<NaviItem>()) }
 
     MaterialTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             if (currentScene != "LoginScene") {
-                TopNavBar(naviItems = Navis, onItemSelected = { item -> currentScene = item.path })
+                TopNavBar(naviItems = naviItems, onItemSelected = { item ->
+                    currentScene = item.path
+                })
             }
             Box(modifier = Modifier.fillMaxSize()) {
                 when (currentScene) {
-                    "LoginScene" -> LoginScene(onLoginSuccess = { currentScene = "StudentScene" })
-                    "StudentScene" -> StudentScene(onNavigate = { path -> currentScene = path })
+                    "LoginScene" -> LoginScene(onLoginSuccess = {
+                        currentScene = "StudentScene"
+                        naviItems = listOf(
+                            NaviItem("主页", "/home", Icons.Default.Home, listOf("user")),
+                            NaviItem("学籍", "/student_status", Icons.Default.Person, listOf("student", "affairs_staff"))
+                        )
+                    })
+                    "StudentScene" -> StudentScene(onNavigate = { path ->
+                        currentScene = path
+                    })
                     "/home" -> HomeScene()
-                    "/student_status" -> StudentStatusScene()
+                    "/student_status" -> StudentStatusScene(onNavigate = { path ->
+                        currentScene = path
+                    })
                     // 添加更多场景
                 }
             }
