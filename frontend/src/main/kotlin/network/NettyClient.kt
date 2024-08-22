@@ -15,10 +15,14 @@ import io.netty.handler.logging.LogLevel
 import io.netty.handler.logging.LoggingHandler
 
 class NettyClient(private val host: String, private val port: Int) {
-
+    private var role: String = "null"
     private val gson = Gson()
 
-    fun sendRequest(request: Any, responseHandler: (String) -> Unit) {
+    fun setRole(role: String) {
+        this.role = role
+    }
+
+    fun sendRequest(request: Any, type: String, responseHandler: (String) -> Unit) {
         Thread {
             val group = NioEventLoopGroup()
             try {
@@ -40,8 +44,15 @@ class NettyClient(private val host: String, private val port: Int) {
                 // 启动客户端
                 val future: ChannelFuture = bootstrap.connect(host, port).sync()
 
+
                 // 将请求转换为 JSON 并发送
-                val jsonRequest = gson.toJson(request)
+                val req = gson.fromJson(gson.toJson(request), MutableMap::class.java) as MutableMap<String, Any>
+                req["role"] = role // 添加新的键值对
+                req["type"] = type // 添加新的键值对
+                val jsonRequest = gson.toJson(req)
+
+
+
                 future.channel().writeAndFlush(jsonRequest)
 
                 // 等待连接关闭
@@ -51,4 +62,6 @@ class NettyClient(private val host: String, private val port: Int) {
             }
         }.start()
     }
+
+
 }
