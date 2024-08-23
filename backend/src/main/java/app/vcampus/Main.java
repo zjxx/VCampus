@@ -17,7 +17,11 @@ public class Main {
         }
         dataBase.close();
 
+        System.out.println("Server started at port 8066");
+
         NettyServer nettyServer = new NettyServer(8066);
         nettyServer.start();
+
+
     }
 }
