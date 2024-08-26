@@ -15,20 +15,24 @@ public class UserController {
     public String login(String jsonData) {
         // 解析 JSON 数据
         loginRequest request = gson.fromJson(jsonData, loginRequest.class);
-
+        JsonObject data = new JsonObject();
         DataBase db = new DataBase();
         db.init();
         List<User> users = db.getWhere(User.class,"username",request.getUsername());
         db.close();
         for (User user : users) {
             if(user.getPassword().equals(request.getPassword())){
-                JsonObject data = new JsonObject();
                 data.addProperty("status", "success");
                 data.addProperty("role", UserType.fromIndex((int) user.getRole()));
                 return gson.toJson(data);
             }
+            else {
+                data.addProperty("message", "Wrong password.");
+                data.addProperty("status", "fail");
+                return gson.toJson(data);
+            }
         }
-        JsonObject data = new JsonObject();
+        data.addProperty("message", "User not found.");
         data.addProperty("status", "fail");
         return gson.toJson(data);
     }
