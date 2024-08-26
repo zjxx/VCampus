@@ -22,14 +22,8 @@ import module.LoginModule
 fun LoginScene(onLoginSuccess: () -> Unit) {
     var username by remember { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-    var showDialog by remember { mutableStateOf(false) }
-    var dialogMessage by remember { mutableStateOf("") }
 
     val loginModule = LoginModule(
-        onLoginFailed = { message ->
-            dialogMessage = message
-            showDialog = true
-        },
         onLoginSuccess = onLoginSuccess
     )
 
@@ -127,5 +121,4 @@ fun LoginScene(onLoginSuccess: () -> Unit) {
         }
     }
 
-    ErrorDialog(showDialog = showDialog, dialogMessage = dialogMessage, onDismiss = { showDialog = false })
 }

@@ -1,4 +1,4 @@
-// 修改 Main.kt
+// src/main/kotlin/Main.kt
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
@@ -14,8 +14,10 @@ import view.StudentScene
 import view.HomeScene
 import view.StudentStatusScene
 import view.component.TopNavBar
+import view.component.GlobalDialog
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import data.NaviItem
 
 @Composable
 @Preview
@@ -51,6 +53,7 @@ fun App() {
                     // 添加更多场景
                 }
             }
+            GlobalDialog() // Add GlobalDialog here
         }
     }
 }

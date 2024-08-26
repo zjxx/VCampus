@@ -19,10 +19,16 @@ fun StudentStatusScene(onNavigate: (String) -> Unit, role: String) {
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .weight(0.3f) // 设置宽度占父容器的30%
+                .weight(0.2f) // 设置宽度占父容器的20%
                 .background(Color.LightGray) // 设置背景颜色为浅灰色
-                .shadow(4.dp) // 添加阴影效果
+                .shadow(4.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = false) // 添加左右阴影效果
         ) {
+            Text(
+                text = "学籍信息",
+                color = Color.Black,
+                modifier = Modifier.padding(16.dp)
+            )
+            Divider(color = Color.Gray, thickness = 1.dp) // 添加分隔栏
             if (role == "student") {
                 TextButton(onClick = { selectedMenuItem = "查看学籍" }) {
                     Text("查看学籍", color = Color.Black) // 设置字体颜色为黑色
@@ -55,11 +61,6 @@ fun StudentStatusScene(onNavigate: (String) -> Unit, role: String) {
             }
         }
     }
-}
-
-@Composable
-fun ViewStudentStatusSubscene() {
-    Text("查看学籍子场景")
 }
 
 @Composable
