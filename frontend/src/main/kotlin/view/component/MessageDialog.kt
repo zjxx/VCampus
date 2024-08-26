@@ -1,21 +1,25 @@
-// File: src/main/kotlin/view/component/MessageDialog.kt
+// 修改 ErrorDialog.kt
 package view.component
 
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Text
-import androidx.compose.material.Button
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 
 @Composable
-fun MessageDialog(message: String, onDismiss: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(text = "Login Failed") },
-        text = { Text(text = message) },
-        confirmButton = {
-            Button(onClick = onDismiss) {
-                Text("OK")
+fun ErrorDialog(dialogMessage: String) {
+    val showDialog = remember { mutableStateOf(true) }
+
+    if (showDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showDialog.value = false },
+            title = { Text("Error") },
+            text = { Text(dialogMessage) },
+            confirmButton = {
+                TextButton(onClick = { showDialog.value = false }) {
+                    Text("确定")
+                }
             }
-        }
-    )
+        )
+    }
 }
