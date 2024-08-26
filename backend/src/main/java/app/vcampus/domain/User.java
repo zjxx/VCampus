@@ -7,64 +7,69 @@ import jakarta.persistence.*;
 @Entity
 @Table(name="user")
 public class User {
+
+  @Column(length = 25)
   private String username;
 
-  private String password;
+    @Column(length = 25)
+    private String password;
 
   @Id
+  @Column(length = 13)
   private String userId;
 
-  private String gender;
 
-  private String phone;
+  private int gender;
+    @Column(length = 13)
+    private String phone;
 
-  private long role;
+  private int role;
 
     public String getUsername() {
         return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public long getRole() {
-        return role;
     }
 
     public void setUsername(String username) {
         this.username = username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public void setGender(String gender) {
+    public int getGender() {
+        return gender;
+    }
+
+    public void setGender(int gender) {
         this.gender = gender;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 
     public void setPhone(String phone) {
         this.phone = phone;
     }
 
-    public void setRole(long role) {
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
         this.role = role;
     }
 }
