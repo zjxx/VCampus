@@ -14,7 +14,7 @@ public class StudentInfoController {
     public String getStudentInfo(String jsonData) {
         studentInfoRequest request = gson.fromJson(jsonData, studentInfoRequest.class);
         DataBase db = DataBaseManager.getInstance();
-        Student student = db.getWhere(Student.class, "userId", request.getUserId()).get(0);
+        Student student = db.getWhere(Student.class, "studentId", request.getUserId()).get(0);
         JsonObject data = new JsonObject();
         data.addProperty("studentId", student.getStudentId());
         data.addProperty("name", student.getUsername());
@@ -22,6 +22,7 @@ public class StudentInfoController {
         data.addProperty("race", student.getRace());
         data.addProperty("major", student.getMajor());
         data.addProperty("academy", student.getAcademy());
-        return null;
+        data.addProperty("nativePlace", student.getNativePlace());
+        return gson.toJson(data);
     }
 }

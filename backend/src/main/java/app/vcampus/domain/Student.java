@@ -14,6 +14,9 @@ public class Student {
 
     private int gender;
 
+    @Column(length = 10)
+    private String nativePlace;
+
     @Column(length = 5)
     private String race;
 
@@ -69,5 +72,13 @@ public class Student {
 
     public void setAcademy(String academy) {
         this.academy = academy;
+    }
+
+    public String getNativePlace() {
+        return nativePlace;
+    }
+
+    public void setNativePlace(String nativePlace) {
+        this.nativePlace = nativePlace;
     }
 }

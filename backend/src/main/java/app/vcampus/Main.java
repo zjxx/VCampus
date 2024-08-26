@@ -20,7 +20,7 @@ public class Main {
             System.out.println(user.getUsername() + " " + user.getPassword());
         }
         List<Student> students = dataBase.getWhere(Student.class, "studentId", "213240000");
-        dataBase.close();
+
 
         System.out.println("Server started at port 8066");
 

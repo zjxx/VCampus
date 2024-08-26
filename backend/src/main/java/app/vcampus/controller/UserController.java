@@ -18,15 +18,15 @@ public class UserController {
         loginRequest request = gson.fromJson(jsonData, loginRequest.class);
         JsonObject data = new JsonObject();
         DataBase db = DataBaseManager.getInstance();
-        List<User> users = db.getWhere(User.class,"username",request.getUsername());
-        for (User user : users) {
-            if(user.getPassword().equals(request.getPassword())){
+        List<User> users = db.getWhere(User.class,"userId",request.getUsername());
+        if(!users.isEmpty()) {
+            User user = users.get(0);
+            if (user.getPassword().equals(request.getPassword())) {
                 data.addProperty("status", "success");
                 data.addProperty("role", UserType.fromIndex((int) user.getRole()));
                 data.addProperty("userId", user.getUserId());
                 return gson.toJson(data);
-            }
-            else {
+            } else {
                 data.addProperty("message", "Wrong password.");
                 data.addProperty("status", "fail");
                 return gson.toJson(data);
