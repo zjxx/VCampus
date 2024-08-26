@@ -13,6 +13,7 @@ import view.LoginScene
 import view.StudentScene
 import view.HomeScene
 import view.StudentStatusScene
+import view.LibraryScene // 导入 LibraryScene
 import view.component.TopNavBar
 import view.component.GlobalDialog
 import androidx.compose.material.icons.Icons
@@ -40,7 +41,8 @@ fun App() {
                         role = "student" // 假设登录成功后返回的角色
                         naviItems = listOf(
                             NaviItem("主页", "/home", Icons.Default.Home, listOf("user")),
-                            NaviItem("学籍", "/student_status", Icons.Default.Person, listOf("student", "affairs_staff"))
+                            NaviItem("学籍", "/student_status", Icons.Default.Person, listOf("student", "affairs_staff")),
+                            NaviItem("图书馆", "/library", Icons.Default.Book, listOf("library_user", "library_staff"))
                         )
                     })
                     "StudentScene" -> StudentScene(onNavigate = { path ->
@@ -49,7 +51,8 @@ fun App() {
                     "/home" -> HomeScene()
                     "/student_status" -> StudentStatusScene(onNavigate = { path ->
                         currentScene = path
-                    }, role = role)
+                    })
+                    "/library" -> LibraryScene() // 添加图书馆场景
                     // 添加更多场景
                 }
             }
