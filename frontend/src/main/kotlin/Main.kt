@@ -1,4 +1,4 @@
-// 修改 Main.kt
+// src/main/kotlin/Main.kt
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
@@ -15,14 +15,17 @@ import view.HomeScene
 import view.StudentStatusScene
 import view.LibraryScene // 导入 LibraryScene
 import view.component.TopNavBar
+import view.component.GlobalDialog
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import data.NaviItem
 
 @Composable
 @Preview
 fun App() {
     var currentScene by remember { mutableStateOf("LoginScene") }
     var naviItems by remember { mutableStateOf(emptyList<NaviItem>()) }
+    var role by remember { mutableStateOf("") }
 
     MaterialTheme {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -35,6 +38,7 @@ fun App() {
                 when (currentScene) {
                     "LoginScene" -> LoginScene(onLoginSuccess = {
                         currentScene = "StudentScene"
+                        role = "student" // 假设登录成功后返回的角色
                         naviItems = listOf(
                             NaviItem("主页", "/home", Icons.Default.Home, listOf("user")),
                             NaviItem("学籍", "/student_status", Icons.Default.Person, listOf("student", "affairs_staff")),
@@ -43,7 +47,7 @@ fun App() {
                     })
                     "StudentScene" -> StudentScene(onNavigate = { path ->
                         currentScene = path
-                    })
+                    }, role = role)
                     "/home" -> HomeScene()
                     "/student_status" -> StudentStatusScene(onNavigate = { path ->
                         currentScene = path
@@ -52,6 +56,7 @@ fun App() {
                     // 添加更多场景
                 }
             }
+            GlobalDialog() // Add GlobalDialog here
         }
     }
 }
