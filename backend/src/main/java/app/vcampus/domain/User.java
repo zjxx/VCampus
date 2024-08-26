@@ -12,7 +12,7 @@ public class User {
   private String password;
 
   @Id
-  private long userId;
+  private String userId;
 
   private String gender;
 
@@ -28,7 +28,7 @@ public class User {
         return password;
     }
 
-    public long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -52,7 +52,7 @@ public class User {
         this.password = password;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
