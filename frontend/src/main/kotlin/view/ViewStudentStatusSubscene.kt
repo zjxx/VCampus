@@ -60,13 +60,12 @@ fun ViewStudentStatusSubscene() {
             OutlinedTextField(
                 value = studentId,
                 onValueChange = setStudentId,
-                label = { Text("学号") },
+                label = { Text("一卡通") },
                 readOnly = true,
                 modifier = Modifier.weight(1f)
             )
         }
-
-        // 第三行
+        
         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
             OutlinedTextField(
                 value = major,
