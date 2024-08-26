@@ -4,7 +4,6 @@ package module
 import com.google.gson.Gson
 import network.NettyClientProvider
 import view.component.DialogManager
-import view.component.ErrorDialog
 
 class LoginModule(
     private val onLoginSuccess: () -> Unit
@@ -27,7 +26,7 @@ class LoginModule(
         if (responseJson["status"] == "success") {
             onLoginSuccess()
         } else {
-            DialogManager.showDialog("登录失败")
+            DialogManager.showDialog(responseJson["message"] as String)
         }
     }
 }
