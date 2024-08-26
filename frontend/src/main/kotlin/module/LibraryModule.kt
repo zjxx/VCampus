@@ -1,6 +1,7 @@
 package module
 
 import com.google.gson.Gson
+import data.UserSession
 import network.NettyClientProvider
 import view.component.DialogManager
 
@@ -11,7 +12,7 @@ class LibraryModule (
     private val nettyClient = NettyClientProvider.nettyClient
 
     fun libSearch(bookname: String) {
-        val request = mapOf("bookname" to bookname)
+        val request = mapOf("role" to UserSession.role, "bookname" to bookname)
         nettyClient.sendRequest(request, "lib/search") { response: String ->
             handleResponseSearch(response)
         }
@@ -30,7 +31,7 @@ class LibraryModule (
     }
 
     fun libCheck(username: String) {
-        val request = mapOf("username" to username)
+        val request = mapOf("role" to UserSession.role, "username" to username)
         nettyClient.sendRequest(request, "lib/check") { response: String ->
             handleResponseCheck(response)
         }
