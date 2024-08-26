@@ -4,6 +4,7 @@ import app.vcampus.domain.User;
 import app.vcampus.enums.UserType;
 import app.vcampus.interfaces.loginRequest;
 import app.vcampus.utils.DataBase;
+import app.vcampus.utils.DataBaseManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -16,10 +17,8 @@ public class UserController {
         // 解析 JSON 数据
         loginRequest request = gson.fromJson(jsonData, loginRequest.class);
         JsonObject data = new JsonObject();
-        DataBase db = new DataBase();
-        db.init();
+        DataBase db = DataBaseManager.getInstance();
         List<User> users = db.getWhere(User.class,"username",request.getUsername());
-        db.close();
         for (User user : users) {
             if(user.getPassword().equals(request.getPassword())){
                 data.addProperty("status", "success");

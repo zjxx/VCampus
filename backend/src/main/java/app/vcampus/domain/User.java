@@ -11,8 +11,8 @@ public class User {
   @Column(length = 25)
   private String username;
 
-    @Column(length = 25)
-    private String password;
+  @Column(length = 25)
+  private String password;
 
   @Id
   @Column(length = 13)
@@ -20,8 +20,9 @@ public class User {
 
 
   private int gender;
-    @Column(length = 13)
-    private String phone;
+
+  @Column(length = 13)
+  private String phone;
 
   private int role;
 
