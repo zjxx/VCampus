@@ -18,11 +18,11 @@ public class User {
   @Column(length = 13)
   private String userId;
 
+  private Integer balance;
 
   private int gender;
-
-  @Column(length = 13)
-  private String phone;
+    @Column(length = 13)
+    private String phone;
 
   private int role;
 
@@ -62,6 +62,13 @@ public class User {
         return phone;
     }
 
+
+    public Integer getBalance() {
+        return balance;
+    }
+
+
+
     public void setPhone(String phone) {
         this.phone = phone;
     }
@@ -72,5 +79,9 @@ public class User {
 
     public void setRole(int role) {
         this.role = role;
+    }
+
+    public void setBalance(Integer balance) {
+        this.balance = balance;
     }
 }

@@ -1,11 +1,13 @@
 package app.vcampus.utils;
 
+import app.vcampus.controller.StoreTransactionController;
 import app.vcampus.controller.StudentInfoController;
 import app.vcampus.controller.UserController;
 import com.google.gson.Gson;
 
 public class ControllerManager {
     private final UserController userController = new UserController();
+    private final StoreTransactionController storeTransactionController = new StoreTransactionController();
     private final RouteMapping routeMapping = new RouteMapping();
     private final StudentInfoController studentInfoController = new StudentInfoController();
     private final Gson gson = new Gson();
@@ -15,6 +17,7 @@ public class ControllerManager {
         routeMapping.registerRoute("login", userController::login);
 
         routeMapping.registerRoute("searchStudentStatus", studentInfoController::getStudentInfo);
+        routeMapping.registerRoute("purchase", storeTransactionController::handlePurchase);
     }
 
     public String handleRequest(String jsonData) {
