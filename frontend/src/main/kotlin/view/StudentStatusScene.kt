@@ -10,10 +10,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.draw.shadow
 import androidx.compose.animation.Crossfade
+import module.StudentStatusModule
 
 @Composable
 fun StudentStatusScene(onNavigate: (String) -> Unit, role: String) {
     var selectedMenuItem by remember { mutableStateOf("") }
+    val studentStatusModule = remember { StudentStatusModule() }
 
     Row(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -30,7 +32,10 @@ fun StudentStatusScene(onNavigate: (String) -> Unit, role: String) {
             )
             Divider(color = Color.Gray, thickness = 1.dp) // 添加分隔栏
             if (role == "student") {
-                TextButton(onClick = { selectedMenuItem = "查看学籍" }) {
+                TextButton(onClick = {
+                    selectedMenuItem = "查看学籍"
+                    studentStatusModule.searchStudentStatus()
+                }) {
                     Text("查看学籍", color = Color.Black) // 设置字体颜色为黑色
                 }
             } else if (role == "admin") {
@@ -43,7 +48,10 @@ fun StudentStatusScene(onNavigate: (String) -> Unit, role: String) {
                 TextButton(onClick = { selectedMenuItem = "修改学籍" }) {
                     Text("修改学籍", color = Color.Black) // 设置字体颜色为黑色
                 }
-                TextButton(onClick = { selectedMenuItem = "查找学籍" }) {
+                TextButton(onClick = {
+                    selectedMenuItem = "查找学籍"
+                    studentStatusModule.searchStudentStatus()
+                }) {
                     Text("查找学籍", color = Color.Black) // 设置字体颜色为黑色
                 }
             }
@@ -62,7 +70,6 @@ fun StudentStatusScene(onNavigate: (String) -> Unit, role: String) {
         }
     }
 }
-
 @Composable
 fun AddStudentStatusSubscene() {
     Text("增加学籍子场景")

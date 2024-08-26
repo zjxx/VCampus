@@ -2,6 +2,7 @@
 package module
 
 import com.google.gson.Gson
+import data.UserSession
 import network.NettyClientProvider
 import view.component.DialogManager
 
@@ -24,6 +25,8 @@ class LoginModule(
         println("Response message: ${responseJson["message"]}")
         println("Response status: ${responseJson["status"]}")
         if (responseJson["status"] == "success") {
+            UserSession.role = responseJson["role"] as String
+            UserSession.userId = responseJson["userId"] as String
             onLoginSuccess()
         } else {
             DialogManager.showDialog(responseJson["message"] as String)
