@@ -24,7 +24,7 @@ public class UserController {
             if(user.getPassword().equals(request.getPassword())){
                 data.addProperty("status", "success");
                 data.addProperty("role", UserType.fromIndex((int) user.getRole()));
-                data.addProperty("userId", UserType.fromIndex((int) user.getUserId()));
+                data.addProperty("userId", user.getUserId());
                 return gson.toJson(data);
             }
             else {
