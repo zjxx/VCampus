@@ -7,69 +7,74 @@ import jakarta.persistence.*;
 @Entity
 @Table(name="user")
 public class User {
-
-  @Column(length = 25)
   private String username;
 
-    @Column(length = 25)
-    private String password;
+  private String password;
 
   @Id
-  @Column(length = 13)
-  private String userId;
+  private long userId;
 
+  private String gender;
 
-  private int gender;
-    @Column(length = 13)
-    private String phone;
+  private String phone;
 
-  private int role;
+  private long role;
+
+  private Integer balance;
 
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public int getGender() {
+    public String getGender() {
         return gender;
-    }
-
-    public void setGender(int gender) {
-        this.gender = gender;
     }
 
     public String getPhone() {
         return phone;
     }
 
+    public long getRole() {
+        return role;
+    }
+
+    public Integer getBalance() {
+        return balance;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
     public void setPhone(String phone) {
         this.phone = phone;
     }
 
-    public int getRole() {
-        return role;
+    public void setRole(long role) {
+        this.role = role;
     }
 
-    public void setRole(int role) {
-        this.role = role;
+    public void setBalance(Integer balance) {
+        this.balance = balance;
     }
 }

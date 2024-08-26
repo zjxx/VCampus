@@ -14,18 +14,22 @@ public class StoreItem {
     @Column(unique = true, nullable = false)
     private UUID uuid = UUID.randomUUID();
 
+    @Column(length = 20)
     private String itemName;
 
     private Integer price;
 
+    @Column(length = 40)
     private String pictureLink;
 
+    @Column(length = 9)
     private String barcode;
 
     private Integer stock;
 
     private Integer salesVolume = 0;
 
+    @Column(length = 100)
     private String description;
 
     public UUID getUuid() {
