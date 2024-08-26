@@ -22,7 +22,7 @@ public class StoreItem {
     @Column(length = 40)
     private String pictureLink;
 
-    @Column(length = 9)
+    @Column(length = 14)
     private String barcode;
 
     private Integer stock;
