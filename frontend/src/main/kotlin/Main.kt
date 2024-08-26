@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.*
 fun App() {
     var currentScene by remember { mutableStateOf("LoginScene") }
     var naviItems by remember { mutableStateOf(emptyList<NaviItem>()) }
+    var role by remember { mutableStateOf("") }
 
     MaterialTheme {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -34,6 +35,7 @@ fun App() {
                 when (currentScene) {
                     "LoginScene" -> LoginScene(onLoginSuccess = {
                         currentScene = "StudentScene"
+                        role = "student" // 假设登录成功后返回的角色
                         naviItems = listOf(
                             NaviItem("主页", "/home", Icons.Default.Home, listOf("user")),
                             NaviItem("学籍", "/student_status", Icons.Default.Person, listOf("student", "affairs_staff"))
@@ -41,7 +43,7 @@ fun App() {
                     })
                     "StudentScene" -> StudentScene(onNavigate = { path ->
                         currentScene = path
-                    })
+                    }, role = role)
                     "/home" -> HomeScene()
                     "/student_status" -> StudentStatusScene(onNavigate = { path ->
                         currentScene = path

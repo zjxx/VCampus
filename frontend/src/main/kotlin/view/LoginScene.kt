@@ -1,3 +1,4 @@
+// 修改 LoginScene.kt
 package view
 
 import androidx.compose.foundation.Image
@@ -13,6 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.draw.shadow
+import view.component.ErrorDialog
 import view.component.pageTitle
 import module.LoginModule
 
@@ -20,9 +22,18 @@ import module.LoginModule
 fun LoginScene(onLoginSuccess: () -> Unit) {
     var username by remember { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-    val loginModule = LoginModule()
-    Box(Modifier.fillMaxSize().shadow(8.dp), contentAlignment = Alignment.Center)
-    {
+    var showDialog by remember { mutableStateOf(false) }
+    var dialogMessage by remember { mutableStateOf("") }
+
+    val loginModule = LoginModule(
+        onLoginFailed = { message ->
+            dialogMessage = message
+            showDialog = true
+        },
+        onLoginSuccess = onLoginSuccess
+    )
+
+    Box(Modifier.fillMaxSize().shadow(8.dp), contentAlignment = Alignment.Center) {
         Box(
             Modifier.size(1064.dp, 600.dp)
                 .background(Color.White)
@@ -30,7 +41,6 @@ fun LoginScene(onLoginSuccess: () -> Unit) {
             Row {
                 Row(
                     modifier = Modifier.width(400.dp).height(500.dp),
-
                     horizontalArrangement = Arrangement.Center,
                 ) {
                     Box(
@@ -43,8 +53,7 @@ fun LoginScene(onLoginSuccess: () -> Unit) {
                             verticalArrangement = Arrangement.spacedBy(
                                 16.dp, Alignment.CenterVertically
                             )
-                        )
-                        {
+                        ) {
                             Column {
                                 Image(
                                     painterResource("p1.jpg"),
@@ -78,14 +87,12 @@ fun LoginScene(onLoginSuccess: () -> Unit) {
                                 Button(
                                     onClick = {
                                         loginModule.onLoginClick(username, password)
-                                        onLoginSuccess()
                                     },
                                     colors = ButtonDefaults.buttonColors(
                                         backgroundColor = Color(0xFF006400),
                                         contentColor = Color.White
                                     ),
                                     modifier = Modifier.fillMaxWidth()
-
                                 ) {
                                     Text("登录")
                                 }
@@ -102,13 +109,10 @@ fun LoginScene(onLoginSuccess: () -> Unit) {
                                     ) {
                                         Text("忘记密码？")
                                     }
-
                                 }
-
                             }
                         }
                     }
-
                 }
                 Box(
                     modifier = Modifier.fillMaxSize()
@@ -119,10 +123,9 @@ fun LoginScene(onLoginSuccess: () -> Unit) {
                         modifier = Modifier.fillMaxSize()
                     )
                 }
-
-                }
-
-        }
+            }
         }
     }
 
+    ErrorDialog(showDialog = showDialog, dialogMessage = dialogMessage, onDismiss = { showDialog = false })
+}
