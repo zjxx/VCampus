@@ -20,6 +20,8 @@ public class User {
 
   private long role;
 
+  private Integer balance;
+
     public String getUsername() {
         return username;
     }
@@ -44,6 +46,10 @@ public class User {
         return role;
     }
 
+    public Integer getBalance() {
+        return balance;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -66,5 +72,9 @@ public class User {
 
     public void setRole(long role) {
         this.role = role;
+    }
+
+    public void setBalance(Integer balance) {
+        this.balance = balance;
     }
 }
