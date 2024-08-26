@@ -3,31 +3,30 @@ package app.vcampus.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
 
 import java.util.UUID;
-
 
 @Entity
 @Table(name="storeitem")
 public class StoreItem {
     @Id
-    public UUID uuid= UUID.randomUUID();
+    @Column(unique = true, nullable = false)
+    private UUID uuid = UUID.randomUUID();
 
-    public String itemName;
+    private String itemName;
 
-    public Integer price;
+    private Integer price;
 
-    public String pictureLink;
+    private String pictureLink;
 
-    public String barcode;
+    private String barcode;
 
-    public Integer stock;
+    private Integer stock;
 
-    public Integer salesVolume = 0;
+    private Integer salesVolume = 0;
 
-    public String description;
+    private String description;
 
     public UUID getUuid() {
         return uuid;
@@ -92,5 +91,4 @@ public class StoreItem {
     public void setDescription(String description) {
         this.description = description;
     }
-
 }

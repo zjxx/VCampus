@@ -5,6 +5,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Column;
+import app.vcampus.domain.StoreItem;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -14,9 +16,8 @@ public class StoreTransaction {
     @Id
     public UUID uuid = UUID.randomUUID();
 
-    @ManyToOne
-    @JoinColumn(name = "itemUuid", referencedColumnName = "uuid", insertable = false, updatable = false)
-    public StoreItem storeItem;
+
+   // public StoreItem storeItem;
 
     public Integer itemPrice;
 
@@ -30,9 +31,9 @@ public class StoreTransaction {
         return uuid;
     }
 
-    public StoreItem getStoreItem() {
-        return storeItem;
-    }
+//    public StoreItem getStoreItem() {
+//        return storeItem;
+//    }
 
     public Integer getItemPrice() {
         return itemPrice;
@@ -54,9 +55,9 @@ public class StoreTransaction {
         this.uuid = uuid;
     }
 
-    public void setStoreItem(StoreItem storeItem) {
-        this.storeItem = storeItem;
-    }
+//    public void setStoreItem(StoreItem storeItem) {
+//        this.storeItem = storeItem;
+//    }
 
     public void setItemPrice(Integer itemPrice) {
         this.itemPrice = itemPrice;

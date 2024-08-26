@@ -44,6 +44,36 @@ public class DataBase {
         return session.createQuery(criteria).getResultList();
     }
 
+    public <T> List<T> getAll(Class<T> clazz) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<T> criteria = builder.createQuery(clazz);
+        criteria.from(clazz);
+        return session.createQuery(criteria).getResultList();
+    }
+
+    /**
+     * Persists the given entity to the database.
+     *
+     * @param entity the entity to persist
+     */
+    public void persist(Object entity) {
+        session.beginTransaction();
+        session.persist(entity);
+        session.getTransaction().commit();
+    }
+
+    /**
+     * Removes the given entity from the database.
+     *
+     * @param entity the entity to remove
+     */
+    public void remove(Object entity) {
+        session.beginTransaction();
+        session.remove(entity);
+        session.getTransaction().commit();
+    }
+
+
     public void close() {
         session.close();
         sessionFactory.close();
