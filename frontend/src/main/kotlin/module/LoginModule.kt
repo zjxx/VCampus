@@ -1,10 +1,13 @@
-// File: LoginModule.kt
+// 修改 LoginModule.kt
 package module
 
 import com.google.gson.Gson
 import network.NettyClientProvider
 
-class LoginModule {
+class LoginModule(
+    private val onLoginFailed: (String) -> Unit,
+    private val onLoginSuccess: () -> Unit
+) {
     private val nettyClient = NettyClientProvider.nettyClient
 
     fun onLoginClick(username: String, password: String) {
@@ -20,6 +23,10 @@ class LoginModule {
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         println("Response message: ${responseJson["message"]}")
         println("Response status: ${responseJson["status"]}")
-        // 处理响应
+        if (responseJson["status"] == "success") {
+            onLoginSuccess()
+        } else {
+            onLoginFailed(responseJson["message"] as String)
+        }
     }
 }
