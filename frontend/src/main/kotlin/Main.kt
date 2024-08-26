@@ -47,7 +47,7 @@ fun App() {
                     "/home" -> HomeScene()
                     "/student_status" -> StudentStatusScene(onNavigate = { path ->
                         currentScene = path
-                    })
+                    }, role = role)
                     // 添加更多场景
                 }
             }
