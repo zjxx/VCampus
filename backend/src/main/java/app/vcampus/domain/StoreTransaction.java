@@ -19,7 +19,7 @@ public class StoreTransaction {
 
     public Integer amount;
 
-    @Column(length = 9)
+    @Column(length = 13)
     public String cardNumber;
 
     public LocalDateTime time;
