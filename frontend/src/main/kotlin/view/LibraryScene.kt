@@ -2,22 +2,21 @@ package view
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.application
-import androidx.compose.ui.window.rememberWindowState
 import module.LibraryModule
 
 @Composable
@@ -76,18 +75,22 @@ fun LibraryScene() {
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        BasicTextField(
+                        OutlinedTextField(
                             value = searchText,
                             onValueChange = { searchText = it },
                             modifier = Modifier
                                 .weight(1f)
-                                .padding(bottom = 8.dp),
+                                .padding(8.dp)
+                                .background(Color.White)
+                                .padding(16.dp),
                             singleLine = true
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         Box(
                             modifier = Modifier
-                                .background(Color.DarkGray)
+                                .clip(RoundedCornerShape(8.dp))
+                                .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
+                                .background(Color(0xFF228042))
                                 .padding(16.dp)
                                 .clickable { libraryModule.libSearch(searchText.text) }
                         ) {
