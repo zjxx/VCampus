@@ -1,48 +1,48 @@
 package view
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import view.component.pageTitle
 import module.StudentStatusModule
 
 @Composable
-fun ViewStudentStatusSubscene(studentStatusModule: StudentStatusModule) {
-    val name by studentStatusModule::name
-    val gender by studentStatusModule::gender
-    val ethnicity by studentStatusModule::race
-    val origin by studentStatusModule::nativePlace
-    val studentId by studentStatusModule::studentId
-    val major by studentStatusModule::major
-    val college by studentStatusModule::academy
+fun AddStudentStatusSubscene() {
+    val studentStatusModule = remember { StudentStatusModule() }
+    var name by remember { mutableStateOf("") }
+    var gender by remember { mutableStateOf("") }
+    var race by remember { mutableStateOf("") }
+    var nativePlace by remember { mutableStateOf("") }
+    var studentId by remember { mutableStateOf("") }
+    var major by remember { mutableStateOf("") }
+    var academy by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.padding(start = 16.dp)) {
-        pageTitle(heading = "个人学籍信息", caption = "查看个人学籍信息")
+        pageTitle(heading = "增加学籍信息", caption = "填写学籍信息")
 
         // 第一行
         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
             OutlinedTextField(
                 value = name,
-                onValueChange = { studentStatusModule.name = it },
+                onValueChange = { name = it },
                 label = { Text("姓名") },
-                readOnly = true,
                 modifier = Modifier.weight(1f).padding(end = 16.dp)
             )
             OutlinedTextField(
                 value = gender,
-                onValueChange = { studentStatusModule.gender = it },
+                onValueChange = { gender = it },
                 label = { Text("性别") },
-                readOnly = true,
                 modifier = Modifier.weight(1f).padding(end = 16.dp)
             )
             OutlinedTextField(
-                value = ethnicity,
-                onValueChange = { studentStatusModule.race = it },
+                value = race,
+                onValueChange = { race = it },
                 label = { Text("名族") },
-                readOnly = true,
                 modifier = Modifier.weight(1f)
             )
         }
@@ -50,17 +50,15 @@ fun ViewStudentStatusSubscene(studentStatusModule: StudentStatusModule) {
         // 第二行
         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
             OutlinedTextField(
-                value = origin,
-                onValueChange = { studentStatusModule.nativePlace = it },
+                value = nativePlace,
+                onValueChange = { nativePlace = it },
                 label = { Text("籍贯") },
-                readOnly = true,
                 modifier = Modifier.weight(1f).padding(end = 16.dp)
             )
             OutlinedTextField(
                 value = studentId,
-                onValueChange = { studentStatusModule.studentId = it },
+                onValueChange = { studentId = it },
                 label = { Text("一卡通") },
-                readOnly = true,
                 modifier = Modifier.weight(1f)
             )
         }
@@ -68,18 +66,32 @@ fun ViewStudentStatusSubscene(studentStatusModule: StudentStatusModule) {
         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
             OutlinedTextField(
                 value = major,
-                onValueChange = { studentStatusModule.major = it },
+                onValueChange = { major = it },
                 label = { Text("专业") },
-                readOnly = true,
                 modifier = Modifier.weight(1f).padding(end = 16.dp)
             )
             OutlinedTextField(
-                value = college,
-                onValueChange = { studentStatusModule.academy = it },
+                value = academy,
+                onValueChange = { academy = it },
                 label = { Text("学院") },
-                readOnly = true,
                 modifier = Modifier.weight(1f)
             )
+        }
+
+        // 确认添加按钮
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomEnd) {
+            Button(onClick = {
+                studentStatusModule.name = name
+                studentStatusModule.gender = gender
+                studentStatusModule.race = race
+                studentStatusModule.nativePlace = nativePlace
+                studentStatusModule.studentId = studentId
+                studentStatusModule.major = major
+                studentStatusModule.academy = academy
+                studentStatusModule.addStudentStatus()
+            }) {
+                Text("确认添加")
+            }
         }
     }
 }
