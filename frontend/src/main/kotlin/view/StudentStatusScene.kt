@@ -76,7 +76,3 @@ fun DeleteStudentStatusSubscene() {
     Text("删除学籍子场景")
 }
 
-@Composable
-fun ModifyStudentStatusSubscene() {
-    Text("修改学籍子场景")
-}

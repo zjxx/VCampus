@@ -13,11 +13,11 @@ import module.StudentStatusModule
 fun ViewStudentStatusSubscene(studentStatusModule: StudentStatusModule) {
     val name by studentStatusModule::name
     val gender by studentStatusModule::gender
-    val ethnicity by studentStatusModule::ethnicity
-    val origin by studentStatusModule::origin
+    val ethnicity by studentStatusModule::race
+    val origin by studentStatusModule::nativePlace
     val studentId by studentStatusModule::studentId
     val major by studentStatusModule::major
-    val college by studentStatusModule::college
+    val college by studentStatusModule::academy
 
     Column(modifier = Modifier.padding(start = 16.dp)) {
         pageTitle(heading = "个人学籍信息", caption = "查看个人学籍信息")
@@ -40,7 +40,7 @@ fun ViewStudentStatusSubscene(studentStatusModule: StudentStatusModule) {
             )
             OutlinedTextField(
                 value = ethnicity,
-                onValueChange = { studentStatusModule.ethnicity = it },
+                onValueChange = { studentStatusModule.race = it },
                 label = { Text("名族") },
                 readOnly = true,
                 modifier = Modifier.weight(1f)
@@ -51,7 +51,7 @@ fun ViewStudentStatusSubscene(studentStatusModule: StudentStatusModule) {
         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
             OutlinedTextField(
                 value = origin,
-                onValueChange = { studentStatusModule.origin = it },
+                onValueChange = { studentStatusModule.nativePlace = it },
                 label = { Text("籍贯") },
                 readOnly = true,
                 modifier = Modifier.weight(1f).padding(end = 16.dp)
@@ -75,7 +75,7 @@ fun ViewStudentStatusSubscene(studentStatusModule: StudentStatusModule) {
             )
             OutlinedTextField(
                 value = college,
-                onValueChange = { studentStatusModule.college = it },
+                onValueChange = { studentStatusModule.academy = it },
                 label = { Text("学院") },
                 readOnly = true,
                 modifier = Modifier.weight(1f)

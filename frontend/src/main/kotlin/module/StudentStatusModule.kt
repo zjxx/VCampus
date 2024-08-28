@@ -12,11 +12,11 @@ class StudentStatusModule {
 
     var name by mutableStateOf("")
     var gender by mutableStateOf("")
-    var ethnicity by mutableStateOf("")
-    var origin by mutableStateOf("")
+    var race by mutableStateOf("")
+    var nativePlace by mutableStateOf("")
     var studentId by mutableStateOf("")
     var major by mutableStateOf("")
-    var college by mutableStateOf("")
+    var academy by mutableStateOf("")
 
     fun searchStudentStatus() {
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId)
@@ -30,10 +30,25 @@ class StudentStatusModule {
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, String>
         name = responseJson["name"] ?: ""
         gender = responseJson["gender"] ?: ""
-        ethnicity = responseJson["race"] ?: ""
-        origin = responseJson["nativePlace"] ?: ""
+        race = responseJson["race"] ?: ""
+        nativePlace = responseJson["nativePlace"] ?: ""
         studentId = responseJson["studentId"] ?: ""
         major = responseJson["major"] ?: ""
-        college = responseJson["academy"] ?: ""
+        academy = responseJson["academy"] ?: ""
+    }
+
+    fun addStudentStatus() {
+        val request = mapOf(
+            "name" to name,
+            "gender" to gender,
+            "race" to race,
+            "nativePlace" to nativePlace,
+            "studentId" to studentId,
+            "major" to major,
+            "academy" to academy
+        )
+        nettyClient.sendRequest(request, "addStudentStatus") { response: String ->
+            println("Add student status response: $response")
+        }
     }
 }

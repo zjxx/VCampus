@@ -81,7 +81,14 @@ fun AddStudentStatusSubscene() {
         // 确认添加按钮
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomEnd) {
             Button(onClick = {
-                // Handle the add action
+                studentStatusModule.name = name
+                studentStatusModule.gender = gender
+                studentStatusModule.race = race
+                studentStatusModule.nativePlace = nativePlace
+                studentStatusModule.studentId = studentId
+                studentStatusModule.major = major
+                studentStatusModule.academy = academy
+                studentStatusModule.addStudentStatus()
             }) {
                 Text("确认添加")
             }
