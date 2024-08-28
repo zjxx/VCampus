@@ -1,4 +1,3 @@
-// src/main/kotlin/Main.kt
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
@@ -19,13 +18,13 @@ import view.component.GlobalDialog
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import data.NaviItem
+import data.UserSession
 
 @Composable
 @Preview
 fun App() {
     var currentScene by remember { mutableStateOf("LoginScene") }
     var naviItems by remember { mutableStateOf(emptyList<NaviItem>()) }
-    var role by remember { mutableStateOf("") }
 
     MaterialTheme {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -38,20 +37,29 @@ fun App() {
                 when (currentScene) {
                     "LoginScene" -> LoginScene(onLoginSuccess = {
                         currentScene = "StudentScene"
-                        role = "student" // 假设登录成功后返回的角色
-                        naviItems = listOf(
-                            NaviItem("主页", "/home", Icons.Default.Home, listOf("user")),
-                            NaviItem("学籍", "/student_status", Icons.Default.Person, listOf("student", "affairs_staff")),
-                            NaviItem("图书馆", "/library", Icons.Default.Book, listOf("library_user", "library_staff"))
-                        )
+                        naviItems = when (UserSession.role) {
+                            "student" -> listOf(
+                                NaviItem("主页", "/home", Icons.Default.Home, listOf("user")),
+                                NaviItem("学籍", "/student_status", Icons.Default.Person, listOf("student", "affairs_staff")),
+                                NaviItem("图书馆", "/library", Icons.Default.Book, listOf("library_user", "library_staff")),
+                                NaviItem("超市", "/shop", Icons.Default.ShoppingCart, listOf("shop_user", "shop_staff"))
+                            )
+                            "admin" -> listOf(
+                                NaviItem("主页", "/home", Icons.Default.Home, listOf("user")),
+                                NaviItem("教务", "/student_status", Icons.Default.Person, listOf("student", "affairs_staff")),
+                                NaviItem("图书馆", "/library", Icons.Default.Book, listOf("library_user", "library_staff")),
+                                NaviItem("超市", "/shop", Icons.Default.ShoppingCart, listOf("shop_user", "shop_staff")),
+                            )
+                            else -> emptyList()
+                        }
                     })
                     "StudentScene" -> StudentScene(onNavigate = { path ->
                         currentScene = path
-                    }, role = role)
+                    }, role = UserSession.role ?: "")
                     "/home" -> HomeScene()
                     "/student_status" -> StudentStatusScene(onNavigate = { path ->
                         currentScene = path
-                    },role = role)
+                    }, role = UserSession.role ?: "")
                     "/library" -> LibraryScene() // 添加图书馆场景
                     // 添加更多场景
                 }
