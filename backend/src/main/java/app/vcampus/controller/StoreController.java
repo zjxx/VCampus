@@ -1,10 +1,7 @@
 package app.vcampus.controller;
 
-import app.vcampus.controller.StoreItemController;
-import app.vcampus.controller.StoreTransactionController;
 import app.vcampus.domain.StoreItem;
 import app.vcampus.domain.StoreTransaction;
-import app.vcampus.domain.Student;
 import app.vcampus.domain.User;
 import app.vcampus.interfaces.PurchaseRequest;
 import app.vcampus.utils.DataBase;
@@ -13,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.time.LocalDateTime;
@@ -78,8 +76,18 @@ public class StoreController {
 
         // 计算总价并扣款
         int totalPrice = storeItem.getPrice() * request.getAmount();
+        if(user.getBalance() < totalPrice) {
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "failed");
+            response.addProperty("reason", "insufficient balance");
+            return gson.toJson(response);
+        }
         user.setBalance(user.getBalance() - totalPrice);
         db.persist(user);
+
+        // 更新商品的销量数据
+        storeItem.setSalesVolume(storeItem.getSalesVolume() + request.getAmount());
+        db.persist(storeItem);
 
         // 创建 StoreTransaction 对象
         StoreTransaction transaction = createStoreTransaction(storeItem, request);
@@ -153,4 +161,33 @@ public class StoreController {
         return gson.toJson(response);
     }
 
+    //获取随机商品，用于首页展示
+    public String enterStore(String jsonData) {
+        DataBase db = DataBaseManager.getInstance();
+        List<StoreItem> items = db.getAll(StoreItem.class);
+        Collections.shuffle(items); // 随机打乱商品列表
+
+        // 取前10个商品
+        List<StoreItem> randomItems = items.subList(0, Math.min(10, items.size()));
+
+        // 构建 JSON 响应
+        JsonArray jsonArray = new JsonArray();
+        for (StoreItem item : randomItems) {
+            jsonArray.add(createItemJsonObject(item));
+        }
+
+        JsonObject response = new JsonObject();
+        response.addProperty("status", "success");
+        response.add("items", jsonArray);
+        return gson.toJson(response);
+    }
+
+    //添加商品
+    public void addItem(String jsonData) {
+        // 将 JSON 转换为 StoreItem 对象
+        StoreItem item = gson.fromJson(jsonData, StoreItem.class);
+
+        // 处理 StoreItem 对象
+        storeItemController.addItem(item);
+    }
 }
