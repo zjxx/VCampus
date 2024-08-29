@@ -1,13 +1,16 @@
 package app.vcampus.utils;
 
+import app.vcampus.controller.StoreController;
 import app.vcampus.controller.StoreTransactionController;
 import app.vcampus.controller.StudentInfoController;
 import app.vcampus.controller.UserController;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 
 public class ControllerManager {
     private final UserController userController = new UserController();
-    private final StoreTransactionController storeTransactionController = new StoreTransactionController();
+    private final StoreController storeController = new StoreController();
     private final RouteMapping routeMapping = new RouteMapping();
     private final StudentInfoController studentInfoController = new StudentInfoController();
     private final Gson gson = new Gson();
@@ -15,11 +18,12 @@ public class ControllerManager {
     public ControllerManager() {
         // 注册路由
         routeMapping.registerRoute("login", userController::login);
-
         routeMapping.registerRoute("searchStudentStatus", studentInfoController::getStudentInfo);
-        routeMapping.registerRoute("purchase", storeTransactionController::handlePurchase);
+        routeMapping.registerRoute("searchItems", storeController::searchItems);
+        routeMapping.registerRoute("purchase", storeController::handlePurchase);
+        routeMapping.registerRoute("getAllItems", storeController::getAllItems);
+        routeMapping.registerRoute("getTransactions", storeController::getAllTransaction);
     }
-
     public String handleRequest(String jsonData) {
         // 解析 JSON 请求
         Request request = gson.fromJson(jsonData, Request.class);
