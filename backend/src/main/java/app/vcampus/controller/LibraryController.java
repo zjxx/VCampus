@@ -18,7 +18,7 @@ public class LibraryController {
         BookSearchingRequest request = gson.fromJson(jsonData, BookSearchingRequest.class);
         JsonObject data = new JsonObject();
         //判断用户身份,如果是学生，则返回所有同名书籍信息
-        if (request.getRole().equals("student")){//可以改成fromindex函数
+        if (request.getRole().equals("student")){
             DataBase db = DataBaseManager.getInstance();//获取数据库实例
             List<Book> books = db.getWhere(Book.class, "BookName", request.getBookName());//查询同名书籍
             if (!books.isEmpty()) {//如果有同名书籍
