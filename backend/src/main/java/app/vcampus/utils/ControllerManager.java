@@ -27,6 +27,7 @@ public class ControllerManager {
         routeMapping.registerRoute("getTransactionsByCardNumber", storeController::getTransactionsByCardNumber);//根据卡号获取交易记录
         routeMapping.registerRoute("addStudentStatus", studentInfoController::addStudentStatus);//
         routeMapping.registerRoute("lib/fetchImageUrl", this::getImage);//
+        routeMapping.registerRoute("deleteStudentStatus", studentInfoController::deleteStudentStatus);//
     }
     public String handleRequest(String jsonData) {
         // 解析 JSON 请求
