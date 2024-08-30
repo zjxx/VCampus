@@ -36,7 +36,7 @@ public class ControllerManager {
         return routeMapping.handleRequest(request.getType(), jsonData);
     }
 
-    private  String getImage(String jsonData){
+    private String getImage(String jsonData){
         return "https://th.bing.com/th/id/R.061dc0f43851e2ef1f114ee33eabf427?rik=H7HNnwjTHfgibg&pid=ImgRaw&r=0";
     }
 }
