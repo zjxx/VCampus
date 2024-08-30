@@ -111,7 +111,7 @@ public class StoreController {
 
         // 查找匹配的商品
         DataBase db = DataBaseManager.getInstance();
-        List<StoreItem> items = db.getWhere(StoreItem.class, "name LIKE", "%" + keyword + "%");
+        List<StoreItem> items = db.getLike(StoreItem.class, "name LIKE", "%" + keyword + "%");
         if(items.isEmpty())
         {
             JsonObject response = new JsonObject();
