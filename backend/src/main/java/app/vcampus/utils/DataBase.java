@@ -54,6 +54,14 @@ public class DataBase {
         return session.createQuery(criteria).getResultList();
     }
 
+    //模糊搜索
+    public <T> List<T> getLike(Class<T> clazz, String attributeName, String value) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<T> criteria = builder.createQuery(clazz);
+        Root<T> itemRoot = criteria.from(clazz);
+        criteria.where(builder.like(itemRoot.get(attributeName), "%" + value + "%"));
+        return session.createQuery(criteria).getResultList();
+    }
     /**
      * Persists the given entity to the database.
      *
