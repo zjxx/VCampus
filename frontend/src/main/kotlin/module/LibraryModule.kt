@@ -1,3 +1,4 @@
+// src/main/kotlin/module/LibraryModule.kt
 package module
 
 import com.google.gson.Gson
@@ -11,7 +12,7 @@ class LibraryModule (
 ) {
     private val nettyClient = NettyClientProvider.nettyClient
 
-    fun libSearch(bookname: String) {
+    fun libSearch(bookname: String, role: String) {
         val request = mapOf("role" to UserSession.role, "bookname" to bookname)
         nettyClient.sendRequest(request, "lib/search") { response: String ->
             handleResponseSearch(response)

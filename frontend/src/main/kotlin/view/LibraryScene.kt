@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import module.LibraryModule
 
 @Composable
-fun LibraryScene() {
+fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     var selectedOption by remember { mutableStateOf("查找书籍") }
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var searchResults by remember { mutableStateOf(listOf<String>()) }
@@ -35,6 +35,7 @@ fun LibraryScene() {
         }
     )
 
+
     Row(modifier = Modifier.fillMaxSize()) {
         // 侧边导航栏
         Column(
@@ -44,22 +45,42 @@ fun LibraryScene() {
                 .background(Color.LightGray)
                 .padding(16.dp)
         ) {
-            Text(
-                text = "查找书籍",
-                fontSize = 18.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { selectedOption = "查找书籍" }
-                    .padding(vertical = 8.dp)
-            )
-            Text(
-                text = "查看已借阅书籍信息",
-                fontSize = 18.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { selectedOption = "查看已借阅书籍信息" }
-                    .padding(vertical = 8.dp)
-            )
+            if(role == "student") {
+                Text(
+                    text = "查找书籍",
+                    fontSize = 18.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { selectedOption = "查找书籍" }
+                        .padding(vertical = 8.dp)
+                )
+                Text(
+                    text = "查看已借阅书籍信息",
+                    fontSize = 18.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { selectedOption = "查看已借阅书籍信息" }
+                        .padding(vertical = 8.dp)
+                )
+            }
+            else if(role == "admin") {
+                Text(
+                    text = "管理书籍",
+                    fontSize = 18.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { selectedOption = "管理书籍" }
+                        .padding(vertical = 8.dp)
+                )
+                Text(
+                    text = "查看借阅记录",
+                    fontSize = 18.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { selectedOption = "查看借阅记录" }
+                        .padding(vertical = 8.dp)
+                )
+            }
         }
 
         // 主内容区域
@@ -69,54 +90,103 @@ fun LibraryScene() {
                 .weight(0.8f)
                 .padding(16.dp)
         ) {
-            when (selectedOption) {
-                "查找书籍" -> {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        OutlinedTextField(
-                            value = searchText,
-                            onValueChange = { searchText = it },
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(8.dp)
-                                .background(Color.White)
-                                .padding(16.dp),
-                            singleLine = true
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
-                                .background(Color(0xFF228042))
-                                .padding(16.dp)
-                                .clickable { libraryModule.libSearch(searchText.text) }
+            if (role == "student") {
+                when (selectedOption) {
+                    "查找书籍" -> {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(text = "搜索", color = Color.White)
+                            OutlinedTextField(
+                                value = searchText,
+                                onValueChange = { searchText = it },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(8.dp)
+                                    .background(Color.White)
+                                    .padding(16.dp),
+                                singleLine = true
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
+                                    .background(Color(0xFF228042))
+                                    .padding(16.dp)
+                                    .clickable { libraryModule.libSearch(searchText.text, role) }
+                            ) {
+                                Text(text = "搜索", color = Color.White)
+                            }
+                        }
+                        Divider(color = Color.Gray, thickness = 1.dp)
+                        Column(modifier = Modifier.padding(top = 8.dp)) {
+                            if (searchResults.isEmpty()) {
+                                Text(text = "无信息", fontSize = 16.sp)
+                            } else {
+                                searchResults.forEach { result ->
+                                    Text(text = result, fontSize = 16.sp, modifier = Modifier.padding(vertical = 4.dp))
+                                }
+                            }
                         }
                     }
-                    Divider(color = Color.Gray, thickness = 1.dp)
-                    Column(modifier = Modifier.padding(top = 8.dp)) {
-                        if (searchResults.isEmpty()) {
-                            Text(text = "无信息", fontSize = 16.sp)
-                        } else {
-                            searchResults.forEach { result ->
-                                Text(text = result, fontSize = 16.sp, modifier = Modifier.padding(vertical = 4.dp))
+
+                    "查看已借阅书籍信息" -> {
+                        Column(modifier = Modifier.padding(top = 8.dp)) {
+                            if (checkResults.isEmpty()) {
+                                Text(text = "无信息", fontSize = 16.sp)
+                            } else {
+                                checkResults.forEach { result ->
+                                    Text(text = result, fontSize = 16.sp, modifier = Modifier.padding(vertical = 4.dp))
+                                }
                             }
                         }
                     }
                 }
-                "查看已借阅书籍信息" -> {
-                    Column(modifier = Modifier.padding(top = 8.dp)) {
-                        if (checkResults.isEmpty()) {
-                            Text(text = "无信息", fontSize = 16.sp)
-                        } else {
-                            checkResults.forEach { result ->
-                                Text(text = result, fontSize = 16.sp, modifier = Modifier.padding(vertical = 4.dp))
+            }
+            else if (role == "admin") {
+                when (selectedOption) {
+                    "管理书籍" -> {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            OutlinedTextField(
+                                value = searchText,
+                                onValueChange = { searchText = it },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(8.dp)
+                                    .background(Color.White)
+                                    .padding(16.dp),
+                                singleLine = true
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
+                                    .background(Color(0xFF228042))
+                                    .padding(16.dp)
+                                    .clickable { libraryModule.libSearch(searchText.text, role) }
+                            ) {
+                                Text(text = "搜索", color = Color.White)
                             }
                         }
+                        Divider(color = Color.Gray, thickness = 1.dp)
+                        Column(modifier = Modifier.padding(top = 8.dp)) {
+                            if (searchResults.isEmpty()) {
+                                Text(text = "无信息", fontSize = 16.sp)
+                            } else {
+                                searchResults.forEach { result ->
+                                    Text(text = result, fontSize = 16.sp, modifier = Modifier.padding(vertical = 4.dp))
+                                }
+                            }
+                        }
+                    }
+
+                    "查看借阅记录" -> {
+                        // Add implementation for viewing borrowing records
                     }
                 }
             }

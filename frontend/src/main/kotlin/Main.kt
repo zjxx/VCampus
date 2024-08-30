@@ -1,24 +1,23 @@
+
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.*
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.application
-import androidx.compose.ui.Modifier
-import androidx.compose.foundation.layout.*
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.rememberWindowState
-import view.LoginScene
-import view.StudentScene
-import view.HomeScene
-import view.StudentStatusScene
-import view.LibraryScene // 导入 LibraryScene
-import view.component.TopNavBar
-import view.component.GlobalDialog
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
 import data.NaviItem
 import data.UserSession
+import view.*
+import view.component.GlobalDialog
+import view.component.TopNavBar
 
 @Composable
 @Preview
@@ -60,7 +59,12 @@ fun App() {
                     "/student_status" -> StudentStatusScene(onNavigate = { path ->
                         currentScene = path
                     }, role = UserSession.role ?: "")
-                    "/library" -> LibraryScene() // 添加图书馆场景
+                    "/library" -> LibraryScene(onNavigate = { path ->
+                        currentScene = path
+                    }, role = UserSession.role ?: "") // 添加图书馆场景
+                    "/shop" -> ShopScene(onNavigate = { path ->
+                        currentScene = path
+                    }, role = UserSession.role ?: "")// 添加超市场景
                     // 添加更多场景
                 }
             }
