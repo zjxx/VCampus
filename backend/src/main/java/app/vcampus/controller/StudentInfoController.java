@@ -6,6 +6,7 @@ import app.vcampus.interfaces.studentInfoRequest;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -80,6 +81,64 @@ public class StudentInfoController {
             data.addProperty("status", "failed");
             data.addProperty("reason", e.getMessage());
             return gson.toJson(data);
+        }
+    }
+
+    //根据姓名搜索学生信息，可以支持模糊搜索
+    public String searchStudent(String jsonData) {
+        try {
+            JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+            String keyword = request.get("keyword").getAsString();
+            DataBase db = DataBaseManager.getInstance();
+            List<Student> students = db.getWhere(Student.class, "username LIKE", "%" + keyword + "%");
+            JsonArray studentObjects = new JsonArray();
+            for (Student student : students) {
+                JsonObject studentObject = new JsonObject();
+                studentObject.addProperty("studentId", student.getStudentId());
+                studentObject.addProperty("name", student.getUsername());
+                studentObject.addProperty("gender", student.getGender() == 0 ? "男" : "女");
+                studentObject.addProperty("race", student.getRace());
+                studentObject.addProperty("major", student.getMajor());
+                studentObject.addProperty("academy", student.getAcademy());
+                studentObject.addProperty("nativePlace", student.getNativePlace());
+                studentObjects.add(studentObject);
+            }
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "success");
+            response.add("students", studentObjects);
+            return gson.toJson(response);
+        } catch (Exception e) {
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "failed");
+            response.addProperty("reason", e.getMessage());
+            return gson.toJson(response);
+        }
+    }
+
+    // 修改学生信息
+    public String updateStudentStatus(String jsonData) {
+        try {
+            Student updatedStudent = gson.fromJson(jsonData, Student.class);
+            DataBase db = DataBaseManager.getInstance();
+            Student existingStudent = db.getWhere(Student.class, "studentId", updatedStudent.getStudentId()).get(0);
+
+            existingStudent.setUsername(updatedStudent.getUsername());
+            existingStudent.setGender(updatedStudent.getGender());
+            existingStudent.setRace(updatedStudent.getRace());
+            existingStudent.setMajor(updatedStudent.getMajor());
+            existingStudent.setAcademy(updatedStudent.getAcademy());
+            existingStudent.setNativePlace(updatedStudent.getNativePlace());
+
+            db.persist(existingStudent);
+
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "success");
+            return gson.toJson(response);
+        } catch (Exception e) {
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "failed");
+            response.addProperty("reason", e.getMessage());
+            return gson.toJson(response);
         }
     }
 }
