@@ -11,6 +11,9 @@ import java.util.List;
 
 public class StudentInfoController {
     private final Gson gson = new Gson();
+
+
+    //获取学生信息
     public String getStudentInfo(String jsonData) {
         studentInfoRequest request = gson.fromJson(jsonData, studentInfoRequest.class);
         DataBase db = DataBaseManager.getInstance();
@@ -23,6 +26,27 @@ public class StudentInfoController {
         data.addProperty("major", student.getMajor());
         data.addProperty("academy", student.getAcademy());
         data.addProperty("nativePlace", student.getNativePlace());
+        return gson.toJson(data);
+    }
+
+    //添加学生信息
+    public String addStudentStatus(String jsonData) {
+        Student student = gson.fromJson(jsonData, Student.class);
+        DataBase db = DataBaseManager.getInstance();
+        db.persist(student);
+        JsonObject data = new JsonObject();
+        data.addProperty("status", "success");
+        return gson.toJson(data);
+    }
+
+    //删除学生信息
+    public String deleteStudentStatus(String jsonData) {
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+        DataBase db = DataBaseManager.getInstance();
+        Student student = db.getWhere(Student.class, "studentId", request.get("studentId").getAsString()).get(0);
+        db.remove(student);
+        JsonObject data = new JsonObject();
+        data.addProperty("status", "success");
         return gson.toJson(data);
     }
 }
