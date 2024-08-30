@@ -77,7 +77,17 @@ private fun handleResponseAdd(response: String) {
     fun searchAdmin(keyword: String) {
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "keyword" to keyword)
         nettyClient.sendRequest(request, "student/search") { response: String ->
-            handleResponseView(response)
+            handleResponseSearch(response)
+        }
+    }
+    private fun handleResponseSearch(response: String) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        println("Response message: ${responseJson["message"]}")
+        println("Response status: ${responseJson["status"]}")
+        if (responseJson["status"] == "success") {
+        } else {
+            DialogManager.showDialog("无相关学生")
         }
     }
     fun deleteStudentStatus() {
