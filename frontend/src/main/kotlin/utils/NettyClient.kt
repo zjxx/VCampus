@@ -1,6 +1,3 @@
-// File: kotlin/network/NettyClient.kt
-package network
-
 import com.google.gson.Gson
 import io.netty.bootstrap.Bootstrap
 import io.netty.channel.ChannelFuture
@@ -13,6 +10,7 @@ import io.netty.handler.codec.string.StringDecoder
 import io.netty.handler.codec.string.StringEncoder
 import io.netty.handler.logging.LogLevel
 import io.netty.handler.logging.LoggingHandler
+import java.util.Base64
 
 class NettyClient(private val host: String, private val port: Int) {
     private var role: String = "null"
@@ -44,14 +42,11 @@ class NettyClient(private val host: String, private val port: Int) {
                 // 启动客户端
                 val future: ChannelFuture = bootstrap.connect(host, port).sync()
 
-
                 // 将请求转换为 JSON 并发送
                 val req = gson.fromJson(gson.toJson(request), MutableMap::class.java) as MutableMap<String, Any>
                 req["role"] = role // 添加新的键值对
                 req["type"] = type // 添加新的键值对
                 val jsonRequest = gson.toJson(req)
-
-
 
                 future.channel().writeAndFlush(jsonRequest)
 
@@ -62,6 +57,4 @@ class NettyClient(private val host: String, private val port: Int) {
             }
         }.start()
     }
-
-
 }

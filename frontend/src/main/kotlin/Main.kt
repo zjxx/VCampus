@@ -67,5 +67,6 @@ fun main() = application {
         state = rememberWindowState(size = DpSize(1064.dp, 600.dp)) // 设置窗口初始大小
     ) {
         App()
+
     }
 }

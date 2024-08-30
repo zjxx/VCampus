@@ -3,7 +3,7 @@ package module
 
 import com.google.gson.Gson
 import data.UserSession
-import network.NettyClientProvider
+import utils.NettyClientProvider
 
 class StudentStatusModule {
     private val nettyClient = NettyClientProvider.nettyClient

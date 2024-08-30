@@ -1,8 +1,10 @@
 // File: kotlin/network/NettyClientProvider.kt
-package network
+package utils
+
+import NettyClient
 
 object NettyClientProvider {
     val nettyClient: NettyClient by lazy {
-        NettyClient("47.99.141.236", 8066)
+        NettyClient("localhost", 8066)
     }
 }
