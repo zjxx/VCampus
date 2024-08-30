@@ -21,8 +21,6 @@ public class User {
   private Integer balance;
 
   private int gender;
-    @Column(length = 13)
-    private String phone;
 
   private int role;
 
@@ -58,9 +56,7 @@ public class User {
         this.gender = gender;
     }
 
-    public String getPhone() {
-        return phone;
-    }
+
 
 
     public Integer getBalance() {
@@ -69,9 +65,6 @@ public class User {
 
 
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
 
     public int getRole() {
         return role;

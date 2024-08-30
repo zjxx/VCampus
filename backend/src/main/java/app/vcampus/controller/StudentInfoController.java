@@ -1,6 +1,7 @@
 package app.vcampus.controller;
 
 import app.vcampus.domain.Student;
+import app.vcampus.domain.User;
 import app.vcampus.interfaces.studentInfoRequest;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
@@ -31,22 +32,54 @@ public class StudentInfoController {
 
     //添加学生信息
     public String addStudentStatus(String jsonData) {
-        Student student = gson.fromJson(jsonData, Student.class);
-        DataBase db = DataBaseManager.getInstance();
-        db.persist(student);
-        JsonObject data = new JsonObject();
-        data.addProperty("status", "success");
-        return gson.toJson(data);
+        try {
+            Student student = gson.fromJson(jsonData, Student.class);
+            DataBase db = DataBaseManager.getInstance();
+
+
+            // 同时向 User 库添加一条数据
+            User user = new User();
+            user.setUserId(student.getStudentId());
+            user.setUsername(student.getUsername());
+            user.setPassword("123456");
+            user.setGender(student.getGender());
+            user.setRole(0);
+            user.setBalance(0);
+            db.persist(user);
+            db.persist(student);
+            JsonObject data = new JsonObject();
+            data.addProperty("status", "success");
+            return gson.toJson(data);
+        } catch (Exception e) {
+            JsonObject data = new JsonObject();
+            data.addProperty("status", "failed");
+            data.addProperty("reason", e.getMessage());
+            return gson.toJson(data);
+        }
     }
 
-    //删除学生信息
+    // 删除学生信息
     public String deleteStudentStatus(String jsonData) {
-        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
-        DataBase db = DataBaseManager.getInstance();
-        Student student = db.getWhere(Student.class, "studentId", request.get("studentId").getAsString()).get(0);
-        db.remove(student);
-        JsonObject data = new JsonObject();
-        data.addProperty("status", "success");
-        return gson.toJson(data);
+        try {
+            JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+            String studentId = request.get("studentId").getAsString();
+
+            DataBase db = DataBaseManager.getInstance();
+            Student student = db.getWhere(Student.class, "studentId", studentId).get(0);
+            db.remove(student);
+
+            // 同时从 User 库中删除对应的数据
+            User user = db.getWhere(User.class, "userId", studentId).get(0);
+            db.remove(user);
+
+            JsonObject data = new JsonObject();
+            data.addProperty("status", "success");
+            return gson.toJson(data);
+        } catch (Exception e) {
+            JsonObject data = new JsonObject();
+            data.addProperty("status", "failed");
+            data.addProperty("reason", e.getMessage());
+            return gson.toJson(data);
+        }
     }
 }
