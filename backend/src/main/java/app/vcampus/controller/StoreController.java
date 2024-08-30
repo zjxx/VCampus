@@ -103,7 +103,7 @@ public class StoreController {
         return gson.toJson(response);
     }
 
-    //搜索商品
+    //根据关键词搜索商品
     public String searchItems(String jsonData) {
         // 从 JSON 请求中提取关键词
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
@@ -112,6 +112,13 @@ public class StoreController {
         // 查找匹配的商品
         DataBase db = DataBaseManager.getInstance();
         List<StoreItem> items = db.getWhere(StoreItem.class, "name", "%" + keyword + "%");
+        if(items.isEmpty())
+        {
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "failed");
+            response.addProperty("reason", "no such item");
+            return gson.toJson(response);
+        }
 
         // 构建 JSON 响应
         JsonArray jsonArray = new JsonArray();
@@ -131,6 +138,13 @@ public class StoreController {
         DataBase db = DataBaseManager.getInstance();
         List<StoreItem> items = db.getAll(StoreItem.class);
 
+        if(items.isEmpty())
+        {
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "failed");
+            response.addProperty("reason", "no item in store");
+            return gson.toJson(response);
+        }
         // 构建 JSON 响应
         JsonArray jsonArray = new JsonArray();
         for (StoreItem item : items) {
@@ -148,6 +162,13 @@ public class StoreController {
         // 获取所有交易记录
         DataBase db = DataBaseManager.getInstance();
         List<StoreTransaction> transactions = db.getAll(StoreTransaction.class);
+        if(transactions.isEmpty())
+        {
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "failed");
+            response.addProperty("reason", "no transaction in store");
+            return gson.toJson(response);
+        }
 
         // 构建 JSON 响应
         JsonArray jsonArray = new JsonArray();
@@ -182,12 +203,125 @@ public class StoreController {
         return gson.toJson(response);
     }
 
-    //添加商品
-    public void addItem(String jsonData) {
-        // 将 JSON 转换为 StoreItem 对象
-        StoreItem item = gson.fromJson(jsonData, StoreItem.class);
+    //获取特定一卡通号的订单
+    public String getTransactionsByCardNumber(String jsonData) {
+        // 从 JSON 请求中提取一卡通号
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+        String cardNumber = request.get("cardNumber").getAsString();
 
-        // 处理 StoreItem 对象
-        storeItemController.addItem(item);
+        // 查找匹配的交易记录
+        DataBase db = DataBaseManager.getInstance();
+        List<StoreTransaction> transactions = db.getWhere(StoreTransaction.class, "cardNumber", cardNumber);
+        if(transactions.isEmpty())
+        {
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "failed");
+            response.addProperty("reason", "no transaction for this card number");
+            return gson.toJson(response);
+        }
+
+        // 构建 JSON 响应
+        JsonArray jsonArray = new JsonArray();
+        for (StoreTransaction transaction : transactions) {
+            jsonArray.add(createTransactionJsonObject(transaction));
+        }
+
+        JsonObject response = new JsonObject();
+        response.addProperty("status", "success");
+        response.add("transactions", jsonArray);
+        return gson.toJson(response);
     }
+
+    //获取特定商品的销量
+    public String getSalesVolume(String jsonData) {
+        // 从 JSON 请求中提取商品 UUID
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+        String itemUuid = request.get("itemUuid").getAsString();
+
+        // 查找匹配的商品
+        DataBase db = DataBaseManager.getInstance();
+        StoreItem item = db.getWhere(StoreItem.class, "uuid", UUID.fromString(itemUuid)).get(0);
+        if(item == null)
+        {
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "failed");
+            response.addProperty("reason", "no such item");
+            return gson.toJson(response);
+        }
+
+        // 构建 JSON 响应
+        JsonObject response = new JsonObject();
+        response.addProperty("status", "success");
+        response.addProperty("salesVolume", item.getSalesVolume());
+        return gson.toJson(response);
+    }
+
+    //添加商品
+    public String addItem(String jsonData) {
+        try {
+            StoreItem newItem = gson.fromJson(jsonData, StoreItem.class);
+            DataBase db = DataBaseManager.getInstance();
+            db.persist(newItem);
+
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "success");
+            return gson.toJson(response);
+        } catch (Exception e) {
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "failed");
+            response.addProperty("reason", e.getMessage());
+            return gson.toJson(response);
+        }
+    }
+
+    // 删除商品
+    public String removeItem(String jsonData) {
+        try {
+            JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+            UUID uuid = UUID.fromString(request.get("uuid").getAsString());
+
+            DataBase db = DataBaseManager.getInstance();
+            StoreItem item = db.getWhere(StoreItem.class, "uuid", uuid).get(0);
+            db.remove(item);
+
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "success");
+            return gson.toJson(response);
+        } catch (Exception e) {
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "failed");
+            response.addProperty("reason", e.getMessage());
+            return gson.toJson(response);
+        }
+    }
+
+    // 修改商品
+    public String updateItem(String jsonData) {
+        try {
+            StoreItem updatedItem = gson.fromJson(jsonData, StoreItem.class);
+
+            DataBase db = DataBaseManager.getInstance();
+            StoreItem existingItem = db.getWhere(StoreItem.class, "uuid", updatedItem.getUuid()).get(0);
+
+            existingItem.setItemName(updatedItem.getItemName());
+            existingItem.setPrice(updatedItem.getPrice());
+            existingItem.setPictureLink(updatedItem.getPictureLink());
+            existingItem.setBarcode(updatedItem.getBarcode());
+            existingItem.setStock(updatedItem.getStock());
+            existingItem.setSalesVolume(updatedItem.getSalesVolume());
+            existingItem.setDescription(updatedItem.getDescription());
+
+            db.persist(existingItem);
+
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "success");
+            return gson.toJson(response);
+        } catch (Exception e) {
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "failed");
+            response.addProperty("reason", e.getMessage());
+            return gson.toJson(response);
+        }
+    }
+
 }

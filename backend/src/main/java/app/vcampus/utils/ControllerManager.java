@@ -24,6 +24,8 @@ public class ControllerManager {
         routeMapping.registerRoute("getAllItems", storeController::getAllItems);//获取所有商品
         routeMapping.registerRoute("getTransactions", storeController::getAllTransaction);//获取所有交易
         routeMapping.registerRoute("enterStore",storeController::enterStore);//进入商店展示商品,返回随机商品列表
+        routeMapping.registerRoute("getTransactionsByCardNumber", storeController::getTransactionsByCardNumber);//根据卡号获取交易记录
+        routeMapping.registerRoute("addStudentStatus", studentInfoController::addStudentStatus);//
     }
     public String handleRequest(String jsonData) {
         // 解析 JSON 请求
