@@ -42,8 +42,9 @@ public class LibraryController {
                     bookData.addProperty("Kind",book.getKind());
                     bookData.addProperty("quantity", book.getQuantity());
                     bookData.addProperty("Valid_Quantity", book.getValid_Quantity());
-                    data.add("book No."+i, bookData);
+                    data.addProperty("b" + i, gson.toJson(bookData));
                 }
+                data.addProperty("status", "success");
                 return gson.toJson(data);
 
             }

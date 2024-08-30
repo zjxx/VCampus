@@ -33,7 +33,7 @@ public class ControllerManager {
         routeMapping.registerRoute("enterStore",storeController::enterStore);//进入商店展示商品,返回随机商品列表
         routeMapping.registerRoute("getTransactionsByCardNumber", storeController::getTransactionsByCardNumber);//根据卡号获取交易记录
         routeMapping.registerRoute("addStudentStatus", studentInfoController::addStudentStatus);//
-        routeMapping.registerRoute("lib/fetchImageUrl", this::getImage);//
+        routeMapping.registerRoute("lib/fetchImageUrl", libraryController::searchBookInfo);//
         routeMapping.registerRoute("deleteStudentStatus", studentInfoController::deleteStudentStatus);//
     }
     public String handleRequest(String jsonData) {

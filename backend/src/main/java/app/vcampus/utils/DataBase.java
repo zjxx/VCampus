@@ -20,7 +20,6 @@ public class DataBase {
                 .addAnnotatedClass(StoreTransaction.class)
                 .addAnnotatedClass(Student.class)
                 .addAnnotatedClass(Book.class)
-                .addAnnotatedClass(Reader2Book.class)
                 .buildSessionFactory();
         session = sessionFactory.openSession();
     }
