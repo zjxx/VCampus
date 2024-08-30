@@ -38,9 +38,13 @@ class StudentStatusModule {
     }
 
     fun addStudentStatus() {
+        var gender_int =0
+        if(gender=="女"){
+            gender_int=1
+        }
         val request = mapOf(
-            "name" to name,
-            "gender" to gender,
+            "username" to name,
+            "gender" to gender_int,
             "race" to race,
             "nativePlace" to nativePlace,
             "studentId" to studentId,
@@ -48,6 +52,19 @@ class StudentStatusModule {
             "academy" to academy
         )
         nettyClient.sendRequest(request, "addStudentStatus") { response: String ->
+            handleResponse(response)
+        }
+    }
+
+    fun modifyStudentStatus() {
+        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId)
+        nettyClient.sendRequest(request, "modifyStudentStatus") { response: String ->
+            handleResponse(response)
+        }
+    }
+    fun searchAdmin(keyword: String) {
+        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "keyword" to keyword)
+        nettyClient.sendRequest(request, "student/search") { response: String ->
             handleResponse(response)
         }
     }
