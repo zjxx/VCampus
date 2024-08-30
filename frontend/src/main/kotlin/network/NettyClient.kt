@@ -1,3 +1,5 @@
+package network
+
 import com.google.gson.Gson
 import io.netty.bootstrap.Bootstrap
 import io.netty.channel.ChannelFuture
@@ -10,7 +12,6 @@ import io.netty.handler.codec.string.StringDecoder
 import io.netty.handler.codec.string.StringEncoder
 import io.netty.handler.logging.LogLevel
 import io.netty.handler.logging.LoggingHandler
-import java.util.Base64
 
 class NettyClient(private val host: String, private val port: Int) {
     private var role: String = "null"

@@ -1,7 +1,5 @@
 // File: kotlin/network/NettyClientProvider.kt
-package utils
-
-import NettyClient
+package network
 
 object NettyClientProvider {
     val nettyClient: NettyClient by lazy {

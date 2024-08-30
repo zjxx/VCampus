@@ -1,8 +1,10 @@
+// src/main/kotlin/module/LibraryModule.kt
 // LibraryModule.kt
 package module
 
 import com.google.gson.Gson
-import utils.NettyClientProvider
+import network.NettyClientProvider
+import data.UserSession
 import view.component.DialogManager
 
 class LibraryModule (
@@ -12,8 +14,8 @@ class LibraryModule (
 ) {
     private val nettyClient = NettyClientProvider.nettyClient
 
-    fun libSearch(bookname: String) {
-        val request = mapOf("bookname" to bookname)
+    fun libSearch(bookname: String, role: String) {
+        val request = mapOf("role" to UserSession.role, "bookname" to bookname)
         nettyClient.sendRequest(request, "lib/search") { response: String ->
             handleResponseSearch(response)
         }
@@ -31,8 +33,8 @@ class LibraryModule (
         }
     }
 
-    fun libCheck(username: String) {
-        val request = mapOf("username" to username)
+    fun libCheck(userId: String) {
+        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId)
         nettyClient.sendRequest(request, "lib/check") { response: String ->
             handleResponseCheck(response)
         }
@@ -53,7 +55,64 @@ class LibraryModule (
             }
             onCheckSuccess(responseJson["message"] as String)
         } else {
-            DialogManager.showDialog("查看失败")
+            DialogManager.showDialog("请求失败")
+        }
+    }
+
+    fun libAddToList(userId: String, bookname: String) {
+        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "bookname" to bookname)
+        nettyClient.sendRequest(request, "lib/addtolist") { response: String ->
+            handleResponseAddToList(response)
+        }
+    }
+
+    private fun handleResponseAddToList(response: String) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        println("Response message: ${responseJson["message"]}")
+        println("Response status: ${responseJson["status"]}")
+        if (responseJson["status"] == "success") {
+            DialogManager.showDialog("办理成功")
+        } else {
+            DialogManager.showDialog("办理失败")
+        }
+    }
+
+    fun libReturnBook(userId: String, bookname: String) {
+        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "bookname" to bookname)
+        nettyClient.sendRequest(request, "lib/returnbook") { response: String ->
+            handleResponseReturnBook(response)
+        }
+    }
+
+    private fun handleResponseReturnBook(response: String) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        println("Response message: ${responseJson["message"]}")
+        println("Response status: ${responseJson["status"]}")
+        if (responseJson["status"] == "success") {
+            DialogManager.showDialog("归还成功")
+        } else {
+            DialogManager.showDialog("归还失败")
+        }
+    }
+
+    fun libRenewBook(userId: String, bookname: String) {
+        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "bookname" to bookname)
+        nettyClient.sendRequest(request, "lib/renewbook") { response: String ->
+            handleResponseRenewBook(response)
+        }
+    }
+
+    private fun handleResponseRenewBook(response: String) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        println("Response message: ${responseJson["message"]}")
+        println("Response status: ${responseJson["status"]}")
+        if (responseJson["status"] == "success") {
+            DialogManager.showDialog("续借成功")
+        } else {
+            DialogManager.showDialog("续借失败")
         }
     }
 
