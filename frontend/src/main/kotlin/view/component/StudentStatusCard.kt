@@ -1,21 +1,44 @@
 package view.component
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Card
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import module.StudentStatusModule
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 
 @Composable
 fun CombinedStudentStatusCard(studentStatusModule: StudentStatusModule) {
     var expanded by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("确认删除") },
+            text = { Text("你确定要删除这个学生信息吗？") },
+            confirmButton = {
+                Button(onClick = {
+                    studentStatusModule.deleteStudentStatus()
+                    showDialog = false
+                }) {
+                    Text("确认")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDialog = false }) {
+                    Text("取消")
+                }
+            }
+        )
+    }
 
     Card(
         modifier = Modifier
@@ -24,8 +47,20 @@ fun CombinedStudentStatusCard(studentStatusModule: StudentStatusModule) {
             .clickable { expanded = !expanded }
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "学生姓名: ${studentStatusModule.name}")
-            Text(text = "一卡通: ${studentStatusModule.studentId}")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(text = "学生姓名: ${studentStatusModule.name}")
+                    Text(text = "一卡通: ${studentStatusModule.studentId}")
+                }
+                if (!expanded) {
+                    IconButton(onClick = { showDialog = true }) {
+                        Icon(Icons.Default.Delete, contentDescription = "删除")
+                    }
+                }
+            }
 
             AnimatedVisibility(
                 visible = expanded,
@@ -91,6 +126,15 @@ fun CombinedStudentStatusCard(studentStatusModule: StudentStatusModule) {
                             readOnly = true,
                             modifier = Modifier.weight(1f)
                         )
+                    }
+
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.BottomEnd
+                    ) {
+                        Button(onClick = { studentStatusModule.modifyStudentStatus() }) {
+                            Text("确认修改")
+                        }
                     }
                 }
             }

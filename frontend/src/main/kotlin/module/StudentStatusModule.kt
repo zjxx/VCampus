@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import com.google.gson.Gson
 import data.UserSession
 import network.NettyClientProvider
+import view.component.DialogManager
 
 class StudentStatusModule {
     private val nettyClient = NettyClientProvider.nettyClient
@@ -17,15 +18,16 @@ class StudentStatusModule {
     var studentId by mutableStateOf("")
     var major by mutableStateOf("")
     var academy by mutableStateOf("")
+    var number by mutableStateOf("")
 
     fun searchStudentStatus() {
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId)
         nettyClient.sendRequest(request, "searchStudentStatus") { response: String ->
-            handleResponse(response)
+            handleResponseView(response)
         }
     }
 
-    private fun handleResponse(response: String) {
+    private fun handleResponseView(response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, String>
         name = responseJson["name"] ?: ""
@@ -35,6 +37,8 @@ class StudentStatusModule {
         studentId = responseJson["studentId"] ?: ""
         major = responseJson["major"] ?: ""
         academy = responseJson["academy"] ?: ""
+        number = responseJson["number"] ?: ""
+
     }
 
     fun addStudentStatus() {
@@ -52,20 +56,34 @@ class StudentStatusModule {
             "academy" to academy
         )
         nettyClient.sendRequest(request, "addStudentStatus") { response: String ->
-            handleResponse(response)
+            handleResponseAdd(response)
         }
     }
-
+private fun handleResponseAdd(response: String) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        if (responseJson["status"] == "success") {
+            DialogManager.showDialog("添加成功")
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
+        }
+    }
     fun modifyStudentStatus() {
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId)
         nettyClient.sendRequest(request, "modifyStudentStatus") { response: String ->
-            handleResponse(response)
+            handleResponseView(response)
         }
     }
     fun searchAdmin(keyword: String) {
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "keyword" to keyword)
         nettyClient.sendRequest(request, "student/search") { response: String ->
-            handleResponse(response)
+            handleResponseView(response)
+        }
+    }
+    fun deleteStudentStatus() {
+        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "studentId" to studentId)
+        nettyClient.sendRequest(request, "deleteStudentStatus") { response: String ->
+            handleResponseView(response)
         }
     }
 }
