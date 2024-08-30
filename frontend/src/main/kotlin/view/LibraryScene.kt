@@ -21,10 +21,10 @@ import module.LibraryModule
 
 @Composable
 fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
-    var selectedOption by remember { mutableStateOf("查找书籍") }
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var searchResults by remember { mutableStateOf(listOf<String>()) }
     var checkResults by remember { mutableStateOf(listOf<String>()) }
+    var selectedOption by remember { mutableStateOf(if (role == "student") "查找书籍" else "管理书籍") }
 
     val libraryModule = LibraryModule(
         onSearchSuccess = { result ->
@@ -42,7 +42,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
             modifier = Modifier
                 .fillMaxHeight()
                 .weight(0.2f)
-                .background(Color.LightGray)
+                .background(Color(0XFFB9E5E8))
                 .padding(16.dp)
         ) {
             if(role == "student") {
@@ -90,7 +90,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                 .weight(0.8f)
                 .padding(16.dp)
         ) {
-            if (role == "student") {
+            if (role == "student") {//学生界面
                 when (selectedOption) {
                     "查找书籍" -> {
                         Row(
@@ -144,7 +144,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                     }
                 }
             }
-            else if (role == "admin") {
+            else if (role == "admin") {// 管理员界面
                 when (selectedOption) {
                     "管理书籍" -> {
                         Row(

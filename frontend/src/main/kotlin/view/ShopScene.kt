@@ -36,21 +36,40 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         // Title
-        Text(
-            text = "欢迎光临校园超市！",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.Start)
-        )
+        if (role == "student"){
+            Text(
+                text = "欢迎光临校园超市！",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.Start)
+            )
 
-        // Divider
-        Divider(
-            color = Color(0xFFFFD700), // Dark yellow color
-            thickness = 4.dp,
-            modifier = Modifier
-                .fillMaxWidth(0.382f)
-                .padding(vertical = 8.dp)
-        )
+            // Divider
+            Divider(
+                color = Color(0xFFFFD700), // Dark yellow color
+                thickness = 4.dp,
+                modifier = Modifier
+                    .fillMaxWidth(0.382f)
+                    .padding(vertical = 8.dp)
+            )
+        }
+        else if (role == "admin"){
+            Text(
+                text = "超市管理",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.Start)
+            )
+
+            // Divider
+            Divider(
+                color = Color(0xFF71B7D0), // Dark yellow color
+                thickness = 4.dp,
+                modifier = Modifier
+                    .fillMaxWidth(0.382f)
+                    .padding(vertical = 8.dp)
+            )
+        }
 
         // Search Module
         Row(

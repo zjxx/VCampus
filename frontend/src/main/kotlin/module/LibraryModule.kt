@@ -50,7 +50,7 @@ class LibraryModule (
         }
     }
 
-    fun libAddToList(userId: String, bookname: String) {
+    fun libAddToList(userId: String, bookname: String) {//借书
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "bookname" to bookname)
         nettyClient.sendRequest(request, "lib/addtolist") { response: String ->
             handleResponseAddToList(response)
@@ -69,7 +69,7 @@ class LibraryModule (
         }
     }
 
-    fun libReturnBook(userId: String, bookname: String) {
+    fun libReturnBook(userId: String, bookname: String) {//还书
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "bookname" to bookname)
         nettyClient.sendRequest(request, "lib/returnbook") { response: String ->
             handleResponseReturnBook(response)
