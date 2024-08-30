@@ -1,13 +1,16 @@
 package app.vcampus.utils;
 
+import app.vcampus.controller.StoreController;
 import app.vcampus.controller.StoreTransactionController;
 import app.vcampus.controller.StudentInfoController;
 import app.vcampus.controller.UserController;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 
 public class ControllerManager {
     private final UserController userController = new UserController();
-    private final StoreTransactionController storeTransactionController = new StoreTransactionController();
+    private final StoreController storeController = new StoreController();
     private final RouteMapping routeMapping = new RouteMapping();
     private final StudentInfoController studentInfoController = new StudentInfoController();
     private final Gson gson = new Gson();
@@ -15,12 +18,16 @@ public class ControllerManager {
     public ControllerManager() {
         // 注册路由
         routeMapping.registerRoute("login", userController::login);
-
         routeMapping.registerRoute("searchStudentStatus", studentInfoController::getStudentInfo);
-        routeMapping.registerRoute("purchase", storeTransactionController::handlePurchase);
-        routeMapping.registerRoute("lib/fetchImageUrl", this::getImage);
+        routeMapping.registerRoute("searchItems", storeController::searchItems);//搜索商品
+        routeMapping.registerRoute("purchase", storeController::handlePurchase);//购买商品
+        routeMapping.registerRoute("getAllItems", storeController::getAllItems);//获取所有商品
+        routeMapping.registerRoute("getTransactions", storeController::getAllTransaction);//获取所有交易
+        routeMapping.registerRoute("enterStore",storeController::enterStore);//进入商店展示商品,返回随机商品列表
+        routeMapping.registerRoute("getTransactionsByCardNumber", storeController::getTransactionsByCardNumber);//根据卡号获取交易记录
+        routeMapping.registerRoute("addStudentStatus", studentInfoController::addStudentStatus);//
+        routeMapping.registerRoute("lib/fetchImageUrl", this::getImage);//
     }
-
     public String handleRequest(String jsonData) {
         // 解析 JSON 请求
         Request request = gson.fromJson(jsonData, Request.class);
