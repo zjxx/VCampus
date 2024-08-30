@@ -43,7 +43,7 @@ class ShopModule (
         println("Response message: ${responseJson["message"]}")
         println("Response status: ${responseJson["status"]}")
         if (responseJson["status"] == "success") {
-            //onBuySuccess(responseJson["message"] as String)
+            onBuySuccess(responseJson["message"] as String)
         } else {
             //DialogManager.showDialog("购买失败")
         }

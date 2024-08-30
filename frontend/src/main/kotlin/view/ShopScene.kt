@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import module.ShopModule
 
 @Composable
-fun ShopScene() {
+fun ShopScene(onNavigate: (String) -> Unit, role: String) {
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var searchResults by remember { mutableStateOf(listOf<String>()) }
 
@@ -46,10 +46,9 @@ fun ShopScene() {
         // Divider
         Divider(
             color = Color(0xFFFFD700), // Dark yellow color
-            thickness = 2.dp,
+            thickness = 4.dp,
             modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .align(Alignment.CenterHorizontally)
+                .fillMaxWidth(0.382f)
                 .padding(vertical = 8.dp)
         )
 
