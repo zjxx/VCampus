@@ -1,9 +1,10 @@
 package view
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +23,9 @@ fun AddStudentStatusSubscene() {
     var major by remember { mutableStateOf("") }
     var academy by remember { mutableStateOf("") }
 
+    var expanded by remember { mutableStateOf(false) }
+    val genderOptions = listOf("男", "女")
+
     Column(modifier = Modifier.padding(start = 16.dp)) {
         pageTitle(heading = "增加学籍信息", caption = "填写学籍信息")
 
@@ -33,16 +37,40 @@ fun AddStudentStatusSubscene() {
                 label = { Text("姓名") },
                 modifier = Modifier.weight(1f).padding(end = 16.dp)
             )
-            OutlinedTextField(
-                value = gender,
-                onValueChange = { gender = it },
-                label = { Text("性别") },
-                modifier = Modifier.weight(1f).padding(end = 16.dp)
-            )
+            Box(modifier = Modifier.weight(1f).padding(end = 16.dp)) {
+                OutlinedTextField(
+                    value = gender,
+                    onValueChange = {},
+                    label = { Text("性别") },
+                    modifier = Modifier.fillMaxWidth(),
+                    readOnly = true,
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = null,
+                            modifier = Modifier.clickable { expanded = true }
+                        )
+                    }
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.align(Alignment.TopStart)
+                ) {
+                    genderOptions.forEach { option ->
+                        DropdownMenuItem(onClick = {
+                            gender = option
+                            expanded = false
+                        }) {
+                            Text(text = option)
+                        }
+                    }
+                }
+            }
             OutlinedTextField(
                 value = race,
                 onValueChange = { race = it },
-                label = { Text("名族") },
+                label = { Text("民族") },
                 modifier = Modifier.weight(1f)
             )
         }
