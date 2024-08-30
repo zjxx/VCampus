@@ -35,7 +35,7 @@ public class StudentInfoController {
         try {
             Student student = gson.fromJson(jsonData, Student.class);
             DataBase db = DataBaseManager.getInstance();
-            db.persist(student);
+
 
             // 同时向 User 库添加一条数据
             User user = new User();
@@ -46,7 +46,7 @@ public class StudentInfoController {
             user.setRole(0);
             user.setBalance(0);
             db.persist(user);
-
+            db.persist(student);
             JsonObject data = new JsonObject();
             data.addProperty("status", "success");
             return gson.toJson(data);
