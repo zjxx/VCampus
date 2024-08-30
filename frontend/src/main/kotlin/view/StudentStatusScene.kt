@@ -45,7 +45,9 @@ fun StudentStatusScene(onNavigate: (String) -> Unit, role: String) {
                 TextButton(onClick = { selectedMenuItem = "删除学籍" }) {
                     Text("删除学籍", color = Color.Black) // 设置字体颜色为黑色
                 }
-                TextButton(onClick = { selectedMenuItem = "修改学籍" }) {
+                TextButton(onClick = { selectedMenuItem = "修改学籍"
+                studentStatusModule.modifyStudentStatus()})
+                {
                     Text("修改学籍", color = Color.Black) // 设置字体颜色为黑色
                 }
                 TextButton(onClick = {
@@ -59,7 +61,7 @@ fun StudentStatusScene(onNavigate: (String) -> Unit, role: String) {
         Box(modifier = Modifier.weight(0.7f).fillMaxHeight().padding(16.dp)) {
             Crossfade(targetState = selectedMenuItem) { menuItem ->
                 when (menuItem) {
-                    "查看学籍" -> ViewStudentStatusSubscene()
+                    "查看个人信息" -> ViewStudentStatusSubscene(studentStatusModule)
                     "增加学籍" -> AddStudentStatusSubscene()
                     "删除学籍" -> DeleteStudentStatusSubscene()
                     "修改学籍" -> ModifyStudentStatusSubscene()
@@ -70,17 +72,9 @@ fun StudentStatusScene(onNavigate: (String) -> Unit, role: String) {
         }
     }
 }
-@Composable
-fun AddStudentStatusSubscene() {
-    Text("增加学籍子场景")
-}
 
 @Composable
 fun DeleteStudentStatusSubscene() {
     Text("删除学籍子场景")
 }
 
-@Composable
-fun ModifyStudentStatusSubscene() {
-    Text("修改学籍子场景")
-}

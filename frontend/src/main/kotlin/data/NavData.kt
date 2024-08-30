@@ -18,7 +18,7 @@ val Navis = arrayListOf(
     NaviItem("学籍", "/student_status", Icons.Default.Person, listOf("student", "affairs_staff")),
     NaviItem("教务", "/teaching_affairs", Icons.Default.DateRange, listOf("student", "teacher")),
     NaviItem("图书馆", "/library", Icons.Default.Book, listOf("library_user", "library_staff")),
-    NaviItem("超市", "/shop", Icons.Default.ShoppingCart, listOf("shop_user", "shop_staff")),
+    NaviItem("商城", "/shop", Icons.Default.ShoppingCart, listOf("shop_user", "shop_staff")),
     NaviItem("财务", "/finance", Icons.Default.Savings, listOf("finance_user", "finance_staff")),
     NaviItem("管理员", "/admin", Icons.Default.ManageAccounts, listOf("admin")),
 )
