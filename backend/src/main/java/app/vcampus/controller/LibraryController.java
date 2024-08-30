@@ -21,8 +21,8 @@ public class LibraryController {
         if (request.getRole().equals("student")){
             DataBase db = DataBaseManager.getInstance();//获取数据库实例
             //模糊搜索所有包含bookName的书籍
-
-            List<Book> books = db.getWhere(Book.class, "BookName", request.getBookName());//查询同名书籍
+            List<Book> books = db.getLike(Book.class, "BookName", request.getBookName());//模糊搜索
+            //List<Book> books = db.getWhere(Book.class, "BookName", request.getBookName());//精确搜索
             //后续可以进行部分匹配的搜索
             if (!books.isEmpty()) {//如果有同名书籍
                 //先加入一个number属性，表示同名书籍的数量

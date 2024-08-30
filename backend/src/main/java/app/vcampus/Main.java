@@ -113,14 +113,14 @@ public class Main {
 //        // 再次测试 getItems 函数
 //        items = storeItemController.getItems();
 //        System.out.println("Items after deletion: " + items);
-
-
+//
+//
 //        LibraryController library = new LibraryController();
 //        //测试searchBookInfo函数
 //        Gson gson = new Gson();
 //
 //        // 准备测试用的BookSearchingRequest对象
-//        BookSearchingRequest request = new BookSearchingRequest("student", "天才在左，疯子在右");
+//        BookSearchingRequest request = new BookSearchingRequest("student", "天才");
 //
 //        // 将BookSearchingRequest对象序列化为JSON字符串
 //        String jsonData = gson.toJson(request);
