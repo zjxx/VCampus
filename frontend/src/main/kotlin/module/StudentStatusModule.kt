@@ -48,7 +48,9 @@ class StudentStatusModule {
             "academy" to academy
         )
         nettyClient.sendRequest(request, "addStudentStatus") { response: String ->
-            println("Add student status response: $response")
+            handleResponse(response)
         }
     }
 }
+
+

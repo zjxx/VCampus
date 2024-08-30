@@ -13,8 +13,10 @@ class LoginModule(
 
     fun onLoginClick(username: String, password: String) {
         val request = mapOf("username" to username, "password" to password)
+        //nettyClient.setRole("student")
         nettyClient.sendRequest(request, "login") { response: String ->
             handleResponse(response)
+
         }
     }
 
