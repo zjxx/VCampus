@@ -100,9 +100,17 @@ public class StudentInfoController {
             JsonObject request = gson.fromJson(jsonData, JsonObject.class);
             String keyword = request.get("keyword").getAsString();
             DataBase db = DataBaseManager.getInstance();
-            List<Student> students = db.getLike(Student.class, "username LIKE", "%" + keyword + "%");
-            JsonArray studentObjects = new JsonArray();
-            for (Student student : students) {
+            List<Student> students = db.getLike(Student.class, "username", keyword);
+            JsonObject response = new JsonObject();
+            if(students.isEmpty()) {
+                response.addProperty("status", "fail");
+                response.addProperty("reason", "未找到相关学生");
+                return gson.toJson(response);
+            }
+            response.addProperty("status", "success");
+            response.addProperty("number", String.valueOf(students.size()));
+            for (int i = 0; i < students.size(); i++) {
+                Student student = students.get(i);
                 JsonObject studentObject = new JsonObject();
                 studentObject.addProperty("studentId", student.getStudentId());
                 studentObject.addProperty("name", student.getUsername());
@@ -111,11 +119,8 @@ public class StudentInfoController {
                 studentObject.addProperty("major", student.getMajor());
                 studentObject.addProperty("academy", student.getAcademy());
                 studentObject.addProperty("nativePlace", student.getNativePlace());
-                studentObjects.add(studentObject);
+                response.addProperty("s"+i,gson.toJson(studentObject));
             }
-            JsonObject response = new JsonObject();
-            response.addProperty("status", "success");
-            response.add("students", studentObjects);
             return gson.toJson(response);
         } catch (Exception e) {
             JsonObject response = new JsonObject();
