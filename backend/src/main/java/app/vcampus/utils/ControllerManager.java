@@ -35,6 +35,7 @@ public class ControllerManager {
         routeMapping.registerRoute("addStudentStatus", studentInfoController::addStudentStatus);//
         routeMapping.registerRoute("lib/fetchImageUrl", this::getImage);//
         routeMapping.registerRoute("deleteStudentStatus", studentInfoController::deleteStudentStatus);//
+        routeMapping.registerRoute("student/search", studentInfoController::searchStudent);//
     }
     public String handleRequest(String jsonData) {
         // 解析 JSON 请求

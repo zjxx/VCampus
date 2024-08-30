@@ -35,8 +35,18 @@ public class StudentInfoController {
     public String addStudentStatus(String jsonData) {
         try {
             Student student = gson.fromJson(jsonData, Student.class);
+            if (student.getStudentId() == null || student.getStudentId().isEmpty() ||
+                    student.getUsername() == null || student.getUsername().isEmpty() ||
+                    student.getRace() == null || student.getRace().isEmpty() ||
+                    student.getMajor() == null || student.getMajor().isEmpty() ||
+                    student.getAcademy() == null || student.getAcademy().isEmpty() ||
+                    student.getNativePlace() == null || student.getNativePlace().isEmpty()) {
+                JsonObject data = new JsonObject();
+                data.addProperty("status", "failed");
+                data.addProperty("reason", "字段不能为空");
+                return gson.toJson(data);
+            }
             DataBase db = DataBaseManager.getInstance();
-
 
             // 同时向 User 库添加一条数据
             User user = new User();
@@ -90,7 +100,7 @@ public class StudentInfoController {
             JsonObject request = gson.fromJson(jsonData, JsonObject.class);
             String keyword = request.get("keyword").getAsString();
             DataBase db = DataBaseManager.getInstance();
-            List<Student> students = db.getWhere(Student.class, "username LIKE", "%" + keyword + "%");
+            List<Student> students = db.getLike(Student.class, "username LIKE", "%" + keyword + "%");
             JsonArray studentObjects = new JsonArray();
             for (Student student : students) {
                 JsonObject studentObject = new JsonObject();
@@ -119,6 +129,18 @@ public class StudentInfoController {
     public String updateStudentStatus(String jsonData) {
         try {
             Student updatedStudent = gson.fromJson(jsonData, Student.class);
+            if (updatedStudent.getStudentId() == null || updatedStudent.getStudentId().isEmpty() ||
+                    updatedStudent.getUsername() == null || updatedStudent.getUsername().isEmpty() ||
+                    updatedStudent.getGender() < 0 || // 检查 gender 是否为无效值
+                    updatedStudent.getRace() == null || updatedStudent.getRace().isEmpty() ||
+                    updatedStudent.getMajor() == null || updatedStudent.getMajor().isEmpty() ||
+                    updatedStudent.getAcademy() == null || updatedStudent.getAcademy().isEmpty() ||
+                    updatedStudent.getNativePlace() == null || updatedStudent.getNativePlace().isEmpty()) {
+                JsonObject response = new JsonObject();
+                response.addProperty("status", "failed");
+                response.addProperty("reason", "字段不能为空");
+                return gson.toJson(response);
+            }
             DataBase db = DataBaseManager.getInstance();
             Student existingStudent = db.getWhere(Student.class, "studentId", updatedStudent.getStudentId()).get(0);
 
