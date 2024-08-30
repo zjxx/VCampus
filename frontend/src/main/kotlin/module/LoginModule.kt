@@ -24,6 +24,7 @@ class LoginModule(
         println("Response message: ${responseJson["message"]}")
         println("Response status: ${responseJson["status"]}")
         if (responseJson["status"] == "success") {
+            nettyClient.setRole(responseJson["role"] as String)
             UserSession.role = responseJson["role"] as String
             UserSession.userId = responseJson["userId"] as String
             onLoginSuccess()
