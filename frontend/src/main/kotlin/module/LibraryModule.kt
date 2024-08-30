@@ -124,16 +124,19 @@ class LibraryModule (
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         if (responseJson["status"] == "success") {
-                val res = responseJson["b0"] as String
-                val bookjson = Gson().fromJson(res, MutableMap::class.java) as MutableMap<String, Any>
-                println("Book name: ${bookjson["bookname"]}")
-                var imageUrl = bookjson["ISBN"] as String
-                //只保留imageUrl的数字部分
-                imageUrl = imageUrl.replace(Regex("[^0-9]"), "")
-                var image = "http://47.99.141.236/img/" + imageUrl +".jpg"
-                onImageFetchSuccess(image)
-
-
+                val num = responseJson["number"] as String
+                if(!num.equals("0")) {
+                    for (i in 0 until num.toInt()) {
+                        val bookindex = responseJson["b" + i.toString()] as String
+                        val bookjson = Gson().fromJson(bookindex, MutableMap::class.java) as MutableMap<String, Any>
+                        println("Book name: ${bookjson["bookname"]}")
+                        var imageUrl = bookjson["ISBN"] as String
+                        //只保留imageUrl的数字部分
+                        imageUrl = imageUrl.replace(Regex("[^0-9]"), "")
+                        var image = "http://47.99.141.236/img/" + imageUrl + ".jpg"
+                        onImageFetchSuccess(image)
+                    }
+                }
         }
     }
 }
