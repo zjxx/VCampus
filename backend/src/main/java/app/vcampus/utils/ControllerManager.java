@@ -4,6 +4,7 @@ import app.vcampus.controller.StoreController;
 import app.vcampus.controller.StoreTransactionController;
 import app.vcampus.controller.StudentInfoController;
 import app.vcampus.controller.UserController;
+import app.vcampus.controller.LibraryController;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
@@ -13,6 +14,7 @@ public class ControllerManager {
     private final StoreController storeController = new StoreController();
     private final RouteMapping routeMapping = new RouteMapping();
     private final StudentInfoController studentInfoController = new StudentInfoController();
+    private final LibraryController libraryController = new LibraryController();
     private final Gson gson = new Gson();
 
     public ControllerManager() {
@@ -23,6 +25,7 @@ public class ControllerManager {
         routeMapping.registerRoute("purchase", storeController::handlePurchase);
         routeMapping.registerRoute("getAllItems", storeController::getAllItems);
         routeMapping.registerRoute("getTransactions", storeController::getAllTransaction);
+        routeMapping.registerRoute("lib/search", libraryController::searchBookInfo);
     }
     public String handleRequest(String jsonData) {
         // 解析 JSON 请求

@@ -20,21 +20,32 @@ public class LibraryController {
         //判断用户身份,如果是学生，则返回所有同名书籍信息
         if (request.getRole().equals("student")){
             DataBase db = DataBaseManager.getInstance();//获取数据库实例
+            //模糊搜索所有包含bookName的书籍
+
             List<Book> books = db.getWhere(Book.class, "BookName", request.getBookName());//查询同名书籍
+            //后续可以进行部分匹配的搜索
             if (!books.isEmpty()) {//如果有同名书籍
+                //先加入一个number属性，表示同名书籍的数量
+                data.addProperty("number", books.size());
                 //返回所有同名书籍信息,遍历list里面的每一个book，添加到json对象里,json对象返回一个数组，里面是每一本book的所有信息
-//                for (Book book : books) {
-//                    data.addProperty("bookName", book.getBookName());
-//                    data.addProperty("author", book.getAuthor());
-//                    data.addProperty("publisher", book.getPublisher());
-//                    data.addProperty("publishedYear", book.getPublishedYear());
-//                    data.addProperty("ISBN", book.getISBN());
-//                    data.addProperty("cover", book.getCover());
-//                    data.addProperty("kind", book.getKind());
-//                    data.addProperty("language", book.getLanguage());
-//                }
-//                return gson.toJson(data);
-                return gson.toJson(books);
+                for (int i = 0; i < books.size(); i++) {
+                    Book book = books.get(i);
+                    JsonObject bookData = new JsonObject();
+                    bookData.addProperty("bookName",book.getBookName());
+                    bookData.addProperty("author", book.getAuthor());
+                    bookData.addProperty("publisher", book.getPublisher());
+                    bookData.addProperty("publishDate", book.getLanguage());
+                    bookData.addProperty("author", book.getAuthor());
+                    bookData.addProperty("ISBN", book.getISBN());
+                    bookData.addProperty("description", book.getDescription());
+//                  bookData.addProperty("Cover",book.getCover());
+                    bookData.addProperty("Kind",book.getKind());
+                    bookData.addProperty("quantity", book.getQuantity());
+                    bookData.addProperty("Valid_Quantity", book.getValid_Quantity());
+                    data.add("book No."+i, bookData);
+                }
+                return gson.toJson(data);
+
             }
             else {
                 data.addProperty("error", "No book found.");
@@ -47,4 +58,12 @@ public class LibraryController {
         }
         return gson.toJson(data);
     }
+
+//    public String borrowBook(String jsonData) {};
+//
+//    public String returnBook(String jsonData) {};
+//
+//    public String addBook(String jsonData) {};
+//
+//    public String deleteBook(String jsonData) {};
 }
