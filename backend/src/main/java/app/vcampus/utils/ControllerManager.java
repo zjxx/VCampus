@@ -18,6 +18,7 @@ public class ControllerManager {
 
         routeMapping.registerRoute("searchStudentStatus", studentInfoController::getStudentInfo);
         routeMapping.registerRoute("purchase", storeTransactionController::handlePurchase);
+        routeMapping.registerRoute("lib/fetchImageUrl", this::getImage);
     }
 
     public String handleRequest(String jsonData) {
@@ -26,5 +27,9 @@ public class ControllerManager {
 
         // 根据请求类型调用相应的控制器方法
         return routeMapping.handleRequest(request.getType(), jsonData);
+    }
+
+    private  String getImage(String jsonData){
+        return "https://th.bing.com/th/id/R.061dc0f43851e2ef1f114ee33eabf427?rik=H7HNnwjTHfgibg&pid=ImgRaw&r=0";
     }
 }
