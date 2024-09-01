@@ -111,7 +111,7 @@ public class StoreController {
 
         // 查找匹配的商品
         DataBase db = DataBaseManager.getInstance();
-        List<StoreItem> items = db.getLike(StoreItem.class, "name LIKE", "%" + keyword + "%");
+        List<StoreItem> items = db.getLike(StoreItem.class, "name",  keyword);
         if(items.isEmpty())
         {
             JsonObject response = new JsonObject();
@@ -121,14 +121,14 @@ public class StoreController {
         }
 
         // 构建 JSON 响应
-        JsonArray jsonArray = new JsonArray();
-        for (StoreItem item : items) {
-            jsonArray.add(createItemJsonObject(item));
+        JsonObject itemsObject = new JsonObject();
+        for (int i = 0; i < items.size(); i++) {
+            itemsObject.add("item" + i, createItemJsonObject(items.get(i)));
         }
 
         JsonObject response = new JsonObject();
         response.addProperty("status", "success");
-        response.add("items", jsonArray);
+        response.add("items", itemsObject);
         return gson.toJson(response);
     }
 
@@ -146,14 +146,14 @@ public class StoreController {
             return gson.toJson(response);
         }
         // 构建 JSON 响应
-        JsonArray jsonArray = new JsonArray();
-        for (StoreItem item : items) {
-            jsonArray.add(createItemJsonObject(item));
+        JsonObject itemsObject = new JsonObject();
+        for (int i = 0; i < items.size(); i++) {
+            itemsObject.add("item" + i, createItemJsonObject(items.get(i)));
         }
 
         JsonObject response = new JsonObject();
         response.addProperty("status", "success");
-        response.add("items", jsonArray);
+        response.add("items", itemsObject);
         return gson.toJson(response);
     }
 
@@ -171,14 +171,14 @@ public class StoreController {
         }
 
         // 构建 JSON 响应
-        JsonArray jsonArray = new JsonArray();
-        for (StoreTransaction transaction : transactions) {
-            jsonArray.add(createTransactionJsonObject(transaction));
+        JsonObject transactionsObject = new JsonObject();
+        for (int i = 0; i < transactions.size(); i++) {
+            transactionsObject.add("transaction" + i, createTransactionJsonObject(transactions.get(i)));
         }
 
         JsonObject response = new JsonObject();
         response.addProperty("status", "success");
-        response.add("transactions", jsonArray);
+        response.add("transactions", transactionsObject);
         return gson.toJson(response);
     }
 
@@ -192,14 +192,14 @@ public class StoreController {
         List<StoreItem> randomItems = items.subList(0, Math.min(10, items.size()));
 
         // 构建 JSON 响应
-        JsonArray jsonArray = new JsonArray();
-        for (StoreItem item : randomItems) {
-            jsonArray.add(createItemJsonObject(item));
+        JsonObject itemsObject = new JsonObject();
+        for (int i = 0; i < randomItems.size(); i++) {
+            itemsObject.add("item" + i, createItemJsonObject(randomItems.get(i)));
         }
 
         JsonObject response = new JsonObject();
         response.addProperty("status", "success");
-        response.add("items", jsonArray);
+        response.add("items", itemsObject);
         return gson.toJson(response);
     }
 
@@ -221,14 +221,14 @@ public class StoreController {
         }
 
         // 构建 JSON 响应
-        JsonArray jsonArray = new JsonArray();
-        for (StoreTransaction transaction : transactions) {
-            jsonArray.add(createTransactionJsonObject(transaction));
+        JsonObject transactionsObject = new JsonObject();
+        for (int i = 0; i < transactions.size(); i++) {
+            transactionsObject.add("transaction" + i, createTransactionJsonObject(transactions.get(i)));
         }
 
         JsonObject response = new JsonObject();
         response.addProperty("status", "success");
-        response.add("transactions", jsonArray);
+        response.add("transactions", transactionsObject);
         return gson.toJson(response);
     }
 
