@@ -274,6 +274,7 @@ public class LibraryController {
                     if (borrowedBook.isBook_State()) {
                         JsonObject bookData = new JsonObject();
                         bookData.addProperty("bookName", bookName);
+                        bookData.addProperty("ISBN",borrowedBook.getBook_ISBN());
                         bookData.addProperty("borrow_date", borrowedBook.getBorrow_Date().toString());
                         //应还日期
                         bookData.addProperty("return_date", borrowedBook.getReturn_Date().toString());
@@ -284,6 +285,7 @@ public class LibraryController {
                     else {
                         JsonObject bookData = new JsonObject();
                         bookData.addProperty("bookName", bookName);
+                        bookData.addProperty("ISBN",borrowedBook.getBook_ISBN());
                         bookData.addProperty("borrow_date", borrowedBook.getBorrow_Date().toString());
                         bookData.addProperty("return_date", borrowedBook.getReturn_Date().toString());
                         data.addProperty("haveBorrowed" + haveBorrowedi, gson.toJson(bookData));
@@ -352,6 +354,7 @@ public class LibraryController {
                     if (borrowedBook.isBook_State()) {
                         JsonObject bookData = new JsonObject();
                         bookData.addProperty("bookName", bookName);
+                        bookData.addProperty("ISBN",borrowedBook.getBook_ISBN());
                         bookData.addProperty("borrow_date", borrowedBook.getBorrow_Date().toString());
                         //应还日期
                         bookData.addProperty("return_date", borrowedBook.getReturn_Date().toString());
@@ -361,6 +364,7 @@ public class LibraryController {
                     else {
                         JsonObject bookData = new JsonObject();
                         bookData.addProperty("bookName", bookName);
+                        bookData.addProperty("ISBN",borrowedBook.getBook_ISBN());
                         bookData.addProperty("borrow_date", borrowedBook.getBorrow_Date().toString());
                         bookData.addProperty("return_date", borrowedBook.getReturn_Date().toString());
                         data.addProperty("haveBorrowed" + i, gson.toJson(bookData));
