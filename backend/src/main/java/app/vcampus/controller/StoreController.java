@@ -107,11 +107,11 @@ public class StoreController {
     public String searchItems(String jsonData) {
         // 从 JSON 请求中提取关键词
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
-        String keyword = request.get("keyword").getAsString();
+        String keyword = request.get("merchandisename").getAsString();
 
         // 查找匹配的商品
         DataBase db = DataBaseManager.getInstance();
-        List<StoreItem> items = db.getLike(StoreItem.class, "name",  keyword);
+        List<StoreItem> items = db.getLike(StoreItem.class, "itemName",  keyword);
         if(items.isEmpty())
         {
             JsonObject response = new JsonObject();
