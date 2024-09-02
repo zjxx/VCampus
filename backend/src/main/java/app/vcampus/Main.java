@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import app.vcampus.interfaces.BookSearchingRequest;
 import app.vcampus.interfaces.BookBorrowRequest;
 import app.vcampus.interfaces.BookReturnRequest;
+import app.vcampus.interfaces.BookListRequest;
 import app.vcampus.controller.LibraryController;
 import com.google.gson.Gson;
 
@@ -118,8 +119,8 @@ public class Main {
 //        System.out.println("Items after deletion: " + items);
 //
 //
-//        LibraryController library = new LibraryController();
-//        Gson gson = new Gson();
+        LibraryController library = new LibraryController();
+        Gson gson = new Gson();
 //        BookSearchingRequest request0 = new BookSearchingRequest("student", "天才");
 //        String jsonData0 = gson.toJson(request0);
 //        String result0 = library.searchBookInfo(jsonData0);
@@ -142,6 +143,12 @@ public class Main {
 //        String jsonData3 = gson.toJson(request3);
 //        String result3 = library.delayReturnBook(jsonData3);
 //        System.out.println(result3);
+
+//        //测试viewBorrowRecord函数
+//        BookListRequest request4 = new BookListRequest("student","112112123");
+//        String jsonData4 = gson.toJson(request4);
+//        String result4 = library.viewBorrowRecord(jsonData4);
+//        System.out.println(result4);
 
 
         NettyServer nettyServer = new NettyServer(8066);

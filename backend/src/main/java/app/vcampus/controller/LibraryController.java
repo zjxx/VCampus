@@ -6,6 +6,7 @@ import app.vcampus.interfaces.BookSearchingRequest;
 import app.vcampus.interfaces.BookBorrowRequest;
 import app.vcampus.interfaces.BookReturnRequest;
 import app.vcampus.interfaces.BookDelayReturnRequest;
+import app.vcampus.interfaces.BookListRequest;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
 import com.google.gson.Gson;
@@ -24,7 +25,7 @@ public class LibraryController {
         BookSearchingRequest request = gson.fromJson(jsonData, BookSearchingRequest.class);
         JsonObject data = new JsonObject();
         //判断用户身份,如果是学生，则返回所有同名书籍信息
-        if (request.getRole().equals("student")||request.getRole().equals("teacher")) {
+        if (request.getRole().equals("student") || request.getRole().equals("teacher")) {
             DataBase db = DataBaseManager.getInstance();//获取数据库实例
             //模糊搜索所有包含bookName的书籍
             List<Book> books = db.getLike(Book.class, "BookName", request.getBookName());//模糊搜索
@@ -32,7 +33,7 @@ public class LibraryController {
             //后续可以进行部分匹配的搜索
             if (!books.isEmpty()) {//如果有同名书籍
                 //先加入一个number属性，表示同名书籍的数量
-                data.addProperty("number", String.valueOf(books.size()) );
+                data.addProperty("number", String.valueOf(books.size()));
                 //返回所有同名书籍信息,遍历list里面的每一个book，添加到json对象里,json对象返回一个数组，里面是每一本book的所有信息
                 for (int i = 0; i < books.size(); i++) {
                     Book book = books.get(i);
@@ -71,7 +72,7 @@ public class LibraryController {
         BookBorrowRequest request = gson.fromJson(jsonData, BookBorrowRequest.class);
         JsonObject data = new JsonObject();
         //判断用户身份,如果是学生，则借阅书籍
-        if (request.getRole().equals("student")||request.getRole().equals("teacher")) {
+        if (request.getRole().equals("student") || request.getRole().equals("teacher")) {
             DataBase db = DataBaseManager.getInstance();
             //先判断书籍是否存在
             List<Book> books = db.getWhere(Book.class, "ISBN", request.getISBN());
@@ -113,22 +114,19 @@ public class LibraryController {
                         db.update(book);
                         data.addProperty("success", "You have borrowed the book successfully.");
                     }
-                }
-                else {
+                } else {
                     data.addProperty("error", "The book is not available.");
                 }
-            }
-            else{
+            } else {
                 data.addProperty("error", "No book found.");
             }
-        }
-        else {
+        } else {
             data.addProperty("error", "You don't have permission to borrow book.");
         }
         return gson.toJson(data);
     }
 
-  //还书功能
+    //还书功能
     public String returnBook(String jsonData) {
         //解析JSON数据
         BookReturnRequest request = gson.fromJson(jsonData, BookReturnRequest.class);
@@ -156,8 +154,7 @@ public class LibraryController {
                                 int fine = (int) ((currentDate.getTime() - borrowedBook.getReturn_Date().getTime()) / (1000 * 60 * 60 * 24)) * 18;   //每天1.8元的罚款
                                 //返回罚款金额
                                 data.addProperty("fine", fine);
-                            }
-                            else {
+                            } else {
                                 data.addProperty("fine", 0);
                             }
                             //更新借阅记录
@@ -168,25 +165,22 @@ public class LibraryController {
                             //更新数据库
                             db.update(borrowedBook);
                             db.update(book);
-                            data.addProperty("success", "You have returned the book successfully.");
+                            data.addProperty("status", "success");
                         }
                     }
-                }
-                else {
+                } else {
                     data.addProperty("error", "You haven't borrowed the book before.");
                 }
-            }
-            else{
+            } else {
                 data.addProperty("error", "No book found.");
             }
-        }
-        else {
+        } else {
             data.addProperty("error", "You don't have permission to return book.");
         }
         return gson.toJson(data);
     }
 
-  //延期还书功能
+    //延期还书功能
     public String delayReturnBook(String jsonData) {
         //解析JSON数据
         BookDelayReturnRequest request = gson.fromJson(jsonData, BookDelayReturnRequest.class);
@@ -228,10 +222,10 @@ public class LibraryController {
                                     data.addProperty("return_date", borrowedBook.getReturn_Date().toString());
                                     borrowedBook.setDelay_Times(borrowedBook.getDelay_Times() + 1);   //更新延期次数
                                     //返回json数据，提示还可以延期的次数
-                                    data.addProperty("delay_times", 3-borrowedBook.getDelay_Times());
+                                    data.addProperty("delay_times", 3 - borrowedBook.getDelay_Times());
                                     //更新数据库
                                     db.update(borrowedBook);
-                                    data.addProperty("success", "You have delay returned the book successfully.");
+                                    data.addProperty("status", "success");
                                 } else {
                                     data.addProperty("error", "You cannot delay return the book more than 3 times.");
                                 }
@@ -240,17 +234,66 @@ public class LibraryController {
                             data.addProperty("error", "You haven't borrowed the book before.");
                         }
                     }
-                }else{
-                        data.addProperty("error", "No book found.");
-                    }
-            }
-            else{
+                } else {
+                    data.addProperty("error", "No book found.");
+                }
+            } else {
                 data.addProperty("error", "You don't have permission to delay return book.");
             }
         }
         return gson.toJson(data);
     }
+
+    //查看借书记录功能（当前借阅和历史借阅）
+    public String viewBorrowRecord(String jsonData) {
+        //解析JSON数据
+        BookListRequest request = gson.fromJson(jsonData, BookListRequest.class);
+        JsonObject data = new JsonObject();
+        //判断用户身份,如果是学生or教师，则查看借阅记录
+        if (request.getRole().equals("student") || request.getRole().equals("teacher")) {
+            //在借阅记录中查找该用户的所有借阅记录
+            DataBase db = DataBaseManager.getInstance();
+            List<Reader2Book> borrowedBooks = db.getWhere(Reader2Book.class, "Reader_ID", request.getReader_id());
+            if (!borrowedBooks.isEmpty()) {
+                //遍历借阅记录，将借阅信息添加到json对象中,分为两种，正在借阅（未还）和历史借阅（已还）
+                for (int i = 0; i < borrowedBooks.size(); i++) {
+                    Reader2Book borrowedBook = borrowedBooks.get(i);
+                    //在book表中查找书籍信息
+                    List<Book> books = db.getWhere(Book.class, "ISBN", borrowedBook.getBook_ISBN());
+                    String bookName = " ";
+                    if (!books.isEmpty()) {
+                        Book book = books.get(0);
+                        bookName = book.getBookName();
+                    }
+                    //如果书籍状态为true，表示书籍未归还，则为正在借阅
+                    if (borrowedBook.isBook_State()) {
+                        JsonObject bookData = new JsonObject();
+                        bookData.addProperty("bookName", bookName);
+                        bookData.addProperty("borrow_date", borrowedBook.getBorrow_Date().toString());
+                        //应还日期
+                        bookData.addProperty("return_date", borrowedBook.getReturn_Date().toString());
+                        data.addProperty("borrowing" + i, gson.toJson(bookData));
+                    }
+                    //如果书籍状态为false，表示书籍已归还，则为历史借阅
+                    else {
+                        JsonObject bookData = new JsonObject();
+                        bookData.addProperty("bookName", bookName);
+                        bookData.addProperty("borrow_date", borrowedBook.getBorrow_Date().toString());
+                        bookData.addProperty("return_date", borrowedBook.getReturn_Date().toString());
+                        data.addProperty("haveBorrowed" + i, gson.toJson(bookData));
+                    }
+                }
+                data.addProperty("status", "success");
+            } else {
+                data.addProperty("error", "You haven't borrowed any book.");
+            }
+        } else {
+            data.addProperty("error", "You don't have permission to view the borrow record.");
+        }
+        return gson.toJson(data);
+    }
 }
+
 
 
 //    //管理员增加藏书功能
