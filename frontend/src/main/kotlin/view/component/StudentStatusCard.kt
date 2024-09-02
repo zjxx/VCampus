@@ -131,6 +131,7 @@ fun CombinedStudentStatusCard(studentStatusModule: StudentStatusModule, onDelete
                             value = studentStatusModule.studentId,
                             onValueChange = { studentStatusModule.studentId = it },
                             label = { Text("一卡通") },
+                            readOnly = true,
                             modifier = Modifier.weight(1f)
                         )
                     }
