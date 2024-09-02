@@ -25,7 +25,10 @@ public class ControllerManager {
         routeMapping.registerRoute("purchase", storeController::handlePurchase);
         routeMapping.registerRoute("getAllItems", storeController::getAllItems);
         routeMapping.registerRoute("getTransactions", storeController::getAllTransaction);
-        routeMapping.registerRoute("lib/search", libraryController::searchBookInfo);
+        routeMapping.registerRoute("lib/search", libraryController::searchBookInfo);//搜索图书
+        routeMapping.registerRoute("lib/addtolist", libraryController::borrowBook);//借书
+        routeMapping.registerRoute("lib/returnbook", libraryController::returnBook);//还书
+        routeMapping.registerRoute("lib/renewbook", libraryController::delayReturnBook);//续借
         routeMapping.registerRoute("searchItems", storeController::searchItems);//搜索商品
         routeMapping.registerRoute("purchase", storeController::handlePurchase);//购买商品
         routeMapping.registerRoute("getAllItems", storeController::getAllItems);//获取所有商品
