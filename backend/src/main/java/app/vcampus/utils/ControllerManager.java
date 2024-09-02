@@ -39,6 +39,7 @@ public class ControllerManager {
         routeMapping.registerRoute("lib/fetchImageUrl", libraryController::searchBookInfo);//
         routeMapping.registerRoute("arc/delete", studentInfoController::deleteStudentStatus);//
         routeMapping.registerRoute("arc/search", studentInfoController::searchStudent);//
+        routeMapping.registerRoute("arc/modify", studentInfoController::updateStudentStatus);//
     }
     public String handleRequest(String jsonData) {
         // 解析 JSON 请求
