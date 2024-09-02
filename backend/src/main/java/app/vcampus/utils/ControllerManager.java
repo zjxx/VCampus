@@ -31,6 +31,9 @@ public class ControllerManager {
         routeMapping.registerRoute("lib/renewbook", libraryController::delayReturnBook);//续借
         routeMapping.registerRoute("searchItems", storeController::searchItems);//搜索商品
         routeMapping.registerRoute("purchase", storeController::handlePurchase);//购买商品
+        routeMapping.registerRoute("lib/search", libraryController::searchBookInfo);
+        routeMapping.registerRoute("shop/search", storeController::searchItems);//搜索商品
+        routeMapping.registerRoute("shop/buy", storeController::handlePurchase);//购买商品
         routeMapping.registerRoute("getAllItems", storeController::getAllItems);//获取所有商品
         routeMapping.registerRoute("getTransactions", storeController::getAllTransaction);//获取所有交易
         routeMapping.registerRoute("enterStore",storeController::enterStore);//进入商店展示商品,返回随机商品列表
@@ -40,6 +43,8 @@ public class ControllerManager {
         routeMapping.registerRoute("arc/delete", studentInfoController::deleteStudentStatus);//
         routeMapping.registerRoute("arc/search", studentInfoController::searchStudent);//
         routeMapping.registerRoute("arc/modify", studentInfoController::updateStudentStatus);//
+        routeMapping.registerRoute(("shop/addtolist"), storeController::addItem);//添加商品
+        routeMapping.registerRoute(("arc/modifyPassword"), userController::modifyPassword);//修改密码);
     }
     public String handleRequest(String jsonData) {
         // 解析 JSON 请求
