@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import module.StudentStatusModule
 import view.component.CombinedStudentStatusCard
 
-
 @Composable
 fun ModifyStudentStatusSubscene() {
     val studentStatusModule = remember { StudentStatusModule() }
@@ -39,7 +38,9 @@ fun ModifyStudentStatusSubscene() {
             }
             Spacer(modifier = Modifier.height(16.dp))
             searchResults.forEach { student ->
-                CombinedStudentStatusCard(student)
+                CombinedStudentStatusCard(student) {
+                    searchResults = searchResults.filter { it.studentId != student.studentId }
+                }
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }

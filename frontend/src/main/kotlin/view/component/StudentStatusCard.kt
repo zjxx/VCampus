@@ -13,11 +13,14 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ArrowDropDown
 
 @Composable
-fun CombinedStudentStatusCard(studentStatusModule: StudentStatusModule) {
+fun CombinedStudentStatusCard(studentStatusModule: StudentStatusModule, onDeleteSuccess: () -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
+    var genderExpanded by remember { mutableStateOf(false) }
+    val genderOptions = listOf("男", "女")
 
     if (showDialog) {
         AlertDialog(
@@ -26,8 +29,10 @@ fun CombinedStudentStatusCard(studentStatusModule: StudentStatusModule) {
             text = { Text("你确定要删除这个学生信息吗？") },
             confirmButton = {
                 Button(onClick = {
-                    studentStatusModule.deleteStudentStatus()
-                    showDialog = false
+                    studentStatusModule.deleteStudentStatus {
+                        onDeleteSuccess()
+                        showDialog = false
+                    }
                 }) {
                     Text("确认")
                 }
@@ -74,21 +79,42 @@ fun CombinedStudentStatusCard(studentStatusModule: StudentStatusModule) {
                             value = studentStatusModule.name,
                             onValueChange = { studentStatusModule.name = it },
                             label = { Text("姓名") },
-                            readOnly = true,
                             modifier = Modifier.weight(1f).padding(end = 16.dp)
                         )
-                        OutlinedTextField(
-                            value = studentStatusModule.gender,
-                            onValueChange = { studentStatusModule.gender = it },
-                            label = { Text("性别") },
-                            readOnly = true,
-                            modifier = Modifier.weight(1f).padding(end = 16.dp)
-                        )
+                        Box(modifier = Modifier.weight(1f).padding(end = 16.dp)) {
+                            OutlinedTextField(
+                                value = studentStatusModule.gender,
+                                onValueChange = {},
+                                label = { Text("性别") },
+                                modifier = Modifier.fillMaxWidth(),
+                                readOnly = true,
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.ArrowDropDown,
+                                        contentDescription = null,
+                                        modifier = Modifier.clickable { genderExpanded = true }
+                                    )
+                                }
+                            )
+                            DropdownMenu(
+                                expanded = genderExpanded,
+                                onDismissRequest = { genderExpanded = false },
+                                modifier = Modifier.align(Alignment.TopStart)
+                            ) {
+                                genderOptions.forEach { option ->
+                                    DropdownMenuItem(onClick = {
+                                        studentStatusModule.gender = option
+                                        genderExpanded = false
+                                    }) {
+                                        Text(text = option)
+                                    }
+                                }
+                            }
+                        }
                         OutlinedTextField(
                             value = studentStatusModule.race,
                             onValueChange = { studentStatusModule.race = it },
-                            label = { Text("名族") },
-                            readOnly = true,
+                            label = { Text("民族") },
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -99,7 +125,6 @@ fun CombinedStudentStatusCard(studentStatusModule: StudentStatusModule) {
                             value = studentStatusModule.nativePlace,
                             onValueChange = { studentStatusModule.nativePlace = it },
                             label = { Text("籍贯") },
-                            readOnly = true,
                             modifier = Modifier.weight(1f).padding(end = 16.dp)
                         )
                         OutlinedTextField(
@@ -116,14 +141,12 @@ fun CombinedStudentStatusCard(studentStatusModule: StudentStatusModule) {
                             value = studentStatusModule.major,
                             onValueChange = { studentStatusModule.major = it },
                             label = { Text("专业") },
-                            readOnly = true,
                             modifier = Modifier.weight(1f).padding(end = 16.dp)
                         )
                         OutlinedTextField(
                             value = studentStatusModule.academy,
                             onValueChange = { studentStatusModule.academy = it },
                             label = { Text("学院") },
-                            readOnly = true,
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -132,7 +155,10 @@ fun CombinedStudentStatusCard(studentStatusModule: StudentStatusModule) {
                         modifier = Modifier.fillMaxWidth(),
                         contentAlignment = Alignment.BottomEnd
                     ) {
-                        Button(onClick = { studentStatusModule.modifyStudentStatus() }) {
+                        Button(onClick = {
+                            studentStatusModule.modifyStudentStatus{
+                            expanded = false} // 确认修改后收起卡片
+                        }) {
                             Text("确认修改")
                         }
                     }

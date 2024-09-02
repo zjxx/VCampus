@@ -23,7 +23,7 @@ class StudentStatusModule {
 
     fun searchStudentStatus() {
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId)
-        nettyClient.sendRequest(request, "searchStudentStatus") { response: String ->
+        nettyClient.sendRequest(request, "arc/view") { response: String ->
             handleResponseView(response)
         }
     }
@@ -56,7 +56,7 @@ class StudentStatusModule {
             "major" to major,
             "academy" to academy
         )
-        nettyClient.sendRequest(request, "addStudentStatus") { response: String ->
+        nettyClient.sendRequest(request, "arc/add") { response: String ->
             handleResponseAdd(response)
         }
     }
@@ -69,27 +69,98 @@ private fun handleResponseAdd(response: String) {
             DialogManager.showDialog(responseJson["reason"] as String)
         }
     }
-    fun modifyStudentStatus() {
-        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId)
-        nettyClient.sendRequest(request, "modifyStudentStatus") { response: String ->
-            handleResponseView(response)
+    fun modifyStudentStatus(onModifySuccess: () -> Unit) {
+        var gender_int ="0"
+        if(gender=="女"){
+            gender_int="1"
+        }
+        val request = mapOf(
+            "role" to UserSession.role,
+            "userId" to UserSession.userId,
+            "username" to name,
+            "gender" to gender_int,
+            "race" to race,
+            "nativePlace" to nativePlace,
+            "studentId" to studentId,
+            "major" to major,
+            "academy" to academy
+        )
+        nettyClient.sendRequest(request, "arc/modify") { response: String ->
+            handleResponseModify(response, onModifySuccess)
         }
     }
+    private fun handleResponseModify(response: String, onModifySuccess: () -> Unit) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        if (responseJson["status"] == "success") {
+            onModifySuccess()
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
+        }
+    }
+
     fun searchAdmin(keyword: String, updateSearchResults: (List<StudentStatusModule>) -> Unit) {
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "keyword" to keyword)
-        nettyClient.sendRequest(request, "student/search") { response: String ->
+        nettyClient.sendRequest(request, "arc/search") { response: String ->
             handleResponseSearch(response, updateSearchResults)
         }
     }
     private fun handleResponseSearch(response: String, updateSearchResults: (List<StudentStatusModule>) -> Unit) {
+    println("Received response: $response")
+    val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+    if (responseJson["status"] == "success") {
+        val num = responseJson["number"] as String
+        if (num != "0") {
+            val students = mutableListOf<StudentStatusModule>()
+            for (i in 0 until num.toInt()) {
+                val studentIndex = responseJson["s$i"] as String
+                val studentJson = Gson().fromJson(studentIndex, MutableMap::class.java) as MutableMap<String, Any>
+                println("studentId: ${studentJson["name"]}")
+                val student = StudentStatusModule().apply {
+                    name = studentJson["name"] as String
+                    gender = studentJson["gender"] as String
+                    race = studentJson["race"] as String
+                    nativePlace = studentJson["nativePlace"] as String
+                    studentId = studentJson["studentId"] as String
+                    major = studentJson["major"] as String
+                    academy = studentJson["academy"] as String
+                }
+                students.add(student)
+            }
+            updateSearchResults(students)
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
+        }
+    } else if (responseJson["status"] == "fail") {
+        DialogManager.showDialog(responseJson["reason"] as String)
+    }
+}
+    fun deleteStudentStatus(onDeleteSuccess: () -> Unit) {
+        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "studentId" to studentId)
+        nettyClient.sendRequest(request, "arc/delete") { response: String ->
+            val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+            if (responseJson["status"] == "success") {
+                onDeleteSuccess()
+            } else {
+                DialogManager.showDialog(responseJson["reason"] as String)
+            }
+        }
+    }
+    fun onclickModifyStudentStatus(updateSearchResults: (List<StudentStatusModule>) -> Unit) {
+        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId)
+        nettyClient.sendRequest(request, "arc/clickmodify") { response: String ->
+            handleResponseModify(response, updateSearchResults)
+        }
+    }
+    private fun handleResponseModify(response: String, updateSearchResults: (List<StudentStatusModule>) -> Unit) {
         println("Received response: $response")
-        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, String>
         if (responseJson["status"] == "success") {
             val num = responseJson["number"] as String
-            if (!num.equals("0")) {
+            if (num != "0") {
                 val students = mutableListOf<StudentStatusModule>()
                 for (i in 0 until num.toInt()) {
-                    val studentIndex = responseJson["s" + i.toString()] as String
+                    val studentIndex = responseJson["s$i"] as String
                     val studentJson = Gson().fromJson(studentIndex, MutableMap::class.java) as MutableMap<String, Any>
                     println("studentId: ${studentJson["name"]}")
                     val student = StudentStatusModule().apply {
@@ -104,15 +175,29 @@ private fun handleResponseAdd(response: String) {
                     students.add(student)
                 }
                 updateSearchResults(students)
-            } else {
-                DialogManager.showDialog("无相关学生")
             }
         }
     }
-    fun deleteStudentStatus() {
-        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "studentId" to studentId)
-        nettyClient.sendRequest(request, "deleteStudentStatus") { response: String ->
-            handleResponseView(response)
+    fun modifyPassword(oldPassword: String, newPassword: String) {
+        val request = mapOf(
+            "role" to UserSession.role,
+            "userId" to UserSession.userId,
+            "oldPassword" to oldPassword,
+            "newPassword" to newPassword
+        )
+        nettyClient.sendRequest(request, "arc/modifyPassword") { response: String ->
+            handleResponseModifyPassword(response)
+        }
+    }
+
+    private fun handleResponseModifyPassword(response: String) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        if (responseJson["status"] == "success") {
+            DialogManager.showDialog("密码修改成功")
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
         }
     }
 }
+
