@@ -108,4 +108,18 @@ public class DataBase {
         session.close();
         sessionFactory.close();
     }
+
+    public void disableForeignKeyChecks() {
+        session.beginTransaction();
+        session.createNativeQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
+        session.getTransaction().commit();
+    }
+
+    public void enableForeignKeyChecks() {
+        session.beginTransaction();
+        session.createNativeQuery("SET FOREIGN_KEY_CHECKS = 1").executeUpdate();
+        session.getTransaction().commit();
+    }
+
+
 }
