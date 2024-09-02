@@ -7,6 +7,8 @@ import app.vcampus.interfaces.BookBorrowRequest;
 import app.vcampus.interfaces.BookReturnRequest;
 import app.vcampus.interfaces.BookDelayReturnRequest;
 import app.vcampus.interfaces.BookListRequest;
+import app.vcampus.interfaces.BookDeleteRequest;
+import app.vcampus.interfaces.BookListAllRequest;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
 import com.google.gson.Gson;
@@ -244,7 +246,7 @@ public class LibraryController {
         return gson.toJson(data);
     }
 
-    //查看借书记录功能（当前借阅和历史借阅）
+    //普通用户查看借书记录功能（当前借阅和历史借阅）
     public String viewBorrowRecord(String jsonData) {
         //解析JSON数据
         BookListRequest request = gson.fromJson(jsonData, BookListRequest.class);
@@ -292,14 +294,84 @@ public class LibraryController {
         }
         return gson.toJson(data);
     }
+
+    //管理员删除藏书
+    public String deleteBook(String jsonData) {
+        //解析JSON数据
+        BookDeleteRequest request = gson.fromJson(jsonData, BookDeleteRequest.class);
+        JsonObject data = new JsonObject();
+        //判断用户身份,如果是管理员，则删除藏书
+        if (request.getRole().equals("admin")) {
+            DataBase db = DataBaseManager.getInstance();
+            //先判断书籍是否存在
+            List<Book> books = db.getWhere(Book.class, "ISBN", request.getISBN());
+            if (!books.isEmpty()) {
+                Book book = books.get(0);
+                //删除书籍
+                db.delete(book);
+                data.addProperty("status", "success");
+            } else {
+                data.addProperty("error", "No book found.");
+            }
+        } else {
+            data.addProperty("error", "You don't have permission to delete book.");
+        }
+        return gson.toJson(data);
+    }
+
+
+    //管理员查看借阅记录功能（所有借阅记录）
+    public String viewAllBorrowRecord(String jsonData) {
+        //解析JSON数据
+        BookListAllRequest request = gson.fromJson(jsonData, BookListAllRequest.class);
+        JsonObject data = new JsonObject();
+        //判断用户身份,如果是管理员，则显示所有借阅记录
+
+        if (request.getRole().equals("admin")) {
+            DataBase db = DataBaseManager.getInstance();
+            List<Reader2Book> borrowedBooks = db.getAll(Reader2Book.class);
+            if (!borrowedBooks.isEmpty()) {
+                //遍历借阅记录，将借阅信息添加到json对象中
+                for (int i = 0; i < borrowedBooks.size(); i++) {
+                    Reader2Book borrowedBook = borrowedBooks.get(i);
+                    //在book表中查找书籍信息
+                    List<Book> books = db.getWhere(Book.class, "ISBN", borrowedBook.getBook_ISBN());
+                    String bookName = " ";
+                    if (!books.isEmpty()) {
+                        Book book = books.get(0);
+                        bookName = book.getBookName();
+                    }
+                    //如果书籍状态为true，表示书籍未归还，则为正在借阅
+                    if (borrowedBook.isBook_State()) {
+                        JsonObject bookData = new JsonObject();
+                        bookData.addProperty("bookName", bookName);
+                        bookData.addProperty("borrow_date", borrowedBook.getBorrow_Date().toString());
+                        //应还日期
+                        bookData.addProperty("return_date", borrowedBook.getReturn_Date().toString());
+                        data.addProperty("borrowing" + i, gson.toJson(bookData));
+                    }
+                    //如果书籍状态为false，表示书籍已归还，则为历史借阅
+                    else {
+                        JsonObject bookData = new JsonObject();
+                        bookData.addProperty("bookName", bookName);
+                        bookData.addProperty("borrow_date", borrowedBook.getBorrow_Date().toString());
+                        bookData.addProperty("return_date", borrowedBook.getReturn_Date().toString());
+                        data.addProperty("haveBorrowed" + i, gson.toJson(bookData));
+                    }
+                }
+                data.addProperty("status", "success");
+            }else{
+                data.addProperty("error", "No borrow record found.");
+            }
+        }
+        else{
+            data.addProperty("error", "You don't have permission to view the borrow record.");
+        }
+        return gson.toJson(data);
+    }
 }
 
-
-
 //    //管理员增加藏书功能
-//    public String addBook(String jsonData) {
-//
-//    };
-//    // 管理员删除藏书功能
-//    public String deleteBook(String jsonData) {};
+//    public String addBook(String jsonData) {};
+
 
