@@ -155,8 +155,8 @@ fun CombinedStudentStatusCard(studentStatusModule: StudentStatusModule, onDelete
                         contentAlignment = Alignment.BottomEnd
                     ) {
                         Button(onClick = {
-                            studentStatusModule.modifyStudentStatus()
-                            expanded = false // 确认修改后收起卡片
+                            studentStatusModule.modifyStudentStatus{
+                            expanded = false} // 确认修改后收起卡片
                         }) {
                             Text("确认修改")
                         }
