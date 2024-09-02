@@ -32,7 +32,7 @@ public class LibraryController {
             //后续可以进行部分匹配的搜索
             if (!books.isEmpty()) {//如果有同名书籍
                 //先加入一个number属性，表示同名书籍的数量
-                data.addProperty("number", books.size());
+                data.addProperty("number", String.valueOf(books.size()) );
                 //返回所有同名书籍信息,遍历list里面的每一个book，添加到json对象里,json对象返回一个数组，里面是每一本book的所有信息
                 for (int i = 0; i < books.size(); i++) {
                     Book book = books.get(i);
@@ -48,8 +48,10 @@ public class LibraryController {
                     bookData.addProperty("Kind", book.getKind());
                     bookData.addProperty("quantity", book.getQuantity());
                     bookData.addProperty("Valid_Quantity", book.getValid_Quantity());
-                    data.add("book No." + i, bookData);
+                    data.addProperty("b" + i, gson.toJson(bookData));
+
                 }
+                data.addProperty("status", "success");
                 return gson.toJson(data);
 
             } else {

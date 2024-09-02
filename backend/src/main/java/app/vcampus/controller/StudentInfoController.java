@@ -6,6 +6,7 @@ import app.vcampus.interfaces.studentInfoRequest;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -34,8 +35,18 @@ public class StudentInfoController {
     public String addStudentStatus(String jsonData) {
         try {
             Student student = gson.fromJson(jsonData, Student.class);
+            if (student.getStudentId() == null || student.getStudentId().isEmpty() ||
+                    student.getUsername() == null || student.getUsername().isEmpty() ||
+                    student.getRace() == null || student.getRace().isEmpty() ||
+                    student.getMajor() == null || student.getMajor().isEmpty() ||
+                    student.getAcademy() == null || student.getAcademy().isEmpty() ||
+                    student.getNativePlace() == null || student.getNativePlace().isEmpty()) {
+                JsonObject data = new JsonObject();
+                data.addProperty("status", "failed");
+                data.addProperty("reason", "字段不能为空");
+                return gson.toJson(data);
+            }
             DataBase db = DataBaseManager.getInstance();
-
 
             // 同时向 User 库添加一条数据
             User user = new User();
@@ -80,6 +91,81 @@ public class StudentInfoController {
             data.addProperty("status", "failed");
             data.addProperty("reason", e.getMessage());
             return gson.toJson(data);
+        }
+    }
+
+    //根据姓名搜索学生信息，可以支持模糊搜索
+    public String searchStudent(String jsonData) {
+        try {
+            JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+            String keyword = request.get("keyword").getAsString();
+            DataBase db = DataBaseManager.getInstance();
+            List<Student> students = db.getLike(Student.class, "username", keyword);
+            JsonObject response = new JsonObject();
+            if(students.isEmpty()) {
+                response.addProperty("status", "fail");
+                response.addProperty("reason", "未找到相关学生");
+                return gson.toJson(response);
+            }
+            response.addProperty("status", "success");
+            response.addProperty("number", String.valueOf(students.size()));
+            for (int i = 0; i < students.size(); i++) {
+                Student student = students.get(i);
+                JsonObject studentObject = new JsonObject();
+                studentObject.addProperty("studentId", student.getStudentId());
+                studentObject.addProperty("name", student.getUsername());
+                studentObject.addProperty("gender", student.getGender() == 0 ? "男" : "女");
+                studentObject.addProperty("race", student.getRace());
+                studentObject.addProperty("major", student.getMajor());
+                studentObject.addProperty("academy", student.getAcademy());
+                studentObject.addProperty("nativePlace", student.getNativePlace());
+                response.addProperty("s"+i,gson.toJson(studentObject));
+            }
+            return gson.toJson(response);
+        } catch (Exception e) {
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "failed");
+            response.addProperty("reason", e.getMessage());
+            return gson.toJson(response);
+        }
+    }
+
+    // 修改学生信息
+    public String updateStudentStatus(String jsonData) {
+        try {
+            Student updatedStudent = gson.fromJson(jsonData, Student.class);
+            if (updatedStudent.getStudentId() == null || updatedStudent.getStudentId().isEmpty() ||
+                    updatedStudent.getUsername() == null || updatedStudent.getUsername().isEmpty() ||
+                    updatedStudent.getGender() < 0 || // 检查 gender 是否为无效值
+                    updatedStudent.getRace() == null || updatedStudent.getRace().isEmpty() ||
+                    updatedStudent.getMajor() == null || updatedStudent.getMajor().isEmpty() ||
+                    updatedStudent.getAcademy() == null || updatedStudent.getAcademy().isEmpty() ||
+                    updatedStudent.getNativePlace() == null || updatedStudent.getNativePlace().isEmpty()) {
+                JsonObject response = new JsonObject();
+                response.addProperty("status", "failed");
+                response.addProperty("reason", "字段不能为空");
+                return gson.toJson(response);
+            }
+            DataBase db = DataBaseManager.getInstance();
+            Student existingStudent = db.getWhere(Student.class, "studentId", updatedStudent.getStudentId()).get(0);
+
+            existingStudent.setUsername(updatedStudent.getUsername());
+            existingStudent.setGender(updatedStudent.getGender());
+            existingStudent.setRace(updatedStudent.getRace());
+            existingStudent.setMajor(updatedStudent.getMajor());
+            existingStudent.setAcademy(updatedStudent.getAcademy());
+            existingStudent.setNativePlace(updatedStudent.getNativePlace());
+
+            db.persist(existingStudent);
+
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "success");
+            return gson.toJson(response);
+        } catch (Exception e) {
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "failed");
+            response.addProperty("reason", e.getMessage());
+            return gson.toJson(response);
         }
     }
 }

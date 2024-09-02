@@ -2,18 +2,18 @@ package app.vcampus.interfaces;
 
 public class BookSearchingRequest {
     private String role;
-    private String bookName;
+    private String bookname;
 
     public BookSearchingRequest(String role, String bookName) {
         this.role = role;
-        this.bookName = bookName;
+        this.bookname = bookName;
     }
     public String getRole() {return role;}
 
     public void setRole(String role) {this.role = role;}
 
-    public String getBookName() {return bookName;}
+    public String getBookName() {return bookname;}
 
-    public void setBookName(String bookName) {this.bookName = bookName;}
+    public void setBookName(String bookName) {this.bookname = bookName;}
 
 }
