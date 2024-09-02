@@ -20,7 +20,7 @@ public class ControllerManager {
     public ControllerManager() {
         // 注册路由
         routeMapping.registerRoute("login", userController::login);
-        routeMapping.registerRoute("searchStudentStatus", studentInfoController::getStudentInfo);
+        routeMapping.registerRoute("arc/view", studentInfoController::getStudentInfo);
         routeMapping.registerRoute("searchItems", storeController::searchItems);
         routeMapping.registerRoute("purchase", storeController::handlePurchase);
         routeMapping.registerRoute("getAllItems", storeController::getAllItems);
@@ -35,10 +35,10 @@ public class ControllerManager {
         routeMapping.registerRoute("getTransactions", storeController::getAllTransaction);//获取所有交易
         routeMapping.registerRoute("enterStore",storeController::enterStore);//进入商店展示商品,返回随机商品列表
         routeMapping.registerRoute("getTransactionsByCardNumber", storeController::getTransactionsByCardNumber);//根据卡号获取交易记录
-        routeMapping.registerRoute("addStudentStatus", studentInfoController::addStudentStatus);//
+        routeMapping.registerRoute("arc/add", studentInfoController::addStudentStatus);//
         routeMapping.registerRoute("lib/fetchImageUrl", libraryController::searchBookInfo);//
-        routeMapping.registerRoute("deleteStudentStatus", studentInfoController::deleteStudentStatus);//
-        routeMapping.registerRoute("student/search", studentInfoController::searchStudent);//
+        routeMapping.registerRoute("arc/delete", studentInfoController::deleteStudentStatus);//
+        routeMapping.registerRoute("arc/search", studentInfoController::searchStudent);//
     }
     public String handleRequest(String jsonData) {
         // 解析 JSON 请求
