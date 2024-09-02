@@ -1,28 +1,21 @@
 package app.vcampus.domain;
 
+import jakarta.persistence.Column;
 import java.util.UUID;
 
 public class ShoppingCartItem {
-    private UUID id;
-    private UUID cartId;
-    private UUID itemId;
-    private int quantity;
+    @Column(length = 13)
+    private String userId; // 用户id
+    private UUID itemId; // 商品id
+    private int quantity; // 商品数量
 
     // Getters and Setters
-    public UUID getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getCartId() {
-        return cartId;
-    }
-
-    public void setCartId(UUID cartId) {
-        this.cartId = cartId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public UUID getItemId() {
