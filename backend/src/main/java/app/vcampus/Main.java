@@ -7,12 +7,16 @@ import app.vcampus.domain.Student;
 import app.vcampus.domain.User;
 import app.vcampus.domain.Book;
 import app.vcampus.interfaces.PurchaseRequest;
+
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
 import app.vcampus.utils.server.NettyServer;
 import com.google.gson.Gson;
 
 import app.vcampus.interfaces.BookSearchingRequest;
+import app.vcampus.interfaces.BookBorrowRequest;
+import app.vcampus.interfaces.BookReturnRequest;
+import app.vcampus.interfaces.BookListRequest;
 import app.vcampus.controller.LibraryController;
 import com.google.gson.Gson;
 
@@ -115,21 +119,36 @@ public class Main {
 //        System.out.println("Items after deletion: " + items);
 //
 //
-//        LibraryController library = new LibraryController();
-//        //测试searchBookInfo函数
-//        Gson gson = new Gson();
+        LibraryController library = new LibraryController();
+        Gson gson = new Gson();
+//        BookSearchingRequest request0 = new BookSearchingRequest("student", "天才");
+//        String jsonData0 = gson.toJson(request0);
+//        String result0 = library.searchBookInfo(jsonData0);
+//        System.out.println(result0);
 //
-//        // 准备测试用的BookSearchingRequest对象
-//        BookSearchingRequest request = new BookSearchingRequest("student", "天才");
+//        //测试borrowBook函数
+//        BookBorrowRequest request1 = new BookBorrowRequest("student","112112123","9787550263932");
+//        String jsonData1 = gson.toJson(request1);
+//        String result1 = library.borrowBook(jsonData1);
+//        System.out.println(result1);
 //
-//        // 将BookSearchingRequest对象序列化为JSON字符串
-//        String jsonData = gson.toJson(request);
+//        //测试returnBook函数
+//        BookReturnRequest request2 = new BookReturnRequest("student","112112123","9787550263932");
+//        String jsonData2 = gson.toJson(request2);
+//        String result2 = library.returnBook(jsonData2);
+//        System.out.println(result2);
 //
-//        // 调用searchBookInfo函数
-//        String result = library.searchBookInfo(jsonData);
-//
-//        // 打印结果
-//        System.out.println(result);
+//        //测试delayReturnBook函数
+//        BookBorrowRequest request3 = new BookBorrowRequest("student","112112123","9787550263932");
+//        String jsonData3 = gson.toJson(request3);
+//        String result3 = library.delayReturnBook(jsonData3);
+//        System.out.println(result3);
+
+//        //测试viewBorrowRecord函数
+//        BookListRequest request4 = new BookListRequest("student","112112123");
+//        String jsonData4 = gson.toJson(request4);
+//        String result4 = library.viewBorrowRecord(jsonData4);
+//        System.out.println(result4);
 
 
         NettyServer nettyServer = new NettyServer(8066);

@@ -20,6 +20,7 @@ public class DataBase {
                 .addAnnotatedClass(StoreTransaction.class)
                 .addAnnotatedClass(Student.class)
                 .addAnnotatedClass(Book.class)
+                .addAnnotatedClass(Reader2Book.class)
                 .buildSessionFactory();
         session = sessionFactory.openSession();
     }
@@ -84,8 +85,41 @@ public class DataBase {
     }
 
 
+    public void delete(Object entity) {
+        session.beginTransaction();
+        session.delete(entity);
+        session.getTransaction().commit();
+    }
+
+    public void update(Object entity) {
+        session.beginTransaction();
+        session.update(entity);
+        session.getTransaction().commit();
+    }
+
+    public void save(Object entity) {
+        session.beginTransaction();
+        session.save(entity);
+        session.getTransaction().commit();
+    }
+
+
     public void close() {
         session.close();
         sessionFactory.close();
     }
+
+    public void disableForeignKeyChecks() {
+        session.beginTransaction();
+        session.createNativeQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
+        session.getTransaction().commit();
+    }
+
+    public void enableForeignKeyChecks() {
+        session.beginTransaction();
+        session.createNativeQuery("SET FOREIGN_KEY_CHECKS = 1").executeUpdate();
+        session.getTransaction().commit();
+    }
+
+
 }
