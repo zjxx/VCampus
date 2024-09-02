@@ -117,31 +117,31 @@ public class Main {
 //        items = storeItemController.getItems();
 //        System.out.println("Items after deletion: " + items);
 //
-
-        LibraryController library = new LibraryController();
-        Gson gson = new Gson();
-        BookSearchingRequest request0 = new BookSearchingRequest("student", "天才");
-        String jsonData0 = gson.toJson(request0);
-        String result0 = library.searchBookInfo(jsonData0);
-        System.out.println(result0);
-
-        //测试borrowBook函数
-        BookBorrowRequest request1 = new BookBorrowRequest("student","112112123","9787550263932");
-        String jsonData1 = gson.toJson(request1);
-        String result1 = library.borrowBook(jsonData1);
-        System.out.println(result1);
-
-        //测试returnBook函数
-        BookReturnRequest request2 = new BookReturnRequest("student","112112123","9787550263932");
-        String jsonData2 = gson.toJson(request2);
-        String result2 = library.returnBook(jsonData2);
-        System.out.println(result2);
-
-        //测试delayReturnBook函数
-        BookBorrowRequest request3 = new BookBorrowRequest("student","112112123","9787550263932");
-        String jsonData3 = gson.toJson(request3);
-        String result3 = library.delayReturnBook(jsonData3);
-        System.out.println(result3);
+//
+//        LibraryController library = new LibraryController();
+//        Gson gson = new Gson();
+//        BookSearchingRequest request0 = new BookSearchingRequest("student", "天才");
+//        String jsonData0 = gson.toJson(request0);
+//        String result0 = library.searchBookInfo(jsonData0);
+//        System.out.println(result0);
+//
+//        //测试borrowBook函数
+//        BookBorrowRequest request1 = new BookBorrowRequest("student","112112123","9787550263932");
+//        String jsonData1 = gson.toJson(request1);
+//        String result1 = library.borrowBook(jsonData1);
+//        System.out.println(result1);
+//
+//        //测试returnBook函数
+//        BookReturnRequest request2 = new BookReturnRequest("student","112112123","9787550263932");
+//        String jsonData2 = gson.toJson(request2);
+//        String result2 = library.returnBook(jsonData2);
+//        System.out.println(result2);
+//
+//        //测试delayReturnBook函数
+//        BookBorrowRequest request3 = new BookBorrowRequest("student","112112123","9787550263932");
+//        String jsonData3 = gson.toJson(request3);
+//        String result3 = library.delayReturnBook(jsonData3);
+//        System.out.println(result3);
 
 
         NettyServer nettyServer = new NettyServer(8066);
