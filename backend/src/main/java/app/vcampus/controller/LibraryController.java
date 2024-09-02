@@ -256,7 +256,7 @@ public class LibraryController {
         if (request.getRole().equals("student") || request.getRole().equals("teacher")) {
             //在借阅记录中查找该用户的所有借阅记录
             DataBase db = DataBaseManager.getInstance();
-            List<Reader2Book> borrowedBooks = db.getWhere(Reader2Book.class, "Reader_ID", request.getReader_id());
+            List<Reader2Book> borrowedBooks = db.getWhere(Reader2Book.class, "Reader_ID", request.getuserId());
             if (!borrowedBooks.isEmpty()) {
                 //遍历借阅记录，将借阅信息添加到json对象中,分为两种，正在借阅（未还）和历史借阅（已还）
                 for (int i = 0; i < borrowedBooks.size(); i++) {

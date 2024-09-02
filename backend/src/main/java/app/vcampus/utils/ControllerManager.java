@@ -20,30 +20,36 @@ public class ControllerManager {
     public ControllerManager() {
         // 注册路由
         routeMapping.registerRoute("login", userController::login);
-        routeMapping.registerRoute("arc/view", studentInfoController::getStudentInfo);
-        routeMapping.registerRoute("searchItems", storeController::searchItems);
-        routeMapping.registerRoute("purchase", storeController::handlePurchase);
-        routeMapping.registerRoute("getAllItems", storeController::getAllItems);
-        routeMapping.registerRoute("getTransactions", storeController::getAllTransaction);
+
         routeMapping.registerRoute("lib/search", libraryController::searchBookInfo);//搜索图书
         routeMapping.registerRoute("lib/addtolist", libraryController::borrowBook);//借书
         routeMapping.registerRoute("lib/returnbook", libraryController::returnBook);//还书
         routeMapping.registerRoute("lib/renewbook", libraryController::delayReturnBook);//续借
+        routeMapping.registerRoute("lib/fetchImageUrl", libraryController::searchBookInfo);//
+        routeMapping.registerRoute("lib/search", libraryController::searchBookInfo);
+        routeMapping.registerRoute("lib/check", libraryController::viewBorrowRecord);
+
+        routeMapping.registerRoute(("shop/addtolist"), storeController::addItem);//添加商品
+        routeMapping.registerRoute("searchItems", storeController::searchItems);
+        routeMapping.registerRoute("purchase", storeController::handlePurchase);
+        routeMapping.registerRoute("getAllItems", storeController::getAllItems);
+        routeMapping.registerRoute("getTransactions", storeController::getAllTransaction);
+
         routeMapping.registerRoute("searchItems", storeController::searchItems);//搜索商品
         routeMapping.registerRoute("purchase", storeController::handlePurchase);//购买商品
-        routeMapping.registerRoute("lib/search", libraryController::searchBookInfo);
         routeMapping.registerRoute("shop/search", storeController::searchItems);//搜索商品
         routeMapping.registerRoute("shop/buy", storeController::handlePurchase);//购买商品
         routeMapping.registerRoute("getAllItems", storeController::getAllItems);//获取所有商品
         routeMapping.registerRoute("getTransactions", storeController::getAllTransaction);//获取所有交易
         routeMapping.registerRoute("enterStore",storeController::enterStore);//进入商店展示商品,返回随机商品列表
         routeMapping.registerRoute("getTransactionsByCardNumber", storeController::getTransactionsByCardNumber);//根据卡号获取交易记录
+
+
         routeMapping.registerRoute("arc/add", studentInfoController::addStudentStatus);//
-        routeMapping.registerRoute("lib/fetchImageUrl", libraryController::searchBookInfo);//
+        routeMapping.registerRoute("arc/view", studentInfoController::getStudentInfo);
         routeMapping.registerRoute("arc/delete", studentInfoController::deleteStudentStatus);//
         routeMapping.registerRoute("arc/search", studentInfoController::searchStudent);//
         routeMapping.registerRoute("arc/modify", studentInfoController::updateStudentStatus);//
-        routeMapping.registerRoute(("shop/addtolist"), storeController::addItem);//添加商品
         routeMapping.registerRoute(("arc/modifyPassword"), userController::modifyPassword);//修改密码);
     }
     public String handleRequest(String jsonData) {
