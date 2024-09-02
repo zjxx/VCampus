@@ -2,22 +2,22 @@
 package data
 
 data class Book(
-    val coverImageRes: Int,
+    val coverImage: String,
 
-    val title: String,
+    val bookname: String,
     val author: String,
-
-    val kind: String,
-    val language: String,
 
     val publisher: String,
     val publishDate: String,
 
-    val description: String,
-    val borrowInfo: String,
+    val language: String,
 
     val isbn: String,
-    val bookId: String
+    val description: String,
+
+    val kind: String,
+    val quantity: Int,
+    val valid: Int
 ) {
 
 }
