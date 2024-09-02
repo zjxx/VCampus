@@ -17,8 +17,8 @@ import app.vcampus.interfaces.BookSearchingRequest;
 import app.vcampus.interfaces.BookBorrowRequest;
 import app.vcampus.interfaces.BookReturnRequest;
 import app.vcampus.interfaces.BookListRequest;
+import app.vcampus.interfaces.BookDeleteRequest;
 import app.vcampus.controller.LibraryController;
-import com.google.gson.Gson;
 
 import java.util.List;
 import java.util.UUID;
@@ -119,15 +119,15 @@ public class Main {
 //        System.out.println("Items after deletion: " + items);
 //
 //
-        LibraryController library = new LibraryController();
-        Gson gson = new Gson();
+//        LibraryController library = new LibraryController();
+//        Gson gson = new Gson();
 //        BookSearchingRequest request0 = new BookSearchingRequest("student", "天才");
 //        String jsonData0 = gson.toJson(request0);
 //        String result0 = library.searchBookInfo(jsonData0);
 //        System.out.println(result0);
 //
 //        //测试borrowBook函数
-//        BookBorrowRequest request1 = new BookBorrowRequest("student","112112123","9787550263932");
+//        BookBorrowRequest request1 = new BookBorrowRequest("student","112112123","9787549565115");
 //        String jsonData1 = gson.toJson(request1);
 //        String result1 = library.borrowBook(jsonData1);
 //        System.out.println(result1);
@@ -149,6 +149,22 @@ public class Main {
 //        String jsonData4 = gson.toJson(request4);
 //        String result4 = library.viewBorrowRecord(jsonData4);
 //        System.out.println(result4);
+
+//        //测试deleteBook函数
+//        BookDeleteRequest request5 = new BookDeleteRequest("student","112112123","9787550263932");
+//        String jsonData5 = gson.toJson(request5);
+//        String result5 = library.deleteBook(jsonData5);
+//        System.out.println(result5);
+//        BookDeleteRequest request6 = new BookDeleteRequest("admin","002112123","9787549565115");
+//        String jsonData6 = gson.toJson(request6);
+//        String result6 = library.deleteBook(jsonData6);
+//        System.out.println(result6);
+//
+//        //测试viewAllBorrowRecord函数
+//        BookListRequest request7 = new BookListRequest("admin","002112123");
+//        String jsonData7 = gson.toJson(request7);
+//        String result7 = library.viewAllBorrowRecord(jsonData7);
+//        System.out.println(result7);
 
 
         NettyServer nettyServer = new NettyServer(8066);
