@@ -69,12 +69,16 @@ private fun handleResponseAdd(response: String) {
             DialogManager.showDialog(responseJson["reason"] as String)
         }
     }
-    fun modifyStudentStatus() {
+    fun modifyStudentStatus(onModifySuccess: () -> Unit) {
+        var gender_int ="0"
+        if(gender=="女"){
+            gender_int="1"
+        }
         val request = mapOf(
             "role" to UserSession.role,
             "userId" to UserSession.userId,
-            "name" to name,
-            "gender" to gender,
+            "username" to name,
+            "gender" to gender_int,
             "race" to race,
             "nativePlace" to nativePlace,
             "studentId" to studentId,
@@ -82,9 +86,19 @@ private fun handleResponseAdd(response: String) {
             "academy" to academy
         )
         nettyClient.sendRequest(request, "arc/modify") { response: String ->
-            handleResponseView(response)
+            handleResponseModify(response, onModifySuccess)
         }
     }
+    private fun handleResponseModify(response: String, onModifySuccess: () -> Unit) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        if (responseJson["status"] == "success") {
+            onModifySuccess()
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
+        }
+    }
+
     fun searchAdmin(keyword: String, updateSearchResults: (List<StudentStatusModule>) -> Unit) {
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "keyword" to keyword)
         nettyClient.sendRequest(request, "arc/search") { response: String ->
@@ -162,6 +176,27 @@ private fun handleResponseAdd(response: String) {
                 }
                 updateSearchResults(students)
             }
+        }
+    }
+    fun modifyPassword(oldPassword: String, newPassword: String) {
+        val request = mapOf(
+            "role" to UserSession.role,
+            "userId" to UserSession.userId,
+            "oldPassword" to oldPassword,
+            "newPassword" to newPassword
+        )
+        nettyClient.sendRequest(request, "arc/modifyPassword") { response: String ->
+            handleResponseModifyPassword(response)
+        }
+    }
+
+    private fun handleResponseModifyPassword(response: String) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        if (responseJson["status"] == "success") {
+            DialogManager.showDialog("密码修改成功")
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
         }
     }
 }

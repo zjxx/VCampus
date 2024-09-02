@@ -34,10 +34,15 @@ fun StudentStatusScene(onNavigate: (String) -> Unit, role: String) {
             Divider(color = Color.Gray, thickness = 1.dp) // 添加分隔栏
             if (role == "student") {
                 TextButton(onClick = {
-                    selectedMenuItem = "查看学籍"
+                    selectedMenuItem = "查看个人信息"
                     studentStatusModule.searchStudentStatus()
                 }) {
-                    Text("查看学籍", color = Color.Black) // 设置字体颜色为黑色
+                    Text("查看个人信息", color = Color.Black) // 设置字体颜色为黑色
+                }
+                TextButton(onClick = {
+                    selectedMenuItem = "修改密码"
+                }) {
+                    Text("修改密码", color = Color.Black) // 设置字体颜色为黑色
                 }
             } else if (role == "admin") {
                 TextButton(onClick = { selectedMenuItem = "增加学籍" }) {
@@ -58,10 +63,10 @@ fun StudentStatusScene(onNavigate: (String) -> Unit, role: String) {
                     "查看个人信息" -> ViewStudentStatusSubscene(studentStatusModule)
                     "增加学籍" -> AddStudentStatusSubscene()
                     "修改学籍" -> ModifyStudentStatusSubscene()
+                    "修改密码" -> ModifyPasswordScene()
                     else -> Text("请选择一个菜单项")
                 }
             }
         }
     }
 }
-
