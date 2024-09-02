@@ -19,6 +19,7 @@ class StudentStatusModule {
     var major by mutableStateOf("")
     var academy by mutableStateOf("")
     var number by mutableStateOf("")
+    var searchResults by mutableStateOf(listOf<StudentStatusModule>())
 
     fun searchStudentStatus() {
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId)
@@ -74,10 +75,38 @@ private fun handleResponseAdd(response: String) {
             handleResponseView(response)
         }
     }
-    fun searchAdmin(keyword: String) {
+    fun searchAdmin(keyword: String, updateSearchResults: (List<StudentStatusModule>) -> Unit) {
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "keyword" to keyword)
         nettyClient.sendRequest(request, "student/search") { response: String ->
-            handleResponseView(response)
+            handleResponseSearch(response, updateSearchResults)
+        }
+    }
+    private fun handleResponseSearch(response: String, updateSearchResults: (List<StudentStatusModule>) -> Unit) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        if (responseJson["status"] == "success") {
+            val num = responseJson["number"] as String
+            if (!num.equals("0")) {
+                val students = mutableListOf<StudentStatusModule>()
+                for (i in 0 until num.toInt()) {
+                    val studentIndex = responseJson["s" + i.toString()] as String
+                    val studentJson = Gson().fromJson(studentIndex, MutableMap::class.java) as MutableMap<String, Any>
+                    println("studentId: ${studentJson["name"]}")
+                    val student = StudentStatusModule().apply {
+                        name = studentJson["name"] as String
+                        gender = studentJson["gender"] as String
+                        race = studentJson["race"] as String
+                        nativePlace = studentJson["nativePlace"] as String
+                        studentId = studentJson["studentId"] as String
+                        major = studentJson["major"] as String
+                        academy = studentJson["academy"] as String
+                    }
+                    students.add(student)
+                }
+                updateSearchResults(students)
+            } else {
+                DialogManager.showDialog("无相关学生")
+            }
         }
     }
     fun deleteStudentStatus() {
@@ -87,5 +116,3 @@ private fun handleResponseAdd(response: String) {
         }
     }
 }
-
-
