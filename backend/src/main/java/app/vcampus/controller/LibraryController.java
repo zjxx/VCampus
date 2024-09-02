@@ -43,7 +43,7 @@ public class LibraryController {
                     bookData.addProperty("bookName", book.getBookName());
                     bookData.addProperty("author", book.getAuthor());
                     bookData.addProperty("publisher", book.getPublisher());
-                    bookData.addProperty("publishDate", book.getPublishedYear());
+                    bookData.addProperty("publishDate", book.getPublishedYear().toString());
                     bookData.addProperty("language",book.getLanguage());
                     bookData.addProperty("author", book.getAuthor());
                     bookData.addProperty("ISBN", book.getISBN());
