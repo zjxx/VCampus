@@ -84,6 +84,25 @@ public class DataBase {
     }
 
 
+    public void delete(Object entity) {
+        session.beginTransaction();
+        session.delete(entity);
+        session.getTransaction().commit();
+    }
+
+    public void update(Object entity) {
+        session.beginTransaction();
+        session.update(entity);
+        session.getTransaction().commit();
+    }
+
+    public void save(Object entity) {
+        session.beginTransaction();
+        session.save(entity);
+        session.getTransaction().commit();
+    }
+
+
     public void close() {
         session.close();
         sessionFactory.close();
