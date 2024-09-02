@@ -179,6 +179,10 @@ private fun handleResponseAdd(response: String) {
         }
     }
     fun modifyPassword(oldPassword: String, newPassword: String) {
+        if (oldPassword.isEmpty() || newPassword.isEmpty()) {
+            DialogManager.showDialog("旧密码和新密码不能为空")
+            return
+        }
         val request = mapOf(
             "role" to UserSession.role,
             "userId" to UserSession.userId,
@@ -195,7 +199,8 @@ private fun handleResponseAdd(response: String) {
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         if (responseJson["status"] == "success") {
             DialogManager.showDialog("密码修改成功")
-        } else {
+        }
+        else if(responseJson["status"] == "fail") {
             DialogManager.showDialog(responseJson["reason"] as String)
         }
     }
