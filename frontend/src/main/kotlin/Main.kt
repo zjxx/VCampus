@@ -41,14 +41,16 @@ fun App() {
                                 NaviItem("主页", "/home", Icons.Default.Home, listOf("user")),
                                 NaviItem("学籍", "/student_status", Icons.Default.Person, listOf("student", "affairs_staff")),
                                 NaviItem("图书馆", "/library", Icons.Default.Book, listOf("library_user", "library_staff")),
-                                NaviItem("超市", "/shop", Icons.Default.ShoppingCart, listOf("shop_user", "shop_staff"))
+                                NaviItem("超市", "/shop", Icons.Default.ShoppingCart, listOf("shop_user", "shop_staff")),
+                           NaviItem("课表", "/course", Icons.Default.DateRange, listOf("student", "affairs_staff")),
                             )
                             "admin" -> listOf(
                                 NaviItem("主页", "/home", Icons.Default.Home, listOf("user")),
                                 NaviItem("教务", "/student_status", Icons.Default.DateRange, listOf("student", "affairs_staff")),
                                 NaviItem("图书馆", "/library", Icons.Default.Book, listOf("library_user", "library_staff")),
                                 NaviItem("超市", "/shop", Icons.Default.ShoppingCart, listOf("shop_user", "shop_staff")),
-                            )
+                                NaviItem("课表", "/course", Icons.Default.DateRange, listOf("student", "affairs_staff"))
+                                )
                             else -> emptyList()
                         }
                     })
@@ -65,7 +67,10 @@ fun App() {
                     "/shop" -> ShopScene(onNavigate = { path ->
                         currentScene = path
                     }, role = UserSession.role ?: "")// 添加超市场景
-                    // 添加更多场景
+                    "/course" -> CourseScene(onNavigate = { path ->
+                        currentScene = path
+                    }, role = UserSession.role ?: "")
+                // 添加更多场景
                 }
             }
             GlobalDialog() // Add GlobalDialog here
