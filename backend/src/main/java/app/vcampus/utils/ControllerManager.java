@@ -44,6 +44,7 @@ public class ControllerManager {
         routeMapping.registerRoute("arc/search", studentInfoController::searchStudent);//
         routeMapping.registerRoute("arc/modify", studentInfoController::updateStudentStatus);//
         routeMapping.registerRoute(("shop/addtolist"), storeController::addItem);//添加商品
+        routeMapping.registerRoute(("arc/modifyPassword"), userController::modifyPassword);//修改密码);
     }
     public String handleRequest(String jsonData) {
         // 解析 JSON 请求
