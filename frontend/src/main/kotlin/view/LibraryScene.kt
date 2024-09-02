@@ -1,11 +1,12 @@
+// LibraryScene.kt
 package view
-
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Divider
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,10 +23,12 @@ import module.LibraryModule
 
 @Composable
 fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
+    var selectedOption by remember { mutableStateOf("查找书籍") }
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var searchResults by remember { mutableStateOf(listOf<String>()) }
     var checkResults by remember { mutableStateOf(listOf<String>()) }
-    var selectedOption by remember { mutableStateOf(if (role == "student") "查找书籍" else "管理书籍") }
+    var imageUrl by remember { mutableStateOf("") }
+    var inputText by remember { mutableStateOf(TextFieldValue("")) }
 
     val libraryModule = LibraryModule(
         onSearchSuccess = { result ->
@@ -32,6 +36,9 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
         },
         onCheckSuccess = { result ->
             checkResults = result.split("\n")
+        },
+        onImageFetchSuccess = { url ->
+            imageUrl = url
         }
     )
 
@@ -60,6 +67,14 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { selectedOption = "查看已借阅书籍信息" }
+                        .padding(vertical = 8.dp)
+                )
+                Text(
+                    text = "显示图片",
+                    fontSize = 18.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { selectedOption = "显示图片" }
                         .padding(vertical = 8.dp)
                 )
             }
@@ -142,9 +157,42 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                             }
                         }
                     }
+                    "显示图片" -> {
+                        Column(modifier = Modifier.padding(top = 8.dp)) {
+                            BasicTextField(
+                                value = inputText,
+                                onValueChange = { inputText = it },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 8.dp),
+                                singleLine = true
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Box(
+                                modifier = Modifier
+                                    .background(Color.DarkGray)
+                                    .padding(16.dp)
+                                    .clickable {
+                                        imageUrl = ""
+                                        libraryModule.fetchImageUrl(inputText.text)
+                                    }
+                            ) {
+                                Text(text = "获取图片", color = Color.White)
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            if (imageUrl.isNotEmpty()) {
+                                AsyncImage(
+                                    load = { loadImageBitmap(imageUrl) },
+                                    painterFor = { remember { BitmapPainter(it) } },
+                                    contentDescription = "Fetched Image",
+                                    modifier = Modifier.width(200.dp)
+                                )
+                            }
+                        }
+                    }
+
                 }
-            }
-            else if (role == "admin") {// 管理员界面
+            } else if (role == "admin") {
                 when (selectedOption) {
                     "管理书籍" -> {
                         Row(
@@ -188,8 +236,42 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                     "查看借阅记录" -> {
                         // Add implementation for viewing borrowing records
                     }
-                }
+
+                    "显示图片" -> {
+                        Column(modifier = Modifier.padding(top = 8.dp)) {
+                            BasicTextField(
+                                value = inputText,
+                                onValueChange = { inputText = it },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 8.dp),
+                                singleLine = true
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Box(
+                                modifier = Modifier
+                                    .background(Color.DarkGray)
+                                    .padding(16.dp)
+                                    .clickable {
+                                        imageUrl = ""
+                                        libraryModule.fetchImageUrl(inputText.text)
+                                    }
+                            ) {
+                                Text(text = "获取图片", color = Color.White)
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            if (imageUrl.isNotEmpty()) {
+                                AsyncImage(
+                                    load = { loadImageBitmap(imageUrl) },
+                                    painterFor = { remember { BitmapPainter(it) } },
+                                    contentDescription = "Fetched Image",
+                                    modifier = Modifier.width(200.dp)
+                                )
+                            }
+                        }
+                    }
             }
         }
+            }
     }
 }

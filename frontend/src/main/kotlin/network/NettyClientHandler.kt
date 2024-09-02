@@ -1,4 +1,3 @@
-// File: kotlin/network/NettyClientHandler.kt
 package network
 
 import io.netty.channel.ChannelHandlerContext

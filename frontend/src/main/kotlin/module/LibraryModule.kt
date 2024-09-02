@@ -1,4 +1,3 @@
-// src/main/kotlin/module/LibraryModule.kt
 package module
 
 import com.google.gson.Gson
@@ -8,7 +7,8 @@ import view.component.DialogManager
 
 class LibraryModule (
     private val onSearchSuccess: (String) -> Unit,
-    private val onCheckSuccess: (String) -> Unit
+    private val onCheckSuccess: (String) -> Unit,
+    private val onImageFetchSuccess: (String) -> Unit
 ) {
     private val nettyClient = NettyClientProvider.nettyClient
 
@@ -44,6 +44,13 @@ class LibraryModule (
         println("Response message: ${responseJson["message"]}")
         println("Response status: ${responseJson["status"]}")
         if (responseJson["status"] == "success") {
+            val booknum=responseJson["number"] as Int
+            for (i in 1..booknum){
+                val res = responseJson[i.toString()] as String
+                val bookjson = Gson().fromJson(res, MutableMap::class.java) as MutableMap<String, Any>
+                println("Book name: ${bookjson["bookname"]}")
+
+            }
             onCheckSuccess(responseJson["message"] as String)
         } else {
             DialogManager.showDialog("请求失败")
@@ -104,6 +111,29 @@ class LibraryModule (
             DialogManager.showDialog("续借成功")
         } else {
             DialogManager.showDialog("续借失败")
+        }
+    }
+    fun fetchImageUrl(input: String) {
+        val request = mapOf("action" to "fetchImageUrl", "bookname"  to input)
+        nettyClient.sendRequest(request, "lib/fetchImageUrl") { response: String ->
+            handleResponseImageFetch(response)
+        }
+    }
+
+    private fun handleResponseImageFetch(response: String) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        if (responseJson["status"] == "success") {
+                val res = responseJson["b0"] as String
+                val bookjson = Gson().fromJson(res, MutableMap::class.java) as MutableMap<String, Any>
+                println("Book name: ${bookjson["bookname"]}")
+                var imageUrl = bookjson["ISBN"] as String
+                //只保留imageUrl的数字部分
+                imageUrl = imageUrl.replace(Regex("[^0-9]"), "")
+                var image = "http://47.99.141.236/img/" + imageUrl +".jpg"
+                onImageFetchSuccess(image)
+
+
         }
     }
 }

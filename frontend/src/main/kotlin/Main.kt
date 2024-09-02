@@ -76,8 +76,9 @@ fun App() {
 fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
-        state = rememberWindowState(size = DpSize(1064.dp, 600.dp)) // 设置窗口初始大小
+        state = rememberWindowState(size = DpSize(1200.dp, 700.dp)) // 设置窗口初始大小
     ) {
         App()
+
     }
 }
