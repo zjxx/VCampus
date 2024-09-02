@@ -1,12 +1,12 @@
-// src/main/kotlin/view/ShopScene.kt
 package view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -14,45 +14,35 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import module.ShopModule
+import data.Merchandise
 
 @Composable
 fun ShopScene(onNavigate: (String) -> Unit, role: String) {
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
-    var searchResults by remember { mutableStateOf(listOf<String>()) }
+    var searchResults by remember { mutableStateOf(listOf<Merchandise>()) }
+    var cartItems by remember { mutableStateOf(listOf<Merchandise>()) }
 
-    val shopModule = ShopModule(
-        onSearchSuccess = { result ->
-            searchResults = result.split("\n")
-        },
-        onBuySuccess = { result ->
-            // Handle buy success
-        }
-    )
+//    val shopModule = ShopModule(
+//        onSearchSuccess = { result ->
+//            searchResults = result.map {
+//                Merchandise(
+//                    id = it.id,
+//                    name = it.name,
+//                    price = it.price,
+//                    imageRes = it.imageRes
+//                )
+//            }
+//        },
+//        onBuySuccess = { result ->
+//            // Handle buy success
+//        }
+//    )
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        // Title
-        Text(
-            text = "欢迎光临校园超市！",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.Start)
-        )
-
-        // Divider
-        Divider(
-            color = Color(0xFFFFD700), // Dark yellow color
-            thickness = 4.dp,
-            modifier = Modifier
-                .fillMaxWidth(0.382f)
-                .padding(vertical = 8.dp)
-        )
-
-        // Search Module
+        // 搜索模块
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -63,33 +53,61 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                 onValueChange = { searchText = it },
                 modifier = Modifier
                     .weight(0.85f)
-                    .padding(8.dp)
-                    .background(Color.White)
-                    .padding(16.dp),
+                    .padding(8.dp),
                 singleLine = true,
             )
             Box(
                 modifier = Modifier
                     .weight(0.15f)
                     .clip(RoundedCornerShape(8.dp))
-                    .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
                     .background(Color(0xFF228042))
-                    .clickable { shopModule.shopSearch(searchText.text) }
+                    //.clickable { shopModule.shopSearch(searchText.text) }
                     .padding(16.dp)
             ) {
                 Text(text = "搜索", color = Color.White)
             }
         }
 
-        // Search Results
-        Divider(color = Color.Gray, thickness = 1.dp)
-        Column(modifier = Modifier.padding(top = 8.dp)) {
-            if (searchResults.isEmpty()) {
-                Text(text = "无信息", fontSize = 16.sp)
-            } else {
-                searchResults.forEach { result ->
-                    Text(text = result, fontSize = 16.sp, modifier = Modifier.padding(vertical = 4.dp))
+        // 商品列表
+        Column(modifier = Modifier.weight(1f).verticalScroll(rememberScrollState())) {
+            searchResults.chunked(2).forEach { rowItems ->
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    rowItems.forEach { item ->
+                        Column(
+                            modifier = Modifier
+                                .weight(0.5f)
+                                .padding(8.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color.LightGray)
+                                .clickable { onNavigate("PaymentScene") }
+                                .padding(8.dp)
+                        ) {
+//                            Image(
+//                                painter = painterResource(id = item.imageRes),
+//                                contentDescription = "Merchandise Image",
+//                                modifier = Modifier.size(128.dp)
+//                            )
+                            Text(text = item.name, fontSize = 16.sp)
+                            Text(text = "价格: ${item.price}", fontSize = 16.sp)
+                        }
+                    }
                 }
+            }
+        }
+
+        // 底部按钮
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Button(
+                onClick = { onNavigate("ShopCartScene") },
+                modifier = Modifier.weight(0.2f)
+            ) {
+                Text(text = "加入购物车")
+            }
+            Button(
+                onClick = { onNavigate("PaymentScene") },
+                modifier = Modifier.weight(0.2f)
+            ) {
+                Text(text = "立即购买")
             }
         }
     }

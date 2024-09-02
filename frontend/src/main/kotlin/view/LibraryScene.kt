@@ -1,52 +1,53 @@
-// LibraryScene.kt
 package view
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.res.loadImageBitmap
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.graphics.painter.BitmapPainter
+import data.Book
 import module.LibraryModule
-import java.io.File
-import java.net.URL
+
 
 @Composable
 fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     var selectedOption by remember { mutableStateOf("查找书籍") }
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
-    var searchResults by remember { mutableStateOf(listOf<String>()) }
-    var checkResults by remember { mutableStateOf(listOf<String>()) }
     var imageUrl by remember { mutableStateOf("") }
     var inputText by remember { mutableStateOf(TextFieldValue("")) }
+    var tempBooks by remember { mutableStateOf(listOf<Book>()) }
 
     val libraryModule = LibraryModule(
         onSearchSuccess = { result ->
-            searchResults = result.split("\n")
+            tempBooks = emptyList()
+            tempBooks = result
         },
         onCheckSuccess = { result ->
-            checkResults = result.split("\n")
+            // Handle check success
         },
         onImageFetchSuccess = { url ->
             imageUrl = url
         }
     )
 
+    LaunchedEffect(libraryModule.tempBooks) {
+        tempBooks = libraryModule.tempBooks
+    }
 
     Row(modifier = Modifier.fillMaxSize()) {
         // 侧边导航栏
@@ -54,7 +55,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
             modifier = Modifier
                 .fillMaxHeight()
                 .weight(0.2f)
-                .background(Color.LightGray)
+                .background(Color(0XFFB9E5E8))
                 .padding(16.dp)
         ) {
             if(role == "student") {
@@ -110,7 +111,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                 .weight(0.8f)
                 .padding(16.dp)
         ) {
-            if (role == "student") {
+            if (role == "student") {//学生界面
                 when (selectedOption) {
                     "查找书籍" -> {
                         Row(
@@ -120,67 +121,72 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                             OutlinedTextField(
                                 value = searchText,
                                 onValueChange = { searchText = it },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(8.dp)
-                                    .background(Color.White)
-                                    .padding(16.dp),
+                                modifier = Modifier.weight(1f),
                                 singleLine = true
                             )
-                            Spacer(modifier = Modifier.width(4.dp))
+                            Spacer(modifier = Modifier.width(16.dp))
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(8.dp))
-                                    .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
                                     .background(Color(0xFF228042))
-                                    .padding(16.dp)
                                     .clickable { libraryModule.libSearch(searchText.text, role) }
+                                    .padding(16.dp)
                             ) {
-                                Text(text = "搜索", color = Color.White)
+                                Text(text = "搜索", color = Color.White, fontSize = 16.sp)
                             }
                         }
+                        Spacer(modifier = Modifier.height(12.dp))
                         Divider(color = Color.Gray, thickness = 1.dp)
-                        Column(modifier = Modifier.padding(top = 8.dp)) {
-                            if (searchResults.isEmpty()) {
-                                Text(text = "无信息", fontSize = 16.sp)
-                            } else {
-                                searchResults.forEach { result ->
-                                    Text(text = result, fontSize = 16.sp, modifier = Modifier.padding(vertical = 4.dp))
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(4),
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(top = 8.dp)
+                        ) {
+                            items(tempBooks.size) { index ->
+                                val book = tempBooks[index]
+                                Column(
+                                    modifier = Modifier
+                                        .padding(8.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(Color.White)
+                                        .clickable { onNavigate("BookImfoSubscene") }
+                                        .padding(8.dp)
+                                ) {
+                                    AsyncImage(
+                                        load = { loadImageBitmap(book.coverImage) },
+                                        painterFor = { remember { BitmapPainter(it) } },
+                                        contentDescription = "Book Cover",
+                                        modifier = Modifier.size(108.dp)
+                                    )
+                                    Text(text = book.bookname, fontSize = 14.sp)
                                 }
                             }
                         }
                     }
 
+
+
                     "查看已借阅书籍信息" -> {
                         Column(modifier = Modifier.padding(top = 8.dp)) {
-                            if (checkResults.isEmpty()) {
-                                Text(text = "无信息", fontSize = 16.sp)
-                            } else {
-                                checkResults.forEach { result ->
-                                    Text(text = result, fontSize = 16.sp, modifier = Modifier.padding(vertical = 4.dp))
-                                }
-                            }
+                            // Handle check results
                         }
                     }
                     "显示图片" -> {
                         Column(modifier = Modifier.padding(top = 8.dp)) {
-                            BasicTextField(
+                            OutlinedTextField(
                                 value = inputText,
                                 onValueChange = { inputText = it },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 8.dp),
+                                modifier = Modifier.fillMaxWidth(),
                                 singleLine = true
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Box(
                                 modifier = Modifier
-                                    .background(Color.DarkGray)
-                                    .padding(16.dp)
-                                    .clickable {
-                                        imageUrl = ""
-                                        libraryModule.fetchImageUrl(inputText.text)
-                                    }
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .background(Color.Blue)
+                                    .clickable { libraryModule.fetchImageUrl(inputText.text) }
+                                    .padding(8.dp)
                             ) {
                                 Text(text = "获取图片", color = Color.White)
                             }
@@ -195,7 +201,6 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                             }
                         }
                     }
-
                 }
             } else if (role == "admin") {
                 when (selectedOption) {
@@ -207,32 +212,46 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                             OutlinedTextField(
                                 value = searchText,
                                 onValueChange = { searchText = it },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(8.dp)
-                                    .background(Color.White)
-                                    .padding(16.dp),
+                                modifier = Modifier.weight(1f),
                                 singleLine = true
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Box(
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
-                                    .background(Color(0xFF228042))
-                                    .padding(16.dp)
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .background(Color.Blue)
                                     .clickable { libraryModule.libSearch(searchText.text, role) }
+                                    .padding(8.dp)
                             ) {
                                 Text(text = "搜索", color = Color.White)
                             }
                         }
                         Divider(color = Color.Gray, thickness = 1.dp)
-                        Column(modifier = Modifier.padding(top = 8.dp)) {
-                            if (searchResults.isEmpty()) {
+                        Column(modifier = Modifier
+                            .weight(1f)
+                            .verticalScroll(rememberScrollState())
+                            .padding(top = 8.dp)) {
+                            if (tempBooks.isEmpty()) {
                                 Text(text = "无信息", fontSize = 16.sp)
                             } else {
-                                searchResults.forEach { result ->
-                                    Text(text = result, fontSize = 16.sp, modifier = Modifier.padding(vertical = 4.dp))
+                                tempBooks.forEach { book ->
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp)
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(Color.LightGray)
+                                            .clickable { onNavigate("BookImfoSubscene") }
+                                            .padding(8.dp)
+                                    ) {
+                                        AsyncImage(
+                                            load = { loadImageBitmap(book.coverImage) },
+                                            painterFor = { remember { BitmapPainter(it) } },
+                                            contentDescription = "Book Cover",
+                                            modifier = Modifier.size(128.dp)
+                                        )
+                                        Text(text = book.bookname, fontSize = 16.sp)
+                                    }
                                 }
                             }
                         }
@@ -244,23 +263,19 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
 
                     "显示图片" -> {
                         Column(modifier = Modifier.padding(top = 8.dp)) {
-                            BasicTextField(
+                            OutlinedTextField(
                                 value = inputText,
                                 onValueChange = { inputText = it },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 8.dp),
+                                modifier = Modifier.fillMaxWidth(),
                                 singleLine = true
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Box(
                                 modifier = Modifier
-                                    .background(Color.DarkGray)
-                                    .padding(16.dp)
-                                    .clickable {
-                                        imageUrl = ""
-                                        libraryModule.fetchImageUrl(inputText.text)
-                                    }
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .background(Color.Blue)
+                                    .clickable { libraryModule.fetchImageUrl(inputText.text) }
+                                    .padding(8.dp)
                             ) {
                                 Text(text = "获取图片", color = Color.White)
                             }
@@ -275,8 +290,8 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                             }
                         }
                     }
+                }
             }
         }
-            }
     }
 }
