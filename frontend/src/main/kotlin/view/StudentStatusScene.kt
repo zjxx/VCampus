@@ -16,6 +16,7 @@ import module.StudentStatusModule
 fun StudentStatusScene(onNavigate: (String) -> Unit, role: String) {
     var selectedMenuItem by remember { mutableStateOf("") }
     val studentStatusModule = remember { StudentStatusModule() }
+    var searchResults by remember { mutableStateOf(listOf<StudentStatusModule>())}
 
     Row(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -42,19 +43,12 @@ fun StudentStatusScene(onNavigate: (String) -> Unit, role: String) {
                 TextButton(onClick = { selectedMenuItem = "增加学籍" }) {
                     Text("增加学籍", color = Color.Black) // 设置字体颜色为黑色
                 }
-                TextButton(onClick = { selectedMenuItem = "删除学籍" }) {
-                    Text("删除学籍", color = Color.Black) // 设置字体颜色为黑色
-                }
                 TextButton(onClick = { selectedMenuItem = "修改学籍"
-                studentStatusModule.modifyStudentStatus()})
+                studentStatusModule.onclickModifyStudentStatus{ results ->
+                    searchResults = results
+                }})
                 {
                     Text("修改学籍", color = Color.Black) // 设置字体颜色为黑色
-                }
-                TextButton(onClick = {
-                    selectedMenuItem = "查找学籍"
-                    studentStatusModule.searchStudentStatus()
-                }) {
-                    Text("查找学籍", color = Color.Black) // 设置字体颜色为黑色
                 }
             }
         }
@@ -63,18 +57,11 @@ fun StudentStatusScene(onNavigate: (String) -> Unit, role: String) {
                 when (menuItem) {
                     "查看个人信息" -> ViewStudentStatusSubscene(studentStatusModule)
                     "增加学籍" -> AddStudentStatusSubscene()
-                    "删除学籍" -> DeleteStudentStatusSubscene()
                     "修改学籍" -> ModifyStudentStatusSubscene()
-                    "查找学籍" -> SearchStudentStatusSubscene()
                     else -> Text("请选择一个菜单项")
                 }
             }
         }
     }
-}
-
-@Composable
-fun DeleteStudentStatusSubscene() {
-    Text("删除学籍子场景")
 }
 
