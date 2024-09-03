@@ -24,6 +24,8 @@ dependencies {
     implementation("io.netty:netty-all:4.1.68.Final")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.jetbrains.compose.material:material-icons-extended-desktop:1.5.0")
+    implementation("org.apache.poi:poi:5.2.3")
+    implementation("org.apache.poi:poi-ooxml:5.2.3")
 }
 
 compose.desktop {
