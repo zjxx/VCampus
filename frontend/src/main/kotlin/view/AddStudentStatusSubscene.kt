@@ -1,16 +1,23 @@
+// src/main/kotlin/view/AddStudentStatusSubscene.kt
 package view
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import view.component.pageTitle
+import kotlinx.coroutines.launch
 import module.StudentStatusModule
+import view.component.pageTitle
+import java.awt.Desktop
+import java.io.File
+import javax.swing.JFileChooser
+import javax.swing.filechooser.FileNameExtensionFilter
+import org.apache.poi.ss.usermodel.WorkbookFactory
+import org.apache.poi.ss.usermodel.Cell
+import org.apache.poi.ss.usermodel.CellType
+import org.apache.poi.ss.usermodel.DataFormatter
 
 @Composable
 fun AddStudentStatusSubscene() {
@@ -22,9 +29,10 @@ fun AddStudentStatusSubscene() {
     var studentId by remember { mutableStateOf("") }
     var major by remember { mutableStateOf("") }
     var academy by remember { mutableStateOf("") }
-
-    var expanded by remember { mutableStateOf(false) }
-    val genderOptions = listOf("男", "女")
+    var students by remember { mutableStateOf(listOf<StudentStatusModule>()) }
+    val scope = rememberCoroutineScope()
+    var showDialog by remember { mutableStateOf(false) }
+    var filePath by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.padding(start = 16.dp)) {
         pageTitle(heading = "增加学籍信息", caption = "填写学籍信息")
@@ -37,36 +45,12 @@ fun AddStudentStatusSubscene() {
                 label = { Text("姓名") },
                 modifier = Modifier.weight(1f).padding(end = 16.dp)
             )
-            Box(modifier = Modifier.weight(1f).padding(end = 16.dp)) {
-                OutlinedTextField(
-                    value = gender,
-                    onValueChange = {},
-                    label = { Text("性别") },
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = true,
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.ArrowDropDown,
-                            contentDescription = null,
-                            modifier = Modifier.clickable { expanded = true }
-                        )
-                    }
-                )
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier.align(Alignment.TopStart)
-                ) {
-                    genderOptions.forEach { option ->
-                        DropdownMenuItem(onClick = {
-                            gender = option
-                            expanded = false
-                        }) {
-                            Text(text = option)
-                        }
-                    }
-                }
-            }
+            OutlinedTextField(
+                value = gender,
+                onValueChange = { gender = it },
+                label = { Text("性别") },
+                modifier = Modifier.weight(1f).padding(end = 16.dp)
+            )
             OutlinedTextField(
                 value = race,
                 onValueChange = { race = it },
@@ -106,20 +90,99 @@ fun AddStudentStatusSubscene() {
             )
         }
 
-        // 确认添加按钮
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomEnd) {
-            Button(onClick = {
-                studentStatusModule.name = name
-                studentStatusModule.gender = gender
-                studentStatusModule.race = race
-                studentStatusModule.nativePlace = nativePlace
-                studentStatusModule.studentId = studentId
-                studentStatusModule.major = major
-                studentStatusModule.academy = academy
-                studentStatusModule.addStudentStatus()
-            }) {
-                Text("确认添加")
+        // 从文件导入和提交按钮
+        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+            Button(
+                onClick = {
+                    val fileChooser = JFileChooser().apply {
+                        fileFilter = FileNameExtensionFilter("Excel Files", "xls", "xlsx")
+                        isAcceptAllFileFilterUsed = false
+                    }
+                    val result = fileChooser.showOpenDialog(null)
+                    if (result == JFileChooser.APPROVE_OPTION) {
+                        val selectedFile = fileChooser.selectedFile
+                        filePath = selectedFile.absolutePath
+                        val newStudents = readExcelFile(selectedFile)
+                        students = newStudents
+                        showDialog = true
+                    }
+                },
+                modifier = Modifier.width(120.dp) // Set the width of the import button
+            ) {
+                Text("从文件导入")
+            }
+            Button(
+                onClick = {
+                    scope.launch {
+                        studentStatusModule.addStudentStatus()
+                    }
+                },
+                modifier = Modifier.width(120.dp) // Set the width of the submit button
+            ) {
+                Text("提交")
             }
         }
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            text = {
+                AddFromFileSubscene(students, onUpdateFile = { updatedStudents ->
+                    students = updatedStudents
+                }, filePath = filePath)
+            },
+            confirmButton = {
+                Button(onClick = {
+                    scope.launch {
+                        students.forEach { student ->
+                            student.addStudentStatus()
+                        }
+                        showDialog = false
+                    }
+                }) {
+                    Text("导入")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDialog = false }) {
+                    Text("取消")
+                }
+            }
+        )
+    }
+}
+
+fun readExcelFile(file: File): List<StudentStatusModule> {
+    val students = mutableListOf<StudentStatusModule>()
+    val workbook = WorkbookFactory.create(file)
+    val sheet = workbook.getSheetAt(0)
+    for (row in sheet) {
+        if (row.rowNum == 0) continue // 跳过表头行
+        val student = StudentStatusModule().apply {
+            name = getCellValueAsString(row.getCell(0))
+            gender = getCellValueAsString(row.getCell(1))
+            race = getCellValueAsString(row.getCell(2))
+            nativePlace = getCellValueAsString(row.getCell(3))
+            studentId = getCellValueAsString(row.getCell(4))
+            major = getCellValueAsString(row.getCell(5))
+            academy = getCellValueAsString(row.getCell(6))
+        }
+        students.add(student)
+    }
+    workbook.close()
+    return students
+}
+
+fun getCellValueAsString(cell: Cell?): String {
+    return when (cell?.cellType) {
+        CellType.STRING -> cell.stringCellValue
+        CellType.NUMERIC -> {
+            val formatter = DataFormatter()
+            formatter.formatCellValue(cell)
+        }
+        CellType.BOOLEAN -> cell.booleanCellValue.toString()
+        CellType.FORMULA -> cell.cellFormula
+        else -> ""
     }
 }
