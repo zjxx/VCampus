@@ -293,8 +293,8 @@ public class LibraryController {
                     }
                 }
                 data.addProperty("status", "success");
-                data.addProperty("borrowing_number", borrowingi);
-                data.addProperty("haveBorrowed_number", haveBorrowedi);
+                data.addProperty("borrowing_number", String.valueOf(borrowingi));
+                data.addProperty("haveBorrowed_number", String.valueOf(haveBorrowedi));
             } else {
                 data.addProperty("error", "You haven't borrowed any book.");
             }
