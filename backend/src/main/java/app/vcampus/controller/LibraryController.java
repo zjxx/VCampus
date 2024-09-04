@@ -36,7 +36,7 @@ public class LibraryController {
                 //模糊搜索所有包含bookName的书籍
                 books = db.getLike(Book.class, "BookName", request.getBookName());//模糊搜索
             } else if (request.getFlag().equals("ISBN")){
-                books = db.getWhere(Book.class, "BookName", request.getBookName());//精确搜索
+                books = db.getWhere(Book.class, "ISBN", request.getBookName());//精确搜索
             }
             //后续可以进行部分匹配的搜索
             if (!books.isEmpty()) {//如果有同名书籍
