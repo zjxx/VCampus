@@ -149,7 +149,7 @@ public class StudentInfoController {
             }
             DataBase db = DataBaseManager.getInstance();
             Student existingStudent = db.getWhere(Student.class, "studentId", updatedStudent.getStudentId()).get(0);
-
+            User existingUser = db.getWhere(User.class, "userId", updatedStudent.getStudentId()).get(0);
             existingStudent.setUsername(updatedStudent.getUsername());
             existingStudent.setGender(updatedStudent.getGender());
             existingStudent.setRace(updatedStudent.getRace());
@@ -157,7 +157,15 @@ public class StudentInfoController {
             existingStudent.setAcademy(updatedStudent.getAcademy());
             existingStudent.setNativePlace(updatedStudent.getNativePlace());
 
+            existingUser.setUserId(existingStudent.getStudentId());
+            existingUser.setUsername(existingStudent.getUsername());
+            existingUser.setGender(updatedStudent.getGender());
+            db.disableForeignKeyChecks();
+            db.remove(existingStudent);
+
+            db.persist(existingUser);
             db.persist(existingStudent);
+            db.enableForeignKeyChecks();
 
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");

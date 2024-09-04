@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "reader2book")
+@Table(name = "readertobook")
 public class Reader2Book {
     @Id
     public UUID uuid = UUID.randomUUID();
