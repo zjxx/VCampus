@@ -147,7 +147,7 @@ class CourseModule {
         }
     }
     fun listCourse() {
-        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId)
+        val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId)
         nettyClient.sendRequest(request, "course/listAll") { response: String ->
             handleResponseList(response)
         }
