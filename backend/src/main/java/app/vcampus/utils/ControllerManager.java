@@ -30,6 +30,8 @@ public class ControllerManager {
         routeMapping.registerRoute("lib/search", libraryController::searchBookInfo);
         routeMapping.registerRoute("lib/check", libraryController::viewBorrowRecord);
         routeMapping.registerRouteWithParams("lib/file_upload", libraryController::addBook);
+
+
         routeMapping.registerRoute(("shop/addtolist"), storeController::addItem);//添加商品
         routeMapping.registerRoute("searchItems", storeController::searchItems);
         routeMapping.registerRoute("purchase", storeController::handlePurchase);
@@ -47,12 +49,13 @@ public class ControllerManager {
         routeMapping.registerRoute("arc/view", studentInfoController::getStudentInfo);
         routeMapping.registerRoute("arc/delete", studentInfoController::deleteStudentStatus);//
         routeMapping.registerRoute("arc/search", studentInfoController::searchStudent);//
+        routeMapping.registerRoute("arc/modify", studentInfoController::updateStudentStatus);//
+        routeMapping.registerRoute(("arc/modifyPassword"), userController::modifyPassword);//修改密码);
+
         routeMapping.registerRoute("course/listAll", courseController::showEnrollList);//向登录学生展示方案课程
         routeMapping.registerRoute("course/select", courseController::selectCourse);//学生选择课程
         routeMapping.registerRoute("course/unselect", courseController::unselectCourse);//学生退课
         routeMapping.registerRoute("course/courseTable",courseController::showCourseTable);//学生查看课程表
-        routeMapping.registerRoute("arc/modify", studentInfoController::updateStudentStatus);//
-        routeMapping.registerRoute(("arc/modifyPassword"), userController::modifyPassword);//修改密码);
 
     }
     public String handleRequest(String jsonData) {
