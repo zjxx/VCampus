@@ -2,10 +2,12 @@ package app.vcampus;
 
 import app.vcampus.controller.StoreItemController;
 import app.vcampus.controller.StoreTransactionController;
+import app.vcampus.controller.CourseController;
 import app.vcampus.domain.StoreItem;
 import app.vcampus.domain.Student;
 import app.vcampus.domain.User;
 import app.vcampus.domain.Book;
+
 import app.vcampus.interfaces.PurchaseRequest;
 
 import app.vcampus.utils.DataBase;
@@ -19,6 +21,11 @@ import app.vcampus.interfaces.BookReturnRequest;
 import app.vcampus.interfaces.BookListRequest;
 import app.vcampus.interfaces.BookDeleteRequest;
 import app.vcampus.controller.LibraryController;
+
+import app.vcampus.interfaces.EnrollmentShowRequest;
+import app.vcampus.interfaces.CourseTableShowRequest;
+import app.vcampus.interfaces.CourseSelectRequest;
+import app.vcampus.interfaces.CourseUnselectRequest;
 
 import java.util.List;
 import java.util.UUID;
@@ -118,8 +125,8 @@ public class Main {
 //        items = storeItemController.getItems();
 //        System.out.println("Items after deletion: " + items);
 //
-//
-//        LibraryController library = new LibraryController();
+        //测试LibraryController
+        {//        LibraryController library = new LibraryController();
 //        Gson gson = new Gson();
 //        BookSearchingRequest request0 = new BookSearchingRequest("student", "天才");
 //        String jsonData0 = gson.toJson(request0);
@@ -165,7 +172,34 @@ public class Main {
 //        String jsonData7 = gson.toJson(request7);
 //        String result7 = library.viewAllBorrowRecord(jsonData7);
 //        System.out.println(result7);
+        }
 
+
+        //测试CourseController
+        {
+            CourseController courseController = new CourseController();
+            Gson gson = new Gson();
+            //测试显示课程函数
+            EnrollmentShowRequest request0 = new EnrollmentShowRequest("213220159");
+            String jsonData0 = gson.toJson(request0);
+            String result0 = courseController.showEnrollList(jsonData0);
+            System.out.println(result0);
+            //测试选课函数
+            CourseSelectRequest request1 = new CourseSelectRequest("CS001020","213220159");
+            String jsonData1 = gson.toJson(request1);
+            String result1 = courseController.selectCourse(jsonData1);
+            System.out.println(result1);
+            //测试退课函数
+            CourseUnselectRequest request2 = new CourseUnselectRequest("CS001020","213220159");
+            String jsonData2 = gson.toJson(request2);
+            String result2 = courseController.unselectCourse(jsonData2);
+            System.out.println(result2);
+            //测试显示课程表函数
+            CourseTableShowRequest request3 = new CourseTableShowRequest("213220159");
+            String jsonData3 = gson.toJson(request3);
+            String result3 = courseController.showCourseTable(jsonData3);
+            System.out.println(result3);
+        }
 
         NettyServer nettyServer = new NettyServer(8066);
         nettyServer.start();

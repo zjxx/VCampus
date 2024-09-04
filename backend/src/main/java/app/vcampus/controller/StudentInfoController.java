@@ -2,6 +2,7 @@ package app.vcampus.controller;
 
 import app.vcampus.domain.Student;
 import app.vcampus.domain.User;
+import app.vcampus.enums.MajorType;
 import app.vcampus.interfaces.studentInfoRequest;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
@@ -25,7 +26,7 @@ public class StudentInfoController {
         data.addProperty("name", student.getUsername());
         data.addProperty("gender", student.getGender()==0?"男":"女");
         data.addProperty("race", student.getRace());
-        data.addProperty("major", student.getMajor());
+        data.addProperty("major", MajorType.fromIndex((int)student.getMajor()));        //将MajorType转换为String类型
         data.addProperty("academy", student.getAcademy());
         data.addProperty("nativePlace", student.getNativePlace());
         return gson.toJson(data);
@@ -38,7 +39,7 @@ public class StudentInfoController {
             if (student.getStudentId() == null || student.getStudentId().isEmpty() ||
                     student.getUsername() == null || student.getUsername().isEmpty() ||
                     student.getRace() == null || student.getRace().isEmpty() ||
-                    student.getMajor() == null || student.getMajor().isEmpty() ||
+                    student.getMajor() == null ||
                     student.getAcademy() == null || student.getAcademy().isEmpty() ||
                     student.getNativePlace() == null || student.getNativePlace().isEmpty()) {
                 JsonObject data = new JsonObject();
@@ -138,7 +139,7 @@ public class StudentInfoController {
                     updatedStudent.getUsername() == null || updatedStudent.getUsername().isEmpty() ||
                     updatedStudent.getGender() < 0 || // 检查 gender 是否为无效值
                     updatedStudent.getRace() == null || updatedStudent.getRace().isEmpty() ||
-                    updatedStudent.getMajor() == null || updatedStudent.getMajor().isEmpty() ||
+                    updatedStudent.getMajor() == null ||
                     updatedStudent.getAcademy() == null || updatedStudent.getAcademy().isEmpty() ||
                     updatedStudent.getNativePlace() == null || updatedStudent.getNativePlace().isEmpty()) {
                 JsonObject response = new JsonObject();
