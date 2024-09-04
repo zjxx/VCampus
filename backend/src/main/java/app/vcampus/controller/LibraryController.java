@@ -89,7 +89,7 @@ public class LibraryController {
                     //如果有借阅记录，则判断该用户是否是该书的借阅者，如果是，则不可以再借阅该书籍
                     if (!borrowedBooks.isEmpty()) {
                         for (Reader2Book borrowedBook : borrowedBooks) {
-                            if (borrowedBook.getReader_ID().equals(request.getId())) {
+                            if (borrowedBook.getReader_ID().equals(request.getuserId())) {
                                 data.addProperty("error", "You have borrowed the book before.");
                             }
                         }
@@ -98,7 +98,7 @@ public class LibraryController {
                     else {
                         //创建借阅记录
                         Reader2Book reader2Book = new Reader2Book();
-                        reader2Book.setReader_ID(request.getId());
+                        reader2Book.setReader_ID(request.getuserId());
                         reader2Book.setBook_ISBN(request.getISBN());
                         //设置借阅日期为处理请求的日期
                         Date currentDate = new Date();
