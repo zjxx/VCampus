@@ -14,13 +14,14 @@ import app.vcampus.utils.DataBaseManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Date;
 import java.util.Calendar;
 
 public class LibraryController {
     private final Gson gson = new Gson();
-
+    private FileOutputStream fileOutputStream;
     //前端输入role和bookName，后端返回相应的书籍信息
     public String searchBookInfo(String jsonData) {
         //解析JSON数据
@@ -380,9 +381,27 @@ public class LibraryController {
         }
         return gson.toJson(data);
     }
+    //管理员增加藏书功能
+    public String addBook(String jsonData,String additionalParam){
+        //解析JSON数据
+        JsonObject data = new JsonObject();
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+        try{
+            fileOutputStream = new FileOutputStream("1uploaded_image.jpg");//指定保持路径
+            byte[] bytes = java.util.Base64.getDecoder().decode(additionalParam);
+            fileOutputStream.write(bytes);
+            fileOutputStream.close();
+            data.addProperty("status", "success");
+        }
+        catch (Exception e){
+            System.out.println("Error: " + e);
+            data.addProperty("error", "Failed to add book.");
+        }
+
+        return gson.toJson(data);
+    };
 }
 
-//    //管理员增加藏书功能
-//    public String addBook(String jsonData) {};
+
 
 
