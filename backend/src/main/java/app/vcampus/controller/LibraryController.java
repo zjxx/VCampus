@@ -14,13 +14,14 @@ import app.vcampus.utils.DataBaseManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Date;
 import java.util.Calendar;
 
 public class LibraryController {
     private final Gson gson = new Gson();
-
+    private FileOutputStream fileOutputStream;
     //前端输入role和bookName，后端返回相应的书籍信息
     public String searchBookInfo(String jsonData) {
         //解析JSON数据
@@ -88,7 +89,9 @@ public class LibraryController {
                     //如果有借阅记录，则判断该用户是否是该书的借阅者，如果是，则不可以再借阅该书籍
                     if (!borrowedBooks.isEmpty()) {
                         for (Reader2Book borrowedBook : borrowedBooks) {
+
                             if (borrowedBook.getReader_ID().equals(request.getId())&&borrowedBook.isBook_State()) {
+
                                 data.addProperty("error", "You have borrowed the book before.");
                             }
                         }
@@ -97,7 +100,7 @@ public class LibraryController {
                     else {
                         //创建借阅记录
                         Reader2Book reader2Book = new Reader2Book();
-                        reader2Book.setReader_ID(request.getId());
+                        reader2Book.setReader_ID(request.getuserId());
                         reader2Book.setBook_ISBN(request.getISBN());
                         //设置借阅日期为处理请求的日期
                         Date currentDate = new Date();
@@ -381,9 +384,27 @@ public class LibraryController {
         }
         return gson.toJson(data);
     }
+    //管理员增加藏书功能
+    public String addBook(String jsonData,String additionalParam){
+        //解析JSON数据
+        JsonObject data = new JsonObject();
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+        try{
+            fileOutputStream = new FileOutputStream("1uploaded_image.jpg");//指定保持路径
+            byte[] bytes = java.util.Base64.getDecoder().decode(additionalParam);
+            fileOutputStream.write(bytes);
+            fileOutputStream.close();
+            data.addProperty("status", "success");
+        }
+        catch (Exception e){
+            System.out.println("Error: " + e);
+            data.addProperty("error", "Failed to add book.");
+        }
+
+        return gson.toJson(data);
+    };
 }
 
-//    //管理员增加藏书功能
-//    public String addBook(String jsonData) {};
+
 
 

@@ -8,7 +8,6 @@ import app.vcampus.controller.LibraryController;
 import app.vcampus.controller.CourseController;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonArray;
 
 public class ControllerManager {
     private final UserController userController = new UserController();
@@ -23,13 +22,16 @@ public class ControllerManager {
         // 注册路由
         routeMapping.registerRoute("login", userController::login);
 
-        routeMapping.registerRoute("lib/search", libraryController::searchBookInfo);//搜索图书
-        routeMapping.registerRoute("lib/addtolist", libraryController::borrowBook);//借书
-        routeMapping.registerRoute("lib/returnbook", libraryController::returnBook);//还书
-        routeMapping.registerRoute("lib/renewbook", libraryController::delayReturnBook);//续借
-        routeMapping.registerRoute("lib/fetchImageUrl", libraryController::searchBookInfo);//
+        routeMapping.registerRoute("lib/search", libraryController::searchBookInfo);
+        routeMapping.registerRoute("lib/addtolist", libraryController::borrowBook);
+        routeMapping.registerRoute("lib/returnbook", libraryController::returnBook);
+        routeMapping.registerRoute("lib/renewbook", libraryController::delayReturnBook);
+        routeMapping.registerRoute("lib/fetchImageUrl", libraryController::searchBookInfo);
         routeMapping.registerRoute("lib/search", libraryController::searchBookInfo);
         routeMapping.registerRoute("lib/check", libraryController::viewBorrowRecord);
+        routeMapping.registerRouteWithParams("lib/file_upload", libraryController::addBook);
+
+
         routeMapping.registerRoute(("shop/addtolist"), storeController::addItem);//添加商品
         routeMapping.registerRoute("searchItems", storeController::searchItems);
         routeMapping.registerRoute("purchase", storeController::handlePurchase);
@@ -47,23 +49,28 @@ public class ControllerManager {
         routeMapping.registerRoute("arc/view", studentInfoController::getStudentInfo);
         routeMapping.registerRoute("arc/delete", studentInfoController::deleteStudentStatus);//
         routeMapping.registerRoute("arc/search", studentInfoController::searchStudent);//
+        routeMapping.registerRoute("arc/modify", studentInfoController::updateStudentStatus);//
+        routeMapping.registerRoute(("arc/modifyPassword"), userController::modifyPassword);//修改密码);
+
         routeMapping.registerRoute("course/listAll", courseController::showEnrollList);//向登录学生展示方案课程
         routeMapping.registerRoute("course/select", courseController::selectCourse);//学生选择课程
         routeMapping.registerRoute("course/unselect", courseController::unselectCourse);//学生退课
         routeMapping.registerRoute("course/courseTable",courseController::showCourseTable);//学生查看课程表
-        routeMapping.registerRoute("arc/modify", studentInfoController::updateStudentStatus);//
-        routeMapping.registerRoute(("arc/modifyPassword"), userController::modifyPassword);//修改密码);
 
     }
     public String handleRequest(String jsonData) {
-        // 解析 JSON 请求
+        // Parse JSON request
         Request request = gson.fromJson(jsonData, Request.class);
 
-        // 根据请求类型调用相应的控制器方法
+        // Call the appropriate controller method based on the request type
         return routeMapping.handleRequest(request.getType(), jsonData);
     }
 
-    private String getImage(String jsonData){
-        return "https://th.bing.com/th/id/R.061dc0f43851e2ef1f114ee33eabf427?rik=H7HNnwjTHfgibg&pid=ImgRaw&r=0";
+    public String handleRequestWithParams(String jsonData, String additionalParam) {
+        // Parse JSON request
+        Request request = gson.fromJson(jsonData, Request.class);
+
+        // Call the appropriate controller method based on the request type
+        return routeMapping.handleRequestWithParams(request.getType(), jsonData, additionalParam);
     }
 }
