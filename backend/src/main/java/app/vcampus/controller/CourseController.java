@@ -54,12 +54,12 @@ public class CourseController {
             courseData.addProperty("courseId", course.getCourse_id());
             courseData.addProperty("courseName", course.getCourse_name());
             courseData.addProperty("teacher", course.getTeacher_name());
-            courseData.addProperty("credit", course.getCredit());
+            courseData.addProperty("credit", String.valueOf(course.getCredit()));
             courseData.addProperty("time", course.getTime());
             courseData.addProperty("location", course.getLocation());
-            courseData.addProperty("capacity", course.getCapacity());
+            courseData.addProperty("capacity", String.valueOf(course.getCapacity()));
             courseData.addProperty("property",course.getProperty());
-            courseData.addProperty("valid_capacity", course.getValid_capacity());
+            courseData.addProperty("valid_capacity", String.valueOf(course.getValid_capacity()));
             data.add("course" + i, courseData);
         }
         data.addProperty("status", "success");
