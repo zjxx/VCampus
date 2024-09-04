@@ -10,7 +10,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import module.StudentStatusModule
 import view.component.pageTitle
-import java.awt.Desktop
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
@@ -22,17 +23,11 @@ import org.apache.poi.ss.usermodel.DataFormatter
 @Composable
 fun AddStudentStatusSubscene() {
     val studentStatusModule = remember { StudentStatusModule() }
-    var name by remember { mutableStateOf("") }
-    var gender by remember { mutableStateOf("") }
-    var race by remember { mutableStateOf("") }
-    var nativePlace by remember { mutableStateOf("") }
-    var studentId by remember { mutableStateOf("") }
-    var major by remember { mutableStateOf("") }
-    var academy by remember { mutableStateOf("") }
-    var students by remember { mutableStateOf(listOf<StudentStatusModule>()) }
     val scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
     var filePath by remember { mutableStateOf("") }
+    val genderOptions = listOf("男", "女")
+    var expanded by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.padding(start = 16.dp)) {
         pageTitle(heading = "增加学籍信息", caption = "填写学籍信息")
@@ -40,20 +35,41 @@ fun AddStudentStatusSubscene() {
         // 第一行
         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
             OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
+                value = studentStatusModule.name,
+                onValueChange = { studentStatusModule.name = it },
                 label = { Text("姓名") },
                 modifier = Modifier.weight(1f).padding(end = 16.dp)
             )
+            Box(modifier = Modifier.weight(1f).padding(end = 16.dp)) {
+                OutlinedTextField(
+                    value = studentStatusModule.gender,
+                    onValueChange = { studentStatusModule.gender = it },
+                    label = { Text("性别") },
+                    modifier = Modifier.fillMaxWidth(),
+                    readOnly = true,
+                    trailingIcon = {
+                        IconButton(onClick = { expanded = true }) {
+                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                        }
+                    }
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    genderOptions.forEach { gender ->
+                        DropdownMenuItem(onClick = {
+                            studentStatusModule.gender = gender
+                            expanded = false
+                        }) {
+                            Text(text = gender)
+                        }
+                    }
+                }
+            }
             OutlinedTextField(
-                value = gender,
-                onValueChange = { gender = it },
-                label = { Text("性别") },
-                modifier = Modifier.weight(1f).padding(end = 16.dp)
-            )
-            OutlinedTextField(
-                value = race,
-                onValueChange = { race = it },
+                value = studentStatusModule.race,
+                onValueChange = { studentStatusModule.race = it },
                 label = { Text("民族") },
                 modifier = Modifier.weight(1f)
             )
@@ -62,14 +78,14 @@ fun AddStudentStatusSubscene() {
         // 第二行
         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
             OutlinedTextField(
-                value = nativePlace,
-                onValueChange = { nativePlace = it },
+                value = studentStatusModule.nativePlace,
+                onValueChange = { studentStatusModule.nativePlace = it },
                 label = { Text("籍贯") },
                 modifier = Modifier.weight(1f).padding(end = 16.dp)
             )
             OutlinedTextField(
-                value = studentId,
-                onValueChange = { studentId = it },
+                value = studentStatusModule.studentId,
+                onValueChange = { studentStatusModule.studentId = it },
                 label = { Text("一卡通") },
                 modifier = Modifier.weight(1f)
             )
@@ -77,14 +93,14 @@ fun AddStudentStatusSubscene() {
 
         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
             OutlinedTextField(
-                value = major,
-                onValueChange = { major = it },
+                value = studentStatusModule.major,
+                onValueChange = { studentStatusModule.major = it },
                 label = { Text("专业") },
                 modifier = Modifier.weight(1f).padding(end = 16.dp)
             )
             OutlinedTextField(
-                value = academy,
-                onValueChange = { academy = it },
+                value = studentStatusModule.academy,
+                onValueChange = { studentStatusModule.academy = it },
                 label = { Text("学院") },
                 modifier = Modifier.weight(1f)
             )
@@ -103,7 +119,7 @@ fun AddStudentStatusSubscene() {
                         val selectedFile = fileChooser.selectedFile
                         filePath = selectedFile.absolutePath
                         val newStudents = readExcelFile(selectedFile)
-                        students = newStudents
+                        studentStatusModule.students = newStudents
                         showDialog = true
                     }
                 },
@@ -128,14 +144,18 @@ fun AddStudentStatusSubscene() {
         AlertDialog(
             onDismissRequest = { showDialog = false },
             text = {
-                AddFromFileSubscene(students, onUpdateFile = { updatedStudents ->
-                    students = updatedStudents
-                }, filePath = filePath)
+                Box(modifier = Modifier.height(800.dp)) { // Set a fixed height for the dialog
+                    Column {
+                        AddFromFileSubscene(studentStatusModule.students, onUpdateFile = { updatedStudents ->
+                            studentStatusModule.students = updatedStudents
+                        }, filePath = filePath)
+                    }
+                }
             },
             confirmButton = {
                 Button(onClick = {
                     scope.launch {
-                        students.forEach { student ->
+                        studentStatusModule.students.forEach { student ->
                             student.addStudentStatus()
                         }
                         showDialog = false
