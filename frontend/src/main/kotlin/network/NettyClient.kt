@@ -12,6 +12,9 @@ import io.netty.handler.codec.string.StringDecoder
 import io.netty.handler.codec.string.StringEncoder
 import io.netty.handler.logging.LogLevel
 import io.netty.handler.logging.LoggingHandler
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.util.Base64
 
 class NettyClient(private val host: String, private val port: Int) {
     private var role: String = "null"
@@ -19,6 +22,17 @@ class NettyClient(private val host: String, private val port: Int) {
 
     fun setRole(role: String) {
         this.role = role
+    }
+
+    private fun splitData(data: String, chunkSize: Int): List<String> {
+        val chunks = mutableListOf<String>()
+        var start = 0
+        while (start < data.length) {
+            val end = Math.min(data.length, start + chunkSize)
+            chunks.add(data.substring(start, end))
+            start = end
+        }
+        return chunks
     }
 
     fun sendRequest(request: Any, type: String, responseHandler: (String) -> Unit) {
@@ -51,6 +65,55 @@ class NettyClient(private val host: String, private val port: Int) {
 
                 future.channel().writeAndFlush(jsonRequest)
 
+                // 等待连接关闭
+                future.channel().closeFuture().sync()
+            } finally {
+                group.shutdownGracefully()
+            }
+        }.start()
+    }
+
+    fun sendFile(type: String,filePath: String, responseHandler: (String) -> Unit) {
+        Thread {
+            val group = NioEventLoopGroup()
+            try {
+                val bootstrap = Bootstrap()
+                bootstrap.group(group)
+                    .channel(NioSocketChannel::class.java)
+                    .option(ChannelOption.SO_KEEPALIVE, true)
+                    .handler(object : ChannelInitializer<SocketChannel>() {
+                        override fun initChannel(ch: SocketChannel) {
+                            ch.pipeline().addLast(
+                                LoggingHandler(LogLevel.INFO),
+                                StringDecoder(),
+                                StringEncoder(),
+                                NettyClientHandler(responseHandler)
+                            )
+                        }
+                    })
+
+                // 启动客户端
+                val future: ChannelFuture = bootstrap.connect(host, port).sync()
+
+                // 读取文件并编码为 Base64
+                val fileBytes = Files.readAllBytes(Paths.get(filePath))
+                val encodedFile = Base64.getEncoder().encodeToString(fileBytes)
+
+
+                // 创建请求对象
+                val req = mutableMapOf<String, Any>(
+                    "role" to role,
+                    "type" to type
+                )
+                val jsonRequest = gson.toJson(req)
+                val chunks = splitData(encodedFile, 512) // Split data into 1KB chunks
+
+                // 发送请求
+                future.channel().writeAndFlush(jsonRequest)
+                for (chunk in chunks) {
+                    future.channel().writeAndFlush(chunk)
+                }
+                future.channel().writeAndFlush("END_OF_MESSAGE")
                 // 等待连接关闭
                 future.channel().closeFuture().sync()
             } finally {

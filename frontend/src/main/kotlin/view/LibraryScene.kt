@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import data.Book
 import data.UserSession
 import module.LibraryModule
+import view.component.FilePicker
 
 
 @Composable
@@ -202,31 +203,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
 
                     "显示图片" -> {
                         Column(modifier = Modifier.padding(top = 8.dp)) {
-                            OutlinedTextField(
-                                value = inputText,
-                                onValueChange = { inputText = it },
-                                modifier = Modifier.fillMaxWidth(),
-                                singleLine = true
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(4.dp))
-                                    .background(Color.Blue)
-                                    .clickable { libraryModule.fetchImageUrl(inputText.text) }
-                                    .padding(8.dp)
-                            ) {
-                                Text(text = "获取图片", color = Color.White)
-                            }
-                            Spacer(modifier = Modifier.height(8.dp))
-                            if (imageUrl.isNotEmpty()) {
-                                AsyncImage(
-                                    load = { loadImageBitmap(imageUrl) },
-                                    painterFor = { remember { BitmapPainter(it) } },
-                                    contentDescription = "Fetched Image",
-                                    modifier = Modifier.width(200.dp)
-                                )
-                            }
+                            FilePicker()
                         }
                     }
                 }
