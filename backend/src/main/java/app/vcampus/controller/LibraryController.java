@@ -14,6 +14,7 @@ import app.vcampus.utils.DataBaseManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Date;
@@ -60,12 +61,14 @@ public class LibraryController {
                 return gson.toJson(data);
 
             } else {
-                data.addProperty("error", "No book found.");
+                data.addProperty("status","failed");
+                data.addProperty("reason", "No book found.");
                 return gson.toJson(data);
             }
         } else //如果不是学生，则不予显示书籍信息，表示没有权限查找书籍
         {
-            data.addProperty("error", "You don't have permission to search book.");
+            data.addProperty("status","failed");
+            data.addProperty("reason", "You don't have permission to search book.");
         }
         return gson.toJson(data);
     }
@@ -90,7 +93,7 @@ public class LibraryController {
                     if (!borrowedBooks.isEmpty()) {
                         for (Reader2Book borrowedBook : borrowedBooks) {
 
-                            if (borrowedBook.getReader_ID().equals(request.getId())&&borrowedBook.isBook_State()) {
+                            if (borrowedBook.getReader_ID().equals(request.getuserId())&&borrowedBook.isBook_State()) {
 
                                 data.addProperty("error", "You have borrowed the book before.");
                             }
@@ -121,13 +124,16 @@ public class LibraryController {
                         data.addProperty("success", "You have borrowed the book successfully.");
                     }
                 } else {
-                    data.addProperty("error", "The book is not available.");
+                    data.addProperty("status","failed");
+                    data.addProperty("reason", "The book is not available.");
                 }
             } else {
-                data.addProperty("error", "No book found.");
+                data.addProperty("status","failed");
+                data.addProperty("reason", "No book found.");
             }
         } else {
-            data.addProperty("error", "You don't have permission to borrow book.");
+            data.addProperty("status","failed");
+            data.addProperty("reason", "You don't have permission to borrow book.");
         }
         return gson.toJson(data);
     }
@@ -175,13 +181,16 @@ public class LibraryController {
                         }
                     }
                 } else {
-                    data.addProperty("error", "You haven't borrowed the book before.");
+                    data.addProperty("status","failed");
+                    data.addProperty("reason", "You haven't borrowed the book before.");
                 }
             } else {
-                data.addProperty("error", "No book found.");
+                data.addProperty("status","failed");
+                data.addProperty("reason", "No book found.");
             }
         } else {
-            data.addProperty("error", "You don't have permission to return book.");
+            data.addProperty("status","failed");
+            data.addProperty("reason", "You don't have permission to return book.");
         }
         return gson.toJson(data);
     }
@@ -206,14 +215,16 @@ public class LibraryController {
                         if (borrowedBook.getReader_ID().equals(request.getId())) {
                             //检查书籍是否已经被还书，如果已经被还书，则提示用户已经还书了
                             if (!borrowedBook.isBook_State()) {
-                                data.addProperty("error", "The book has been returned.");
+                                data.addProperty("status","failed");
+                                data.addProperty("reason", "The book has been returned.");
                                 return gson.toJson(data);
                             }
                             //判断是否超过30天还书期限,如果超期，不允许延期，提示用户还书
                             Date currentDate = new Date();
                             //判断是否超过30天还书期限
                             if (currentDate.after(borrowedBook.getReturn_Date())) {
-                                data.addProperty("error", "You cannot delay return the book after 30 days.");
+                                data.addProperty("status","failed");
+                                data.addProperty("reason", "You cannot delay return the book after 30 days.");
                             } else {
                                 //否则允许延期还书
                                 //判断借阅记录中的延期次数，是否小于3次，如果小于3次，则延期还书，否则提示用户不能延期
@@ -233,18 +244,22 @@ public class LibraryController {
                                     db.update(borrowedBook);
                                     data.addProperty("status", "success");
                                 } else {
-                                    data.addProperty("error", "You cannot delay return the book more than 3 times.");
+                                    data.addProperty("status","failed");
+                                    data.addProperty("reason", "You cannot delay return the book more than 3 times.");
                                 }
                             }
                         } else {
-                            data.addProperty("error", "You haven't borrowed the book before.");
+                            data.addProperty("status","failed");
+                            data.addProperty("reason", "You haven't borrowed the book before.");
                         }
                     }
                 } else {
-                    data.addProperty("error", "No book found.");
+                    data.addProperty("status","failed");
+                    data.addProperty("reason", "No book found.");
                 }
             } else {
-                data.addProperty("error", "You don't have permission to delay return book.");
+                data.addProperty("status","failed");
+                data.addProperty("reason", "You don't have permission to delay return book.");
             }
         }
         return gson.toJson(data);
@@ -299,10 +314,12 @@ public class LibraryController {
                 data.addProperty("borrowing_number", String.valueOf(borrowingi));
                 data.addProperty("haveBorrowed_number", String.valueOf(haveBorrowedi));
             } else {
-                data.addProperty("error", "You haven't borrowed any book.");
+                data.addProperty("status", "failed");
+                data.addProperty("reason", "You haven't borrowed any book.");
             }
         } else {
-            data.addProperty("error", "You don't have permission to view the borrow record.");
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "You don't have permission to view the borrow record.");
         }
         return gson.toJson(data);
     }
@@ -323,10 +340,12 @@ public class LibraryController {
                 db.delete(book);
                 data.addProperty("status", "success");
             } else {
-                data.addProperty("error", "No book found.");
+                data.addProperty("status", "failed");
+                data.addProperty("reason", "No book found.");
             }
         } else {
-            data.addProperty("error", "You don't have permission to delete book.");
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "You don't have permission to delete book.");
         }
         return gson.toJson(data);
     }
@@ -376,11 +395,12 @@ public class LibraryController {
                 data.addProperty("status", "success");
             }else{
                 data.addProperty("status", "failed");
-                data.addProperty("reason","");
+                data.addProperty("reason", "No borrow record found.");
             }
         }
         else{
-            data.addProperty("error", "You don't have permission to view the borrow record.");
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "You don't have permission to view the borrow record.");
         }
         return gson.toJson(data);
     }
