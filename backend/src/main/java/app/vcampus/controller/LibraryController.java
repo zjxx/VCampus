@@ -372,7 +372,8 @@ public class LibraryController {
                 }
                 data.addProperty("status", "success");
             }else{
-                data.addProperty("error", "No borrow record found.");
+                data.addProperty("status", "failed");
+                data.addProperty("reason","");
             }
         }
         else{
