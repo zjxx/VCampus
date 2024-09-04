@@ -16,7 +16,7 @@ class LibraryModule (
     var tempBooks = mutableListOf<Book>()
 
     fun libSearch(bookname: String, role: String) {
-        val request = mapOf("role" to UserSession.role, "bookname" to bookname)
+        val request = mapOf("role" to UserSession.role, "bookname" to bookname)//加上一个flag区分是否时书名和isbn
         nettyClient.sendRequest(request, "lib/search") { response: String ->
             handleResponseSearch(response)
         }
@@ -125,22 +125,23 @@ class LibraryModule (
         }
     }
 
-    fun libAddToLits(userId: String, bookname: String) {//借书
-        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "bookname" to bookname)
+    //借书发送信息
+    fun libAddToLits(isbn: String) {//借书
+        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "ISBN" to isbn)
         nettyClient.sendRequest(request, "lib/addtolist") { response: String ->
             handleResponseAddToList(response)
         }
     }
 
+    //借书信息处理
     private fun handleResponseAddToList(response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
-        println("Response message: ${responseJson["message"]}")
         println("Response status: ${responseJson["status"]}")
         if (responseJson["status"] == "success") {
-            DialogManager.showDialog("办理成功")
+            DialogManager.showDialog("借阅成功")
         } else {
-            DialogManager.showDialog("办理失败")
+            DialogManager.showDialog("借阅失败")
         }
     }
 
@@ -209,3 +210,4 @@ class LibraryModule (
         }
     }
 }
+
