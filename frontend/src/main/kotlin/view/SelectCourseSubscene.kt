@@ -12,14 +12,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Alignment
 import view.component.CourseCard
 import module.CourseModule
-import module.Course
 
 @Composable
-fun SelectCourseSubscene() {
+fun SelectCourseSubscene(courseModule: CourseModule) {
     var searchQuery by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
-    val courseModule = remember { CourseModule() }
-    val courses by remember { mutableStateOf(courseModule.searchResults) }
+    val groupedCourses by courseModule.searchResults.collectAsState()
 
     Column(modifier = Modifier.verticalScroll(scrollState).padding(16.dp)) {
         // 搜索框和搜索按钮
@@ -41,17 +39,15 @@ fun SelectCourseSubscene() {
 
         // Title bar
         Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
-            Text("课程号", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
+            Text("课程号前缀", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
             Text("课程名称", modifier = Modifier.weight(2f), fontWeight = FontWeight.Bold)
-            Text("教学班个数", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
-            Text("课程性质", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
             Text("学分", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
-            Text("教师", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold) // Add teacher column
+            Text("课程性质", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
         }
 
         // 选课内容
-        courses.forEach { course ->
-            CourseCard(course)
+        groupedCourses.forEach { groupedCourse -> // Print
+            CourseCard(groupedCourse)
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
