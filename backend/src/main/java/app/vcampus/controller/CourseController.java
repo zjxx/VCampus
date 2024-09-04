@@ -47,7 +47,7 @@ public class CourseController {
             }
         }
         //打包返回所有课程数据的json数据
-        data.addProperty("number", courses.size());
+        data.addProperty("number", String.valueOf(courses.size()));
         for(int i = 0; i < courses.size(); i++) {
             Course course = courses.get(i);
             JsonObject courseData = new JsonObject();
