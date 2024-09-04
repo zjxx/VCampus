@@ -21,6 +21,7 @@ public class DataBase {
                 .addAnnotatedClass(Student.class)
                 .addAnnotatedClass(Book.class)
                 .addAnnotatedClass(Reader2Book.class)
+                .addAnnotatedClass(ShoppingCartItem.class)
                 .buildSessionFactory();
         session = sessionFactory.openSession();
     }
