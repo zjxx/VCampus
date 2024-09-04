@@ -13,7 +13,7 @@ import java.util.UUID;
 public class ShoppingCartController {
     private final Gson gson = new Gson();
 
-    // 添加商品到购物车
+    // 添加商品到购物车，传入 userId, itemId, quantity
     public String addItemToCart(String jsonData) {
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         String userId = request.get("userId").getAsString();
@@ -22,6 +22,7 @@ public class ShoppingCartController {
 
         DataBase db = DataBaseManager.getInstance();
         ShoppingCartItem cartItem = new ShoppingCartItem();
+        cartItem.setUuid(UUID.randomUUID()); // Set the UUID
         cartItem.setUserId(userId);
         cartItem.setItemId(itemId);
         cartItem.setQuantity(quantity);
@@ -32,16 +33,18 @@ public class ShoppingCartController {
         return gson.toJson(response);
     }
 
-    // 从购物车移除商品
+
+    // 从购物车移除商品，传入 userId, itemId, uuid
     public String removeItemFromCart(String jsonData) {
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         String userId = request.get("userId").getAsString();
         UUID itemId = UUID.fromString(request.get("itemId").getAsString());
+        UUID uuid = UUID.fromString(request.get("uuid").getAsString()); // Get the UUID
 
         DataBase db = DataBaseManager.getInstance();
         List<ShoppingCartItem> cartItems = db.getWhere(ShoppingCartItem.class, "userId", userId);
         for (ShoppingCartItem cartItem : cartItems) {
-            if (cartItem.getItemId().equals(itemId)) {
+            if (cartItem.getItemId().equals(itemId) && cartItem.getUuid().equals(uuid)) {
                 db.remove(cartItem);
                 break;
             }
@@ -52,7 +55,7 @@ public class ShoppingCartController {
         return gson.toJson(response);
     }
 
-    // 查看购物车内容
+    // 查看购物车内容，传入 userId
     public String viewCart(String jsonData) {
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         String userId = request.get("userId").getAsString();
@@ -62,7 +65,7 @@ public class ShoppingCartController {
         JsonObject response = new JsonObject();
         JsonObject itemsObject = new JsonObject();
         for (ShoppingCartItem cartItem : cartItems) {
-            StoreItem item = db.getWhere(StoreItem.class, "id", cartItem.getItemId()).get(0);
+            StoreItem item = db.getWhere(StoreItem.class, "uuid", cartItem.getItemId()).get(0);
             JsonObject itemObject = gson.toJsonTree(item).getAsJsonObject();
             itemObject.addProperty("quantity", cartItem.getQuantity());
             itemsObject.add(cartItem.getItemId().toString(), itemObject);

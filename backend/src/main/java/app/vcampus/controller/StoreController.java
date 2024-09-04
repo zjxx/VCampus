@@ -3,6 +3,7 @@ package app.vcampus.controller;
 import app.vcampus.domain.StoreItem;
 import app.vcampus.domain.StoreTransaction;
 import app.vcampus.domain.User;
+import app.vcampus.domain.ShoppingCartItem;
 import app.vcampus.interfaces.PurchaseRequest;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
@@ -282,6 +283,10 @@ public class StoreController {
 
             DataBase db = DataBaseManager.getInstance();
             StoreItem item = db.getWhere(StoreItem.class, "uuid", uuid).get(0);
+            List<ShoppingCartItem> cartItems = db.getWhere(ShoppingCartItem.class, "itemId", uuid);
+            for (ShoppingCartItem cartItem : cartItems) {
+                db.remove(cartItem);
+            }
             db.remove(item);
 
             JsonObject response = new JsonObject();
@@ -310,8 +315,9 @@ public class StoreController {
             existingItem.setStock(updatedItem.getStock());
             existingItem.setSalesVolume(updatedItem.getSalesVolume());
             existingItem.setDescription(updatedItem.getDescription());
-
+            db.disableForeignKeyChecks();
             db.persist(existingItem);
+            db.enableForeignKeyChecks();
 
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");

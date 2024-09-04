@@ -2,6 +2,7 @@ package app.vcampus.controller;
 
 import app.vcampus.domain.Student;
 import app.vcampus.domain.User;
+import app.vcampus.domain.ShoppingCartItem;
 import app.vcampus.enums.MajorType;
 import app.vcampus.interfaces.studentInfoRequest;
 import app.vcampus.utils.DataBase;
@@ -82,6 +83,10 @@ public class StudentInfoController {
 
             // 同时从 User 库中删除对应的数据
             User user = db.getWhere(User.class, "userId", studentId).get(0);
+            List<ShoppingCartItem> shoppingCartItems = db.getWhere(ShoppingCartItem.class, "userId", studentId);
+            for (ShoppingCartItem item : shoppingCartItems) {
+                db.remove(item);
+            }
             db.remove(user);
 
             JsonObject data = new JsonObject();

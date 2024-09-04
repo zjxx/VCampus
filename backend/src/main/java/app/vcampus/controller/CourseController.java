@@ -47,19 +47,19 @@ public class CourseController {
             }
         }
         //打包返回所有课程数据的json数据
-        data.addProperty("number", courses.size());
+        data.addProperty("number", String.valueOf(courses.size()));
         for(int i = 0; i < courses.size(); i++) {
             Course course = courses.get(i);
             JsonObject courseData = new JsonObject();
             courseData.addProperty("courseId", course.getCourse_id());
             courseData.addProperty("courseName", course.getCourse_name());
             courseData.addProperty("teacher", course.getTeacher_name());
-            courseData.addProperty("credit", course.getCredit());
+            courseData.addProperty("credit", String.valueOf(course.getCredit()));
             courseData.addProperty("time", course.getTime());
             courseData.addProperty("location", course.getLocation());
-            courseData.addProperty("capacity", course.getCapacity());
+            courseData.addProperty("capacity", String.valueOf(course.getCapacity()));
             courseData.addProperty("property",course.getProperty());
-            courseData.addProperty("valid_capacity", course.getValid_capacity());
+            courseData.addProperty("valid_capacity", String.valueOf(course.getValid_capacity()));
             data.add("course" + i, courseData);
         }
         data.addProperty("status", "success");
