@@ -8,7 +8,7 @@ import view.component.DialogManager
 
 class LibraryModule (
     private val onSearchSuccess: (List<Book>) -> Unit,
-    private val onCheckSuccess: (String) -> Unit,
+    private val onCheckSuccess: (List<Book>) -> Unit,
     private val onImageFetchSuccess: (String) -> Unit
 
 ) {
@@ -72,17 +72,54 @@ class LibraryModule (
     private fun handleResponseCheck(response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
-        println("Response message: ${responseJson["message"]}")
         println("Response status: ${responseJson["status"]}")
-        if (responseJson["status"] == "success") {
-            val booknum=responseJson["number"] as Int
-            for (i in 1..booknum){
-                val res = responseJson[i.toString()] as String
-                val bookjson = Gson().fromJson(res, MutableMap::class.java) as MutableMap<String, Any>
-                println("Book name: ${bookjson["bookname"]}")
+
+        if (responseJson["status"] == "success" ) {
+
+            val borrowingnum = responseJson["borrowing_number"] as String
+            val borrowednum = responseJson["haveBorrowed_number"] as String
+
+            if (borrowingnum.toInt() == 0 && borrowednum.toInt() == 0){
+                onCheckSuccess(tempBooks)
+            }
+
+            if (borrowingnum.toInt() != 0){
+                for (i in 0 until borrowingnum.toInt()){
+                    val res = responseJson["borrowing"+i.toString()] as String
+                    val bookjson = Gson().fromJson(res, MutableMap::class.java) as MutableMap<String, Any>
+                    println("Book name: ${bookjson["bookName"]}")
+
+                    val temp1 = Book(
+                        condition = "borrowing",
+                        bookname = bookjson["bookName"] as String,
+                        isbn = bookjson["ISBN"] as String,
+                        borrow_date = bookjson["borrow_date"] as String,
+                        return_date = bookjson["return_date"] as String
+                    )
+                    tempBooks.add(temp1)
+                }
 
             }
-            onCheckSuccess(responseJson["message"] as String)
+
+            if (borrowednum.toInt() != 0){
+                for (i in 0 until borrowednum.toInt()){
+                    val res = responseJson["haveBorrowed"+(i).toString()] as String
+                    val bookjson = Gson().fromJson(res, MutableMap::class.java) as MutableMap<String, Any>
+                    println("Book name: ${bookjson["bookName"]}")
+
+                    val temp2 = Book(
+                        condition = "haveBorrowed",
+                        bookname = bookjson["bookName"] as String,
+                        isbn = bookjson["ISBN"] as String,
+                        borrow_date = bookjson["borrow_date"] as String,
+                        return_date = bookjson["return_date"] as String
+                    )
+                    tempBooks.add(temp2)
+                }
+            }
+
+            onCheckSuccess(tempBooks)
+
         } else {
             DialogManager.showDialog("请求失败")
         }

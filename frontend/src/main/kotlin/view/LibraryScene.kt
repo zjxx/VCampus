@@ -21,6 +21,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.Book
+import data.UserSession
 import module.LibraryModule
 
 
@@ -31,6 +32,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     var imageUrl by remember { mutableStateOf("") }
     var inputText by remember { mutableStateOf(TextFieldValue("")) }
     var tempBooks by remember { mutableStateOf(listOf<Book>()) }
+    var borrowedBooks by remember { mutableStateOf(listOf<Book>()) }
 
     val libraryModule = LibraryModule(
         onSearchSuccess = { result ->
@@ -38,7 +40,8 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
             tempBooks = result
         },
         onCheckSuccess = { result ->
-            // Handle check success
+            borrowedBooks = emptyList()
+            borrowedBooks = result
         },
         onImageFetchSuccess = { url ->
             imageUrl = url
@@ -72,7 +75,12 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                     fontSize = 18.sp,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { selectedOption = "查看已借阅书籍信息" }
+                        .clickable {
+                            selectedOption = "查看已借阅书籍信息"
+                            UserSession.userId?.let { userId ->
+                                libraryModule.libCheck(userId)
+                            }
+                        }
                         .padding(vertical = 8.dp)
                 )
                 Text(
@@ -165,13 +173,33 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                         }
                     }
 
-
-
                     "查看已借阅书籍信息" -> {
-                        Column(modifier = Modifier.padding(top = 8.dp)) {
-                            // Handle check results
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(8.dp)
+                        ) {
+                            items(borrowedBooks.size) { index ->
+                                val book = borrowedBooks[index]
+                                val backgroundColor = if (book.condition == "borrowing") Color.White else Color.LightGray
+                                val textColor = if (book.condition == "borrowing") Color(0xFF228042) else Color.Black
+                                val conditionText = if (book.condition == "borrowing") "借阅中" else "曾借阅"
+                                Column(
+                                    modifier = Modifier
+                                        .padding(8.dp)
+                                        .background(backgroundColor)
+                                        //.clickable { onNavigate("BookInfoSubscene") }
+                                        .padding(8.dp)
+                                ) {
+                                    Text(text = book.bookname, color = textColor, fontSize = 16.sp)
+                                    Text(text = conditionText, color = textColor, fontSize = 18.sp)
+                                    Text(text = "借书时间：${book.borrow_date}\n还书时间：${book.return_date}", fontSize = 12.sp)
+                                }
+                            }
                         }
                     }
+
                     "显示图片" -> {
                         Column(modifier = Modifier.padding(top = 8.dp)) {
                             OutlinedTextField(
