@@ -20,6 +20,7 @@ class StudentStatusModule {
     var academy by mutableStateOf("")
     var number by mutableStateOf("")
     var searchResults by mutableStateOf(listOf<StudentStatusModule>())
+    var students by mutableStateOf(listOf<StudentStatusModule>()) // Add this line
 
     fun searchStudentStatus() {
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId)

@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import data.Book
 import data.UserSession
 import network.NettyClientProvider
+import network.downloadImageIfNotExists
 import view.component.DialogManager
 
 class LibraryModule (
@@ -16,6 +17,7 @@ class LibraryModule (
     var tempBooks = mutableListOf<Book>()
 
     fun libSearch(bookname: String, role: String) {
+        tempBooks.clear()
         val request = mapOf("role" to UserSession.role, "bookname" to bookname)//加上一个flag区分是否时书名和isbn
         nettyClient.sendRequest(request, "lib/search") { response: String ->
             handleResponseSearch(response)
@@ -39,8 +41,11 @@ class LibraryModule (
                     // Update tempbook with received data
                     var imageUrl = bookjson["ISBN"] as String
                     imageUrl = imageUrl.replace(Regex("[^0-9]"), "")
+                    var tempImage = "http://47.99.141.236/img/" + imageUrl + ".jpg"
+                    var localPath = "src/main/temp/" + imageUrl + ".jpg"
+                    downloadImageIfNotExists(tempImage, localPath)
                     val temp = Book(
-                        coverImage = "http://47.99.141.236/img/" + imageUrl + ".jpg", // Assuming coverImageRes is not provided in the response
+                        coverImage = localPath, // Assuming coverImageRes is not provided in the response
                         bookname = bookjson["bookName"] as String,
                         author = bookjson["author"] as String,
                         publisher = bookjson["publisher"] as String,
@@ -63,6 +68,7 @@ class LibraryModule (
     }
 
     fun libCheck(userId: String) {
+        tempBooks.clear()
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId)
         nettyClient.sendRequest(request, "lib/check") { response: String ->
             handleResponseCheck(response)

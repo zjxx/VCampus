@@ -26,6 +26,7 @@ dependencies {
     implementation("org.jetbrains.compose.material:material-icons-extended-desktop:1.5.0")
     implementation("org.apache.poi:poi:5.2.3")
     implementation("org.apache.poi:poi-ooxml:5.2.3")
+    implementation("org.apache.logging.log4j:log4j-core:2.23.1")
 }
 
 compose.desktop {

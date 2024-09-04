@@ -18,6 +18,7 @@ import data.Book
 import data.UserSession
 import module.LibraryModule
 import view.component.GlobalState
+import java.io.File
 
 val userid = UserSession.userId.toString()
 
@@ -48,7 +49,7 @@ fun BookImfoSubscene(onNavigateBack: () -> Unit, libraryModule: LibraryModule) {
             contentAlignment = Alignment.TopStart
         ) {
             AsyncImage(
-                load = { loadImageBitmap(book.coverImage) },
+                load = { loadImageBitmap(File(book.coverImage)) },
                 painterFor = { remember { BitmapPainter(it) } },
                 contentDescription = "Book Cover",
                 modifier = Modifier.size(240.dp)

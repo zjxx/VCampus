@@ -12,10 +12,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.animation.Crossfade
 import androidx.compose.ui.draw.shadow
+import module.CourseModule
+
 
 @Composable
 fun CourseScene(onNavigate: (String) -> Unit, role: String) {
     var selectedMenuItem by remember { mutableStateOf("") }
+    val courseModule = remember { CourseModule() }
 
     Row(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -34,6 +37,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
             if (role == "student") {
                 TextButton(onClick = {
                     selectedMenuItem = "选课"
+                    courseModule.listCourse()
                 }) {
                     Text("选课", color = Color.Black) // 设置字体颜色为黑色
                 }

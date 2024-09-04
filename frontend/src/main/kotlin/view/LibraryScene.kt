@@ -23,7 +23,10 @@ import androidx.compose.ui.unit.sp
 import data.Book
 import data.UserSession
 import module.LibraryModule
+import view.component.FilePicker
 import view.component.GlobalState
+import java.io.File
+
 
 @Composable
 fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
@@ -139,7 +142,9 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(8.dp))
                                         .background(Color(0xFF228042))
-                                        .clickable { libraryModule.libSearch(searchText.text, role) }
+                                        .clickable {
+                                            libraryModule.libSearch(searchText.text, role)
+                                        }
                                         .padding(16.dp)
                                 ) {
                                     Text(text = "搜索", color = Color.White, fontSize = 16.sp)
@@ -167,7 +172,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                             .padding(8.dp)
                                     ) {
                                         AsyncImage(
-                                            load = { loadImageBitmap(book.coverImage) },
+                                            load = { loadImageBitmap(File(book.coverImage)) },
                                             painterFor = { remember { BitmapPainter(it) } },
                                             contentDescription = "Book Cover",
                                             modifier = Modifier.size(108.dp)
@@ -207,31 +212,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
 
                         "显示图片" -> {
                             Column(modifier = Modifier.padding(top = 8.dp)) {
-                                OutlinedTextField(
-                                    value = inputText,
-                                    onValueChange = { inputText = it },
-                                    modifier = Modifier.fillMaxWidth(),
-                                    singleLine = true
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Box(
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(4.dp))
-                                        .background(Color.Blue)
-                                        .clickable { libraryModule.fetchImageUrl(inputText.text) }
-                                        .padding(8.dp)
-                                ) {
-                                    Text(text = "获取图片", color = Color.White)
-                                }
-                                Spacer(modifier = Modifier.height(8.dp))
-                                if (imageUrl.isNotEmpty()) {
-                                    AsyncImage(
-                                        load = { loadImageBitmap(imageUrl) },
-                                        painterFor = { remember { BitmapPainter(it) } },
-                                        contentDescription = "Fetched Image",
-                                        modifier = Modifier.width(200.dp)
-                                    )
-                                }
+                                FilePicker()
                             }
                         }
                     }
@@ -278,7 +259,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                                 .padding(8.dp)
                                         ) {
                                             AsyncImage(
-                                                load = { loadImageBitmap(book.coverImage) },
+                                                load = { loadImageBitmap(File(book.coverImage)) },
                                                 painterFor = { remember { BitmapPainter(it) } },
                                                 contentDescription = "Book Cover",
                                                 modifier = Modifier.size(128.dp)
@@ -294,35 +275,6 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                             // Add implementation for viewing borrowing records
                         }
 
-                        "显示图片" -> {
-                            Column(modifier = Modifier.padding(top = 8.dp)) {
-                                OutlinedTextField(
-                                    value = inputText,
-                                    onValueChange = { inputText = it },
-                                    modifier = Modifier.fillMaxWidth(),
-                                    singleLine = true
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Box(
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(4.dp))
-                                        .background(Color.Blue)
-                                        .clickable { libraryModule.fetchImageUrl(inputText.text) }
-                                        .padding(8.dp)
-                                ) {
-                                    Text(text = "获取图片", color = Color.White)
-                                }
-                                Spacer(modifier = Modifier.height(8.dp))
-                                if (imageUrl.isNotEmpty()) {
-                                    AsyncImage(
-                                        load = { loadImageBitmap(imageUrl) },
-                                        painterFor = { remember { BitmapPainter(it) } },
-                                        contentDescription = "Fetched Image",
-                                        modifier = Modifier.width(200.dp)
-                                    )
-                                }
-                            }
-                        }
                     }
                 }
             }
