@@ -5,6 +5,7 @@ import app.vcampus.controller.StoreTransactionController;
 import app.vcampus.controller.StudentInfoController;
 import app.vcampus.controller.UserController;
 import app.vcampus.controller.LibraryController;
+import app.vcampus.controller.CourseController;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
@@ -15,6 +16,7 @@ public class ControllerManager {
     private final RouteMapping routeMapping = new RouteMapping();
     private final StudentInfoController studentInfoController = new StudentInfoController();
     private final LibraryController libraryController = new LibraryController();
+    private final CourseController courseController = new CourseController();
     private final Gson gson = new Gson();
 
     public ControllerManager() {
@@ -39,6 +41,10 @@ public class ControllerManager {
         routeMapping.registerRoute("lib/fetchImageUrl", libraryController::searchBookInfo);//
         routeMapping.registerRoute("arc/delete", studentInfoController::deleteStudentStatus);//
         routeMapping.registerRoute("arc/search", studentInfoController::searchStudent);//
+        routeMapping.registerRoute("course/listAll", courseController::showEnrollList);//向登录学生展示方案课程
+        routeMapping.registerRoute("course/select", courseController::selectCourse);//学生选择课程
+        routeMapping.registerRoute("course/unselect", courseController::unselectCourse);//学生退课
+        routeMapping.registerRoute("course/courseTable",courseController::showCourseTable);//学生查看课程表
     }
     public String handleRequest(String jsonData) {
         // 解析 JSON 请求
