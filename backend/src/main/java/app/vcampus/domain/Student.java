@@ -20,11 +20,14 @@ public class Student {
     @Column(length = 5)
     private String race;
 
-    @Column(length = 10)
-    private String major;
+    @Column
+    private Integer major;
 
     @Column(length = 10)
     private String academy;
+
+    @Column(length = 2)
+    private String grade;
 
     public String getStudentId() {
         return studentId;
@@ -58,11 +61,11 @@ public class Student {
         this.race = race;
     }
 
-    public String getMajor() {
+    public Integer getMajor() {
         return major;
     }
 
-    public void setMajor(String major) {
+    public void setMajor(Integer major) {
         this.major = major;
     }
 
@@ -81,4 +84,8 @@ public class Student {
     public void setNativePlace(String nativePlace) {
         this.nativePlace = nativePlace;
     }
+
+    public String getGrade() {return grade;}
+
+    public void setGrade(String grade) {this.grade = grade;}
 }
