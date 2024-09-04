@@ -14,7 +14,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.ui.draw.shadow
 import module.CourseModule
 
-
 @Composable
 fun CourseScene(onNavigate: (String) -> Unit, role: String) {
     var selectedMenuItem by remember { mutableStateOf("") }
@@ -51,7 +50,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
         Box(modifier = Modifier.weight(0.7f).fillMaxHeight().padding(16.dp)) {
             Crossfade(targetState = selectedMenuItem) { menuItem ->
                 when (menuItem) {
-                    "选课" -> SelectCourseSubscene()
+                    "选课" -> SelectCourseSubscene(courseModule)
                     "查看我的课表" -> ViewMyCoursesSubscene()
                     else -> Text("请选择一个菜单项")
                 }
@@ -59,4 +58,3 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
         }
     }
 }
-

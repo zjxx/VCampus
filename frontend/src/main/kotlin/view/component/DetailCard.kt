@@ -7,38 +7,31 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
-import module.CourseDetail
-import module.CourseModule
+import module.Course
 
 @Composable
-fun DetailCard(courseId: String) {
-    val courseModule = remember { CourseModule() }
-    var courseDetails by remember { mutableStateOf<List<CourseDetail>>(emptyList()) }
+fun DetailCard(course: Course) {
+    var isSelected by remember { mutableStateOf(false) }
 
-    LaunchedEffect(courseId) {
-        courseModule.fetchCourseDetails(courseId)
-        courseDetails = courseModule.courseDetails
-    }
-
-    Column {
-        courseDetails.forEach { detail ->
-            Card(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .width(200.dp) // Set a fixed width for each DetailCard
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("教师: ${detail.teacherName}", fontWeight = FontWeight.Bold)
-                    Text("上课时间: ${detail.classTime}")
-                    Text("客容量: ${detail.capacity}")
-                    Text("已选人数: ${detail.selectedCount}")
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = {
-                        // Handle select/deselect action
-                    }) {
-                        Text("选择")
-                    }
-                }
+    Card(
+        modifier = Modifier
+            .padding(4.dp)
+            .fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(8.dp)) {
+            Text("教师: ${course.teacher}", fontWeight = FontWeight.Bold)
+            course.timeSlots.forEach { timeSlot ->
+                Text("周次: ${timeSlot.week} 第${timeSlot.begin}-${timeSlot.end}节", fontWeight = FontWeight.Bold)
+            }
+            Text("教室: ${course.location}", fontWeight = FontWeight.Bold)
+            Text("客容量: ${course.capacity}", fontWeight = FontWeight.Bold)
+            Text("已选人数: ${course.validCapacity}", fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(onClick = {
+                isSelected = !isSelected
+                // Add your selection/deselection logic here
+            }) {
+                Text(if (isSelected) "退选" else "选择")
             }
         }
     }
