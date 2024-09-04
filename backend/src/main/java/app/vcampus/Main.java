@@ -26,6 +26,8 @@ import app.vcampus.interfaces.EnrollmentShowRequest;
 import app.vcampus.interfaces.CourseTableShowRequest;
 import app.vcampus.interfaces.CourseSelectRequest;
 import app.vcampus.interfaces.CourseUnselectRequest;
+import app.vcampus.interfaces.CourseSearchRequest;
+import app.vcampus.interfaces.CourseStudentShowRequest;
 
 import java.util.List;
 import java.util.UUID;
@@ -189,16 +191,26 @@ public class Main {
             String jsonData1 = gson.toJson(request1);
             String result1 = courseController.selectCourse(jsonData1);
             System.out.println(result1);
-            //测试退课函数
-            CourseUnselectRequest request2 = new CourseUnselectRequest("CS001020","213220159");
-            String jsonData2 = gson.toJson(request2);
-            String result2 = courseController.unselectCourse(jsonData2);
-            System.out.println(result2);
+//            //测试退课函数
+//            CourseUnselectRequest request2 = new CourseUnselectRequest("CS001020","213220159");
+//            String jsonData2 = gson.toJson(request2);
+//            String result2 = courseController.unselectCourse(jsonData2);
+//            System.out.println(result2);
             //测试显示课程表函数
             CourseTableShowRequest request3 = new CourseTableShowRequest("213220159");
             String jsonData3 = gson.toJson(request3);
             String result3 = courseController.showCourseTable(jsonData3);
             System.out.println(result3);
+            //测试课程搜索函数
+            CourseSearchRequest request4 = new CourseSearchRequest("操作","213220159");
+            String jsonData4 = gson.toJson(request4);
+            String result4 = courseController.searchCourse(jsonData4);
+            System.out.println(result4);
+            //测试教师查看选课学生名单函数
+            CourseStudentShowRequest request5= new CourseStudentShowRequest("CS001021","113240000");
+            String jsonData5 = gson.toJson(request5);
+            String result5 = courseController.ShowCourseStudent(jsonData5);
+            System.out.println(result5);
         }
 
         NettyServer nettyServer = new NettyServer(8066);

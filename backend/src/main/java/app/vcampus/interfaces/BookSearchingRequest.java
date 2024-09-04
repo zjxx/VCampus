@@ -4,9 +4,12 @@ public class BookSearchingRequest {
     private String role;
     private String bookname;
 
-    public BookSearchingRequest(String role, String bookName) {
+    private String flag;
+
+    public BookSearchingRequest(String role, String bookName,String flag) {
         this.role = role;
         this.bookname = bookName;
+        this.flag = flag;
     }
     public String getRole() {return role;}
 
@@ -15,5 +18,9 @@ public class BookSearchingRequest {
     public String getBookName() {return bookname;}
 
     public void setBookName(String bookName) {this.bookname = bookName;}
+
+    public String getFlag() {return flag;}
+
+    public void setFlag(String flag) {this.flag = flag;}
 
 }
