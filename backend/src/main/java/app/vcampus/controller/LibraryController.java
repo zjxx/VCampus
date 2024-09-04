@@ -88,7 +88,7 @@ public class LibraryController {
                     //如果有借阅记录，则判断该用户是否是该书的借阅者，如果是，则不可以再借阅该书籍
                     if (!borrowedBooks.isEmpty()) {
                         for (Reader2Book borrowedBook : borrowedBooks) {
-                            if (borrowedBook.getReader_ID().equals(request.getId())) {
+                            if (borrowedBook.getReader_ID().equals(request.getId())&&borrowedBook.isBook_State()) {
                                 data.addProperty("error", "You have borrowed the book before.");
                             }
                         }
