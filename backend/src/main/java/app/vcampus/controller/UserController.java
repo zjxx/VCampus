@@ -36,4 +36,36 @@ public class UserController {
         data.addProperty("status", "fail");
         return gson.toJson(data);
     }
+
+    // 修改密码
+    public String modifyPassword(String jsonData) {
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+        String userId = request.get("userId").getAsString();
+        String oldPassword = request.get("oldPassword").getAsString();
+        String newPassword = request.get("newPassword").getAsString();
+
+        DataBase db = DataBaseManager.getInstance();
+        List<User> users = db.getWhere(User.class, "userId", userId);
+        JsonObject response = new JsonObject();
+
+        if (users.isEmpty()) {
+            response.addProperty("status", "fail");
+            response.addProperty("message", "User not found.");
+            return gson.toJson(response);
+        }
+
+        User user = users.get(0);
+        if (!user.getPassword().equals(oldPassword)) {
+            response.addProperty("status", "fail");
+            response.addProperty("message", "Old password is incorrect.");
+            return gson.toJson(response);
+        }
+
+        user.setPassword(newPassword);
+        db.persist(user);
+
+        response.addProperty("status", "success");
+        response.addProperty("message", "Password changed successfully.");
+        return gson.toJson(response);
+    }
 }
