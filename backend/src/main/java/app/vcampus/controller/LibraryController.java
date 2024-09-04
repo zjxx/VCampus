@@ -31,9 +31,13 @@ public class LibraryController {
         //判断用户身份,如果是学生，则返回所有同名书籍信息
         if (request.getRole().equals("student") || request.getRole().equals("teacher")) {
             DataBase db = DataBaseManager.getInstance();//获取数据库实例
-            //模糊搜索所有包含bookName的书籍
-            List<Book> books = db.getLike(Book.class, "BookName", request.getBookName());//模糊搜索
-            //List<Book> books = db.getWhere(Book.class, "BookName", request.getBookName());//精确搜索
+            List<Book> books = new ArrayList<>();
+            if (request.getFlag().equals("bookName")) {
+                //模糊搜索所有包含bookName的书籍
+                books = db.getLike(Book.class, "BookName", request.getBookName());//模糊搜索
+            } else if (request.getFlag().equals("ISBN")){
+                books = db.getWhere(Book.class, "BookName", request.getBookName());//精确搜索
+            }
             //后续可以进行部分匹配的搜索
             if (!books.isEmpty()) {//如果有同名书籍
                 //先加入一个number属性，表示同名书籍的数量
