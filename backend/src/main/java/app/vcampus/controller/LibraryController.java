@@ -93,7 +93,7 @@ public class LibraryController {
                     if (!borrowedBooks.isEmpty()) {
                         for (Reader2Book borrowedBook : borrowedBooks) {
 
-                            if (borrowedBook.getReader_ID().equals(request.getId())&&borrowedBook.isBook_State()) {
+                            if (borrowedBook.getReader_ID().equals(request.getuserId())&&borrowedBook.isBook_State()) {
 
                                 data.addProperty("error", "You have borrowed the book before.");
                             }
