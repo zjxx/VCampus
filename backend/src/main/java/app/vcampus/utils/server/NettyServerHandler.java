@@ -67,6 +67,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             bytes = str.getBytes();
             stringBuilder.append(chunk);
         } else {
+            System.out.println("Received: " + chunk);
             String jsonResponse = controllerManager.handleRequest(chunk);
 
             // Write JSON response
