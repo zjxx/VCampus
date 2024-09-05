@@ -10,8 +10,11 @@ import app.vcampus.interfaces.CourseUnselectRequest;
 import app.vcampus.interfaces.CourseSearchRequest;
 import app.vcampus.interfaces.CourseTableShowRequest;
 import app.vcampus.interfaces.CourseStudentShowRequest;
+import app.vcampus.interfaces.CourseAddRequest;
+import app.vcampus.interfaces.CourseDeleteRequest;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
+
 
 
 import com.google.gson.Gson;
@@ -100,15 +103,52 @@ public class CourseController {
                 return gson.toJson(data);
             }
         }
+        //检查课程ID是否存在
+        List<Course> courses = db.getWhere(Course.class, "course_id", request.getCourseId());
+        if (courses.isEmpty()) {
+            data.addProperty("status","failed");
+            data.addProperty("reason", "course not found");
+            return gson.toJson(data);
+        }
+        //检查课程容量是否已满
+        Course course = courses.get(0);
+        if (course.getvalidCapacity() == 0) {
+            data.addProperty("status","failed");
+            data.addProperty("reason", "course capacity is full");
+            return gson.toJson(data);
+        }
+        //检查该课程的时间是否和学生的课程时间冲突
+        //时间的保存格式为1-3-5，1代表星期一，3代表第3节课，5代表第5节课，不同的时间段用逗号隔开
+        //将课程时间转换为数组
+        String[] courseTime = course.getTime().split(",");
+        //找出学生选的课程时间段
+        List<Enrollment> records = db.getWhere(Enrollment.class, "student_id", request.getStudentId());
+        for (int i=0;i<records.size();i++) {
+            Enrollment record = records.get(i);
+            //用Enrollment中的课程id去course表中找到对应的课程时间段
+            List<Course> courseList = db.getWhere(Course.class, "course_id", record.getcourseid());
+            Course course1 = courseList.get(0);
+            //将course1的课程时间转换为数组
+            String[] course1Time = course1.getTime().split(",");
+            //判断两个时间段是否有交集
+            for (int j=0;j<courseTime.length;j++) {
+                for (int k=0;k<course1Time.length;k++) {
+                    if (courseTime[j].equals(course1Time[k])) {
+                        data.addProperty("status","failed");
+                        data.addProperty("reason", "course time conflict");
+                        return gson.toJson(data);
+                    }
+                }
+            }
+
+        }
 
         // 插入新的选课记录
         Enrollment enrollment = new Enrollment();
         enrollment.setcourseid(request.getCourseId());
         enrollment.setstudentid(request.getStudentId());
         enrollment.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        //在Course表中对应课程的validCapacity-1
-        List<Course> courses=db.getWhere(Course.class,"courseId",request.getCourseId());
-        Course course=courses.get(0);
+        //在Course表中对应课程的Valid_capacity-1
         course.setvalidCapacity(course.getvalidCapacity()-1);
         db.save(enrollment);
         db.update(course);
@@ -167,11 +207,11 @@ public class CourseController {
                 courseData.addProperty("courseId", course.getcourseId());
                 courseData.addProperty("courseName", course.getcourseName());
                 courseData.addProperty("teacher", course.getteacherName());
-                courseData.addProperty("credit", course.getCredit());
+                courseData.addProperty("credit", String.valueOf(course.getCredit()));
                 courseData.addProperty("time", course.getTime());
                 courseData.addProperty("location", course.getLocation());
-                courseData.addProperty("capacity", course.getCapacity());
-                courseData.addProperty("validCapacity", course.getvalidCapacity());
+                courseData.addProperty("capacity",String.valueOf(course.getCapacity()));
+                courseData.addProperty("valid_capacity", String.valueOf(course.getvalidCapacity()));
             }
             data.add("course" + i, courseData);
         }
@@ -180,8 +220,7 @@ public class CourseController {
     }
 
     //
-   public String searchCourse(String jsonData)
-   {
+   public String searchCourse(String jsonData){
        CourseSearchRequest request= gson.fromJson(jsonData,CourseSearchRequest.class);
        JsonObject data = new JsonObject();
        DataBase db=DataBaseManager.getInstance();
@@ -201,12 +240,12 @@ public class CourseController {
                courseData.addProperty("courseId", course.getcourseId());
                courseData.addProperty("courseName", course.getcourseName());
                courseData.addProperty("teacher", course.getteacherName());
-               courseData.addProperty("credit", course.getCredit());
+               courseData.addProperty("credit", String.valueOf(course.getCredit()));
                courseData.addProperty("time", course.getTime());
                courseData.addProperty("location", course.getLocation());
-               courseData.addProperty("capacity", course.getCapacity());
+               courseData.addProperty("capacity", String.valueOf(course.getCapacity()));
                courseData.addProperty("property",course.getProperty());
-               courseData.addProperty("validCapacity", course.getvalidCapacity());
+               courseData.addProperty("validCapacity", String.valueOf(course.getvalidCapacity()));
                data.add("course" + num, courseData);
                num+=1;
            }
@@ -221,8 +260,7 @@ public class CourseController {
    }
 
     //教师导出课程参与学生名单
-    public String ShowCourseStudent(String jsonData)
-    {
+    public String ShowCourseStudent(String jsonData){
         CourseStudentShowRequest request = gson.fromJson(jsonData, CourseStudentShowRequest.class);
         JsonObject data = new JsonObject();
         DataBase db=DataBaseManager.getInstance();
@@ -257,12 +295,77 @@ public class CourseController {
         }
     }
     //教师查看授课表
-    //教师打分函数
     //！教师申请临时调课函数
     //！管理员审批调课函数，审批通过后，前端发送公告给学生
     //管理员导入课程函数
-    //管理员审核成绩函数
+    public String addCourse(String jsonData) {
+        CourseAddRequest request = gson.fromJson(jsonData, CourseAddRequest.class);
+        JsonObject data = new JsonObject();
+        DataBase db = DataBaseManager.getInstance();
+        //用course_id的前七位提取出一批courses
+        List<Course> courses=db.getLike(Course.class,"course_id",request.getCourseId().substring(0,7));
+        //判断有没有重复课程
+        for(int i=0;i<courses.size();i++)
+        {
+            Course course = courses.get(i);
+            if(course.getcourseId().equals(request.getCourseId())||course.getteacherId().equals(request.getTeacherId()))
+            {
+                data.addProperty("status", "failed");
+                data.addProperty("reason", "course already exists");
+                return gson.toJson(data);
+            }
+        }
+        //判断有没有同时间同地点同学期的课程
+        List<Course> sameTimeCourses=db.getWhere(Course.class,"time",request.getTime());
+        for(int i=0;i<sameTimeCourses.size();i++) {
+            Course course = sameTimeCourses.get(i);
+            if (course.getLocation().equals(request.getLocation()) && course.getSemester().equals(request.getSemester())) {
+                data.addProperty("status", "failed");
+                data.addProperty("reason", "course already exists at the same time and location");
+                return gson.toJson(data);
+            }
+        }
+
+        Course course = new Course();
+        course.setcourseId(request.getCourseId());
+        course.setcourseName(request.getCourseName());
+        course.setteacherId(request.getTeacherId());
+        course.setteacherName(request.getTeacherName());
+        course.setCredit(Integer.valueOf(request.getCredit()));
+        course.setTime(request.getTime());
+        course.setLocation(request.getLocation());
+        course.setCapacity(Integer.valueOf(request.getCapacity()));
+        course.setMajor(request.getMajor());
+        course.setvalidGrade(request.getGrade());
+        course.setProperty(request.getProperty());
+        course.setvalidCapacity(course.getCapacity());
+        course.setSemester(course.getSemester());
+        db.save(course);
+        data.addProperty("status","success");
+        return gson.toJson(data);
+    }
+
+
     //管理员删除课程函数
-
-
+    public String deleteCourse(String jsonData){
+        CourseDeleteRequest request = gson.fromJson(jsonData, CourseDeleteRequest.class);
+        JsonObject data = new JsonObject();
+        DataBase db=DataBaseManager.getInstance();
+        List<Course> courses = db.getWhere(Course.class,"course_id",request.getCourseId());
+        if(courses.isEmpty()) {
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "course not found");
+        }
+        else {
+            Course course = courses.get(0);
+            db.delete(course);
+            List<Enrollment> records = db.getWhere(Enrollment.class, "course_id", request.getCourseId());
+            for (int i = 0; i < records.size(); i++) {
+                Enrollment record = records.get(i);
+                db.delete(record);
+            }
+            data.addProperty("status", "success");
+        }
+        return gson.toJson(data);
+    }
 }

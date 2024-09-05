@@ -1,4 +1,4 @@
-package app.vcampus;
+﻿package app.vcampus;
 
 import app.vcampus.controller.StoreItemController;
 import app.vcampus.controller.StoreTransactionController;
@@ -8,26 +8,15 @@ import app.vcampus.domain.Student;
 import app.vcampus.domain.User;
 import app.vcampus.domain.Book;
 
-import app.vcampus.interfaces.PurchaseRequest;
+import app.vcampus.interfaces.*;
 
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
 import app.vcampus.utils.server.NettyServer;
 import com.google.gson.Gson;
 
-import app.vcampus.interfaces.BookSearchingRequest;
-import app.vcampus.interfaces.BookBorrowRequest;
-import app.vcampus.interfaces.BookReturnRequest;
-import app.vcampus.interfaces.BookListRequest;
-import app.vcampus.interfaces.BookDeleteRequest;
-import app.vcampus.controller.LibraryController;
 
-import app.vcampus.interfaces.EnrollmentShowRequest;
-import app.vcampus.interfaces.CourseTableShowRequest;
-import app.vcampus.interfaces.CourseSelectRequest;
-import app.vcampus.interfaces.CourseUnselectRequest;
-import app.vcampus.interfaces.CourseSearchRequest;
-import app.vcampus.interfaces.CourseStudentShowRequest;
+import app.vcampus.controller.LibraryController;
 
 import java.util.List;
 import java.util.UUID;
@@ -181,6 +170,7 @@ public class Main {
 //        {
 //            CourseController courseController = new CourseController();
 //            Gson gson = new Gson();
+//
 //            //测试显示课程函数
 //            EnrollmentShowRequest request0 = new EnrollmentShowRequest("213220159");
 //            String jsonData0 = gson.toJson(request0);
@@ -211,6 +201,18 @@ public class Main {
 //            String jsonData5 = gson.toJson(request5);
 //            String result5 = courseController.ShowCourseStudent(jsonData5);
 //            System.out.println(result5);
+//            //测试管理员添加课程函数
+//            CourseAddRequest request6 = new CourseAddRequest("操作系统","CS001023",
+//                    "test3","113240004","1-3-5,3-6-7","J6-403",
+//                    "4","70","23","9","24-2","必修");
+//            String jsonData6 = gson.toJson(request6);
+//            String result6 = courseController.addCourse(jsonData6);
+//            System.out.println(result6);
+//            //测试管理员删除课程函数
+//            CourseDeleteRequest request7 = new CourseDeleteRequest("admin","123456789","CS001023");
+//            String jsonData7 = gson.toJson(request7);
+//            String result7 = courseController.deleteCourse(jsonData7);
+//            System.out.println(result7);
 //        }
 
         NettyServer nettyServer = new NettyServer(8066);
