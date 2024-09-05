@@ -129,4 +129,25 @@ class CourseModule {
             false
         }
     }
+    fun unselectCourse(course: Course): Boolean {
+        val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId, "courseId" to course.courseId)
+        var success = false
+        nettyClient.sendRequest(request, "course/unselect") { response: String ->
+            success = handleResponseUnselect(response, course)
+        }
+        return success
+    }
+
+    private fun handleResponseUnselect(response: String, course: Course): Boolean {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        return if (responseJson["status"] == "success") {
+            course.validCapacity = (course.validCapacity.toInt() - 1).toString() // Decrease validCapacity
+            DialogManager.showDialog("退选成功")
+            true
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
+            false
+        }
+    }
 }
