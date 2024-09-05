@@ -46,6 +46,16 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
             }
             if(role=="admin")
             {
+                TextButton(onClick = {
+                    selectedMenuItem = "增加课程"
+                }) {
+                    Text("增加课程", color = Color.Black) // 设置字体颜色为黑色
+                }
+                TextButton(onClick = {
+                    selectedMenuItem = "修改课程"
+                }) {
+                    Text("修改课程", color = Color.Black) // 设置字体颜色为黑色
+                }
 
             }
         }
@@ -54,6 +64,8 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                 when (menuItem) {
                     "选课" -> SelectCourseSubscene(courseModule)
                     "查看我的课表" -> ViewMyCoursesSubscene()
+                    "增加课程" -> AddCourseSubscene()
+                    "修改课程" -> ModifyCourseSubscene()
                     else -> Text("请选择一个菜单项")
                 }
             }

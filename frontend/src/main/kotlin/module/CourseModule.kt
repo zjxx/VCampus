@@ -40,6 +40,24 @@ data class TimeSlot(
     val begin: String,
     val end: String
 )
+data class CourseData(
+    val courseName: String,
+    val courseId: String,
+    val credit: String,
+    val capacity: String,
+    val grade: String,
+    val major: String,
+    val semester: String,
+    val property: String,
+    val timeAndLocationCards: List<TimeAndLocationCardData>
+)
+
+data class TimeAndLocationCardData(
+    var dayOfWeek: String,
+    var startPeriod: String,
+    var endPeriod: String,
+    var location: String
+)
 
 class CourseModule {
     private val nettyClient = NettyClientProvider.nettyClient
@@ -145,6 +163,41 @@ class CourseModule {
         return if (responseJson["status"] == "success") {
             course.validCapacity = (course.validCapacity.toInt() + 1).toString() // Increment validCapacity
             DialogManager.showDialog("退选成功")
+            true
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
+            false
+        }
+    }
+    fun addCourse(courseData: CourseData, onSuccess: (Boolean) -> Unit) {
+        val request = mapOf(
+            "courseName" to courseData.courseName,
+            "courseId" to courseData.courseId,
+            "credit" to courseData.credit,
+            "capacity" to courseData.capacity,
+            "grade" to courseData.grade,
+            "major" to courseData.major,
+            "semester" to courseData.semester,
+            "property" to courseData.property,
+            "timeAndLocationCards" to courseData.timeAndLocationCards.map {
+                mapOf(
+                    "dayOfWeek" to it.dayOfWeek,
+                    "startPeriod" to it.startPeriod,
+                    "endPeriod" to it.endPeriod,
+                    "location" to it.location
+                )
+            }
+        )
+        nettyClient.sendRequest(request, "course/add") { response: String ->
+            val success = handleResponseAdd(response)
+            onSuccess(success)
+        }
+    }
+
+    private fun handleResponseAdd(response: String): Boolean {
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        return if (responseJson["status"] == "success") {
+            DialogManager.showDialog("添加课程成功")
             true
         } else {
             DialogManager.showDialog(responseJson["reason"] as String)
