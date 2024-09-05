@@ -11,7 +11,10 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    maven(
+         "https://packages.jetbrains.team/maven/p/skija/maven"
+    )
+
     google()
 }
 
@@ -27,6 +30,8 @@ dependencies {
     implementation("org.apache.poi:poi:5.2.3")
     implementation("org.apache.poi:poi-ooxml:5.2.3")
     implementation("org.apache.logging.log4j:log4j-core:2.23.1")
+    implementation("org.apache.pdfbox:pdfbox:2.0.24")
+    implementation("org.jetbrains.skija:skija-shared:0.93.6")
 }
 
 compose.desktop {

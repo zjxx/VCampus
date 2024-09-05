@@ -26,6 +26,8 @@ import data.UserSession
 import module.LibraryModule
 import view.component.FilePicker
 import view.component.GlobalState
+import view.component.LocalPdfViewer
+import view.component.PdfViewer
 import java.io.File
 
 
@@ -44,6 +46,8 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     var expanded by remember { mutableStateOf(false) }
     var selectedOption1 by remember { mutableStateOf("书名") }
     var addtolistresult by remember { mutableStateOf("") }
+    var selectedPdfPath by remember { mutableStateOf<String?>(null) }
+
 
     val libraryModule = LibraryModule(
         onSearchSuccess = { result ->
@@ -302,6 +306,15 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                         "显示图片" -> {
                             Column(modifier = Modifier.padding(top = 8.dp)) {
                                 FilePicker()
+                                Button(onClick = {
+                                    val filePath = "src/main/temp/temp.pdf" // Specify the file path here
+                                    selectedPdfPath = filePath
+                                }) {
+                                    Text("展示pdf")
+                                }
+                                selectedPdfPath?.let { path ->
+                                    LocalPdfViewer(filePath = path, onDismiss = { selectedPdfPath = null })
+                                    }
                             }
                         }
                     }
