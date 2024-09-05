@@ -43,7 +43,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     var searchType by remember { mutableStateOf("bookName") }
     var expanded by remember { mutableStateOf(false) }
     var selectedOption1 by remember { mutableStateOf("书名") }
-
+    var addtolistresult by remember { mutableStateOf("") }
 
     val libraryModule = LibraryModule(
         onSearchSuccess = { result ->
@@ -56,6 +56,9 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
         },
         onImageFetchSuccess = { url ->
             imageUrl = url
+        },
+        onAddToListSuccess = { result ->
+            addtolistresult = result
         }
     )
 

@@ -11,7 +11,7 @@ class LibraryModule (
     private val onSearchSuccess: (List<Book>) -> Unit,
     private val onCheckSuccess: (List<Book>) -> Unit,
     private val onImageFetchSuccess: (String) -> Unit,
-    //private val onAddToListSuccess: () -> Unit,
+    private val onAddToListSuccess: (String) -> Unit,
 ) {
     private val nettyClient = NettyClientProvider.nettyClient
     var tempBooks = mutableListOf<Book>()
@@ -130,7 +130,7 @@ class LibraryModule (
             DialogManager.showDialog("请求失败")
         }
     }
-//__________________________________________________________________________________________
+    //__________________________________________________________________________________________
     //借书发送信息
     fun libAddToLits(isbn: String) {//借书
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "ISBN" to isbn)
@@ -145,8 +145,10 @@ class LibraryModule (
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         println("Response status: ${responseJson["status"]}")
         if (responseJson["status"] == "success") {
+            onAddToListSuccess("借阅成功")
             DialogManager.showDialog("借阅成功")
         } else {
+            onAddToListSuccess("借阅失败")
             DialogManager.showDialog("借阅失败")
         }
     }
