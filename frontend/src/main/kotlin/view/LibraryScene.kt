@@ -28,7 +28,6 @@ import network.downloadPdfIfNotExists
 import view.component.FilePicker
 import view.component.GlobalState
 import view.component.LocalPdfViewer
-import view.component.PdfViewer
 import java.io.File
 
 
@@ -287,7 +286,15 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                             horizontalAlignment = Alignment.CenterHorizontally
                                         ) {
                                             Button(
-                                                onClick = { /* Add action for "阅读" */ },
+                                                onClick = {
+                                                    val imageISBN=book.isbn
+                                                    val filePath = "src/main/temp/"+imageISBN+".pdf"
+                                                    //到时这个filePath改成src/main/temp/书的ISBN.pdf
+                                                    if(!File(filePath).exists()){
+                                                        downloadPdfIfNotExists("http://47.99.141.236/img/" + imageISBN + ".pdf", filePath)
+                                                    }
+                                                    selectedPdfPath = filePath
+                                                },
                                                 modifier = Modifier.size(100.dp, 36.dp),
                                                 colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF228042)),
                                                 enabled = book.condition != "haveBorrowed"
@@ -316,6 +323,9 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                 }
                             }
                         }
+                            selectedPdfPath?.let { path ->
+                                LocalPdfViewer(filePath = path, onDismiss = { selectedPdfPath = null })
+                            }
                     }
 
                         "显示图片" -> {
