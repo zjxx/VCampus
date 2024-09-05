@@ -112,42 +112,38 @@ class CourseModule {
 
     fun selectCourse(course: Course, onSuccess: (Boolean) -> Unit) {
         val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId, "courseId" to course.courseId)
-        var success = false
         nettyClient.sendRequest(request, "course/select") { response: String ->
-            success = handleResponseSelect(response, course)
+            val success = handleResponseSelect(response, course)
             onSuccess(success)
         }
-
     }
 
-    // In `CourseModule.kt`
-private fun handleResponseSelect(response: String, course: Course): Boolean {
-    println("Received response: $response")
-    val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
-    return if (responseJson["status"] == "success") {
-        course.validCapacity = (course.validCapacity.toInt() + 1).toString() // Increment validCapacity
-        DialogManager.showDialog("选课成功")
-        true
-    } else {
-        DialogManager.showDialog(responseJson["reason"] as String)
-        false
+    private fun handleResponseSelect(response: String, course: Course): Boolean {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        return if (responseJson["status"] == "success") {
+            course.validCapacity = (course.validCapacity.toInt() - 1).toString() // Decrement validCapacity
+            DialogManager.showDialog("选课成功")
+            true
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
+            false
+        }
     }
-}
-    fun unselectCourse(course: Course,onSuccess: (Boolean) -> Unit) {
+
+    fun unselectCourse(course: Course, onSuccess: (Boolean) -> Unit) {
         val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId, "courseId" to course.courseId)
-        var success = false
         nettyClient.sendRequest(request, "course/unselect") { response: String ->
-            success = handleResponseUnselect(response, course)
+            val success = handleResponseUnselect(response, course)
             onSuccess(success)
         }
-
     }
 
     private fun handleResponseUnselect(response: String, course: Course): Boolean {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         return if (responseJson["status"] == "success") {
-            course.validCapacity = (course.validCapacity.toInt() - 1).toString() // Decrease validCapacity
+            course.validCapacity = (course.validCapacity.toInt() + 1).toString() // Increment validCapacity
             DialogManager.showDialog("退选成功")
             true
         } else {
