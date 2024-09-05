@@ -8,8 +8,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.animation.Crossfade
 import androidx.compose.ui.draw.shadow
 import module.CourseModule
@@ -45,6 +43,10 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                 }) {
                     Text("查看我的课表", color = Color.Black) // 设置字体颜色为黑色
                 }
+            }
+            if(role=="admin")
+            {
+
             }
         }
         Box(modifier = Modifier.weight(0.7f).fillMaxHeight().padding(16.dp)) {
