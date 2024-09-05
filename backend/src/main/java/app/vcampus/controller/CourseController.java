@@ -245,7 +245,7 @@ public class CourseController {
                courseData.addProperty("location", course.getLocation());
                courseData.addProperty("capacity", String.valueOf(course.getCapacity()));
                courseData.addProperty("property",course.getProperty());
-               courseData.addProperty("valid_capacity", String.valueOf(course.getvalidCapacity()));
+               courseData.addProperty("validCapacity", String.valueOf(course.getvalidCapacity()));
                data.add("course" + num, courseData);
                num+=1;
            }

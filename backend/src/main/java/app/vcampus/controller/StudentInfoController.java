@@ -3,12 +3,11 @@ package app.vcampus.controller;
 import app.vcampus.domain.Student;
 import app.vcampus.domain.User;
 import app.vcampus.domain.ShoppingCartItem;
-import app.vcampus.enums.MajorType;
+import app.vcampus.enums.AcademyType;
 import app.vcampus.interfaces.studentInfoRequest;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public class StudentInfoController {
         data.addProperty("name", student.getUsername());
         data.addProperty("gender", student.getGender()==0?"男":"女");
         data.addProperty("race", student.getRace());
-        data.addProperty("major", MajorType.fromIndex((int)student.getMajor()));        //将MajorType转换为String类型
+        data.addProperty("major", student.getMajor());        //将MajorType转换为String类型
         data.addProperty("academy", student.getAcademy());
         data.addProperty("nativePlace", student.getNativePlace());
         return gson.toJson(data);
@@ -36,7 +35,14 @@ public class StudentInfoController {
     //添加学生信息
     public String addStudentStatus(String jsonData) {
         try {
+
             Student student = gson.fromJson(jsonData, Student.class);
+            if(!checkvalidAcademy(student.getAcademy())){
+                JsonObject data = new JsonObject();
+                data.addProperty("status", "failed");
+                data.addProperty("reason", "学院输入错误");
+                return gson.toJson(data);
+            }
             if (student.getStudentId() == null || student.getStudentId().isEmpty() ||
                     student.getUsername() == null || student.getUsername().isEmpty() ||
                     student.getRace() == null || student.getRace().isEmpty() ||
@@ -140,6 +146,12 @@ public class StudentInfoController {
     public String updateStudentStatus(String jsonData) {
         try {
             Student updatedStudent = gson.fromJson(jsonData, Student.class);
+            if(!checkvalidAcademy(updatedStudent.getAcademy())){
+                JsonObject response = new JsonObject();
+                response.addProperty("status", "failed");
+                response.addProperty("reason", "学院输入错误");
+                return gson.toJson(response);
+            }
             if (updatedStudent.getStudentId() == null || updatedStudent.getStudentId().isEmpty() ||
                     updatedStudent.getUsername() == null || updatedStudent.getUsername().isEmpty() ||
                     updatedStudent.getGender() < 0 || // 检查 gender 是否为无效值
@@ -181,5 +193,14 @@ public class StudentInfoController {
             response.addProperty("reason", e.getMessage());
             return gson.toJson(response);
         }
+    }
+
+    private Boolean checkvalidAcademy(String major){
+        for (AcademyType academyType : AcademyType.values()) {
+            if (academyType.getMajor().equals(major)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

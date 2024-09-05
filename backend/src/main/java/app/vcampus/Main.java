@@ -34,89 +34,88 @@ public class Main {
 
         System.out.println("Server started at port 8066");
 
-        // 测试商店功能
-        {//        StoreTransactionController controller = new StoreTransactionController();
-        //        StoreItemController storeItemController = new StoreItemController();
-        //
-        //        // 创建 StoreItem 对象并设置每个字段的值
-        //        StoreItem storeItem = new StoreItem();
-        //        storeItem.setUuid(UUID.fromString("223e4567-e89b-12d3-a456-426614174000")); // 示例 UUID
-        //        storeItem.setItemName("Test Item");
-        //        storeItem.setPrice(100);
-        //        storeItem.setPictureLink("http://example.com/sample.jpg");
-        //        storeItem.setBarcode("1234567890123");
-        //        storeItem.setStock(50);
-        //        storeItem.setSalesVolume(0);
-        //        storeItem.setDescription("This is a test item.");
-        //
-        //        // 将 StoreItem 对象保存到数据库
-        //        storeItemController.addItem(storeItem);
-        //
-        //        //UUID uuid = UUID.fromString("223e4567-e89b-12d3-a456-426614174000");
-        //
-        //// 调用 deleteItem 方法并传入 UUID 对象
-        //        //storeItemController.deleteItem(uuid);
-        //
-        //
-        //
-        //        // 创建 PurchaseRequest 对象
-        //        PurchaseRequest request = new PurchaseRequest();
-        //        request.setItemUuid(storeItem.getUuid().toString());
-        //        request.setItemName(storeItem.getItemName());
-        //        request.setAmount(2);
-        //        request.setCardNumber("1234567890");
-        //
-        //        // 将 PurchaseRequest 对象转换为 JSON 字符串
-        //        Gson gson = new Gson();
-        //        String jsonData = gson.toJson(request);
-        //
-        //        // 调用 handlePurchase 方法并打印结果
-        //        String response = controller.handlePurchase(jsonData);
-        //        System.out.println(response);
-        //        // 新增测试代码
-        //        StoreItemController storeItemController = new StoreItemController();
-        //
-        //        // 创建一个示例 StoreItem 对象
-        //        StoreItem newItem = new StoreItem();
-        //        newItem.setUuid(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"));
-        //        newItem.setItemName("Sample Item");
-        //        newItem.setPrice(100);
-        //        newItem.setPictureLink("http://example.com/sample.jpg");
-        //        newItem.setBarcode("1234567890123");
-        //        newItem.setStock(50);
-        //        newItem.setSalesVolume(0);
-        //        newItem.setDescription("This is a sample item.");
-        //
-        //        // 测试 addItem 函数
-        //        storeItemController.addItem(newItem);
-        //        System.out.println("Item added successfully");
-        //
-        //        // 测试 getItems 函数
-        //        List<StoreItem> items = storeItemController.getItems();
-        //        System.out.println("Items: " + items);
-        //
-        //        // 更新示例 StoreItem 对象
-        //        newItem.setItemName("Updated Item");
-        //        newItem.setPrice(150);
-        //        newItem.setDescription("This is an updated sample item.");
-        //
-        //        // 测试 updateItem 函数
-        //        storeItemController.updateItem(newItem);
-        //        System.out.println("Item updated successfully");
-        //
-        //        // 再次测试 getItems 函数
-        //        items = storeItemController.getItems();
-        //        System.out.println("Items after update: " + items);
-        //
-        //        // 测试 deleteItem 函数
-        //        storeItemController.deleteItem(newItem.getUuid());
-        //        System.out.println("Item deleted successfully");
-        //
-        //        // 再次测试 getItems 函数
-        //        items = storeItemController.getItems();
-        //        System.out.println("Items after deletion: " + items);
-        }
-
+//// 新增测试代码
+//        StoreTransactionController controller = new StoreTransactionController();
+//        StoreItemController storeItemController = new StoreItemController();
+//
+//        // 创建 StoreItem 对象并设置每个字段的值
+//        StoreItem storeItem = new StoreItem();
+//        storeItem.setUuid(UUID.fromString("223e4567-e89b-12d3-a456-426614174000")); // 示例 UUID
+//        storeItem.setItemName("Test Item");
+//        storeItem.setPrice(100);
+//        storeItem.setPictureLink("http://example.com/sample.jpg");
+//        storeItem.setBarcode("1234567890123");
+//        storeItem.setStock(50);
+//        storeItem.setSalesVolume(0);
+//        storeItem.setDescription("This is a test item.");
+//
+//        // 将 StoreItem 对象保存到数据库
+//        storeItemController.addItem(storeItem);
+//
+//        //UUID uuid = UUID.fromString("223e4567-e89b-12d3-a456-426614174000");
+//
+//// 调用 deleteItem 方法并传入 UUID 对象
+//        //storeItemController.deleteItem(uuid);
+//
+//
+//
+//        // 创建 PurchaseRequest 对象
+//        PurchaseRequest request = new PurchaseRequest();
+//        request.setItemUuid(storeItem.getUuid().toString());
+//        request.setItemName(storeItem.getItemName());
+//        request.setAmount(2);
+//        request.setCardNumber("1234567890");
+//
+//        // 将 PurchaseRequest 对象转换为 JSON 字符串
+//        Gson gson = new Gson();
+//        String jsonData = gson.toJson(request);
+//
+//        // 调用 handlePurchase 方法并打印结果
+//        String response = controller.handlePurchase(jsonData);
+//        System.out.println(response);
+//        // 新增测试代码
+//        StoreItemController storeItemController = new StoreItemController();
+//
+//        // 创建一个示例 StoreItem 对象
+//        StoreItem newItem = new StoreItem();
+//        newItem.setUuid(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"));
+//        newItem.setItemName("Sample Item");
+//        newItem.setPrice(100);
+//        newItem.setPictureLink("http://example.com/sample.jpg");
+//        newItem.setBarcode("1234567890123");
+//        newItem.setStock(50);
+//        newItem.setSalesVolume(0);
+//        newItem.setDescription("This is a sample item.");
+//
+//        // 测试 addItem 函数
+//        storeItemController.addItem(newItem);
+//        System.out.println("Item added successfully");
+//
+//        // 测试 getItems 函数
+//        List<StoreItem> items = storeItemController.getItems();
+//        System.out.println("Items: " + items);
+//
+//        // 更新示例 StoreItem 对象
+//        newItem.setItemName("Updated Item");
+//        newItem.setPrice(150);
+//        newItem.setDescription("This is an updated sample item.");
+//
+//        // 测试 updateItem 函数
+//        storeItemController.updateItem(newItem);
+//        System.out.println("Item updated successfully");
+//
+//        // 再次测试 getItems 函数
+//        items = storeItemController.getItems();
+//        System.out.println("Items after update: " + items);
+//
+//        // 测试 deleteItem 函数
+//        storeItemController.deleteItem(newItem.getUuid());
+//        System.out.println("Item deleted successfully");
+//
+//        // 再次测试 getItems 函数
+//        items = storeItemController.getItems();
+//        System.out.println("Items after deletion: " + items);
+//
         //测试LibraryController
         {//        LibraryController library = new LibraryController();
 //        Gson gson = new Gson();
@@ -167,54 +166,54 @@ public class Main {
         }
 
 
-        //测试CourseController
-        {
-            CourseController courseController = new CourseController();
-            Gson gson = new Gson();
-
-            //测试显示课程函数
-            EnrollmentShowRequest request0 = new EnrollmentShowRequest("213220159");
-            String jsonData0 = gson.toJson(request0);
-            String result0 = courseController.showEnrollList(jsonData0);
-            System.out.println(result0);
-            //测试选课函数
-            CourseSelectRequest request1 = new CourseSelectRequest("CS001020","213220159");
-            String jsonData1 = gson.toJson(request1);
-            String result1 = courseController.selectCourse(jsonData1);
-            System.out.println(result1);
-//            //测试退课函数
-//            CourseUnselectRequest request2 = new CourseUnselectRequest("CS001020","213220159");
-//            String jsonData2 = gson.toJson(request2);
-//            String result2 = courseController.unselectCourse(jsonData2);
-//            System.out.println(result2);
-            //测试显示课程表函数
-            CourseTableShowRequest request3 = new CourseTableShowRequest("213220159");
-            String jsonData3 = gson.toJson(request3);
-            String result3 = courseController.showCourseTable(jsonData3);
-            System.out.println(result3);
-            //测试课程搜索函数
-            CourseSearchRequest request4 = new CourseSearchRequest("操作","213220159");
-            String jsonData4 = gson.toJson(request4);
-            String result4 = courseController.searchCourse(jsonData4);
-            System.out.println(result4);
-            //测试教师查看选课学生名单函数
-            CourseStudentShowRequest request5= new CourseStudentShowRequest("CS001021","113240000");
-            String jsonData5 = gson.toJson(request5);
-            String result5 = courseController.ShowCourseStudent(jsonData5);
-            System.out.println(result5);
-            //测试管理员添加课程函数
-            CourseAddRequest request6 = new CourseAddRequest("操作系统","CS001023",
-                    "test3","113240004","1-3-5,3-6-7","J6-403",
-                    "4","70","23","9","24-2","必修");
-            String jsonData6 = gson.toJson(request6);
-            String result6 = courseController.addCourse(jsonData6);
-            System.out.println(result6);
-            //测试管理员删除课程函数
-            CourseDeleteRequest request7 = new CourseDeleteRequest("admin","123456789","CS001023");
-            String jsonData7 = gson.toJson(request7);
-            String result7 = courseController.deleteCourse(jsonData7);
-            System.out.println(result7);
-        }
+//        //测试CourseController
+//        {
+//            CourseController courseController = new CourseController();
+//            Gson gson = new Gson();
+//
+//            //测试显示课程函数
+//            EnrollmentShowRequest request0 = new EnrollmentShowRequest("213220159");
+//            String jsonData0 = gson.toJson(request0);
+//            String result0 = courseController.showEnrollList(jsonData0);
+//            System.out.println(result0);
+//            //测试选课函数
+//            CourseSelectRequest request1 = new CourseSelectRequest("CS001020","213220159");
+//            String jsonData1 = gson.toJson(request1);
+//            String result1 = courseController.selectCourse(jsonData1);
+//            System.out.println(result1);
+////            //测试退课函数
+////            CourseUnselectRequest request2 = new CourseUnselectRequest("CS001020","213220159");
+////            String jsonData2 = gson.toJson(request2);
+////            String result2 = courseController.unselectCourse(jsonData2);
+////            System.out.println(result2);
+//            //测试显示课程表函数
+//            CourseTableShowRequest request3 = new CourseTableShowRequest("213220159");
+//            String jsonData3 = gson.toJson(request3);
+//            String result3 = courseController.showCourseTable(jsonData3);
+//            System.out.println(result3);
+//            //测试课程搜索函数
+//            CourseSearchRequest request4 = new CourseSearchRequest("操作","213220159");
+//            String jsonData4 = gson.toJson(request4);
+//            String result4 = courseController.searchCourse(jsonData4);
+//            System.out.println(result4);
+//            //测试教师查看选课学生名单函数
+//            CourseStudentShowRequest request5= new CourseStudentShowRequest("CS001021","113240000");
+//            String jsonData5 = gson.toJson(request5);
+//            String result5 = courseController.ShowCourseStudent(jsonData5);
+//            System.out.println(result5);
+//            //测试管理员添加课程函数
+//            CourseAddRequest request6 = new CourseAddRequest("操作系统","CS001023",
+//                    "test3","113240004","1-3-5,3-6-7","J6-403",
+//                    "4","70","23","9","24-2","必修");
+//            String jsonData6 = gson.toJson(request6);
+//            String result6 = courseController.addCourse(jsonData6);
+//            System.out.println(result6);
+//            //测试管理员删除课程函数
+//            CourseDeleteRequest request7 = new CourseDeleteRequest("admin","123456789","CS001023");
+//            String jsonData7 = gson.toJson(request7);
+//            String result7 = courseController.deleteCourse(jsonData7);
+//            System.out.println(result7);
+//        }
 
         NettyServer nettyServer = new NettyServer(8066);
         nettyServer.start();
