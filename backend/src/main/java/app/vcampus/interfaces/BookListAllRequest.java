@@ -2,23 +2,23 @@ package app.vcampus.interfaces;
 
 public class BookListAllRequest {
     String role;
-    String id;
+    String userId;
 
     public BookListAllRequest(String role,String id)
     {
         this.role=role;
-        this.id=id;
+        this.userId=id;
     }
 
     public String getRole() {
         return role;}
 
-    public String getId() {
-        return id;}
+    public String getuserId() {
+        return userId;}
 
     public void setRole(String role) {
         this.role = role;}
 
-    public void setId(String id) {
-        this.id = id;}
+    public void setuserId(String id) {
+        this.userId = id;}
 }
