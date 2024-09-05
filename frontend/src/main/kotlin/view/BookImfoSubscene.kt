@@ -28,6 +28,7 @@ fun getBook(): Book {
 
 @Composable
 fun BookImfoSubscene(onNavigateBack: () -> Unit, libraryModule: LibraryModule) {
+
     val book = getBook()
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
@@ -84,7 +85,7 @@ fun BookImfoSubscene(onNavigateBack: () -> Unit, libraryModule: LibraryModule) {
                 Spacer(modifier = Modifier.height(8.dp))
                 val quantityColor = if (book.quantity == 0) Color.Red else Color.Black
                 val validColor = if (book.quantity == 0) Color.Red else Color.Black
-                Text(text = "\n书籍总数: ${book.quantity}", fontSize = 16.sp, color = quantityColor)
+                Text(text = "书籍总数: ${book.quantity}", fontSize = 16.sp, color = quantityColor)
                 Text(text = "剩余可借: ${book.valid}", fontSize = 16.sp, color = validColor)
             }
         }

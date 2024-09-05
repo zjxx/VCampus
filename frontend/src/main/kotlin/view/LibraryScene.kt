@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,10 +31,12 @@ import java.io.File
 
 @Composable
 fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
-    var selectedOption by remember { mutableStateOf("查找书籍") }
+    var selectedOption by remember {
+        if(role == "student")mutableStateOf("查找书籍") else mutableStateOf("管理书籍")
+    }
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var imageUrl by remember { mutableStateOf("") }
-    var inputText by remember { mutableStateOf(TextFieldValue("")) }
+    //var inputText by remember { mutableStateOf(TextFieldValue("")) }
     var tempBooks by remember { mutableStateOf(listOf<Book>()) }
     var borrowedBooks by remember { mutableStateOf(listOf<Book>()) }
     var currentScene by remember { mutableStateOf("LibraryScene") }
@@ -236,11 +239,11 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                                 libraryModule.libCheck(userId)
                                             }
                                         },
-                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF228042)),
+                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
                                         shape = CircleShape,
                                         modifier = Modifier.size(48.dp)
                                     ) {
-                                        Text("刷新", color = Color.White)
+                                        Icon(Icons.Default.Refresh, contentDescription = "刷新", tint = Color(0xFF228042))
                                     }
                                 }
                                 LazyVerticalGrid(
@@ -376,7 +379,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                             .background(Color.White)
                                             .clickable {
                                                 GlobalState.selectedBook = book
-                                                //currentScene = "BookImfoSubscene"
+                                                currentScene = "BookAdminSubscene"
                                             }
                                             .padding(8.dp)
                                     ) {

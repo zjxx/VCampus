@@ -10,8 +10,8 @@ import view.component.DialogManager
 class LibraryModule (
     private val onSearchSuccess: (List<Book>) -> Unit,
     private val onCheckSuccess: (List<Book>) -> Unit,
-    private val onImageFetchSuccess: (String) -> Unit
-
+    private val onImageFetchSuccess: (String) -> Unit,
+    //private val onAddToListSuccess: () -> Unit,
 ) {
     private val nettyClient = NettyClientProvider.nettyClient
     var tempBooks = mutableListOf<Book>()
@@ -130,7 +130,7 @@ class LibraryModule (
             DialogManager.showDialog("请求失败")
         }
     }
-
+//__________________________________________________________________________________________
     //借书发送信息
     fun libAddToLits(isbn: String) {//借书
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "ISBN" to isbn)
@@ -151,6 +151,7 @@ class LibraryModule (
         }
     }
 
+    //__________________________________________________________________________________________
     //还书发送信息
     fun libReturnBook(userId: String, isbn: String) {//还书
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "ISBN" to isbn)
@@ -172,6 +173,8 @@ class LibraryModule (
         }
     }
 
+    //__________________________________________________________________________________________
+    //续借发送信息
     fun libRenewBook(userId: String, isbn: String) {
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "ISBN" to isbn)
         nettyClient.sendRequest(request, "lib/renewbook") { response: String ->
@@ -179,6 +182,7 @@ class LibraryModule (
         }
     }
 
+    //续借接收信息
     private fun handleResponseRenewBook(response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -191,6 +195,9 @@ class LibraryModule (
         }
     }
 
+
+
+//__________________________________________________________________________________________
     fun fetchImageUrl(input: String) {
         val request = mapOf("action" to "fetchImageUrl", "bookname"  to input)
         nettyClient.sendRequest(request, "lib/fetchImageUrl") { response: String ->
