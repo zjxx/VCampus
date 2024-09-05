@@ -58,6 +58,9 @@ public class ControllerManager {
         routeMapping.registerRoute("course/courseTable",courseController::showCourseTable);//学生查看课程表
         routeMapping.registerRoute("course/search",courseController::searchCourse);//学生搜索课程
         routeMapping.registerRoute("course/listStudent",courseController::ShowCourseStudent);//老师导出学生选课信息
+        routeMapping.registerRoute("course/add",courseController::addCourse);//教务添加课程
+        routeMapping.registerRoute("course/delete",courseController::deleteCourse);//教务删除课程
+
 
     }
     public String handleRequest(String jsonData) {
