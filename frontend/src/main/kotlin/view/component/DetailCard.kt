@@ -10,8 +10,13 @@ import androidx.compose.ui.text.font.FontWeight
 import module.Course
 
 @Composable
-fun DetailCard(course: Course, onSelectCourse: (Course,onSuccess: (Boolean) -> Unit) -> Boolean, onUnselectCourse: (Course,onSuccess: (Boolean) -> Unit) -> Boolean) {
+fun DetailCard(course: Course, onSelectCourse: (Course, onSuccess: (Boolean) -> Unit) -> Unit, onUnselectCourse: (Course, onSuccess: (Boolean) -> Unit) -> Unit) {
     var isSelected by remember { mutableStateOf(course.isSelect) }
+    var validCapacity by remember { mutableStateOf(course.validCapacity.toInt()) }
+
+    LaunchedEffect(isSelected) {
+        validCapacity = course.validCapacity.toInt()
+    }
 
     Card(
         modifier = Modifier
@@ -24,20 +29,25 @@ fun DetailCard(course: Course, onSelectCourse: (Course,onSuccess: (Boolean) -> U
                 Text("周次: ${timeSlot.week} 第${timeSlot.begin}-${timeSlot.end}节", fontWeight = FontWeight.Bold)
             }
             Text("教室: ${course.location}", fontWeight = FontWeight.Bold)
-            Text("客容量: ${course.capacity}", fontWeight = FontWeight.Bold)
-            Text("已选人数: ${course.validCapacity}", fontWeight = FontWeight.Bold) // Display updated validCapacity
+            Text("课容量: ${course.capacity}", fontWeight = FontWeight.Bold)
+            Text("剩余课容量: $validCapacity", fontWeight = FontWeight.Bold) // Display updated validCapacity
             Spacer(modifier = Modifier.height(8.dp))
             Button(onClick = {
-                 if (isSelected) {
-                    onUnselectCourse(course){ result ->
-                        isSelected = !result
+                if (isSelected) {
+                    onUnselectCourse(course) { result ->
+                        if (result) {
+                            isSelected = false
+                            validCapacity += 1 // Increment validCapacity immediately
+                        }
                     }
                 } else {
                     onSelectCourse(course) { result ->
-                        isSelected = result
+                        if (result) {
+                            isSelected = true
+                            validCapacity -= 1 // Decrement validCapacity immediately
+                        }
                     }
                 }
-
             }) {
                 Text(if (isSelected) "退选" else "选择")
             }
