@@ -84,9 +84,9 @@ public class CourseController {
         }
 
         // 检查是否已经选课
-        List<Enrollment> enrollments = db.getWhere(Enrollment.class, "student_id", request.getStudentId());
+        List<Enrollment> enrollments = db.getWhere(Enrollment.class, "studentid", request.getStudentId());
         for (Enrollment enrollment : enrollments) {
-            if (enrollment.getCourse_id().substring(0, 7).equals(request.getCourseId().substring(0, 7))) {
+            if (enrollment.getcourseid().substring(0, 7).equals(request.getCourseId().substring(0, 7))) {
                 data.addProperty("status","failed");
                 data.addProperty("reason", "student has already enrolled this course");
                 return gson.toJson(data);
@@ -95,14 +95,14 @@ public class CourseController {
 
         // 插入新的选课记录
         Enrollment enrollment = new Enrollment();
-        enrollment.setCourse_id(request.getCourseId());
-        enrollment.setStudent_id(request.getStudentId());
+        enrollment.setcourseid(request.getCourseId());
+        enrollment.setstudentid(request.getStudentId());
         enrollment.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         //在Course表中对应课程的Valid_capacity-1
         List<Course> courses=db.getWhere(Course.class,"course_id",request.getCourseId());
         Course course=courses.get(0);
         course.setValid_capacity(course.getValid_capacity()-1);
-        db.save(enrollment);
+        db.persist(enrollment);
         db.update(course);
         data.addProperty("status", "success");
         return gson.toJson(data);
@@ -121,12 +121,12 @@ public class CourseController {
             return gson.toJson(data);
         }
         //用学生ID在选课记录里查找对应课程的选课记录语句：
-        List<Enrollment> enrollments = db.getWhere(Enrollment.class,"student_id",request.getStudentId());
+        List<Enrollment> enrollments = db.getWhere(Enrollment.class,"studentid",request.getStudentId());
         //for循环查找enrollments中对应课程ID的记录并删除
         for(int i = 0; i < enrollments.size(); i++) {
             Enrollment enrollment = enrollments.get(i);
-            if(enrollment.getCourse_id().equals(request.getCourseId())) {
-                List<Course> courses=db.getWhere(Course.class,"course_id",request.getCourseId());
+            if(enrollment.getcourseid().equals(request.getCourseId())) {
+                List<Course> courses=db.getWhere(Course.class,"courseid",request.getCourseId());
                 Course course=courses.get(0);
                 course.setValid_capacity(course.getValid_capacity()+1);
                 db.update(course);
@@ -145,14 +145,14 @@ public class CourseController {
         JsonObject data = new JsonObject();
         DataBase db = DataBaseManager.getInstance();
         //在授课记录中查找到所有该学生的选课记录
-        List<Enrollment> enrollments = db.getWhere(Enrollment.class,"student_id",request.getStudentId());
+        List<Enrollment> enrollments = db.getWhere(Enrollment.class,"studentid",request.getStudentId());
         for(int i = 0; i < enrollments.size(); i++) {
             Enrollment enrollment=enrollments.get(i);
             JsonObject courseData=new JsonObject();
-            List<Course> courses = db.getWhere(Course.class,"course_id",enrollment.getCourse_id());
+            List<Course> courses = db.getWhere(Course.class,"courseid",enrollment.getcourseid());
             if(courses.isEmpty()) {
                 data.addProperty("status","failed");
-                courseData.addProperty("reason", "course"+ enrollment.getCourse_id() + " not found");
+                courseData.addProperty("reason", "course"+ enrollment.getcourseid() + " not found");
             }
             else{
                 Course course = courses.get(0);
@@ -218,7 +218,7 @@ public class CourseController {
         CourseStudentShowRequest request = gson.fromJson(jsonData, CourseStudentShowRequest.class);
         JsonObject data = new JsonObject();
         DataBase db=DataBaseManager.getInstance();
-        List<Course> courses = db.getWhere(Course.class,"course_id",request.getCourseId());
+        List<Course> courses = db.getWhere(Course.class,"courseid",request.getCourseId());
         Course course =courses.get(0);
         if(!course.getTeacher_id().equals(request.getTeacherId())) {
             data.addProperty("status", "failed");
@@ -226,7 +226,7 @@ public class CourseController {
             return gson.toJson(data);
         }
         //在选课记录中查询所有满足课程号的记录
-        List<Enrollment> records= db.getWhere(Enrollment.class,"course_id",request.getCourseId());
+        List<Enrollment> records= db.getWhere(Enrollment.class,"courseid",request.getCourseId());
         if(records.isEmpty()) {
             data.addProperty("status","failed");
             data.addProperty("reason", "course not found");
@@ -238,9 +238,9 @@ public class CourseController {
             {
                 Enrollment record=records.get(i);
                 JsonObject studentData=new JsonObject();
-                List<Student> students = db.getWhere(Student.class,"studentId",record.getStudent_id());
+                List<Student> students = db.getWhere(Student.class,"studentId",record.getstudentid());
                 Student student=students.get(0);
-                studentData.addProperty("studentTd",record.getStudent_id());
+                studentData.addProperty("studentTd",record.getstudentid());
                 studentData.addProperty("name",student.getUsername());
                 studentData.addProperty("gender",student.getGender());
                 data.add("stu"+i,studentData);
