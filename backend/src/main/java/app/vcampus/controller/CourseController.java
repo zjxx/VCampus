@@ -102,7 +102,7 @@ public class CourseController {
         List<Course> courses=db.getWhere(Course.class,"course_id",request.getCourseId());
         Course course=courses.get(0);
         course.setValid_capacity(course.getValid_capacity()-1);
-        db.persist(enrollment);
+        db.save(enrollment);
         db.update(course);
         data.addProperty("status", "success");
         return gson.toJson(data);
