@@ -315,6 +315,8 @@ fun AddCourseSubscene() {
 
         Button(
             onClick = {
+                val time = timeAndLocationCards.joinToString(";") { "${it.getDayOfWeekNumber()}-${it.startPeriod}-${it.endPeriod}" }
+                val location = timeAndLocationCards.joinToString(";") { it.location }
                 val courseData = CourseData(
                     courseName = courseName,
                     courseId = courseId,
@@ -324,6 +326,8 @@ fun AddCourseSubscene() {
                     major = major,
                     semester = semester,
                     property = property,
+                    time=time,
+                    location = location,
                     timeAndLocationCards = timeAndLocationCards
                 )
                 scope.launch {

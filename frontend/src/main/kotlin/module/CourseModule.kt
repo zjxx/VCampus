@@ -49,6 +49,8 @@ data class CourseData(
     val major: String,
     val semester: String,
     val property: String,
+    val time: String,
+    val location: String,
     val timeAndLocationCards: List<TimeAndLocationCardData>
 )
 
@@ -57,7 +59,19 @@ data class TimeAndLocationCardData(
     var startPeriod: String,
     var endPeriod: String,
     var location: String
-)
+){fun getDayOfWeekNumber(): String {
+    return when (dayOfWeek) {
+        "星期一" -> "1"
+        "星期二" -> "2"
+        "星期三" -> "3"
+        "星期四" -> "4"
+        "星期五" -> "5"
+        "星期六" -> "6"
+        "星期日" -> "7"
+        else -> dayOfWeek
+    }
+  }
+}
 
 class CourseModule {
     private val nettyClient = NettyClientProvider.nettyClient
@@ -169,7 +183,10 @@ class CourseModule {
             false
         }
     }
+
     fun addCourse(courseData: CourseData, onSuccess: (Boolean) -> Unit) {
+        val time = courseData.timeAndLocationCards.joinToString(";") { "${it.getDayOfWeekNumber()}-${it.startPeriod}-${it.endPeriod}" }
+        val location = courseData.timeAndLocationCards.joinToString(";") { it.location }
         val request = mapOf(
             "courseName" to courseData.courseName,
             "courseId" to courseData.courseId,
@@ -179,14 +196,8 @@ class CourseModule {
             "major" to courseData.major,
             "semester" to courseData.semester,
             "property" to courseData.property,
-            "timeAndLocationCards" to courseData.timeAndLocationCards.map {
-                mapOf(
-                    "dayOfWeek" to it.dayOfWeek,
-                    "startPeriod" to it.startPeriod,
-                    "endPeriod" to it.endPeriod,
-                    "location" to it.location
-                )
-            }
+            "time" to time,
+            "location" to location
         )
         nettyClient.sendRequest(request, "course/add") { response: String ->
             val success = handleResponseAdd(response)
