@@ -19,11 +19,12 @@ public class BookReturnRequest {
         this.ISBN = ISBN;
     }
 
-    public String getId() {
+    public String getuserId() {
         return userId;
     }
 
-    public void setId(String id) {
+    public void setuserId(String id) {
+
         this.userId = id;
     }
 

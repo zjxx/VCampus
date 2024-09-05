@@ -2,11 +2,11 @@ package app.vcampus.interfaces;
 
 public class BookDelayReturnRequest {
     private String ISBN;
-    private String id;
+    private String userId;
     private String role;
 
-    public BookDelayReturnRequest(String role, String id, String ISBN) {
-        this.id = id;
+    public BookDelayReturnRequest(String role, String userId, String ISBN) {
+        this.userId = userId;
         this.role = role;
         this.ISBN = ISBN;
     }
@@ -19,12 +19,12 @@ public class BookDelayReturnRequest {
         this.ISBN = ISBN;
     }
 
-    public String getId() {
-        return id;
+    public String getuserId() {
+        return userId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setuserId(String id) {
+        this.userId = userId;
     }
 
     public String getRole() {

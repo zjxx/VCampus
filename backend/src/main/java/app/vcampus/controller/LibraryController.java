@@ -151,7 +151,7 @@ public class LibraryController {
                 //如果有借阅记录，则判断该用户是否是该书的借阅者，如果是，则还书
                 if (!borrowedBooks.isEmpty()) {
                     for (Reader2Book borrowedBook : borrowedBooks) {
-                        if (borrowedBook.getReader_ID().equals(request.getId())) {
+                        if (borrowedBook.getReader_ID().equals(request.getuserId())) {
                             //判断是否超过30天还书期限,如果超期，按照每天1.8元的罚款进行罚款
                             Date currentDate = new Date();
                             //将还书时间保存到借阅记录中
@@ -208,7 +208,7 @@ public class LibraryController {
                 //如果有借阅记录，则判断该用户是否是该书的借阅者，如果是，则延期还书
                 if (!borrowedBooks.isEmpty()) {
                     for (Reader2Book borrowedBook : borrowedBooks) {
-                        if (borrowedBook.getReader_ID().equals(request.getId())) {
+                        if (borrowedBook.getReader_ID().equals(request.getuserId())) {
                             //检查书籍是否已经被还书，如果已经被还书，则提示用户已经还书了
                             if (!borrowedBook.isBook_State()) {
                                 data.addProperty("status","failed");
