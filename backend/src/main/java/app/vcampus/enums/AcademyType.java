@@ -1,6 +1,6 @@
 package app.vcampus.enums;
 //枚举专业：1 建筑学院 2 机械工程学院3 能源与环境学院4 信息科学与工程学院5 土木工程学院6 电子科学与工程学院7 数学系8 自动化学院9 计算机科学与工程学院10 物理系11 生物科学与医学工程学院12 材料科学与工程学院13 人文学院14 经济管理学院； 16 电气工程学院17 外国语学院18 体育系19 化学化工学院21 交通学院22 仪器科学与工程学院24 艺术学院25 法学院26 学习科学研究中心41 基础医学院42 公共卫生学院43 临床医学院61 吴健雄学院71 软件学院
-public enum MajorType{
+public enum AcademyType {
     ARCHITECTURE("建筑学院"),//1
     MECHANICAL_ENGINEERING("机械工程学院"),//2
     ENERGY_ENVIRONMENT("能源与环境学院"),//3
@@ -31,7 +31,7 @@ public enum MajorType{
     SOFTWARE_COLLEGE("软件学院");//28
     private final String major;
 
-    MajorType(String major) {
+    AcademyType(String major) {
         this.major = major;
     }
 
@@ -40,11 +40,22 @@ public enum MajorType{
     }
 
     public static String fromIndex(int index) {
-        MajorType[] values = MajorType.values();
+        AcademyType[] values = AcademyType.values();
         if (index < 1 || index >= values.length+1) // 从1开始
         {
             throw new IndexOutOfBoundsException("Invalid index: " + index);
         }
         return values[index].getMajor();
+    }
+
+    //getindex
+    public static int getIndex(String major) {
+        AcademyType[] values = AcademyType.values();
+        for (int i = 0; i < values.length; i++) {
+            if (values[i].getMajor().equals(major)) {
+                return i+1;
+            }
+        }
+        throw new IndexOutOfBoundsException("Invalid major: " + major);
     }
 }
