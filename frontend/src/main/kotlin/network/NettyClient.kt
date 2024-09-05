@@ -106,7 +106,7 @@ class NettyClient(private val host: String, private val port: Int) {
                     "type" to type
                 )
                 val jsonRequest = gson.toJson(req)
-                val chunks = splitData(encodedFile, 512) // Split data into 1KB chunks
+                val chunks = splitData(encodedFile, 512) // Split data into 512B chunks
 
                 // 发送请求
                 future.channel().writeAndFlush(jsonRequest)
