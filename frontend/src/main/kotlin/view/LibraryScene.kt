@@ -24,8 +24,11 @@ import androidx.compose.ui.unit.sp
 import data.Book
 import data.UserSession
 import module.LibraryModule
+import network.downloadPdfIfNotExists
 import view.component.FilePicker
 import view.component.GlobalState
+import view.component.LocalPdfViewer
+import view.component.PdfViewer
 import java.io.File
 
 
@@ -44,6 +47,8 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     var expanded by remember { mutableStateOf(false) }
     var selectedOption1 by remember { mutableStateOf("书名") }
     var addtolistresult by remember { mutableStateOf("") }
+    var selectedPdfPath by remember { mutableStateOf<String?>(null) }
+
 
     val libraryModule = LibraryModule(
         onSearchSuccess = { result ->
@@ -316,6 +321,20 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                         "显示图片" -> {
                             Column(modifier = Modifier.padding(top = 8.dp)) {
                                 FilePicker()
+                                Button(onClick = {
+                                    val imageISBN="9787550263932"
+                                    val filePath = "src/main/temp/"+imageISBN+".pdf"
+                                    //到时这个filePath改成src/main/temp/书的ISBN.pdf
+                                    if(!File(filePath).exists()){
+                                        downloadPdfIfNotExists("http://47.99.141.236/img/" + imageISBN + ".pdf", filePath)
+                                    }
+                                    selectedPdfPath = filePath
+                                }) {
+                                    Text("展示pdf")
+                                }
+                                selectedPdfPath?.let { path ->
+                                    LocalPdfViewer(filePath = path, onDismiss = { selectedPdfPath = null })
+                                    }
                             }
                         }
                     }

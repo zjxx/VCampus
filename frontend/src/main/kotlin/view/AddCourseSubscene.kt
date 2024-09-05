@@ -1,4 +1,4 @@
-// src/main/kotlin/view/AddCourseSubscene.kt
+
 // src/main/kotlin/view/AddCourseSubscene.kt
 package view
 
@@ -31,6 +31,8 @@ fun AddCourseSubscene() {
     var major by remember { mutableStateOf("") }
     var semester by remember { mutableStateOf("") }
     var property by remember { mutableStateOf("") }
+    var teacher by remember { mutableStateOf("") } // New state
+    var teacherId by remember { mutableStateOf("") } // New state
     var timeAndLocationCards by remember { mutableStateOf(listOf(TimeAndLocationCardData("", "", "", ""))) }
 
     val gradeOptions = listOf("大一", "大二", "大三", "大四")
@@ -54,7 +56,7 @@ fun AddCourseSubscene() {
             )
             Box(modifier = Modifier.weight(1f)) {
     var expandedProperty by remember { mutableStateOf(false) }
-    val propertyOptions = listOf("选修", "任选")
+    val propertyOptions = listOf("选修", "必修")
 
     OutlinedTextField(
         value = property,
@@ -82,6 +84,20 @@ fun AddCourseSubscene() {
         }
     }
 }
+        }
+        Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
+            OutlinedTextField(
+                value = teacher,
+                onValueChange = { teacher = it },
+                label = { Text("老师") },
+                modifier = Modifier.weight(1f).padding(end = 8.dp)
+            )
+            OutlinedTextField(
+                value = teacherId,
+                onValueChange = { teacherId = it },
+                label = { Text("一卡通号   ") },
+                modifier = Modifier.weight(1f)
+            )
         }
 
         timeAndLocationCards.forEachIndexed { index, cardData ->
@@ -328,7 +344,9 @@ fun AddCourseSubscene() {
                     property = property,
                     time=time,
                     location = location,
-                    timeAndLocationCards = timeAndLocationCards
+                    timeAndLocationCards = timeAndLocationCards,
+                    teacher = teacher, // New field
+                    teacherId = teacherId // New field
                 )
                 scope.launch {
                     courseModule.addCourse(courseData) { success ->
