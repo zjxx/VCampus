@@ -7,6 +7,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -26,6 +27,8 @@ fun PdfViewer(filePath: String, onDismiss: () -> Unit) {
     var images by remember { mutableStateOf<List<ImageBitmap>>(emptyList()) }
     var currentPage by remember { mutableStateOf(1) }
     var totalPages by remember { mutableStateOf(1) }
+    var imageWidth by remember { mutableStateOf(0) }
+    var imageHeight by remember { mutableStateOf(0) }
     val scrollState = rememberScrollState()
 
     LaunchedEffect(filePath, currentPage) {
@@ -36,6 +39,8 @@ fun PdfViewer(filePath: String, onDismiss: () -> Unit) {
                     totalPages = document.numberOfPages
                     val renderer = PDFRenderer(document)
                     val bufferedImage = renderer.renderImageWithDPI(currentPage - 1, 300f)
+                    imageWidth = bufferedImage.width
+                    imageHeight = bufferedImage.height
                     listOf(bufferedImage.toComposeImageBitmap())
                 }
             } else {
@@ -47,12 +52,12 @@ fun PdfViewer(filePath: String, onDismiss: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.8f),
+                .width((imageWidth / 2).dp)
+                .height((imageHeight / 2).dp + 100.dp), // Add extra space for buttons
             shape = MaterialTheme.shapes.medium
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = "PDF Viewer", style = MaterialTheme.typography.h6)
+                Text(text = "在线阅读", style = MaterialTheme.typography.h6)
                 Spacer(modifier = Modifier.height(8.dp))
                 Column(
                     modifier = Modifier
@@ -75,7 +80,28 @@ fun PdfViewer(filePath: String, onDismiss: () -> Unit) {
                     ) {
                         Text("Previous")
                     }
-                    Text(text = "Page $currentPage of $totalPages")
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.alignByBaseline()
+                    ) {
+                        TextField(
+                            value = currentPage.toString(),
+                            onValueChange = { newValue ->
+                                val newPage = newValue.toIntOrNull()
+                                if (newPage != null && newPage in 1..totalPages) {
+                                    currentPage = newPage
+                                }
+                            },
+                            modifier = Modifier.width(80.dp).alignByBaseline(),
+                            textStyle = MaterialTheme.typography.body1,
+                            singleLine = true
+                        )
+                        Text(
+                            text = "of $totalPages",
+                            style = MaterialTheme.typography.body1,
+                            modifier = Modifier.alignByBaseline()
+                        )
+                    }
                     Button(
                         onClick = { if (currentPage < totalPages) currentPage++ },
                         enabled = currentPage < totalPages

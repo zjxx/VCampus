@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import data.Book
 import data.UserSession
 import module.LibraryModule
+import network.downloadPdfIfNotExists
 import view.component.FilePicker
 import view.component.GlobalState
 import view.component.LocalPdfViewer
@@ -307,7 +308,12 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                             Column(modifier = Modifier.padding(top = 8.dp)) {
                                 FilePicker()
                                 Button(onClick = {
-                                    val filePath = "src/main/temp/temp.pdf" // Specify the file path here
+                                    val imageISBN="9787550263932"
+                                    val filePath = "src/main/temp/"+imageISBN+".pdf"
+                                    //到时这个filePath改成src/main/temp/书的ISBN.pdf
+                                    if(!File(filePath).exists()){
+                                        downloadPdfIfNotExists("http://47.99.141.236/img/" + imageISBN + ".pdf", filePath)
+                                    }
                                     selectedPdfPath = filePath
                                 }) {
                                     Text("展示pdf")
