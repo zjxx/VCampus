@@ -71,68 +71,76 @@ public class LibraryController {
 
     //借书功能
     public String borrowBook(String jsonData) {
-        //解析JSON数据
+        // 解析JSON数据
         BookBorrowRequest request = gson.fromJson(jsonData, BookBorrowRequest.class);
         JsonObject data = new JsonObject();
-        //判断用户身份,如果是学生，则借阅书籍
-        if (request.getRole().equals("student") || request.getRole().equals("teacher")) {
-            DataBase db = DataBaseManager.getInstance();
-            //先判断书籍是否存在
-            List<Book> books = db.getWhere(Book.class, "ISBN", request.getISBN());
-            if (!books.isEmpty()) {
-                Book book = books.get(0);
-                //判断书籍是否有余量
-                if (book.getValid_Quantity() > 0) {
-                    //在借阅记录中查询该ISBN书的借阅记录
-                    List<Reader2Book> borrowedBooks = db.getWhere(Reader2Book.class, "Book_ISBN", request.getISBN());
-                    //如果有借阅记录，则判断该用户是否是该书的借阅者，如果是，则不可以再借阅该书籍
-                    if (!borrowedBooks.isEmpty()) {
-                        for (Reader2Book borrowedBook : borrowedBooks) {
 
-                            if (borrowedBook.getReader_ID().equals(request.getuserId())&&borrowedBook.isBook_State()) {
-
-                                data.addProperty("error", "You have borrowed the book before.");
-                            }
-                        }
-                    }
-                    //如果没有该用户的借阅记录甚至没有关于该本书的借阅记录，则创建借阅记录
-                    else {
-                        //创建借阅记录
-                        Reader2Book reader2Book = new Reader2Book();
-                        reader2Book.setReader_ID(request.getuserId());
-                        reader2Book.setBook_ISBN(request.getISBN());
-                        //设置借阅日期为处理请求的日期
-                        Date currentDate = new Date();
-                        reader2Book.setBorrow_Date(currentDate);
-                        //设置还书日期为30天后
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTime(currentDate);
-                        calendar.add(Calendar.DAY_OF_YEAR, 30);
-                        Date returnDate = calendar.getTime();
-                        reader2Book.setReturn_Date(returnDate);
-                        reader2Book.setBorrow_State(true);//借阅状态为true,表示借阅在期限内
-                        reader2Book.setBook_State(true);//书籍状态为true,表示书籍被借阅
-                        //更新书籍的借阅量
-                        book.setValid_Quantity(book.getValid_Quantity() - 1);
-                        //更新数据库
-                        db.save(reader2Book);
-                        db.update(book);
-                        data.addProperty("success", "You have borrowed the book successfully.");
-                    }
-                } else {
-                    data.addProperty("status","failed");
-                    data.addProperty("reason", "The book is not available.");
-                }
-            } else {
-                data.addProperty("status","failed");
-                data.addProperty("reason", "No book found.");
-            }
-        } else {
-            data.addProperty("status","failed");
+        // 判断用户身份，如果是学生或教师，则借阅书籍
+        if (!"student".equals(request.getRole()) && !"teacher".equals(request.getRole())) {
+            data.addProperty("status", "failed");
             data.addProperty("reason", "You don't have permission to borrow book.");
+            return gson.toJson(data);
         }
+
+        DataBase db = DataBaseManager.getInstance();
+
+        // 先判断书籍是否存在
+        List<Book> books = db.getWhere(Book.class, "ISBN", request.getISBN());
+        if (books.isEmpty()) {
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "No book found.");
+            return gson.toJson(data);
+        }
+
+        Book book = books.get(0);
+
+        // 判断书籍是否有余量
+        if (book.getValid_Quantity() <= 0) {
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "The book is not available.");
+            return gson.toJson(data);
+        }
+
+        // 在借阅记录中查询该ISBN书的借阅记录
+        List<Reader2Book> borrowedBooks = db.getWhere(Reader2Book.class, "Book_ISBN", request.getISBN());
+
+        // 判断该用户是否已经借阅了该书籍
+        for (Reader2Book borrowedBook : borrowedBooks) {
+            if (borrowedBook.getReader_ID().equals(request.getuserId()) && borrowedBook.isBook_State()) {
+                data.addProperty("error", "You have borrowed the book before.");
+                return gson.toJson(data);
+            }
+        }
+
+        // 创建借阅记录
+        Reader2Book reader2Book = new Reader2Book();
+        reader2Book.setReader_ID(request.getuserId());
+        reader2Book.setBook_ISBN(request.getISBN());
+
+        // 设置借阅日期为处理请求的日期
+        Date currentDate = new Date();
+        reader2Book.setBorrow_Date(currentDate);
+
+        // 设置还书日期为30天后
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.DAY_OF_YEAR, 30);
+        reader2Book.setReturn_Date(calendar.getTime());
+
+        reader2Book.setBorrow_State(true); // 借阅状态为true，表示借阅在期限内
+        reader2Book.setBook_State(true);   // 书籍状态为true，表示书籍被借阅
+
+        // 更新书籍的借阅量
+        book.setValid_Quantity(book.getValid_Quantity() - 1);
+
+        // 更新数据库
+        db.save(reader2Book);
+        db.update(book);
+
+        data.addProperty("success", "You have borrowed the book successfully.");
         return gson.toJson(data);
     }
+
 
     //还书功能
     public String returnBook(String jsonData) {
@@ -184,7 +192,8 @@ public class LibraryController {
                 data.addProperty("status","failed");
                 data.addProperty("reason", "No book found.");
             }
-        } else {
+        } else
+        {
             data.addProperty("status","failed");
             data.addProperty("reason", "You don't have permission to return book.");
         }
