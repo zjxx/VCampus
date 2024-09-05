@@ -20,8 +20,8 @@ public class Student {
     @Column(length = 5)
     private String race;
 
-    @Column
-    private Integer major;
+    @Column(length = 10)
+    private String major;
 
     @Column(length = 10)
     private String academy;
@@ -61,11 +61,11 @@ public class Student {
         this.race = race;
     }
 
-    public Integer getMajor() {
+    public String getMajor() {
         return major;
     }
 
-    public void setMajor(Integer major) {
+    public void setMajor(String major) {
         this.major = major;
     }
 
