@@ -1,4 +1,4 @@
-﻿package app.vcampus;
+package app.vcampus;
 
 import app.vcampus.controller.StoreItemController;
 import app.vcampus.controller.StoreTransactionController;
