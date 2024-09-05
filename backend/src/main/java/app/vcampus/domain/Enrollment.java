@@ -4,42 +4,42 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "enrollment")
+@Table(name = "enroll")
 public class Enrollment {
     @Id
     @Column(length=13)
-    private String student_id;
+    private String studentid;
     @Column(unique = true, nullable = false)
-    private UUID record_id = UUID.randomUUID();
+    private UUID recordid = UUID.randomUUID();
     @Column(length=8)
-    private String course_id;
+    private String courseid;
     @Column
     private String time;
 
     public Enrollment() {
-        this.student_id = "";
-        this.record_id = UUID.randomUUID();
-        this.course_id = "";
+        this.studentid = "";
+        this.recordid = UUID.randomUUID();
+        this.courseid = "";
         this.time = "";
     }
 
-    public String getStudent_id() {
-        return student_id;
+    public String getstudentid() {
+        return studentid;
     }
-    public void setStudent_id(String student_id) {
-        this.student_id = student_id;
+    public void setstudentid(String studentid) {
+        this.studentid = studentid;
     }
-    public UUID getRecord_id() {
-        return record_id;
+    public UUID getrecordid() {
+        return recordid;
     }
-    public void setRecord_id(UUID record_id) {
-        this.record_id = record_id;
+    public void setrecordid(UUID recordid) {
+        this.recordid = recordid;
     }
-    public String getCourse_id() {
-        return course_id;
+    public String getcourseid() {
+        return courseid;
     }
-    public void setCourse_id(String course_id) {
-        this.course_id = course_id;
+    public void setcourseid(String courseid) {
+        this.courseid = courseid;
     }
     public String getTime() {
         return time;

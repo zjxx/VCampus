@@ -11,13 +11,13 @@ public class Course {
     @Column(unique = true, nullable = false)
     private UUID uuid = UUID.randomUUID();
     @Column(length = 8)
-    private String course_id;
+    private String courseId;
     @Column(length = 20)
-    private String course_name;
+    private String courseName;
     @Column(length = 8)
-    private String teacher_name;
+    private String teacherName;
     @Column(length = 13)
-    private String teacher_id;
+    private String teacherId;
     @Column(length = 4)
     private String semester;
     @Column
@@ -29,28 +29,28 @@ public class Course {
     @Column
     private Integer capacity;
     @Column
-    private Integer valid_capacity;
+    private Integer validCapacity;
     @Column(length = 2)
-    private String valid_grade;
-    @Column
-    private Integer major;
+    private String validGrade;
+    @Column(length = 10)
+    private String major;
     @Column(length = 2)
     private String property;
 
     public Course() {
         this.uuid = UUID.randomUUID();
-        this.course_id = "";
-        this.course_name = "";
-        this.teacher_name = "";
-        this.teacher_id = "";
+        this.courseId = "";
+        this.courseName = "";
+        this.teacherName = "";
+        this.teacherId = "";
         this.semester = "";
         this.credit = 0;
         this.location = "";
         this.time = "";
         this.capacity = 0;
-        this.valid_capacity = 0;
-        this.valid_grade = "";
-        this.major = 0;
+        this.validCapacity = 0;
+        this.validGrade = "";
+        this.major = "";
         this.property = "";
     }
 
@@ -62,36 +62,36 @@ public class Course {
         this.uuid = uuid;
     }
 
-    public String getCourse_id() {
-        return course_id;
+    public String getcourseId() {
+        return courseId;
     }
 
-    public void setCourse_id(String course_id) {
-        this.course_id = course_id;
+    public void setcourseId(String courseId) {
+        this.courseId = courseId;
     }
 
-    public String getCourse_name() {
-        return course_name;
+    public String getcourseName() {
+        return courseName;
     }
 
-    public void setCourse_name(String course_name) {
-        this.course_name = course_name;
+    public void setcourseName(String courseName) {
+        this.courseName = courseName;
     }
 
-    public String getTeacher_name() {
-        return teacher_name;
+    public String getteacherName() {
+        return teacherName;
     }
 
-    public void setTeacher_name(String teacher_name) {
-        this.teacher_name = teacher_name;
+    public void setteacherName(String teacherName) {
+        this.teacherName = teacherName;
     }
 
-    public String getTeacher_id() {
-        return teacher_id;
+    public String getteacherId() {
+        return teacherId;
     }
 
-    public void setTeacher_id(String teacher_id) {
-        this.teacher_id = teacher_id;
+    public void setteacherId(String teacherId) {
+        this.teacherId = teacherId;
     }
 
     public String getSemester() {
@@ -134,25 +134,29 @@ public class Course {
         this.capacity = capacity;
     }
 
-    public Integer getValid_capacity() {
-        return valid_capacity;
+    public Integer getvalidCapacity() {
+        return validCapacity;
     }
 
-    public void setValid_capacity(Integer valid_capacity) {
-        this.valid_capacity = valid_capacity;
+    public void setvalidCapacity(Integer validCapacity) {
+        this.validCapacity = validCapacity;
     }
 
-    public String getValid_grade() {
-        return valid_grade;
+    public String getvalidGrade() {
+        return validGrade;
     }
 
-    public void setValid_grade(String valid_grade) {
-        this.valid_grade = valid_grade;
+    public void setvalidGrade(String validGrade) {
+        this.validGrade = validGrade;
     }
 
-    public Integer getMajor() {return major;}
+    public String getMajor() {
+        return major;
+    }
 
-    public void setMajor(Integer major) {this.major = major;}
+    public void setMajor(String major) {
+        this.major = major;
+    }
 
     public String getProperty() {return property;}
 
