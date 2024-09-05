@@ -90,7 +90,7 @@ class CourseModule {
                         timeSlots,
                         courseJson["location"] as String,
                         courseJson["capacity"] as String,
-                        courseJson["valid_capacity"] as String,
+                        courseJson["validCapacity"] as String,
                         courseJson["property"] as String,
                         teacherNumber,
                         courseJson["isSelected"] as Boolean
