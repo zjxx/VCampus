@@ -12,46 +12,48 @@ import network.NettyClientProvider
 import view.component.DialogManager
 
 data class Course(
-    val courseId: String,
-    val courseIdPrefix: String,
-    val courseName: String,
-    val credit: String,
-    val teacher: String,
-    val time: String,
-    val timeSlots: List<TimeSlot>,
-    val location: String,
-    val capacity: String,
+    var courseId: String,
+    var courseIdPrefix: String,
+    var courseName: String,
+    var credit: String,
+    var teacher: String,
+    var time: String,
+    var timeSlots: List<TimeSlot>,
+    var location: String,
+    var capacity: String,
     var validCapacity: String, // Change to var to allow modification
-    val property: String,
-    val teacherNumber: String,
-    val isSelect: Boolean
+    var property: String,
+    var teacherNumber: String,
+    var isSelect: Boolean
 )
 
 data class GroupedCourse(
-    val courseIdPrefix: String,
-    val courseName: String,
-    val credit: String,
-    val property: String,
-    val courses: List<Course>
+    var courseIdPrefix: String,
+    var courseName: String,
+    var credit: String,
+    var property: String,
+    var courses: List<Course>
 )
 
 data class TimeSlot(
-    val week: String,
-    val begin: String,
-    val end: String
+    var week: String,
+    var begin: String,
+    var end: String
 )
 data class CourseData(
-    val courseName: String,
-    val courseId: String,
-    val credit: String,
-    val capacity: String,
-    val grade: String,
-    val major: String,
-    val semester: String,
-    val property: String,
-    val time: String,
-    val location: String,
-    val timeAndLocationCards: List<TimeAndLocationCardData>
+    var courseName: String,
+    var courseId: String,
+    var credit: String,
+    var capacity: String,
+    var grade: String,
+    var major: String,
+    var semester: String,
+    var property: String,
+    var time: String,
+    var location: String,
+    var timeAndLocationCards: List<TimeAndLocationCardData>,
+    var teacher: String, // New field
+    var teacherId: String // New field
 )
 
 data class TimeAndLocationCardData(
@@ -197,7 +199,9 @@ class CourseModule {
             "semester" to courseData.semester,
             "property" to courseData.property,
             "time" to time,
-            "location" to location
+            "location" to location,
+            "teacher" to courseData.teacher,
+            "teacherId" to courseData.teacherId// New field
         )
         nettyClient.sendRequest(request, "course/add") { response: String ->
             val success = handleResponseAdd(response)
@@ -214,5 +218,16 @@ class CourseModule {
             DialogManager.showDialog(responseJson["reason"] as String)
             false
         }
+    }
+    fun viewMyclass()
+    {
+        val request = mapOf("role" to UserSession.role, "teacherId" to UserSession.userId)
+        nettyClient.sendRequest(request, "course/view") { response: String ->
+            handleResponseView(response)
+        }
+    }
+    private fun handleResponseView(response: String)
+    {
+        println("Received response: $response")
     }
 }
