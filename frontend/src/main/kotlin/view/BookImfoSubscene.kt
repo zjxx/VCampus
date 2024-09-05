@@ -28,53 +28,66 @@ fun getBook(): Book {
 
 @Composable
 fun BookImfoSubscene(onNavigateBack: () -> Unit, libraryModule: LibraryModule) {
+
     val book = getBook()
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         // Back button
         Text(
-            text = "←",
+            text = "<",
             fontSize = 32.sp,
             modifier = Modifier
                 .clickable { onNavigateBack() }
                 .padding(8.dp)
         )
 
-        // Book cover image
-        Box(
+        // Upper half: Image and details
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.5f)
+                .weight(1f)
                 .padding(16.dp),
-            contentAlignment = Alignment.TopStart
+            verticalAlignment = Alignment.Top
         ) {
-            AsyncImage(
-                load = { loadImageBitmap(File(book.coverImage)) },
-                painterFor = { remember { BitmapPainter(it) } },
-                contentDescription = "Book Cover",
-                modifier = Modifier.size(240.dp)
-            )
-        }
+            // Book cover image
+            Box(
+                modifier = Modifier
+                    .weight(0.4f)
+                    .padding(16.dp),
+                contentAlignment = Alignment.TopStart
+            ) {
+                AsyncImage(
+                    load = { loadImageBitmap(File(book.coverImage)) },
+                    painterFor = { remember { BitmapPainter(it) } },
+                    contentDescription = "Book Cover",
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
 
-        // Book details
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "书名: ${book.bookname}, 作者: ${book.author}", fontSize = 20.sp)
-            Text(text = "出版社: ${book.publisher}, 语言: ${book.language}", fontSize = 16.sp, color = Color.DarkGray)
-        }
+            // Book details
+            Column(
+                modifier = Modifier
+                    .weight(0.6f)
+                    .padding(16.dp)
+            ) {
+                Text(text = "《 ${book.bookname} 》   作者: ${book.author}", fontSize = 24.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                Text(text = "\n> 出版社: ${book.publisher}\n> 语言: ${book.language}", fontSize = 16.sp, color = Color.DarkGray)
+                Spacer(modifier = Modifier.height(8.dp))
 
-        // Divider
-        Divider(color = Color(0xFF228042), thickness = 1.dp, modifier = Modifier.padding(vertical = 8.dp))
+                Divider(color = Color(0xFF228042), thickness = 1.dp)
 
-        // Description and kind
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "描述: ${book.description}", fontSize = 16.sp)
-            Text(text = "种类: ${book.kind}", fontSize = 16.sp)
-        }
+                Text(text = "\n描述:  ${book.description}", fontSize = 18.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "\n种类:  ${book.kind}\n", fontSize = 18.sp)
 
-        // Quantity and valid
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "数量: ${book.quantity}", fontSize = 16.sp)
-            Text(text = "有效数量: ${book.valid}", fontSize = 16.sp)
+                Divider(color = Color(0xFF228042), thickness = 1.dp)
+
+                Spacer(modifier = Modifier.height(8.dp))
+                val quantityColor = if (book.quantity == 0) Color.Red else Color.Black
+                val validColor = if (book.quantity == 0) Color.Red else Color.Black
+                Text(text = "书籍总数: ${book.quantity}", fontSize = 16.sp, color = quantityColor)
+                Text(text = "剩余可借: ${book.valid}", fontSize = 16.sp, color = validColor)
+            }
         }
 
         // Borrow button
@@ -86,9 +99,10 @@ fun BookImfoSubscene(onNavigateBack: () -> Unit, libraryModule: LibraryModule) {
         ) {
             Button(
                 onClick = { libraryModule.libAddToLits(book.isbn) },
+                modifier = Modifier.size(168.dp, 48.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF228042))
             ) {
-                Text(text = "借书", color = Color.White)
+                Text(text = "借书", color = Color.White, fontSize = 18.sp)
             }
         }
     }
