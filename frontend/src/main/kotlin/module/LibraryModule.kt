@@ -16,9 +16,9 @@ class LibraryModule (
     private val nettyClient = NettyClientProvider.nettyClient
     var tempBooks = mutableListOf<Book>()
 
-    fun libSearch(bookname: String, role: String) {
+    fun libSearch(bookname: String, flag: String) {
         tempBooks.clear()
-        val request = mapOf("role" to UserSession.role, "bookname" to bookname)//加上一个flag区分是否时书名和isbn
+        val request = mapOf("role" to UserSession.role, "bookname" to bookname, "flag" to flag)//加上一个flag区分是否时bookName和ISBN
         nettyClient.sendRequest(request, "lib/search") { response: String ->
             handleResponseSearch(response)
         }
@@ -151,13 +151,15 @@ class LibraryModule (
         }
     }
 
-    fun libReturnBook(userId: String, bookname: String) {//还书
-        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "bookname" to bookname)
+    //还书发送信息
+    fun libReturnBook(userId: String, isbn: String) {//还书
+        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "ISBN" to isbn)
         nettyClient.sendRequest(request, "lib/returnbook") { response: String ->
             handleResponseReturnBook(response)
         }
     }
 
+    //还书接收信息
     private fun handleResponseReturnBook(response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -170,8 +172,8 @@ class LibraryModule (
         }
     }
 
-    fun libRenewBook(userId: String, bookname: String) {
-        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "bookname" to bookname)
+    fun libRenewBook(userId: String, isbn: String) {
+        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "ISBN" to isbn)
         nettyClient.sendRequest(request, "lib/renewbook") { response: String ->
             handleResponseRenewBook(response)
         }

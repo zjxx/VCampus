@@ -1,16 +1,16 @@
 package view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Divider
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +37,10 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     var tempBooks by remember { mutableStateOf(listOf<Book>()) }
     var borrowedBooks by remember { mutableStateOf(listOf<Book>()) }
     var currentScene by remember { mutableStateOf("LibraryScene") }
+    var searchType by remember { mutableStateOf("bookName") }
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOption1 by remember { mutableStateOf("书名") }
+
 
     val libraryModule = LibraryModule(
         onSearchSuccess = { result ->
@@ -132,6 +136,40 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 OutlinedTextField(
+                                    value = selectedOption1,
+                                    onValueChange = { selectedOption1 = it },
+                                    modifier = Modifier
+                                        .weight(0.15f)
+                                        .clickable { expanded = true },
+                                    readOnly = true,
+                                    trailingIcon = {
+                                        IconButton(onClick = { expanded = true }) {
+                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                        }
+                                    }
+                                )
+
+                                DropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = { expanded = false }
+                                ) {
+                                    DropdownMenuItem(onClick = {
+                                        selectedOption1 = "书名"
+                                        searchType = "bookName"
+                                        expanded = false
+                                    }) {
+                                        Text("书名", fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                                    }
+                                    DropdownMenuItem(onClick = {
+                                        selectedOption1 = "ISBN"
+                                        searchType = "ISBN"
+                                        expanded = false
+                                    }) {
+                                        Text("ISBN", fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                                    }
+                                }
+                                Spacer(modifier = Modifier.width(8.dp))
+                                OutlinedTextField(
                                     value = searchText,
                                     onValueChange = { searchText = it },
                                     modifier = Modifier.weight(1f),
@@ -143,7 +181,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                         .clip(RoundedCornerShape(8.dp))
                                         .background(Color(0xFF228042))
                                         .clickable {
-                                            libraryModule.libSearch(searchText.text, role)
+                                            libraryModule.libSearch(searchText.text, searchType)
                                         }
                                         .padding(16.dp)
                                 ) {
@@ -184,27 +222,72 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                         }
 
                         "查看已借阅书籍信息" -> {
-                            LazyVerticalGrid(
-                                columns = GridCells.Fixed(2),
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .padding(8.dp)
-                            ) {
-                                items(borrowedBooks.size) { index ->
-                                    val book = borrowedBooks[index]
-                                    val backgroundColor = if (book.condition == "borrowing") Color.White else Color.LightGray
-                                    val textColor = if (book.condition == "borrowing") Color(0xFF228042) else Color.Black
-                                    val conditionText = if (book.condition == "borrowing") "借阅中" else "曾借阅"
-                                    Column(
-                                        modifier = Modifier
-                                            .padding(8.dp)
-                                            .background(backgroundColor)
-                                            //.clickable { onNavigate("BookInfoSubscene") }
-                                            .padding(8.dp)
+                            Column {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                    horizontalArrangement = Arrangement.End
+                                ) {
+                                    Button(
+                                        onClick = {
+                                            selectedOption = "查看已借阅书籍信息"
+                                            UserSession.userId?.let { userId ->
+                                                libraryModule.libCheck(userId)
+                                            }
+                                        },
+                                        colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF228042)),
+                                        shape = CircleShape,
+                                        modifier = Modifier.size(48.dp)
                                     ) {
-                                        Text(text = book.bookname, color = textColor, fontSize = 16.sp)
-                                        Text(text = conditionText, color = textColor, fontSize = 18.sp)
-                                        Text(text = "借书时间：${book.borrow_date}\n还书时间：${book.return_date}", fontSize = 12.sp)
+                                        Text("刷新", color = Color.White)
+                                    }
+                                }
+                                LazyVerticalGrid(
+                                    columns = GridCells.Fixed(2),
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .padding(8.dp)
+                                ) {
+                                    items(borrowedBooks.size) { index ->
+                                        val book = borrowedBooks[index]
+                                        val backgroundColor = if (book.condition == "borrowing") Color.White else Color(0xFFC1EAEF)
+                                        val textColor = if (book.condition == "borrowing") Color(0xFF228042) else Color.Black
+                                        val conditionText = if (book.condition == "borrowing") "借阅中" else "曾借阅"
+                                        Row(
+                                            modifier = Modifier
+                                                .padding(8.dp)
+                                                .clip(RoundedCornerShape(8.dp))
+                                                .background(backgroundColor)
+                                                .border(1.dp, Color.LightGray)
+                                                .padding(8.dp)
+                                        ) {
+                                            Column(
+                                                modifier = Modifier.weight(1f)
+                                            ) {
+                                                Text(text = book.bookname, color = textColor, fontSize = 18.sp)
+                                                Text(text = conditionText, color = textColor, fontSize = 18.sp)
+                                                Text(text = "借书时间：${book.borrow_date}\n还书时间：${book.return_date}", fontSize = 12.sp)
+                                            }
+                                            Column(
+                                                modifier = Modifier.align(Alignment.CenterVertically)
+                                            ) {
+                                                Button(
+                                                    onClick = { libraryModule.libReturnBook(UserSession.userId ?: "", book.isbn) },
+                                                    modifier = Modifier.padding(4.dp),
+                                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF228042))
+                                                ) {
+                                                    Text("还书", fontSize = 16.sp, color = Color.White)
+                                                }
+                                                Button(
+                                                    onClick = { libraryModule.libRenewBook(UserSession.userId ?: "", book.isbn) },
+                                                    modifier = Modifier.padding(4.dp),
+                                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF228042))
+                                                ) {
+                                                    Text("续借", fontSize = 16.sp, color = Color.White)
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -224,48 +307,86 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 OutlinedTextField(
+                                    value = selectedOption1,
+                                    onValueChange = { selectedOption1 = it },
+                                    modifier = Modifier
+                                        .weight(0.15f)
+                                        .clickable { expanded = true },
+                                    readOnly = true,
+                                    trailingIcon = {
+                                        IconButton(onClick = { expanded = true }) {
+                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                        }
+                                    }
+                                )
+
+                                DropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = { expanded = false }
+                                ) {
+                                    DropdownMenuItem(onClick = {
+                                        selectedOption1 = "书名"
+                                        searchType = "bookName"
+                                        expanded = false
+                                    }) {
+                                        Text("书名", fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                                    }
+                                    DropdownMenuItem(onClick = {
+                                        selectedOption1 = "ISBN"
+                                        searchType = "ISBN"
+                                        expanded = false
+                                    }) {
+                                        Text("ISBN", fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                                    }
+                                }
+                                Spacer(modifier = Modifier.width(8.dp))
+                                OutlinedTextField(
                                     value = searchText,
                                     onValueChange = { searchText = it },
                                     modifier = Modifier.weight(1f),
                                     singleLine = true
                                 )
-                                Spacer(modifier = Modifier.width(4.dp))
+                                Spacer(modifier = Modifier.width(16.dp))
                                 Box(
                                     modifier = Modifier
-                                        .clip(RoundedCornerShape(4.dp))
-                                        .background(Color.Blue)
-                                        .clickable { libraryModule.libSearch(searchText.text, role) }
-                                        .padding(8.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(Color(0xFF228042))
+                                        .clickable {
+                                            libraryModule.libSearch(searchText.text, searchType)
+                                        }
+                                        .padding(16.dp)
                                 ) {
-                                    Text(text = "搜索", color = Color.White)
+                                    Text(text = "搜索", color = Color.White, fontSize = 16.sp)
                                 }
                             }
+                            Spacer(modifier = Modifier.height(12.dp))
                             Divider(color = Color.Gray, thickness = 1.dp)
-                            Column(modifier = Modifier
-                                .weight(1f)
-                                .verticalScroll(rememberScrollState())
-                                .padding(top = 8.dp)) {
-                                if (tempBooks.isEmpty()) {
-                                    Text(text = "无信息", fontSize = 16.sp)
-                                } else {
-                                    tempBooks.forEach { book ->
-                                        Column(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(8.dp)
-                                                .clip(RoundedCornerShape(8.dp))
-                                                .background(Color.LightGray)
-                                                .clickable { currentScene = "BookImfoSubscene" }
-                                                .padding(8.dp)
-                                        ) {
-                                            AsyncImage(
-                                                load = { loadImageBitmap(File(book.coverImage)) },
-                                                painterFor = { remember { BitmapPainter(it) } },
-                                                contentDescription = "Book Cover",
-                                                modifier = Modifier.size(128.dp)
-                                            )
-                                            Text(text = book.bookname, fontSize = 16.sp)
-                                        }
+                            LazyVerticalGrid(
+                                columns = GridCells.Fixed(4),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(top = 8.dp)
+                            ) {
+                                items(tempBooks.size) { index ->
+                                    val book = tempBooks[index]
+                                    Column(
+                                        modifier = Modifier
+                                            .padding(8.dp)
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(Color.White)
+                                            .clickable {
+                                                GlobalState.selectedBook = book
+                                                //currentScene = "BookImfoSubscene"
+                                            }
+                                            .padding(8.dp)
+                                    ) {
+                                        AsyncImage(
+                                            load = { loadImageBitmap(File(book.coverImage)) },
+                                            painterFor = { remember { BitmapPainter(it) } },
+                                            contentDescription = "Book Cover",
+                                            modifier = Modifier.size(108.dp)
+                                        )
+                                        Text(text = book.bookname, fontSize = 14.sp)
                                     }
                                 }
                             }
@@ -274,7 +395,6 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                         "查看借阅记录" -> {
                             // Add implementation for viewing borrowing records
                         }
-
                     }
                 }
             }
