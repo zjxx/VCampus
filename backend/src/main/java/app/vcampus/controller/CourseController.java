@@ -63,6 +63,15 @@ public class CourseController {
             courseData.addProperty("capacity", String.valueOf(course.getCapacity()));
             courseData.addProperty("property",course.getProperty());
             courseData.addProperty("valid_capacity", String.valueOf(course.getValid_capacity()));
+            List<Enrollment> enrollment = db.getWhere(Enrollment.class, "courseid", course.getCourse_id());
+            Boolean isSelected = false;
+            for (Enrollment e : enrollment) {
+                if (e.getstudentid().equals(request.getStudentId())) {
+                    isSelected = true;
+                    break;
+                }
+            }
+            courseData.addProperty("isSelected",isSelected);
             data.add("course" + i, courseData);
         }
         data.addProperty("status", "success");
@@ -126,7 +135,7 @@ public class CourseController {
         for(int i = 0; i < enrollments.size(); i++) {
             Enrollment enrollment = enrollments.get(i);
             if(enrollment.getcourseid().equals(request.getCourseId())) {
-                List<Course> courses=db.getWhere(Course.class,"courseid",request.getCourseId());
+                List<Course> courses=db.getWhere(Course.class,"course_id",request.getCourseId());
                 Course course=courses.get(0);
                 course.setValid_capacity(course.getValid_capacity()+1);
                 db.update(course);
