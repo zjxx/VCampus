@@ -10,8 +10,8 @@ import androidx.compose.ui.text.font.FontWeight
 import module.Course
 
 @Composable
-fun DetailCard(course: Course, onSelectCourse: (Course) -> Boolean) {
-    var isSelected by remember { mutableStateOf(false) }
+fun DetailCard(course: Course, onSelectCourse: (Course,onSuccess: (Boolean) -> Unit) -> Boolean, onUnselectCourse: (Course,onSuccess: (Boolean) -> Unit) -> Boolean) {
+    var isSelected by remember { mutableStateOf(course.isSelect) }
 
     Card(
         modifier = Modifier
@@ -28,9 +28,16 @@ fun DetailCard(course: Course, onSelectCourse: (Course) -> Boolean) {
             Text("已选人数: ${course.validCapacity}", fontWeight = FontWeight.Bold) // Display updated validCapacity
             Spacer(modifier = Modifier.height(8.dp))
             Button(onClick = {
-                if (onSelectCourse(course)) {
-                    isSelected = !isSelected
+                 if (isSelected) {
+                    onUnselectCourse(course){ result ->
+                        isSelected = !result
+                    }
+                } else {
+                    onSelectCourse(course) { result ->
+                        isSelected = result
+                    }
                 }
+
             }) {
                 Text(if (isSelected) "退选" else "选择")
             }

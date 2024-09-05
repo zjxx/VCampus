@@ -23,7 +23,8 @@ data class Course(
     val capacity: String,
     var validCapacity: String, // Change to var to allow modification
     val property: String,
-    val teacherNumber: String
+    val teacherNumber: String,
+    val isSelect: Boolean
 )
 
 data class GroupedCourse(
@@ -91,7 +92,8 @@ class CourseModule {
                         courseJson["capacity"] as String,
                         courseJson["valid_capacity"] as String,
                         courseJson["property"] as String,
-                        teacherNumber
+                        teacherNumber,
+                        courseJson["isSelected"] as Boolean
                     )
                     coursesMap.computeIfAbsent(courseIdPrefix) { mutableListOf() }.add(course)
                 }
@@ -108,34 +110,37 @@ class CourseModule {
         }
     }
 
-    fun selectCourse(course: Course): Boolean {
+    fun selectCourse(course: Course, onSuccess: (Boolean) -> Unit) {
         val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId, "courseId" to course.courseId)
         var success = false
         nettyClient.sendRequest(request, "course/select") { response: String ->
             success = handleResponseSelect(response, course)
+            onSuccess(success)
         }
-        return success
+
     }
 
-    private fun handleResponseSelect(response: String, course: Course): Boolean {
-        println("Received response: $response")
-        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
-        return if (responseJson["status"] == "success") {
-            course.validCapacity = (course.validCapacity.toInt() + 1).toString() // Increment validCapacity
-            DialogManager.showDialog("选课成功")
-            true
-        } else {
-            DialogManager.showDialog(responseJson["reason"] as String)
-            false
-        }
+    // In `CourseModule.kt`
+private fun handleResponseSelect(response: String, course: Course): Boolean {
+    println("Received response: $response")
+    val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+    return if (responseJson["status"] == "success") {
+        course.validCapacity = (course.validCapacity.toInt() + 1).toString() // Increment validCapacity
+        DialogManager.showDialog("选课成功")
+        true
+    } else {
+        DialogManager.showDialog(responseJson["reason"] as String)
+        false
     }
-    fun unselectCourse(course: Course): Boolean {
+}
+    fun unselectCourse(course: Course,onSuccess: (Boolean) -> Unit) {
         val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId, "courseId" to course.courseId)
         var success = false
         nettyClient.sendRequest(request, "course/unselect") { response: String ->
             success = handleResponseUnselect(response, course)
+            onSuccess(success)
         }
-        return success
+
     }
 
     private fun handleResponseUnselect(response: String, course: Course): Boolean {
