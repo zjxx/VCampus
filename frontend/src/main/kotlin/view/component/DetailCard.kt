@@ -10,7 +10,7 @@ import androidx.compose.ui.text.font.FontWeight
 import module.Course
 
 @Composable
-fun DetailCard(course: Course) {
+fun DetailCard(course: Course, onSelectCourse: (Course) -> Boolean) {
     var isSelected by remember { mutableStateOf(false) }
 
     Card(
@@ -25,11 +25,12 @@ fun DetailCard(course: Course) {
             }
             Text("教室: ${course.location}", fontWeight = FontWeight.Bold)
             Text("客容量: ${course.capacity}", fontWeight = FontWeight.Bold)
-            Text("已选人数: ${course.validCapacity}", fontWeight = FontWeight.Bold)
+            Text("已选人数: ${course.validCapacity}", fontWeight = FontWeight.Bold) // Display updated validCapacity
             Spacer(modifier = Modifier.height(8.dp))
             Button(onClick = {
-                isSelected = !isSelected
-                // Add your selection/deselection logic here
+                if (onSelectCourse(course)) {
+                    isSelected = !isSelected
+                }
             }) {
                 Text(if (isSelected) "退选" else "选择")
             }

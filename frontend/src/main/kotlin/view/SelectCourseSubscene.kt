@@ -46,8 +46,8 @@ fun SelectCourseSubscene(courseModule: CourseModule) {
         }
 
         // 选课内容
-        groupedCourses.forEach { groupedCourse -> // Print
-            CourseCard(groupedCourse)
+        groupedCourses.forEach { groupedCourse ->
+            CourseCard(groupedCourse, courseModule)
             Spacer(modifier = Modifier.height(16.dp))
         }
     }

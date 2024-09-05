@@ -12,6 +12,7 @@ import network.NettyClientProvider
 import view.component.DialogManager
 
 data class Course(
+    val courseId: String,
     val courseIdPrefix: String,
     val courseName: String,
     val credit: String,
@@ -20,8 +21,8 @@ data class Course(
     val timeSlots: List<TimeSlot>,
     val location: String,
     val capacity: String,
+    var validCapacity: String, // Change to var to allow modification
     val property: String,
-    val validCapacity: String,
     val teacherNumber: String
 )
 
@@ -32,6 +33,7 @@ data class GroupedCourse(
     val property: String,
     val courses: List<Course>
 )
+
 data class TimeSlot(
     val week: String,
     val begin: String,
@@ -78,6 +80,7 @@ class CourseModule {
                         TimeSlot(parts[0], parts[1], parts[2])
                     }
                     val course = Course(
+                        courseId,
                         courseIdPrefix,
                         courseJson["courseName"] as String,
                         credit,
@@ -86,8 +89,8 @@ class CourseModule {
                         timeSlots,
                         courseJson["location"] as String,
                         courseJson["capacity"] as String,
-                        courseJson["property"] as String,
                         courseJson["valid_capacity"] as String,
+                        courseJson["property"] as String,
                         teacherNumber
                     )
                     coursesMap.computeIfAbsent(courseIdPrefix) { mutableListOf() }.add(course)
@@ -102,6 +105,28 @@ class CourseModule {
             }
         } else if (responseJson["status"] == "fail") {
             DialogManager.showDialog(responseJson["reason"] as String)
+        }
+    }
+
+    fun selectCourse(course: Course): Boolean {
+        val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId, "courseId" to course.courseId)
+        var success = false
+        nettyClient.sendRequest(request, "course/select") { response: String ->
+            success = handleResponseSelect(response, course)
+        }
+        return success
+    }
+
+    private fun handleResponseSelect(response: String, course: Course): Boolean {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        return if (responseJson["status"] == "success") {
+            course.validCapacity = (course.validCapacity.toInt() + 1).toString() // Increment validCapacity
+            DialogManager.showDialog("选课成功")
+            true
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
+            false
         }
     }
 }

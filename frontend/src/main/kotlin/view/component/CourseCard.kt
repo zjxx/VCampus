@@ -13,9 +13,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.Alignment
 import module.GroupedCourse
+import module.CourseModule
 
 @Composable
-fun CourseCard(groupedCourse: GroupedCourse) {
+fun CourseCard(groupedCourse: GroupedCourse, courseModule: CourseModule) {
     var expanded by remember { mutableStateOf(false) }
 
     Card(
@@ -42,7 +43,14 @@ fun CourseCard(groupedCourse: GroupedCourse) {
                         .heightIn(max = 500.dp) // Set a maximum height to avoid infinite constraints
                 ) {
                     items(groupedCourse.courses.size) { index ->
-                        DetailCard(course = groupedCourse.courses[index])
+                        DetailCard(course = groupedCourse.courses[index], onSelectCourse = { course ->
+                            if (courseModule.selectCourse(course)) {
+                                courseModule.selectedCourses = courseModule.selectedCourses + course
+                                true
+                            } else {
+                                false
+                            }
+                        })
                     }
                 }
             }
