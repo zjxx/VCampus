@@ -42,15 +42,22 @@ fun App() {
                                 NaviItem("学籍", "/student_status", Icons.Default.Person, listOf("student", "affairs_staff")),
                                 NaviItem("图书馆", "/library", Icons.Default.Book, listOf("library_user", "library_staff")),
                                 NaviItem("超市", "/shop", Icons.Default.ShoppingCart, listOf("shop_user", "shop_staff")),
-                           NaviItem("课表", "/course", Icons.Default.DateRange, listOf("student", "affairs_staff")),
+                                NaviItem("课程", "/course", Icons.Default.DateRange, listOf("student", "affairs_staff")),
                             )
                             "admin" -> listOf(
                                 NaviItem("主页", "/home", Icons.Default.Home, listOf("user")),
                                 NaviItem("教务", "/student_status", Icons.Default.DateRange, listOf("student", "affairs_staff")),
                                 NaviItem("图书馆", "/library", Icons.Default.Book, listOf("library_user", "library_staff")),
                                 NaviItem("超市", "/shop", Icons.Default.ShoppingCart, listOf("shop_user", "shop_staff")),
-                                NaviItem("课表", "/course", Icons.Default.DateRange, listOf("student", "affairs_staff"))
+                                NaviItem("课程管理", "/course", Icons.Default.DateRange, listOf("student", "affairs_staff"))
                                 )
+                            "teacher" -> listOf(
+                                NaviItem("主页", "/home", Icons.Default.Home, listOf("user")),
+                                NaviItem("图书馆", "/library", Icons.Default.Book, listOf("library_user", "library_staff")),
+                                NaviItem("超市", "/shop", Icons.Default.ShoppingCart, listOf("shop_user", "shop_staff")),
+                                NaviItem("课程", "/course", Icons.Default.DateRange, listOf("student", "affairs_staff"))
+                            )
+
                             else -> emptyList()
                         }
                     })

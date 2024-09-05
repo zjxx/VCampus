@@ -11,11 +11,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.animation.Crossfade
 import androidx.compose.ui.draw.shadow
 import module.CourseModule
+import module.CourseData
 
 @Composable
 fun CourseScene(onNavigate: (String) -> Unit, role: String) {
     var selectedMenuItem by remember { mutableStateOf("") }
     val courseModule = remember { CourseModule() }
+    var selectedCourse by remember { mutableStateOf<CourseData?>(null) }
 
     Row(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -53,10 +55,34 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                 }
                 TextButton(onClick = {
                     selectedMenuItem = "修改课程"
+                    selectedCourse = CourseData(
+                        courseName = "示例课程",
+                        courseId = "12345",
+                        credit = "3",
+                        capacity = "50",
+                        grade = "大二",
+                        major = "计算机科学",
+                        semester = "第一学期",
+                        property = "选修",
+                        time = "",
+                        location = "",
+                        timeAndLocationCards = listOf(),
+                        teacher = "张老师",
+                        teacherId = "67890"
+                    )
                 }) {
                     Text("修改课程", color = Color.Black) // 设置字体颜色为黑色
                 }
 
+            }
+            if(role=="teacher")
+            {
+                TextButton(onClick = {
+                    selectedMenuItem = "查看课程"
+                    courseModule.viewMyclass()
+                }) {
+                    Text("查看课程", color = Color.Black) // 设置字体颜色为黑色
+                }
             }
         }
         Box(modifier = Modifier.weight(0.7f).fillMaxHeight().padding(16.dp)) {
@@ -65,7 +91,14 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                     "选课" -> SelectCourseSubscene(courseModule)
                     "查看我的课表" -> ViewMyCoursesSubscene()
                     "增加课程" -> AddCourseSubscene()
-                    "修改课程" -> ModifyCourseSubscene()
+                    "修改课程" -> selectedCourse?.let { course ->
+                        ModifyCourseSubscene(
+                            course = course,
+                            onSelectCourse = { selectedCourse, onSuccess -> /* Handle course selection */ },
+                            onUnselectCourse = { selectedCourse, onSuccess -> /* Handle course unselection */ }
+                        )
+                    }
+                    "查看课程" -> ViewTeacherCourseSubscene()
                     else -> Text("请选择一个菜单项")
                 }
             }
