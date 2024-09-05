@@ -43,14 +43,28 @@ fun CourseCard(groupedCourse: GroupedCourse, courseModule: CourseModule) {
                         .heightIn(max = 500.dp) // Set a maximum height to avoid infinite constraints
                 ) {
                     items(groupedCourse.courses.size) { index ->
-                        DetailCard(course = groupedCourse.courses[index], onSelectCourse = { course ->
-                            if (courseModule.selectCourse(course)) {
+                        DetailCard(
+                            course = groupedCourse.courses[index],
+                            onSelectCourse = { course,onSuccess ->
+                                var success = false
+                                courseModule.selectCourse(course,onSuccess = { result ->
+                                    success = result
+                                    onSuccess(result)
+                                })
                                 courseModule.selectedCourses = courseModule.selectedCourses + course
-                                true
-                            } else {
-                                false
+                                success
+                            },
+                            onUnselectCourse = { course,onSuccess ->
+                                var success = true
+                                courseModule.unselectCourse(course,onSuccess = { result ->
+                                    success = result
+                                    onSuccess(result)
+                                })
+                                    courseModule.selectedCourses = courseModule.selectedCourses - course
+                                success
+
                             }
-                        })
+                        )
                     }
                 }
             }
