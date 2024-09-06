@@ -122,11 +122,11 @@ public class CourseController {
         //将课程时间转换为数组
         String[] courseTime = course.getTime().split(",");
         //找出学生选的课程时间段
-        List<Enrollment> records = db.getWhere(Enrollment.class, "student_id", request.getStudentId());
+        List<Enrollment> records = db.getWhere(Enrollment.class, "studentid", request.getStudentId());
         for (int i=0;i<records.size();i++) {
             Enrollment record = records.get(i);
             //用Enrollment中的课程id去course表中找到对应的课程时间段
-            List<Course> courseList = db.getWhere(Course.class, "course_id", record.getcourseid());
+            List<Course> courseList = db.getWhere(Course.class, "courseId", record.getcourseid());
             Course course1 = courseList.get(0);
             //将course1的课程时间转换为数组
             String[] course1Time = course1.getTime().split(",");
