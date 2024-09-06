@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.bytedeco.javacv.CanvasFrame
 import org.bytedeco.javacv.FFmpegFrameRecorder
 import org.bytedeco.javacv.FrameGrabber
@@ -51,7 +52,9 @@ fun CameraComponent() {
                             startRecording(selectedCamera!!)
                         }
                     } else {
-                        stopRecording()
+                        scope.launch(Dispatchers.IO) {
+                            stopRecording()
+                        }
                     }
                 }) {
                     Text(if (isRecording) "Stop Recording" else "Start Recording")
@@ -72,36 +75,67 @@ fun CameraComponent() {
 private var recorder: FFmpegFrameRecorder? = null
 private var canvasFrame: CanvasFrame? = null
 
-private fun startRecording(grabber: FrameGrabber) {
-    grabber.start()
-    recorder = FFmpegFrameRecorder("output.mp4", grabber.imageWidth, grabber.imageHeight).apply {
-        start()
-    }
+private suspend fun startRecording(grabber: FrameGrabber) {
+    withContext(Dispatchers.IO) {
+        try {
+            grabber.start()
+        } catch (e: Exception) {
+            println("Error starting grabber: ${e.message}")
+            return@withContext
+        }
 
-    while (true) {
-        val frame = grabber.grab() ?: break
-        recorder?.record(frame)
+        recorder = FFmpegFrameRecorder("output.mp4", grabber.imageWidth, grabber.imageHeight).apply {
+            start()
+        }
+
+        while (true) {
+            val frame = try {
+                grabber.grab()
+            } catch (e: Exception) {
+                println("Error grabbing frame: ${e.message}")
+                break
+            }
+            if (frame == null) break
+            recorder?.record(frame)
+        }
     }
 }
 
-private fun stopRecording() {
-    recorder?.stop()
-    recorder?.release()
-    recorder = null
-    canvasFrame?.dispose()
-    canvasFrame = null
+
+private suspend fun stopRecording() {
+    withContext(Dispatchers.IO) {
+        recorder?.stop()
+        recorder?.release()
+        recorder = null
+        canvasFrame?.dispose()
+        canvasFrame = null
+    }
 }
 
-private fun displayCameraFeed(grabber: FrameGrabber) {
-    canvasFrame = CanvasFrame("Camera Feed").apply {
-        isVisible = true
-        defaultCloseOperation = CanvasFrame.EXIT_ON_CLOSE
-    }
+private suspend fun displayCameraFeed(grabber: FrameGrabber) {
+    withContext(Dispatchers.IO) {
+        canvasFrame = CanvasFrame("Camera Feed").apply {
+            isVisible = true
+            defaultCloseOperation = CanvasFrame.EXIT_ON_CLOSE
+        }
 
-    grabber.start()
-    while (canvasFrame?.isVisible == true) {
-        val frame = grabber.grab() ?: break
-        canvasFrame?.showImage(frame)
+        try {
+            grabber.start()
+        } catch (e: Exception) {
+            println("Error starting grabber: ${e.message}")
+            return@withContext
+        }
+
+        while (canvasFrame?.isVisible == true) {
+            val frame = try {
+                grabber.grab()
+            } catch (e: Exception) {
+                println("Error grabbing frame: ${e.message}")
+                break
+            }
+            if (frame == null) break
+            canvasFrame?.showImage(frame)
+        }
+        grabber.stop()
     }
-    grabber.stop()
 }
