@@ -385,7 +385,9 @@ public class CourseController {
             JsonObject courseData = new JsonObject();
             courseData.addProperty("courseId", course.getcourseId());
             courseData.addProperty("courseName", course.getcourseName());
-            courseData.addProperty("teacher", course.getteacherName());
+            courseData.addProperty("teacherName", course.getteacherName());
+            courseData.addProperty("teacherId", course.getteacherId());
+            courseData.addProperty("semester", course.getSemester());
             courseData.addProperty("credit", String.valueOf(course.getCredit()));
             courseData.addProperty("time", course.getTime());
             courseData.addProperty("location", course.getLocation());
