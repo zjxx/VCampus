@@ -3,6 +3,7 @@ package app.vcampus;
 import app.vcampus.controller.StoreItemController;
 import app.vcampus.controller.StoreTransactionController;
 import app.vcampus.controller.CourseController;
+import app.vcampus.controller.ScoreController;
 import app.vcampus.domain.StoreItem;
 import app.vcampus.domain.Student;
 import app.vcampus.domain.User;
@@ -214,6 +215,64 @@ public class Main {
 //            String result7 = courseController.deleteCourse(jsonData7);
 //            System.out.println(result7);
 //        }
+
+        //测试ScoreController
+        {
+            ScoreController scoreController = new ScoreController();
+            Gson gson = new Gson();
+
+            //测试教师添加成绩函数
+            ScoreGiveRequest request0 = new ScoreGiveRequest("113220000",
+                    "213220000","CS000001","90",
+                    "95","92","93");
+            String jsonData0 = gson.toJson(request0);
+            String result0 = scoreController.giveScore(jsonData0);
+            System.out.println(result0);
+
+            //测试同学查看成绩函数
+            ScoreViewAllRequest request1 = new ScoreViewAllRequest("213220000");
+            String jsonData1 = gson.toJson(request1);
+            String result1 = scoreController.viewAllScore(jsonData1);
+            System.out.println(result1);
+
+            //测试教务查看成绩函数
+            AllScoreListRequest request2 = new AllScoreListRequest("123456789");
+            String jsonData2 = gson.toJson(request2);
+            String result2 = scoreController.viewAllScore(jsonData2);
+            System.out.println(result2);
+
+            //测试教务审核成绩函数
+            ScoreCheckRequest request3 = new ScoreCheckRequest("123456789","CS000001","审核未通过");
+            String jsonData3 = gson.toJson(request3);
+            String result3 = scoreController.checkScore(jsonData3);
+            System.out.println(result3);
+
+            //测试教师查看成绩函数
+            MyCourseScoreListRequest request4 = new MyCourseScoreListRequest("113220000");
+            String jsonData4 = gson.toJson(request4);
+            String result4 = scoreController.ViewMyCourseScore(jsonData4);
+            System.out.println(result4);
+
+            //测试教师修改成绩函数
+            ScoreModifyRequest request5 = new ScoreModifyRequest("113220000",
+                    "213220000","CS000001","90",
+                    "95","98","95");
+            String jsonData5 = gson.toJson(request5);
+            String result5 = scoreController.modifyScore(jsonData5);
+            System.out.println(result5);
+
+            //测试教务审核函数
+            ScoreCheckRequest request6 = new ScoreCheckRequest("123456789","CS000001","审核通过");
+            String jsonData6 = gson.toJson(request6);
+            String result6 = scoreController.checkScore(jsonData6);
+            System.out.println(result6);
+
+            //测试学生查看成绩函数
+            ScoreViewAllRequest request7 = new ScoreViewAllRequest("213220000");
+            String jsonData7 = gson.toJson(request7);
+            String result7 = scoreController.viewAllScore(jsonData7);
+            System.out.println(result7);
+        }
 
         NettyServer nettyServer = new NettyServer(8066);
         nettyServer.start();
