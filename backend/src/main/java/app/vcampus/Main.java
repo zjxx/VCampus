@@ -118,7 +118,8 @@ public class Main {
 //        System.out.println("Items after deletion: " + items);
 //
         //测试LibraryController
-        {//        LibraryController library = new LibraryController();
+//        {
+//        LibraryController library = new LibraryController();
 //        Gson gson = new Gson();
 //        BookSearchingRequest request0 = new BookSearchingRequest("student", "天才");
 //        String jsonData0 = gson.toJson(request0);
@@ -164,24 +165,29 @@ public class Main {
 //        String jsonData7 = gson.toJson(request7);
 //        String result7 = library.viewAllBorrowRecord(jsonData7);
 //        System.out.println(result7);
-        }
+//            //测试viewUserBorrowRecord函数
+//            BorrowUserSearchRequest request8 = new BorrowUserSearchRequest("admin","123456789","213240000");
+//            String jsonData8 = gson.toJson(request8);
+//            String result8 = library.viewUserBorrowRecord(jsonData8);
+//            System.out.println(result8);
+//        }
 
 
-        //测试CourseController
-        {
-            CourseController courseController = new CourseController();
-            Gson gson = new Gson();
+//        //测试CourseController
+//        {
+//            CourseController courseController = new CourseController();
+//            Gson gson = new Gson();
 
 //            //测试显示课程函数
 //            EnrollmentShowRequest request0 = new EnrollmentShowRequest("213220159");
 //            String jsonData0 = gson.toJson(request0);
 //            String result0 = courseController.showEnrollList(jsonData0);
 //            System.out.println(result0);
-            //测试选课函数
-            CourseSelectRequest request01 = new CourseSelectRequest("CS000001", "213220159");
-            String jsonData01 = gson.toJson(request01);
-            String result01 = courseController.selectCourse(jsonData01);
-            System.out.println(result01);
+//            //测试选课函数
+//            CourseSelectRequest request01 = new CourseSelectRequest("CS000001", "213220159");
+//            String jsonData01 = gson.toJson(request01);
+//            String result01 = courseController.selectCourse(jsonData01);
+//            System.out.println(result01);
 ////            //测试退课函数
 ////            CourseUnselectRequest request2 = new CourseUnselectRequest("CS001020","213220159");
 ////            String jsonData2 = gson.toJson(request2);
@@ -215,67 +221,67 @@ public class Main {
 //            String result7 = courseController.deleteCourse(jsonData7);
 //            System.out.println(result7);
 //        }
-
-            //测试ScoreController
-            {
-                ScoreController scoreController = new ScoreController();
-                //Gson gson = new Gson();
-
-                //测试教师添加成绩函数
-                ScoreGiveRequest request0 = new ScoreGiveRequest("113220000",
-                        "213220159", "CS000001", "90",
-                        "95", "92", "93");
-                String jsonData0 = gson.toJson(request0);
-                String result0 = scoreController.giveScore(jsonData0);
-                System.out.println(result0);
-
-                //测试同学查看成绩函数
-                ScoreViewAllRequest request1 = new ScoreViewAllRequest("213220159");
-                String jsonData1 = gson.toJson(request1);
-                String result1 = scoreController.viewAllScore(jsonData1);
-                System.out.println(result1);
-
-                //测试教务查看成绩函数
-                AllScoreListRequest request2 = new AllScoreListRequest("123456789");
-                String jsonData2 = gson.toJson(request2);
-                String result2 = scoreController.viewAllScore(jsonData2);
-                System.out.println(result2);
-
-                //测试教务审核成绩函数
-                ScoreCheckRequest request3 = new ScoreCheckRequest("123456789", "CS000001", "审核未通过");
-                String jsonData3 = gson.toJson(request3);
-                String result3 = scoreController.checkScore(jsonData3);
-                System.out.println(result3);
-
-                //测试教师查看成绩函数
-                MyCourseScoreListRequest request4 = new MyCourseScoreListRequest("113220000");
-                String jsonData4 = gson.toJson(request4);
-                String result4 = scoreController.ViewMyCourseScore(jsonData4);
-                System.out.println(result4);
-
-                //测试教师修改成绩函数
-                ScoreModifyRequest request5 = new ScoreModifyRequest("113220000",
-                        "213220159", "CS000001", "90",
-                        "95", "98", "95");
-                String jsonData5 = gson.toJson(request5);
-                String result5 = scoreController.modifyScore(jsonData5);
-                System.out.println(result5);
-
-                //测试教务审核函数
-                ScoreCheckRequest request6 = new ScoreCheckRequest("123456789", "CS000001", "审核通过");
-                String jsonData6 = gson.toJson(request6);
-                String result6 = scoreController.checkScore(jsonData6);
-                System.out.println(result6);
-
-                //测试学生查看成绩函数
-                ScoreViewAllRequest request7 = new ScoreViewAllRequest("213220159");
-                String jsonData7 = gson.toJson(request7);
-                String result7 = scoreController.viewAllScore(jsonData7);
-                System.out.println(result7);
-            }
+//
+//            //测试ScoreController
+//            {
+//                ScoreController scoreController = new ScoreController();
+//                Gson gson = new Gson();
+//
+//                //测试教师添加成绩函数
+//                ScoreGiveRequest request0 = new ScoreGiveRequest("113220000",
+//                        "213220159", "CS000001", "90",
+//                        "95", "92", "93");
+//                String jsonData0 = gson.toJson(request0);
+//                String result0 = scoreController.giveScore(jsonData0);
+//                System.out.println(result0);
+//
+//                //测试同学查看成绩函数
+//                ScoreViewAllRequest request1 = new ScoreViewAllRequest("213220159");
+//                String jsonData1 = gson.toJson(request1);
+//                String result1 = scoreController.viewAllScore(jsonData1);
+//                System.out.println(result1);
+//
+//                //测试教务查看成绩函数
+//                AllScoreListRequest request2 = new AllScoreListRequest("123456789");
+//                String jsonData2 = gson.toJson(request2);
+//                String result2 = scoreController.viewAllScore(jsonData2);
+//                System.out.println(result2);
+//
+//                //测试教务审核成绩函数
+//                ScoreCheckRequest request3 = new ScoreCheckRequest("123456789", "CS000001", "审核未通过");
+//                String jsonData3 = gson.toJson(request3);
+//                String result3 = scoreController.checkScore(jsonData3);
+//                System.out.println(result3);
+//
+//                //测试教师查看成绩函数
+//                MyCourseScoreListRequest request4 = new MyCourseScoreListRequest("113220000");
+//                String jsonData4 = gson.toJson(request4);
+//                String result4 = scoreController.ViewMyCourseScore(jsonData4);
+//                System.out.println(result4);
+//
+//                //测试教师修改成绩函数
+//                ScoreModifyRequest request5 = new ScoreModifyRequest("113220000",
+//                        "213220159", "CS000001", "90",
+//                        "95", "98", "95");
+//                String jsonData5 = gson.toJson(request5);
+//                String result5 = scoreController.modifyScore(jsonData5);
+//                System.out.println(result5);
+//
+//                //测试教务审核函数
+//                ScoreCheckRequest request6 = new ScoreCheckRequest("123456789", "CS000001", "审核通过");
+//                String jsonData6 = gson.toJson(request6);
+//                String result6 = scoreController.checkScore(jsonData6);
+//                System.out.println(result6);
+//
+//                //测试学生查看成绩函数
+//                ScoreViewAllRequest request7 = new ScoreViewAllRequest("213220159");
+//                String jsonData7 = gson.toJson(request7);
+//                String result7 = scoreController.viewAllScore(jsonData7);
+//                System.out.println(result7);
+//            }
 
             NettyServer nettyServer = new NettyServer(8066);
             nettyServer.start();
         }
     }
-}
+
