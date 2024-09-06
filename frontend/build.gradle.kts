@@ -32,6 +32,11 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-core:2.23.1")
     implementation("org.apache.pdfbox:pdfbox:2.0.24")
     implementation("org.jetbrains.skija:skija-shared:0.93.6")
+    implementation("org.bytedeco:javacv-platform:1.5.6")
+    implementation("org.bytedeco:opencv-platform:4.5.3-1.5.6")
+
+
+
 }
 
 compose.desktop {

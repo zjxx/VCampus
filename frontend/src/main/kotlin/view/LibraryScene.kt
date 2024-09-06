@@ -25,6 +25,7 @@ import data.Book
 import data.UserSession
 import module.LibraryModule
 import utils.downloadPdfIfNotExists
+import view.component.CameraComponent
 import view.component.FilePicker
 import view.component.GlobalState
 import view.component.LocalPdfViewer
@@ -331,6 +332,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                         "显示图片" -> {
                             Column(modifier = Modifier.padding(top = 8.dp)) {
                                 FilePicker()
+                                CameraComponent()
                                 Button(onClick = {
                                     val imageISBN="9787550263932"
                                     val filePath = "src/main/temp/"+imageISBN+".pdf"
