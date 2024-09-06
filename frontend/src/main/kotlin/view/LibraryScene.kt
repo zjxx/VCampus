@@ -48,6 +48,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     var selectedOption1 by remember { mutableStateOf("书名") }
     var addtolistresult by remember { mutableStateOf("") }
     var selectedPdfPath by remember { mutableStateOf<String?>(null) }
+    var idSearchResult by remember { mutableStateOf(listOf<String>()) }
 
 
     val libraryModule = LibraryModule(
@@ -64,6 +65,9 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
         },
         onAddToListSuccess = { result ->
             addtolistresult = result
+        },
+        onIdCheckSuccess = { result ->
+            idSearchResult = result
         }
     )
 
@@ -470,25 +474,43 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                     ) {
                                         Text(text = "录入图书", color = Color.White, fontSize = 16.sp)
                                     }
+                                }
+                            }
+                        }
+
+                        "查看借阅记录" -> {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .padding(16.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    OutlinedTextField(
+                                        value = searchText,
+                                        onValueChange = { searchText = it },
+                                        modifier = Modifier.weight(1f),
+                                        singleLine = true
+                                    )
                                     Spacer(modifier = Modifier.width(16.dp))
                                     Box(
                                         modifier = Modifier
                                             .clip(RoundedCornerShape(8.dp))
                                             .background(Color(0xFF228042))
                                             .clickable {
-                                                // Add action for "批量录入"
-
+                                                libraryModule.libSearch(searchText.text, searchType)
                                             }
-                                            .padding(10.dp)
+                                            .padding(16.dp)
                                     ) {
-                                        Text(text = "批量录入", color = Color.White, fontSize = 16.sp)
+                                        Text(text = "搜索", color = Color.White, fontSize = 16.sp)
                                     }
                                 }
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Divider(color = Color.Gray, thickness = 1.dp)
+                                // Display borrowing records
                             }
-                        }
-
-                        "查看借阅记录" -> {
-                            // Add implementation for viewing borrowing records
                         }
                     }
                 }
