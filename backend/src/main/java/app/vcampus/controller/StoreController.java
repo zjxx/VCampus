@@ -39,11 +39,11 @@ public class StoreController {
     }
 
     //创建交易对象
-    private StoreTransaction createStoreTransaction(StoreItem storeItem, PurchaseRequest request)
-    {
+    private StoreTransaction createStoreTransaction(StoreItem storeItem, PurchaseRequest request) {
         StoreTransaction transaction = new StoreTransaction();
         transaction.setUuid(UUID.randomUUID());
         transaction.setStoreItem(storeItem);
+        transaction.setItemUuid(storeItem.getUuid()); // 设置 itemUuid 字段
         transaction.setTime(LocalDateTime.now());
         transaction.setAmount(request.getAmount());
         transaction.setCardNumber(request.getCardNumber());
@@ -51,10 +51,10 @@ public class StoreController {
     }
 
     //创建交易的JSON对象
-    private JsonObject createTransactionJsonObject(StoreTransaction transaction)
-    {
+    private JsonObject createTransactionJsonObject(StoreTransaction transaction) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("uuid", transaction.getUuid().toString());
+        jsonObject.addProperty("itemUuid", transaction.getItemUuid().toString()); // 添加 itemUuid 字段
         jsonObject.addProperty("itemName", transaction.getStoreItem().getItemName());
         jsonObject.addProperty("itemPrice", String.valueOf(transaction.getStoreItem().getPrice()));
         jsonObject.addProperty("amount", String.valueOf(transaction.getAmount()));
