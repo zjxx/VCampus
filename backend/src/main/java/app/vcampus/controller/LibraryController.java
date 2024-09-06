@@ -433,7 +433,7 @@ public class LibraryController {
             book.setDescription(request.get("description").getAsString());
             book.setKind(request.get("kind").getAsString());
             book.setQuantity(request.get("quantity").getAsInt());
-            book.setValid_Quantity(request.get("quantity").getAsInt());
+            book.setValid_Quantity(request.get("Valid_Quantity").getAsInt());
 
             db.save(book);
             data.addProperty("status", "success");
@@ -544,12 +544,12 @@ public class LibraryController {
             newBook.setBookName(request.get("bookName").getAsString());
             newBook.setAuthor(request.get("author").getAsString());
             newBook.setPublisher(request.get("publisher").getAsString());
-            newBook.setPublishedYear(request.get("publishedYear").getAsInt());
+            newBook.setPublishedYear(request.get("publishDate").getAsInt());
             newBook.setLanguage(request.get("language").getAsString());
             newBook.setDescription(request.get("description").getAsString());
             newBook.setKind(request.get("kind").getAsString());
             newBook.setQuantity(request.get("quantity").getAsInt());
-            newBook.setValid_Quantity(request.get("quantity").getAsInt());
+            newBook.setValid_Quantity(request.get("Valid_Quantity").getAsInt());
 
             db.save(newBook);
             data.addProperty("status", "success");
