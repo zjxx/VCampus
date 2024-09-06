@@ -368,4 +368,35 @@ public class CourseController {
         }
         return gson.toJson(data);
     }
+
+    //教务查看所有课
+    public String showAdminList(String jsonData) {
+        EnrollmentShowRequest request = gson.fromJson(jsonData, EnrollmentShowRequest.class);
+        JsonObject data = new JsonObject();
+        DataBase db = DataBaseManager.getInstance();
+
+               // 在courses里面筛选出符合major的数据
+        List<Course> courses = db.getLike(Course.class,"courseId","");
+
+        //打包返回所有课程数据的json数据
+        data.addProperty("number", String.valueOf(courses.size()));
+        for(int i = 0; i < courses.size(); i++) {
+            Course course = courses.get(i);
+            JsonObject courseData = new JsonObject();
+            courseData.addProperty("courseId", course.getcourseId());
+            courseData.addProperty("courseName", course.getcourseName());
+            courseData.addProperty("teacher", course.getteacherName());
+            courseData.addProperty("credit", String.valueOf(course.getCredit()));
+            courseData.addProperty("time", course.getTime());
+            courseData.addProperty("location", course.getLocation());
+            courseData.addProperty("capacity", String.valueOf(course.getCapacity()));
+            courseData.addProperty("property",course.getProperty());
+            courseData.addProperty("validCapacity", String.valueOf(course.getvalidCapacity()));
+            courseData.addProperty("major",course.getMajor());
+            courseData.addProperty("validGrade",course.getvalidGrade());
+            data.add("course" + i, courseData);
+        }
+        data.addProperty("status", "success");
+        return gson.toJson(data);
+    }
 }

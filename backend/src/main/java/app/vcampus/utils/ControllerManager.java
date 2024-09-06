@@ -57,6 +57,7 @@ public class ControllerManager {
         routeMapping.registerRoute("course/listStudent",courseController::ShowCourseStudent);//老师导出学生选课信息
         routeMapping.registerRoute("course/add",courseController::addCourse);//教务添加课程
         routeMapping.registerRoute("course/delete",courseController::deleteCourse);//教务删除课程
+        routeMapping.registerRoute("course/showAll",courseController::showAdminList);//教务查看课程
 
 
     }
