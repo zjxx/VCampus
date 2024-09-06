@@ -418,7 +418,7 @@ public class LibraryController {
                 data.addProperty("reason", "The book already exists.");
                 return gson.toJson(data);
             }
-            String filepath= request.get("ISBN").getAsString() + ".jpg";
+            String filepath="C:\\Users\\Administrator\\Desktop\\server\\img\\"+ request.get("ISBN").getAsString() + ".jpg";
             fileOutputStream = new FileOutputStream(filepath);//指定保持路径
             byte[] bytes = java.util.Base64.getDecoder().decode(additionalParam);
             fileOutputStream.write(bytes);
