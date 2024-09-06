@@ -118,7 +118,8 @@ public class Main {
 //        System.out.println("Items after deletion: " + items);
 //
         //测试LibraryController
-        {//        LibraryController library = new LibraryController();
+//        {
+//        LibraryController library = new LibraryController();
 //        Gson gson = new Gson();
 //        BookSearchingRequest request0 = new BookSearchingRequest("student", "天才");
 //        String jsonData0 = gson.toJson(request0);
@@ -164,7 +165,12 @@ public class Main {
 //        String jsonData7 = gson.toJson(request7);
 //        String result7 = library.viewAllBorrowRecord(jsonData7);
 //        System.out.println(result7);
-        }
+//            //测试viewUserBorrowRecord函数
+//            BorrowUserSearchRequest request8 = new BorrowUserSearchRequest("admin","123456789","213240000");
+//            String jsonData8 = gson.toJson(request8);
+//            String result8 = library.viewUserBorrowRecord(jsonData8);
+//            System.out.println(result8);
+//        }
 
 
 //        //测试CourseController
