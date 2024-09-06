@@ -48,6 +48,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     var addtolistresult by remember { mutableStateOf("") }
     var selectedPdfPath by remember { mutableStateOf<String?>(null) }
     var idSearchResult by remember { mutableStateOf(listOf<String>()) }
+    var modifyResult by remember { mutableStateOf("") }
 
 
     val libraryModule = LibraryModule(
@@ -67,6 +68,9 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
         },
         onIdCheckSuccess = { result ->
             idSearchResult = result
+        },
+        onBookModifySuccess = { result ->
+            modifyResult = result
         }
     )
 
@@ -465,8 +469,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                             .clip(RoundedCornerShape(8.dp))
                                             .background(Color(0xFF228042))
                                             .clickable {
-                                                // Add action for "录入图书"
-
+                                                currentScene = "BookModifySubscene"
                                             }
                                             .padding(10.dp)
                                     ) {
@@ -498,7 +501,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                             .clip(RoundedCornerShape(8.dp))
                                             .background(Color(0xFF228042))
                                             .clickable {
-                                                libraryModule.libSearch(searchText.text, searchType)
+                                                libraryModule.libIdCheck(searchText.text)
                                             }
                                             .padding(16.dp)
                                     ) {
@@ -519,5 +522,9 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
 
     } else if (currentScene == "BookAdminSubscene") {
         BookAdminSubscene(onNavigateBack = { currentScene = "LibraryScene" }, libraryModule = libraryModule)
+
+    } else if (currentScene == "BookModifySubscene") {
+        BookModifySubscene(onNavigateBack = { currentScene = "LibraryScene" }, book = Book(), "lib/add/file_upload")
+
     }
 }

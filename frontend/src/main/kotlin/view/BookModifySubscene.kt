@@ -14,13 +14,14 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.Book
+import module.LibraryModule
 import utils.NettyClientProvider
 import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
 @Composable
-fun BookModifySubscene(onNavigateBack: () -> Unit, book: Book) {
+fun BookModifySubscene(onNavigateBack: () -> Unit, book: Book, type: String) {
     var bookName by remember { mutableStateOf(book.bookname) }
     var author by remember { mutableStateOf(book.author) }
     var isbn by remember { mutableStateOf(book.isbn) }
@@ -32,7 +33,22 @@ fun BookModifySubscene(onNavigateBack: () -> Unit, book: Book) {
     var quantity by remember { mutableStateOf(book.quantity.toString()) }
     var valid by remember { mutableStateOf(book.valid.toString()) }
     var filePath by remember { mutableStateOf<String?>(null) }
+    var modifyResult by remember { mutableStateOf("") }
     val nettyClient = NettyClientProvider.nettyClient
+    var idSearchResult by remember { mutableStateOf(listOf<String>()) }
+
+    val libraryModule = LibraryModule(
+        onSearchSuccess = {},
+        onCheckSuccess = {},
+        onImageFetchSuccess = {},
+        onAddToListSuccess = {},
+        onIdCheckSuccess = { result ->
+            idSearchResult = result
+        },
+        onBookModifySuccess = {result ->
+            modifyResult = result
+        }
+    )
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         // Back button
@@ -169,11 +185,7 @@ fun BookModifySubscene(onNavigateBack: () -> Unit, book: Book) {
                                 "kind" to kind,
                                 "quantity" to quantity,
                                 "Valid_Quantity" to valid)
-                            filePath?.let {
-                                nettyClient.sendFile(request, "lib/file_upload", it) { response ->
-                                    println("Server response: $response")
-                                }
-                            }
+                            libraryModule.bookModify(request, type, filePath)
                         },
                         modifier = Modifier.size(168.dp, 48.dp),
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF228042))

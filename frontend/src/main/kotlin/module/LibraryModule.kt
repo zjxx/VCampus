@@ -13,10 +13,12 @@ class LibraryModule (
     private val onImageFetchSuccess: (String) -> Unit,
     private val onAddToListSuccess: (String) -> Unit,
     private val onIdCheckSuccess: (List<String>) -> Unit,
+    private val onBookModifySuccess: (String) -> Unit,
 ) {
     private val nettyClient = NettyClientProvider.nettyClient
     var tempBooks = mutableListOf<Book>()
     var searchIdResult = mutableListOf<String>()
+    //var filePath by remember { mutableStateOf<String?>(null) }
 
     fun libSearch(bookname: String, flag: String) {
         tempBooks.clear()
@@ -65,7 +67,7 @@ class LibraryModule (
                 onSearchSuccess(tempBooks)
             }
         } else {
-            DialogManager.showDialog("搜索失败")
+            DialogManager.showDialog(responseJson["reason"] as String)
         }
     }
 
@@ -131,7 +133,7 @@ class LibraryModule (
             onCheckSuccess(tempBooks)
 
         } else {
-            DialogManager.showDialog("请求失败")
+            DialogManager.showDialog(responseJson["reason"] as String)
         }
     }
     //__________________________________________________________________________________________
@@ -153,7 +155,7 @@ class LibraryModule (
             DialogManager.showDialog("借阅成功")
         } else {
             onAddToListSuccess("借阅失败")
-            DialogManager.showDialog("借阅失败")
+            DialogManager.showDialog(responseJson["reason"] as String)
         }
     }
 
@@ -175,7 +177,7 @@ class LibraryModule (
         if (responseJson["status"] == "success") {
             DialogManager.showDialog("归还成功")
         } else {
-            DialogManager.showDialog("归还失败")
+            DialogManager.showDialog(responseJson["reason"] as String)
         }
     }
 
@@ -197,7 +199,7 @@ class LibraryModule (
         if (responseJson["status"] == "success") {
             DialogManager.showDialog("续借成功")
         } else {
-            DialogManager.showDialog("续借失败")
+            DialogManager.showDialog(responseJson["reason"] as String)
         }
     }
 
@@ -220,6 +222,31 @@ class LibraryModule (
 
         }
         onIdCheckSuccess(searchIdResult)
+    }
+
+    //——————————————————————————————————————————————————————————————————————————————————————
+    //修改请求
+    fun bookModify(request: Any, type: String, filePath: String?) {
+        filePath?.let {
+            nettyClient.sendFile(request, type, it) { response: String ->
+                handleBookModifyRespose(response)
+            }
+        }
+    }
+
+    fun handleBookModifyRespose(response: String) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        println("Response status: ${responseJson["status"]}")
+        val modifyResult: String
+        if (responseJson["status"] == "success" ) {
+            modifyResult = "success"
+            DialogManager.showDialog("修改成功")
+        }else {
+            modifyResult = "failed"
+            DialogManager.showDialog(responseJson["reason"] as String)
+        }
+        onBookModifySuccess(modifyResult)
     }
 
 //__________________________________________________________________________________________
