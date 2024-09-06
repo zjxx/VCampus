@@ -25,6 +25,7 @@ import data.Book
 import data.UserSession
 import module.LibraryModule
 import utils.downloadPdfIfNotExists
+import view.component.CameraComponent
 import view.component.FilePicker
 import view.component.GlobalState
 import view.component.LocalPdfViewer
@@ -34,7 +35,7 @@ import java.io.File
 @Composable
 fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     var selectedOption by remember {
-        if(role == "student")mutableStateOf("查找书籍") else mutableStateOf("管理书籍")
+        if (role == "student") mutableStateOf("查找书籍") else mutableStateOf("管理书籍")
     }
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var imageUrl by remember { mutableStateOf("") }
@@ -48,6 +49,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     var addtolistresult by remember { mutableStateOf("") }
     var selectedPdfPath by remember { mutableStateOf<String?>(null) }
     var idSearchResult by remember { mutableStateOf(listOf<String>()) }
+    var modifyResult by remember { mutableStateOf("") }
 
     var isCollapsed by remember { mutableStateOf(true) }
 
@@ -68,6 +70,9 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
         },
         onIdCheckSuccess = { result ->
             idSearchResult = result
+        },
+        onBookModifySuccess = { result ->
+            modifyResult = result
         }
     )
 
@@ -82,108 +87,108 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
 
             Row(modifier = Modifier.fillMaxSize()) {
                 if (isCollapsed) {
-    Box(
-        modifier = Modifier
-            .fillMaxHeight()
-            .weight(0.03f)
-            .background(Color.LightGray)
-            .shadow(4.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = false),
-        contentAlignment = Alignment.TopCenter
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Icon(
-                imageVector = Icons.Default.ArrowForward,
-                contentDescription = "Expand",
-                modifier = Modifier.clickable { isCollapsed = false }
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            if (role == "student") {
-                Icon(imageVector = Icons.Default.Person, contentDescription = "查找书籍")
-                Spacer(modifier = Modifier.height(16.dp))
-                Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看已借阅书籍信息")
-                Spacer(modifier = Modifier.height(16.dp))
-                Icon(imageVector = Icons.Default.Image, contentDescription = "显示图片")
-            } else if (role == "admin") {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "管理书籍")
-                Spacer(modifier = Modifier.height(16.dp))
-                Icon(imageVector = Icons.Default.List, contentDescription = "查看借阅记录")
-            }
-        }
-    }
-} else {
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .weight(0.2f)
-            .background(Color.LightGray)
-            .shadow(4.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = false)
-    ) {
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End
-        ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Collapse",
-                modifier = Modifier.clickable { isCollapsed = true }
-            )
-        }
-       if (role == "student") {
-    TextButton(
-        onClick = { selectedOption = "查找书籍" },
-        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-    ) {
-        Icon(imageVector = Icons.Default.Person, contentDescription = "查找书籍")
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = "查找书籍", fontSize = 18.sp, color = Color.Black)
-    }
-    TextButton(
-        onClick = {
-            selectedOption = "查看已借阅书籍信息"
-            UserSession.userId?.let { userId ->
-                libraryModule.libCheck(userId)
-            }
-        },
-        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-    ) {
-        Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看已借阅书籍信息")
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = "查看已借阅书籍信息", fontSize = 18.sp, color = Color.Black)
-    }
-    TextButton(
-        onClick = { selectedOption = "显示图片" },
-        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-    ) {
-        Icon(imageVector = Icons.Default.Image, contentDescription = "显示图片")
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = "显示图片", fontSize = 18.sp, color = Color.Black)
-    }
-} else if (role == "admin") {
-    TextButton(
-        onClick = { selectedOption = "管理书籍" },
-        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-    ) {
-        Icon(imageVector = Icons.Default.Add, contentDescription = "管理书籍")
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = "管理书籍", fontSize = 18.sp, color = Color.Black)
-    }
-    TextButton(
-        onClick = { selectedOption = "查看借阅记录" },
-        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-    ) {
-        Icon(imageVector = Icons.Default.List, contentDescription = "查看借阅记录")
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = "查看借阅记录", fontSize = 18.sp, color = Color.Black)
-    }
-}
-    }
-}
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(0.03f)
+                            .background(Color.LightGray)
+                            .shadow(4.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = false),
+                        contentAlignment = Alignment.TopCenter
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Top
+                        ) {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Icon(
+                                imageVector = Icons.Default.ArrowForward,
+                                contentDescription = "Expand",
+                                modifier = Modifier.clickable { isCollapsed = false }
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            if (role == "student") {
+                                Icon(imageVector = Icons.Default.Person, contentDescription = "查找书籍")
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看已借阅书籍信息")
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Icon(imageVector = Icons.Default.Image, contentDescription = "显示图片")
+                            } else if (role == "admin") {
+                                Icon(imageVector = Icons.Default.Add, contentDescription = "管理书籍")
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Icon(imageVector = Icons.Default.List, contentDescription = "查看借阅记录")
+                            }
+                        }
+                    }
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(0.2f)
+                            .background(Color.LightGray)
+                            .shadow(4.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = false)
+                    ) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Collapse",
+                                modifier = Modifier.clickable { isCollapsed = true }
+                            )
+                        }
+                        if (role == "student") {
+                            TextButton(
+                                onClick = { selectedOption = "查找书籍" },
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                            ) {
+                                Icon(imageVector = Icons.Default.Person, contentDescription = "查找书籍")
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(text = "查找书籍", fontSize = 18.sp, color = Color.Black)
+                            }
+                            TextButton(
+                                onClick = {
+                                    selectedOption = "查看已借阅书籍信息"
+                                    UserSession.userId?.let { userId ->
+                                        libraryModule.libCheck(userId)
+                                    }
+                                },
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                            ) {
+                                Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看已借阅书籍信息")
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(text = "查看已借阅书籍信息", fontSize = 18.sp, color = Color.Black)
+                            }
+                            TextButton(
+                                onClick = { selectedOption = "显示图片" },
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                            ) {
+                                Icon(imageVector = Icons.Default.Image, contentDescription = "显示图片")
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(text = "显示图片", fontSize = 18.sp, color = Color.Black)
+                            }
+                        } else if (role == "admin") {
+                            TextButton(
+                                onClick = { selectedOption = "管理书籍" },
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                            ) {
+                                Icon(imageVector = Icons.Default.Add, contentDescription = "管理书籍")
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(text = "管理书籍", fontSize = 18.sp, color = Color.Black)
+                            }
+                            TextButton(
+                                onClick = { selectedOption = "查看借阅记录" },
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                            ) {
+                                Icon(imageVector = Icons.Default.List, contentDescription = "查看借阅记录")
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(text = "查看借阅记录", fontSize = 18.sp, color = Color.Black)
+                            }
+                        }
+                    }
+                }
 
 
                 // 主内容区域
@@ -420,6 +425,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                             "显示图片" -> {
                                 Column(modifier = Modifier.padding(top = 8.dp)) {
                                     FilePicker()
+                                    CameraComponent()
                                     Button(onClick = {
                                         val imageISBN = "9787550263932"
                                         val filePath = "src/main/temp/" + imageISBN + ".pdf"
@@ -553,8 +559,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                                 .clip(RoundedCornerShape(8.dp))
                                                 .background(Color(0xFF228042))
                                                 .clickable {
-                                                    // Add action for "录入图书"
-
+                                                    currentScene = "BookModifySubscene"
                                                 }
                                                 .padding(10.dp)
                                         ) {
@@ -586,7 +591,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                                 .clip(RoundedCornerShape(8.dp))
                                                 .background(Color(0xFF228042))
                                                 .clickable {
-                                                    libraryModule.libSearch(searchText.text, searchType)
+                                                    libraryModule.libIdCheck(searchText.text)
                                                 }
                                                 .padding(16.dp)
                                         ) {
@@ -601,13 +606,17 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                         }
                     }
                 }
-            }
 
+            }
         }
-    } else if (currentScene == "BookImfoSubscene") {
+    }else if (currentScene == "BookImfoSubscene") {
         BookImfoSubscene(onNavigateBack = { currentScene = "LibraryScene" }, libraryModule = libraryModule)
 
     } else if (currentScene == "BookAdminSubscene") {
         BookAdminSubscene(onNavigateBack = { currentScene = "LibraryScene" }, libraryModule = libraryModule)
+
+    } else if (currentScene == "BookModifySubscene") {
+        BookModifySubscene(onNavigateBack = { currentScene = "LibraryScene" }, book = Book(), "lib/add/file_upload")
+
     }
-}
+    }
