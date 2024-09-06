@@ -80,7 +80,8 @@ data class CourseScheduleItem(
     val dayOfWeek: String,
     val startPeriod: Int,
     val endPeriod:  Int,
-    val location: String
+    val location: String,
+    val teacherName:String
 )
 
 class CourseModule {
@@ -213,12 +214,25 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
     fun addCourse(courseData: CourseData, onSuccess: (Boolean) -> Unit) {
         val time = courseData.timeAndLocationCards.joinToString(";") { "${it.getDayOfWeekNumber()}-${it.startPeriod}-${it.endPeriod}" }
         val location = courseData.timeAndLocationCards.joinToString(";") { it.location }
+        var grade_int ="20"
+        if(courseData.grade=="大一"){
+            grade_int="24"
+        }
+        else if(courseData.grade=="大二"){
+            grade_int="23"
+        }
+        else if(courseData.grade=="大三"){
+            grade_int="22"
+        }
+        else if(courseData.grade=="大四"){
+            grade_int="21"
+        }
         val request = mapOf(
             "courseName" to courseData.courseName,
             "courseId" to courseData.courseId,
             "credit" to courseData.credit,
             "capacity" to courseData.capacity,
-            "grade" to courseData.grade,
+            "grade" to grade_int,
             "major" to courseData.major,
             "semester" to courseData.semester,
             "property" to courseData.property,
@@ -360,29 +374,32 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         }
     }
     private fun handleResponseTable(response: String) {
-        println("Received response: $response")
-        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
-        if (responseJson["status"] == "success") {
-            val courses = mutableListOf<CourseScheduleItem>()
-            val num = "1"
-            for (i in 0 until num.toInt()) {
-                val courseJson = responseJson["course$i"] as Map<String, Any>
-                val courseName = courseJson["courseName"] as String
-                val time = courseJson["time"] as String
-                val location =courseJson["location"] as String
-                val timeSlots = time.split(";")
-                for (timeSlot in timeSlots) {
-                    val parts = timeSlot.split("-")
-                    val dayOfWeek = mapDayOfWeekNumberToChinese(parts[0])
-                    val startPeriod = parts[1].toInt()
-                    val endPeriod = parts[2].toInt()
-                    courses.add(CourseScheduleItem(courseName, dayOfWeek, startPeriod, endPeriod, location))
-                }
+    println("Received response: $response")
+    val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+    if (responseJson["status"] == "success") {
+        val courses = mutableListOf<CourseScheduleItem>()
+        val num = responseJson["number"] as String
+        for (i in 0 until num.toInt()) {
+            val courseJson = responseJson["course$i"] as Map<String, Any>
+            val courseName = courseJson["courseName"] as String
+            val time = courseJson["time"] as String
+            val location = courseJson["location"] as String
+            val teacherName = courseJson["teacherName"] as String
+            val timeSlots = time.split(";")
+            val locations = location.split(";")
+            for ((index, timeSlot) in timeSlots.withIndex()) {
+                val parts = timeSlot.split("-")
+                val dayOfWeek = mapDayOfWeekNumberToChinese(parts[0])
+                val startPeriod = parts[1].toInt()
+                val endPeriod = parts[2].toInt()
+                val slotLocation = if (locations.size > 1) locations[index] else locations[0]
+                courses.add(CourseScheduleItem(courseName, dayOfWeek, startPeriod, endPeriod, slotLocation,teacherName))
             }
-            _courseSchedule.value = courses
-        } else {
-            DialogManager.showDialog(responseJson["reason"] as String)
         }
+        _courseSchedule.value = courses
+    } else {
+        DialogManager.showDialog(responseJson["reason"] as String)
     }
+}
 }
 

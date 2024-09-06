@@ -18,8 +18,6 @@ import module.CourseScheduleItem
 
 @Composable
 fun CourseSchedule(courses: List<CourseScheduleItem>) {
-
-
     Box(Modifier.fillMaxWidth().height(700.dp)) {
         // TABLE
         Row(Modifier.fillMaxSize()) {
@@ -122,7 +120,7 @@ fun CourseSchedule(courses: List<CourseScheduleItem>) {
                     }
                     var index = 1
                     while (index <= 13) {
-                        val classHere = courses.find {
+                        val classesHere = courses.filter {
                             it.dayOfWeek == when (weekday) {
                                 1 -> "星期一"
                                 2 -> "星期二"
@@ -134,26 +132,28 @@ fun CourseSchedule(courses: List<CourseScheduleItem>) {
                                 else -> "?"
                             } && it.startPeriod == index
                         }
-                        if (classHere != null) {
-                            Box(
-                                Modifier.fillMaxWidth().weight(
-                                    (classHere.endPeriod - classHere.startPeriod + 1).toFloat()
-                                )
-                            ) {
-                                classItem(
-                                    classHere.courseName,
-                                    "", // Replace with actual teacher name if available
-                                    classHere.location // Replace with actual classroom if available
-                                )
+                        if (classesHere.isNotEmpty()) {
+                            classesHere.forEach { classHere ->
+                                Box(
+                                    Modifier.fillMaxWidth().weight(
+                                        (classHere.endPeriod - classHere.startPeriod + 1).toFloat()
+                                    )
+                                ) {
+                                    classItem(
+                                        classHere.courseName,
+                                        classHere.teacherName, // Replace with actual teacher name if available
+                                        classHere.location // Replace with actual classroom if available
+                                    )
+                                }
                             }
-                            (1..(classHere.endPeriod - classHere.startPeriod + 1)).forEach {
+                            (1..(classesHere.maxOf { it.endPeriod } - classesHere.minOf { it.startPeriod } + 1)).forEach {
                                 Divider(
                                     Modifier.fillMaxWidth(),
                                     thickness = 1.dp,
                                     color = Color.Transparent
                                 )
                             }
-                            index += (classHere.endPeriod - classHere.startPeriod + 1)
+                            index += (classesHere.maxOf { it.endPeriod } - classesHere.minOf { it.startPeriod } + 1)
                         } else {
                             Divider(
                                 Modifier.fillMaxWidth(), thickness = 1.dp,
