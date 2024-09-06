@@ -49,11 +49,15 @@ fun AddCourseSubscene() {
                 modifier = Modifier.weight(1f).padding(end = 8.dp)
             )
             OutlinedTextField(
-                value = courseId,
-                onValueChange = { courseId = it },
-                label = { Text("课程号") },
-                modifier = Modifier.weight(1f).padding(end = 8.dp)
-            )
+    value = courseId,
+    onValueChange = {
+        if (it.length <= 8) {
+            courseId = it
+        }
+    },
+    label = { Text("课程号") },
+    modifier = Modifier.weight(1f).padding(end = 8.dp)
+)
             Box(modifier = Modifier.weight(1f)) {
     var expandedProperty by remember { mutableStateOf(false) }
     val propertyOptions = listOf("选修", "必修")
