@@ -17,16 +17,40 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.ui.Alignment
+import module.CourseModule
 
 @Composable
-fun ModifydetailCard(course: CourseData) {
+fun ModifydetailCard(course: CourseData, onDeleteSuccess: () -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var timeAndLocationCards by remember { mutableStateOf(course.timeAndLocationCards) }
-    var credit by remember { mutableStateOf(course.credit) }
     var capacity by remember { mutableStateOf(course.capacity) }
     var major by remember { mutableStateOf(course.major) }
     var teacher by remember { mutableStateOf(course.teacher) }
     var teacherId by remember { mutableStateOf(course.teacherId) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    val courseModule = CourseModule()
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("确认删除") },
+            text = { Text("你确定要删除该课程吗？") },
+            confirmButton = {
+                TextButton(onClick = {
+                    courseModule.deleteCourse(course) {
+                        onDeleteSuccess()
+                        showDeleteDialog = false
+                    }
+                }) {
+                    Text("确定")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("取消")
+                }
+            }
+        )
+    }
 
     Card(
         modifier = Modifier
@@ -35,8 +59,18 @@ fun ModifydetailCard(course: CourseData) {
             .clickable { expanded = !expanded }
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("教师: ${teacher}", fontWeight = FontWeight.Bold)
-            Text("一卡通号: ${teacherId}", fontWeight = FontWeight.Bold)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text("教师: ${teacher}", fontWeight = FontWeight.Bold)
+                    Text("一卡通号: ${teacherId}", fontWeight = FontWeight.Bold)
+                }
+                IconButton(onClick = { showDeleteDialog = true }) {
+                    Icon(Icons.Default.Delete, contentDescription = "删除")
+                }
+            }
             AnimatedVisibility(visible = expanded) {
                 Column {
                     Spacer(modifier = Modifier.height(8.dp))
