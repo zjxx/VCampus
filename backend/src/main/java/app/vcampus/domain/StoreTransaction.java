@@ -12,7 +12,7 @@ public class StoreTransaction {
     public UUID uuid = UUID.randomUUID();
 
     @ManyToOne
-    @JoinColumn(name = "itemUuid", referencedColumnName = "uuid", insertable = false, updatable = true)
+    @JoinColumn(name = "itemUuid", referencedColumnName = "uuid", insertable = false, updatable =false)
     public StoreItem storeItem;
 
     public Integer itemPrice;

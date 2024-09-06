@@ -149,7 +149,8 @@ public class CourseController {
         enrollment.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         //在Course表中对应课程的Valid_capacity-1
         course.setvalidCapacity(course.getvalidCapacity()-1);
-        db.save(enrollment);
+        db.clear();
+        db.persist(enrollment);
         db.update(course);
         data.addProperty("status", "success");
         return gson.toJson(data);
