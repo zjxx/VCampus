@@ -29,7 +29,7 @@ public class ScoreController {
         DataBase db = DataBaseManager.getInstance();
 
         // 检查教师是否教授该课程
-        List<Course> courses = db.getWhere(Course.class, "teacherid", request.getTeacherId());
+        List<Course> courses = db.getWhere(Course.class, "teacherId", request.getTeacherId());
         if (courses.isEmpty() || courses.stream().noneMatch(course -> course.getcourseId().equals(request.getCourseId()))) {
             data.addProperty("status", "failed");
             data.addProperty("reason", "teacher is not the course's teacher");
@@ -80,7 +80,7 @@ public class ScoreController {
         ScoreViewAllRequest request = gson.fromJson(jsonData, ScoreViewAllRequest.class);
         JsonObject data = new JsonObject();
         DataBase db = DataBaseManager.getInstance();
-        List<Score> scores = db.getWhere(Score.class, "studentid", request.getStudentId());
+        List<Score> scores = db.getWhere(Score.class, "studentId", request.getStudentId());
         if (scores.isEmpty()) {
             data.addProperty("status", "failed");
             data.addProperty("reason", "no score found");
@@ -138,7 +138,7 @@ public class ScoreController {
                     courseScoreData = new JsonObject();
                     JsonObject studentScore = new JsonObject();
                     studentScore.addProperty("courseId", score.getCourseId());
-                    studentScore .addProperty("studentId", score.getStudentId());
+                    studentScore.addProperty("studentId", score.getStudentId());
                     //学生姓名
                     List<Student> students = db.getWhere(Student.class, "studentId", score.getStudentId());
                     Student student = students.get(0);
@@ -185,7 +185,7 @@ public class ScoreController {
         ScoreCheckRequest request = gson.fromJson(jsonData, ScoreCheckRequest.class);
         JsonObject data = new JsonObject();
         DataBase db = DataBaseManager.getInstance();
-        List<Score> scores = db.getWhere(Score.class, "courseid", request.getCourseId());
+        List<Score> scores = db.getWhere(Score.class, "courseId", request.getCourseId());
         if (scores.isEmpty()) {
             data.addProperty("status", "failed");
             data.addProperty("reason", "no score found");
@@ -361,7 +361,7 @@ public class ScoreController {
         ScoreModifyRequest request = gson.fromJson(jsonData, ScoreModifyRequest.class);
         JsonObject data = new JsonObject();
         DataBase db = DataBaseManager.getInstance();
-        List<Score> scores = db.getWhere(Score.class, "courseid", request.getCourseId());
+        List<Score> scores = db.getWhere(Score.class, "courseId", request.getCourseId());
         if (scores.isEmpty()) {
             data.addProperty("status", "failed");
             data.addProperty("reason", "no score found");
