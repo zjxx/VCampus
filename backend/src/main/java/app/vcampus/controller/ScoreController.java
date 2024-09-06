@@ -37,35 +37,41 @@ public class ScoreController {
             data.addProperty("reason", "student is not enrolled in the course");
             return gson.toJson(data);
         }
-
-        try {
-            // 获取课程并保存成绩
-            Course myCourse = courses.stream().filter(course -> course.getcourseId().equals(request.getCourseId())).findFirst().orElse(null);
-            if (myCourse != null) {
-                Score score = new Score();
-                score.setCourseId(request.getCourseId());
-                score.setStudentId(request.getStudentId());
-                score.setParticipationScore(Integer.parseInt(request.getParticipationScore()));
-                score.setMidtermScore(Integer.parseInt(request.getMidtermScore()));
-                score.setFinalScore(Integer.parseInt(request.getFinalScore()));
-                score.setScore(Integer.parseInt(request.getScore()));
-                score.setCredit(myCourse.getCredit());
-                score.setSemester(myCourse.getSemester());
-                score.setStatus("未审核");
-                db.save(score);
-                data.addProperty("status", "success");
-            } else {
+        //查看该学生是否已经提交过该课程的成绩
+        List<Score> scores = db.getWhere(Score.class, "courseId", request.getCourseId());
+        if (scores.isEmpty() || scores.stream().noneMatch(score -> score.getStudentId().equals(request.getStudentId()))) {
+            try {
+                // 获取课程并保存成绩
+                Course myCourse = courses.stream().filter(course -> course.getcourseId().equals(request.getCourseId())).findFirst().orElse(null);
+                if (myCourse != null) {
+                    Score score = new Score();
+                    score.setCourseId(request.getCourseId());
+                    score.setStudentId(request.getStudentId());
+                    score.setParticipationScore(Integer.parseInt(request.getParticipationScore()));
+                    score.setMidtermScore(Integer.parseInt(request.getMidtermScore()));
+                    score.setFinalScore(Integer.parseInt(request.getFinalScore()));
+                    score.setScore(Integer.parseInt(request.getScore()));
+                    score.setCredit(myCourse.getCredit());
+                    score.setSemester(myCourse.getSemester());
+                    score.setStatus("未审核");
+                    db.save(score);
+                    data.addProperty("status", "success");
+                } else {
+                    data.addProperty("status", "failed");
+                    data.addProperty("reason", "course not found");
+                }
+            } catch (NumberFormatException e) {
                 data.addProperty("status", "failed");
-                data.addProperty("reason", "course not found");
+                data.addProperty("reason", "invalid score format");
+            } catch (Exception e) {
+                data.addProperty("status", "failed");
+                data.addProperty("reason", "unexpected error");
             }
-        } catch (NumberFormatException e) {
-            data.addProperty("status", "failed");
-            data.addProperty("reason", "invalid score format");
-        } catch (Exception e) {
-            data.addProperty("status", "failed");
-            data.addProperty("reason", "unexpected error");
         }
-
+        else {
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "student has already submitted the score");
+        }
         return gson.toJson(data);
     }
 
