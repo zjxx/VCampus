@@ -134,54 +134,54 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                 modifier = Modifier.clickable { isCollapsed = true }
             )
         }
-        if (role == "student") {
-            Text(
-                text = "查找书籍",
-                fontSize = 18.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { selectedOption = "查找书籍" }
-                    .padding(vertical = 8.dp)
-            )
-            Text(
-                text = "查看已借阅书籍信息",
-                fontSize = 18.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        selectedOption = "查看已借阅书籍信息"
-                        UserSession.userId?.let { userId ->
-                            libraryModule.libCheck(userId)
-                        }
-                    }
-                    .padding(vertical = 8.dp)
-            )
-            Text(
-                text = "显示图片",
-                fontSize = 18.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { selectedOption = "显示图片" }
-                    .padding(vertical = 8.dp)
-            )
-        } else if (role == "admin") {
-            Text(
-                text = "管理书籍",
-                fontSize = 18.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { selectedOption = "管理书籍" }
-                    .padding(vertical = 8.dp)
-            )
-            Text(
-                text = "查看借阅记录",
-                fontSize = 18.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { selectedOption = "查看借阅记录" }
-                    .padding(vertical = 8.dp)
-            )
-        }
+       if (role == "student") {
+    TextButton(
+        onClick = { selectedOption = "查找书籍" },
+        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+    ) {
+        Icon(imageVector = Icons.Default.Person, contentDescription = "查找书籍")
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text = "查找书籍", fontSize = 18.sp, color = Color.Black)
+    }
+    TextButton(
+        onClick = {
+            selectedOption = "查看已借阅书籍信息"
+            UserSession.userId?.let { userId ->
+                libraryModule.libCheck(userId)
+            }
+        },
+        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+    ) {
+        Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看已借阅书籍信息")
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text = "查看已借阅书籍信息", fontSize = 18.sp, color = Color.Black)
+    }
+    TextButton(
+        onClick = { selectedOption = "显示图片" },
+        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+    ) {
+        Icon(imageVector = Icons.Default.Image, contentDescription = "显示图片")
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text = "显示图片", fontSize = 18.sp, color = Color.Black)
+    }
+} else if (role == "admin") {
+    TextButton(
+        onClick = { selectedOption = "管理书籍" },
+        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+    ) {
+        Icon(imageVector = Icons.Default.Add, contentDescription = "管理书籍")
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text = "管理书籍", fontSize = 18.sp, color = Color.Black)
+    }
+    TextButton(
+        onClick = { selectedOption = "查看借阅记录" },
+        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+    ) {
+        Icon(imageVector = Icons.Default.List, contentDescription = "查看借阅记录")
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text = "查看借阅记录", fontSize = 18.sp, color = Color.Black)
+    }
+}
     }
 }
 
