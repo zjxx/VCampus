@@ -29,7 +29,7 @@ public class ControllerManager {
         routeMapping.registerRouteWithParams("lib/modify/file_upload",libraryController::updateBook);
 
 
-        routeMapping.registerRouteWithParams(("shop/addtolist"), storeController::addItem);//添加商品
+        routeMapping.registerRouteWithParams("shop/addtolist/file_upload", storeController::addItem);//添加商品
         routeMapping.registerRoute("shop/search", storeController::searchItems);//搜索商品
         routeMapping.registerRoute("shop/buy", storeController::handlePurchase);//购买商品
         routeMapping.registerRoute("shop/getAllItems", storeController::getAllItems);//获取所有商品
@@ -37,7 +37,7 @@ public class ControllerManager {
         routeMapping.registerRoute("shop/enterStore",storeController::enterStore);//进入商店展示商品,返回随机商品列表
         routeMapping.registerRoute("shop/getTransactionsByCardNumber", storeController::getTransactionsByCardNumber);//根据卡号获取交易记录
         routeMapping.registerRoute(("shop/deleteItem"), storeController::removeItem);//删除商品
-        routeMapping.registerRoute(("shop/modifyItem"), storeController::updateItem);//修改商品信息
+        routeMapping.registerRouteWithParams(("shop/modifyItem/file_upload"), storeController::updateItem);//修改商品信息
         routeMapping.registerRoute(("shop/addItemToCart"), ShoppingCartController::addItemToCart);//添加商品到购物车
         routeMapping.registerRoute(("shop/removeItemFromCart"), ShoppingCartController::removeItemFromCart);//从购物车移除商品
         routeMapping.registerRoute(("shop/viewCart"), ShoppingCartController::viewCart);//查看购物车内容
