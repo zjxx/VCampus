@@ -490,6 +490,38 @@ public class LibraryController {
         }
         return gson.toJson(data);
     }
+
+    public String updateBook(String jsonData, String additionalParam) {
+        // 解析JSON数据
+        JsonObject data = new JsonObject();
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+
+        // 调用删除图书函数
+        BookDeleteRequest deleteRequest = new BookDeleteRequest("admin", request.get("userId").getAsString(), request.get("ISBN").getAsString());
+        String deleteJsonData = gson.toJson(deleteRequest);
+        String deleteResult = deleteBook(deleteJsonData);
+        JsonObject deleteResultJson = gson.fromJson(deleteResult, JsonObject.class);
+
+        if (!"success".equals(deleteResultJson.get("status").getAsString())) {
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "Failed to delete the old book.");
+            return gson.toJson(data);
+        }
+
+        // 调用增加图书函数
+        String addResult = addBook(jsonData, additionalParam);
+        JsonObject addResultJson = gson.fromJson(addResult, JsonObject.class);
+
+        if (!"success".equals(addResultJson.get("status").getAsString())) {
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "Failed to add the new book.");
+            return gson.toJson(data);
+        }
+
+        data.addProperty("status", "success");
+        return gson.toJson(data);
+    }
+
 }
 
 
