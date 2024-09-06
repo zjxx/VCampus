@@ -2,23 +2,18 @@ package app.vcampus.controller;
 
 import app.vcampus.domain.Book;
 import app.vcampus.domain.Reader2Book;
-import app.vcampus.interfaces.BookSearchingRequest;
-import app.vcampus.interfaces.BookBorrowRequest;
-import app.vcampus.interfaces.BookReturnRequest;
-import app.vcampus.interfaces.BookDelayReturnRequest;
-import app.vcampus.interfaces.BookListRequest;
-import app.vcampus.interfaces.BookDeleteRequest;
-import app.vcampus.interfaces.BookListAllRequest;
+import app.vcampus.domain.User;
+import app.vcampus.interfaces.*;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
 import java.io.FileOutputStream;
-import java.util.List;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class LibraryController {
     private final Gson gson = new Gson();
@@ -428,6 +423,73 @@ public class LibraryController {
 
         return gson.toJson(data);
     };
+
+    //管理员查看用户借书记录
+
+    public String viewUserBorrowRecord(String jsonData) {
+        BorrowUserSearchRequest request = gson.fromJson(jsonData, BorrowUserSearchRequest.class);
+        JsonObject data = new JsonObject();
+        DataBase db = DataBaseManager.getInstance();
+        //判断用户身份,如果是管理员,则显示用户借阅记录
+        if (request.getRole().equals("admin")) {
+            //判断用户存不存在
+            List<User> readers = db.getWhere(User.class, "Reader_id", request.getSearchId());
+            if (!readers.isEmpty()) {
+                //在借阅记录中查找该用户的所有借阅记录
+                List<Reader2Book> borrowedBooks = db.getWhere(Reader2Book.class, "Reader_id", request.getSearchId());
+                if (!borrowedBooks.isEmpty()) {
+                    //遍历借阅记录，将借阅信息添加到json对象中
+                    for (int i = 0; i < borrowedBooks.size(); i++) {
+                        Reader2Book borrowedBook = borrowedBooks.get(i);
+                        //在book表中查找书籍信息
+                        List<Book> books = db.getWhere(Book.class, "ISBN", borrowedBook.getBook_ISBN());
+                        String bookName = " ";
+                        if (!books.isEmpty()) {
+                            Book book = books.get(0);
+                            bookName = book.getBookName();
+                        }
+                        //如果书籍状态为true，表示书籍未归还，则为正在借阅
+                        if (borrowedBook.isBook_State()) {
+                            JsonObject bookData = new JsonObject();
+                            bookData.addProperty("bookName", bookName);
+                            bookData.addProperty("ISBN", borrowedBook.getBook_ISBN());
+                            bookData.addProperty("borrow_date", borrowedBook.getBorrow_Date().toString());
+                            //应还日期
+                            bookData.addProperty("return_date", borrowedBook.getReturn_Date().toString());
+                            data.addProperty("borrowing" + i, gson.toJson(bookData));
+                        }
+                        //如果书籍状态为false，表示书籍已归还，则为历史借阅
+                        else
+                        {
+                            JsonObject bookData = new JsonObject();
+                            bookData.addProperty("bookName", bookName);
+                            bookData.addProperty("ISBN", borrowedBook.getBook_ISBN());
+                            bookData.addProperty("borrow_date", borrowedBook.getBorrow_Date().toString());
+                            bookData.addProperty("return_date", borrowedBook.getReturn_Date().toString());
+                            data.addProperty("haveBorrowed" + i, gson.toJson(bookData));
+                        }
+                    }
+                    data.addProperty("status", "success");
+                }
+                else
+                {
+                    data.addProperty("status", "failed");
+                    data.addProperty("reason", "No borrow record found.");
+                }
+            }
+            else
+            {
+                data.addProperty("status", "failed");
+                data.addProperty("reason", "No user found.");
+            }
+        }
+        else
+        {
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "You don't have permission to view the borrow record.");
+        }
+        return gson.toJson(data);
+    }
 }
 
 
