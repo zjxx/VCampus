@@ -10,12 +10,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.text.input.TextFieldValue
@@ -35,7 +35,7 @@ import java.io.File
 @Composable
 fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     var selectedOption by remember {
-        if(role == "student")mutableStateOf("查找书籍") else mutableStateOf("管理书籍")
+        if (role == "student") mutableStateOf("查找书籍") else mutableStateOf("管理书籍")
     }
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var imageUrl by remember { mutableStateOf("") }
@@ -51,6 +51,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     var idSearchResult by remember { mutableStateOf(listOf<String>()) }
     var modifyResult by remember { mutableStateOf("") }
 
+    var isCollapsed by remember { mutableStateOf(true) }
 
     val libraryModule = LibraryModule(
         onSearchSuccess = { result ->
@@ -82,295 +83,124 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     if (currentScene == "LibraryScene") {
         Row(modifier = Modifier.fillMaxSize()) {
             // 侧边导航栏
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(0.2f)
-                    .background(Color(0XFFB9E5E8))
-                    .padding(16.dp)
-            ) {
-                if(role == "student") {
-                    Text(
-                        text = "查找书籍",
-                        fontSize = 18.sp,
+
+
+            Row(modifier = Modifier.fillMaxSize()) {
+                if (isCollapsed) {
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { selectedOption = "查找书籍" }
-                            .padding(vertical = 8.dp)
-                    )
-                    Text(
-                        text = "查看已借阅书籍信息",
-                        fontSize = 18.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                selectedOption = "查看已借阅书籍信息"
-                                UserSession.userId?.let { userId ->
-                                    libraryModule.libCheck(userId)
-                                }
+                            .fillMaxHeight()
+                            .weight(0.03f)
+                            .background(Color.LightGray)
+                            .shadow(4.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = false),
+                        contentAlignment = Alignment.TopCenter
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Top
+                        ) {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Icon(
+                                imageVector = Icons.Default.ArrowForward,
+                                contentDescription = "Expand",
+                                modifier = Modifier.clickable { isCollapsed = false }
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            if (role == "student") {
+                                Icon(imageVector = Icons.Default.Person, contentDescription = "查找书籍")
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看已借阅书籍信息")
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Icon(imageVector = Icons.Default.Image, contentDescription = "显示图片")
+                            } else if (role == "admin") {
+                                Icon(imageVector = Icons.Default.Add, contentDescription = "管理书籍")
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Icon(imageVector = Icons.Default.List, contentDescription = "查看借阅记录")
                             }
-                            .padding(vertical = 8.dp)
-                    )
-                    Text(
-                        text = "显示图片",
-                        fontSize = 18.sp,
+                        }
+                    }
+                } else {
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { selectedOption = "显示图片" }
-                            .padding(vertical = 8.dp)
-                    )
-                }
-                else if(role == "admin") {
-                    Text(
-                        text = "管理书籍",
-                        fontSize = 18.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { selectedOption = "管理书籍" }
-                            .padding(vertical = 8.dp)
-                    )
-                    Text(
-                        text = "查看借阅记录",
-                        fontSize = 18.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { selectedOption = "查看借阅记录" }
-                            .padding(vertical = 8.dp)
-                    )
-                }
-            }
-
-            // 主内容区域
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(0.8f)
-                    .padding(16.dp)
-            ) {
-                if (role == "student") {//学生界面
-                    when (selectedOption) {
-                        "查找书籍" -> {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
+                            .fillMaxHeight()
+                            .weight(0.2f)
+                            .background(Color.LightGray)
+                            .shadow(4.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = false)
+                    ) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Collapse",
+                                modifier = Modifier.clickable { isCollapsed = true }
+                            )
+                        }
+                        if (role == "student") {
+                            TextButton(
+                                onClick = { selectedOption = "查找书籍" },
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                OutlinedTextField(
-                                    value = selectedOption1,
-                                    onValueChange = { selectedOption1 = it },
-                                    modifier = Modifier
-                                        .weight(0.15f)
-                                        .clickable { expanded = true },
-                                    readOnly = true,
-                                    trailingIcon = {
-                                        IconButton(onClick = { expanded = true }) {
-                                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-                                        }
-                                    }
-                                )
-
-                                DropdownMenu(
-                                    expanded = expanded,
-                                    onDismissRequest = { expanded = false }
-                                ) {
-                                    DropdownMenuItem(onClick = {
-                                        selectedOption1 = "书名"
-                                        searchType = "bookName"
-                                        expanded = false
-                                    }) {
-                                        Text("书名")
-                                    }
-                                    DropdownMenuItem(onClick = {
-                                        selectedOption1 = "ISBN"
-                                        searchType = "ISBN"
-                                        expanded = false
-                                    }) {
-                                        Text("ISBN")
-                                    }
-                                }
+                                Icon(imageVector = Icons.Default.Person, contentDescription = "查找书籍")
                                 Spacer(modifier = Modifier.width(8.dp))
-                                OutlinedTextField(
-                                    value = searchText,
-                                    onValueChange = { searchText = it },
-                                    modifier = Modifier.weight(1f),
-                                    singleLine = true
-                                )
-                                Spacer(modifier = Modifier.width(16.dp))
-                                Box(
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .background(Color(0xFF228042))
-                                        .clickable {
-                                            libraryModule.libSearch(searchText.text, searchType)
-                                        }
-                                        .padding(16.dp)
-                                ) {
-                                    Text(text = "搜索", color = Color.White, fontSize = 16.sp)
-                                }
+                                Text(text = "查找书籍", fontSize = 18.sp, color = Color.Black)
                             }
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Divider(color = Color.Gray, thickness = 1.dp)
-                            LazyVerticalGrid(
-                                columns = GridCells.Fixed(4),
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(top = 8.dp)
+                            TextButton(
+                                onClick = {
+                                    selectedOption = "查看已借阅书籍信息"
+                                    UserSession.userId?.let { userId ->
+                                        libraryModule.libCheck(userId)
+                                    }
+                                },
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                items(tempBooks.size) { index ->
-                                    val book = tempBooks[index]
-                                    Column(
-                                        modifier = Modifier
-                                            .padding(8.dp)
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .background(Color.White)
-                                            .clickable {
-                                                GlobalState.selectedBook = book
-                                                currentScene = "BookImfoSubscene"
-                                            }
-                                            .padding(8.dp)
-                                    ) {
-                                        AsyncImage(
-                                            load = { loadImageBitmap(File(book.coverImage)) },
-                                            painterFor = { remember { BitmapPainter(it) } },
-                                            contentDescription = "Book Cover",
-                                            modifier = Modifier.size(108.dp)
-                                        )
-                                        Text(text = book.bookname, fontSize = 14.sp)
-                                    }
-                                }
+                                Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看已借阅书籍信息")
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(text = "查看已借阅书籍信息", fontSize = 18.sp, color = Color.Black)
                             }
-                        }
-
-                        "查看已借阅书籍信息" -> {
-                        Column {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                horizontalArrangement = Arrangement.End
+                            TextButton(
+                                onClick = { selectedOption = "显示图片" },
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Button(
-                                    onClick = {
-                                        selectedOption = "查看已借阅书籍信息"
-                                        UserSession.userId?.let { userId ->
-                                            libraryModule.libCheck(userId)
-                                        }
-                                    },
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-                                    shape = CircleShape,
-                                    modifier = Modifier.size(48.dp)
-                                ) {
-                                    Icon(Icons.Default.Refresh, contentDescription = "刷新", tint = Color(0xFF228042))
-                                }
+                                Icon(imageVector = Icons.Default.Image, contentDescription = "显示图片")
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(text = "显示图片", fontSize = 18.sp, color = Color.Black)
                             }
-                            LazyVerticalGrid(
-                                columns = GridCells.Fixed(2),
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .padding(8.dp)
+                        } else if (role == "admin") {
+                            TextButton(
+                                onClick = { selectedOption = "管理书籍" },
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                items(borrowedBooks.size) { index ->
-                                    val book = borrowedBooks[index]
-                                    val backgroundColor = if (book.condition == "borrowing") Color.White else Color(0xFFC1EAEF)
-                                    val textColor = if (book.condition == "borrowing") Color(0xFF228042) else Color.Black
-                                    val conditionText = if (book.condition == "borrowing") "借阅中" else "曾借阅"
-                                    Row(
-                                        modifier = Modifier
-                                            .padding(8.dp)
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .background(backgroundColor)
-                                            .border(1.dp, Color.LightGray)
-                                            .height(160.dp)
-                                            .padding(8.dp)
-                                    ) {
-                                        Column(
-                                            modifier = Modifier.weight(1f)
-                                        ) {
-                                            Text(text = book.bookname, color = textColor, fontSize = 16.sp)
-                                            Text(text = conditionText, color = textColor, fontSize = 16.sp)
-                                            Text(text = "借书时间 > ${book.borrow_date}\n还书时间 > ${book.return_date}", fontSize = 12.sp)
-                                        }
-                                        Column(
-                                            modifier = Modifier.align(Alignment.CenterVertically),
-                                            verticalArrangement = Arrangement.Center,
-                                            horizontalAlignment = Alignment.CenterHorizontally
-                                        ) {
-                                            Button(
-                                                onClick = {
-                                                    val imageISBN=book.isbn
-                                                    val filePath = "src/main/temp/"+imageISBN+".pdf"
-                                                    //到时这个filePath改成src/main/temp/书的ISBN.pdf
-                                                    if(!File(filePath).exists()){
-                                                        downloadPdfIfNotExists("http://47.99.141.236/img/" + imageISBN + ".pdf", filePath)
-                                                    }
-                                                    selectedPdfPath = filePath
-                                                },
-                                                modifier = Modifier.size(100.dp, 36.dp),
-                                                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF228042)),
-                                                enabled = book.condition != "haveBorrowed"
-                                            ) {
-                                                Text("阅读", fontSize = 14.sp, color = Color.White)
-                                            }
-                                            Spacer(modifier = Modifier.height(8.dp))
-                                            Button(
-                                                onClick = { libraryModule.libReturnBook(UserSession.userId ?: "", book.isbn) },
-                                                modifier = Modifier.size(100.dp, 36.dp),
-                                                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF228042)),
-                                                enabled = book.condition != "haveBorrowed"
-                                            ) {
-                                                Text("还书", fontSize = 14.sp, color = Color.White)
-                                            }
-                                            Spacer(modifier = Modifier.height(8.dp))
-                                            Button(
-                                                onClick = { libraryModule.libRenewBook(UserSession.userId ?: "", book.isbn) },
-                                                modifier = Modifier.size(100.dp, 36.dp),
-                                                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF228042))
-                                            ) {
-                                                Text("续借", fontSize = 14.sp, color = Color.White)
-                                            }
-                                        }
-                                    }
-                                }
+                                Icon(imageVector = Icons.Default.Add, contentDescription = "管理书籍")
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(text = "管理书籍", fontSize = 18.sp, color = Color.Black)
                             }
-                        }
-                            selectedPdfPath?.let { path ->
-                                LocalPdfViewer(filePath = path, onDismiss = { selectedPdfPath = null })
-                            }
-                    }
-
-                        "显示图片" -> {
-                            Column(modifier = Modifier.padding(top = 8.dp)) {
-                                FilePicker()
-                                CameraComponent()
-                                Button(onClick = {
-                                    val imageISBN="9787550263932"
-                                    val filePath = "src/main/temp/"+imageISBN+".pdf"
-                                    //到时这个filePath改成src/main/temp/书的ISBN.pdf
-                                    if(!File(filePath).exists()){
-                                        downloadPdfIfNotExists("http://47.99.141.236/img/" + imageISBN + ".pdf", filePath)
-                                    }
-                                    selectedPdfPath = filePath
-                                }) {
-                                    Text("展示pdf")
-                                }
-                                selectedPdfPath?.let { path ->
-                                    LocalPdfViewer(filePath = path, onDismiss = { selectedPdfPath = null })
-                                    }
+                            TextButton(
+                                onClick = { selectedOption = "查看借阅记录" },
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                            ) {
+                                Icon(imageVector = Icons.Default.List, contentDescription = "查看借阅记录")
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(text = "查看借阅记录", fontSize = 18.sp, color = Color.Black)
                             }
                         }
                     }
                 }
-                //________________________________________________________________________________________ ↓ for admin ↓
 
-                else if (role == "admin") {
-                    when (selectedOption) {
-                        "管理书籍" -> {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .weight(0.8f)
-                                    .padding(16.dp)
-                            ) {
-                                // Existing code for search functionality
+
+                // 主内容区域
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(0.8f)
+                        .padding(16.dp)
+                ) {
+                    if (role == "student") {//学生界面
+                        when (selectedOption) {
+                            "查找书籍" -> {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically
@@ -445,7 +275,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                                 .background(Color.White)
                                                 .clickable {
                                                     GlobalState.selectedBook = book
-                                                    currentScene = "BookAdminSubscene"
+                                                    currentScene = "BookImfoSubscene"
                                                 }
                                                 .padding(8.dp)
                                         ) {
@@ -459,67 +289,327 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                         }
                                     }
                                 }
-                                // New Row for buttons
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(10.dp),
-                                    horizontalArrangement = Arrangement.End
-                                ) {
-                                    Box(
+                            }
+
+                            "查看已借阅书籍信息" -> {
+                                Column {
+                                    Row(
                                         modifier = Modifier
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .background(Color(0xFF228042))
-                                            .clickable {
-                                                currentScene = "BookModifySubscene"
-                                            }
-                                            .padding(10.dp)
+                                            .fillMaxWidth()
+                                            .padding(8.dp),
+                                        horizontalArrangement = Arrangement.End
                                     ) {
-                                        Text(text = "录入图书", color = Color.White, fontSize = 16.sp)
+                                        Button(
+                                            onClick = {
+                                                selectedOption = "查看已借阅书籍信息"
+                                                UserSession.userId?.let { userId ->
+                                                    libraryModule.libCheck(userId)
+                                                }
+                                            },
+                                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                                            shape = CircleShape,
+                                            modifier = Modifier.size(48.dp)
+                                        ) {
+                                            Icon(
+                                                Icons.Default.Refresh,
+                                                contentDescription = "刷新",
+                                                tint = Color(0xFF228042)
+                                            )
+                                        }
+                                    }
+                                    LazyVerticalGrid(
+                                        columns = GridCells.Fixed(2),
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .padding(8.dp)
+                                    ) {
+                                        items(borrowedBooks.size) { index ->
+                                            val book = borrowedBooks[index]
+                                            val backgroundColor =
+                                                if (book.condition == "borrowing") Color.White else Color(0xFFC1EAEF)
+                                            val textColor =
+                                                if (book.condition == "borrowing") Color(0xFF228042) else Color.Black
+                                            val conditionText =
+                                                if (book.condition == "borrowing") "借阅中" else "曾借阅"
+                                            Row(
+                                                modifier = Modifier
+                                                    .padding(8.dp)
+                                                    .clip(RoundedCornerShape(8.dp))
+                                                    .background(backgroundColor)
+                                                    .border(1.dp, Color.LightGray)
+                                                    .height(160.dp)
+                                                    .padding(8.dp)
+                                            ) {
+                                                Column(
+                                                    modifier = Modifier.weight(1f)
+                                                ) {
+                                                    Text(text = book.bookname, color = textColor, fontSize = 16.sp)
+                                                    Text(text = conditionText, color = textColor, fontSize = 16.sp)
+                                                    Text(
+                                                        text = "借书时间 > ${book.borrow_date}\n还书时间 > ${book.return_date}",
+                                                        fontSize = 12.sp
+                                                    )
+                                                }
+                                                Column(
+                                                    modifier = Modifier.align(Alignment.CenterVertically),
+                                                    verticalArrangement = Arrangement.Center,
+                                                    horizontalAlignment = Alignment.CenterHorizontally
+                                                ) {
+                                                    Button(
+                                                        onClick = {
+                                                            val imageISBN = book.isbn
+                                                            val filePath = "src/main/temp/" + imageISBN + ".pdf"
+                                                            //到时这个filePath改成src/main/temp/书的ISBN.pdf
+                                                            if (!File(filePath).exists()) {
+                                                                downloadPdfIfNotExists(
+                                                                    "http://47.99.141.236/img/" + imageISBN + ".pdf",
+                                                                    filePath
+                                                                )
+                                                            }
+                                                            selectedPdfPath = filePath
+                                                        },
+                                                        modifier = Modifier.size(100.dp, 36.dp),
+                                                        colors = ButtonDefaults.buttonColors(
+                                                            backgroundColor = Color(
+                                                                0xFF228042
+                                                            )
+                                                        ),
+                                                        enabled = book.condition != "haveBorrowed"
+                                                    ) {
+                                                        Text("阅读", fontSize = 14.sp, color = Color.White)
+                                                    }
+                                                    Spacer(modifier = Modifier.height(8.dp))
+                                                    Button(
+                                                        onClick = {
+                                                            libraryModule.libReturnBook(
+                                                                UserSession.userId ?: "", book.isbn
+                                                            )
+                                                        },
+                                                        modifier = Modifier.size(100.dp, 36.dp),
+                                                        colors = ButtonDefaults.buttonColors(
+                                                            backgroundColor = Color(
+                                                                0xFF228042
+                                                            )
+                                                        ),
+                                                        enabled = book.condition != "haveBorrowed"
+                                                    ) {
+                                                        Text("还书", fontSize = 14.sp, color = Color.White)
+                                                    }
+                                                    Spacer(modifier = Modifier.height(8.dp))
+                                                    Button(
+                                                        onClick = {
+                                                            libraryModule.libRenewBook(
+                                                                UserSession.userId ?: "",
+                                                                book.isbn
+                                                            )
+                                                        },
+                                                        modifier = Modifier.size(100.dp, 36.dp),
+                                                        colors = ButtonDefaults.buttonColors(
+                                                            backgroundColor = Color(
+                                                                0xFF228042
+                                                            )
+                                                        )
+                                                    ) {
+                                                        Text("续借", fontSize = 14.sp, color = Color.White)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                selectedPdfPath?.let { path ->
+                                    LocalPdfViewer(filePath = path, onDismiss = { selectedPdfPath = null })
+                                }
+                            }
+
+                            "显示图片" -> {
+                                Column(modifier = Modifier.padding(top = 8.dp)) {
+                                    FilePicker()
+                                    CameraComponent()
+                                    Button(onClick = {
+                                        val imageISBN = "9787550263932"
+                                        val filePath = "src/main/temp/" + imageISBN + ".pdf"
+                                        //到时这个filePath改成src/main/temp/书的ISBN.pdf
+                                        if (!File(filePath).exists()) {
+                                            downloadPdfIfNotExists(
+                                                "http://47.99.141.236/img/" + imageISBN + ".pdf",
+                                                filePath
+                                            )
+                                        }
+                                        selectedPdfPath = filePath
+                                    }) {
+                                        Text("展示pdf")
+                                    }
+                                    selectedPdfPath?.let { path ->
+                                        LocalPdfViewer(filePath = path, onDismiss = { selectedPdfPath = null })
                                     }
                                 }
                             }
                         }
+                    }
+                    //________________________________________________________________________________________ ↓ for admin ↓
 
-                        "查看借阅记录" -> {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .padding(16.dp)
-                            ) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically
+                    else if (role == "admin") {
+                        when (selectedOption) {
+                            "管理书籍" -> {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .weight(0.8f)
+                                        .padding(16.dp)
                                 ) {
-                                    OutlinedTextField(
-                                        value = searchText,
-                                        onValueChange = { searchText = it },
-                                        modifier = Modifier.weight(1f),
-                                        singleLine = true
-                                    )
-                                    Spacer(modifier = Modifier.width(16.dp))
-                                    Box(
-                                        modifier = Modifier
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .background(Color(0xFF228042))
-                                            .clickable {
-                                                libraryModule.libIdCheck(searchText.text)
-                                            }
-                                            .padding(16.dp)
+                                    // Existing code for search functionality
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Text(text = "搜索", color = Color.White, fontSize = 16.sp)
+                                        OutlinedTextField(
+                                            value = selectedOption1,
+                                            onValueChange = { selectedOption1 = it },
+                                            modifier = Modifier
+                                                .weight(0.15f)
+                                                .clickable { expanded = true },
+                                            readOnly = true,
+                                            trailingIcon = {
+                                                IconButton(onClick = { expanded = true }) {
+                                                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                                }
+                                            }
+                                        )
+
+                                        DropdownMenu(
+                                            expanded = expanded,
+                                            onDismissRequest = { expanded = false }
+                                        ) {
+                                            DropdownMenuItem(onClick = {
+                                                selectedOption1 = "书名"
+                                                searchType = "bookName"
+                                                expanded = false
+                                            }) {
+                                                Text("书名")
+                                            }
+                                            DropdownMenuItem(onClick = {
+                                                selectedOption1 = "ISBN"
+                                                searchType = "ISBN"
+                                                expanded = false
+                                            }) {
+                                                Text("ISBN")
+                                            }
+                                        }
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        OutlinedTextField(
+                                            value = searchText,
+                                            onValueChange = { searchText = it },
+                                            modifier = Modifier.weight(1f),
+                                            singleLine = true
+                                        )
+                                        Spacer(modifier = Modifier.width(16.dp))
+                                        Box(
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(8.dp))
+                                                .background(Color(0xFF228042))
+                                                .clickable {
+                                                    libraryModule.libSearch(searchText.text, searchType)
+                                                }
+                                                .padding(16.dp)
+                                        ) {
+                                            Text(text = "搜索", color = Color.White, fontSize = 16.sp)
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    Divider(color = Color.Gray, thickness = 1.dp)
+                                    LazyVerticalGrid(
+                                        columns = GridCells.Fixed(4),
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .padding(top = 8.dp)
+                                    ) {
+                                        items(tempBooks.size) { index ->
+                                            val book = tempBooks[index]
+                                            Column(
+                                                modifier = Modifier
+                                                    .padding(8.dp)
+                                                    .clip(RoundedCornerShape(8.dp))
+                                                    .background(Color.White)
+                                                    .clickable {
+                                                        GlobalState.selectedBook = book
+                                                        currentScene = "BookAdminSubscene"
+                                                    }
+                                                    .padding(8.dp)
+                                            ) {
+                                                AsyncImage(
+                                                    load = { loadImageBitmap(File(book.coverImage)) },
+                                                    painterFor = { remember { BitmapPainter(it) } },
+                                                    contentDescription = "Book Cover",
+                                                    modifier = Modifier.size(108.dp)
+                                                )
+                                                Text(text = book.bookname, fontSize = 14.sp)
+                                            }
+                                        }
+                                    }
+                                    // New Row for buttons
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(10.dp),
+                                        horizontalArrangement = Arrangement.End
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(8.dp))
+                                                .background(Color(0xFF228042))
+                                                .clickable {
+                                                    currentScene = "BookModifySubscene"
+                                                }
+                                                .padding(10.dp)
+                                        ) {
+                                            Text(text = "录入图书", color = Color.White, fontSize = 16.sp)
+                                        }
                                     }
                                 }
-                                Spacer(modifier = Modifier.height(12.dp))
-                                Divider(color = Color.Gray, thickness = 1.dp)
-                                // Display borrowing records
+                            }
+
+                            "查看借阅记录" -> {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .padding(16.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        OutlinedTextField(
+                                            value = searchText,
+                                            onValueChange = { searchText = it },
+                                            modifier = Modifier.weight(1f),
+                                            singleLine = true
+                                        )
+                                        Spacer(modifier = Modifier.width(16.dp))
+                                        Box(
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(8.dp))
+                                                .background(Color(0xFF228042))
+                                                .clickable {
+                                                    libraryModule.libIdCheck(searchText.text)
+                                                }
+                                                .padding(16.dp)
+                                        ) {
+                                            Text(text = "搜索", color = Color.White, fontSize = 16.sp)
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    Divider(color = Color.Gray, thickness = 1.dp)
+                                    // Display borrowing records
+                                }
                             }
                         }
                     }
                 }
+
             }
         }
-    } else if (currentScene == "BookImfoSubscene") {
+    }else if (currentScene == "BookImfoSubscene") {
         BookImfoSubscene(onNavigateBack = { currentScene = "LibraryScene" }, libraryModule = libraryModule)
 
     } else if (currentScene == "BookAdminSubscene") {
@@ -529,4 +619,4 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
         BookModifySubscene(onNavigateBack = { currentScene = "LibraryScene" }, book = Book(), "lib/add/file_upload")
 
     }
-}
+    }
