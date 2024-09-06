@@ -45,8 +45,8 @@ class LibraryModule (
                     // Update tempbook with received data
                     var imageUrl = bookjson["ISBN"] as String
                     imageUrl = imageUrl.replace(Regex("[^0-9]"), "")
-                    var tempImage = "http://47.99.141.236/img/" + imageUrl + ".jpg"
-                    var localPath = "src/main/temp/" + imageUrl + ".jpg"
+                    var tempImage = "http://47.99.141.236/img/" + imageUrl + ".png"
+                    var localPath = "src/main/temp/" + imageUrl + ".png"
                     downloadImageIfNotExists(tempImage, localPath)
                     val temp = Book(
                         coverImage = localPath, // Assuming coverImageRes is not provided in the response
@@ -242,6 +242,7 @@ class LibraryModule (
         if (responseJson["status"] == "success" ) {
             modifyResult = "success"
             DialogManager.showDialog("修改成功")
+
         }else {
             modifyResult = "failed"
             DialogManager.showDialog(responseJson["reason"] as String)
@@ -270,7 +271,7 @@ class LibraryModule (
                         var imageUrl = bookjson["ISBN"] as String
                         //只保留imageUrl的数字部分
                         imageUrl = imageUrl.replace(Regex("[^0-9]"), "")
-                        var image = "http://47.99.141.236/img/" + imageUrl + ".jpg"
+                        var image = "http://47.99.141.236/img/" + imageUrl + ".png"
                         onImageFetchSuccess(image)
                     }
                 }

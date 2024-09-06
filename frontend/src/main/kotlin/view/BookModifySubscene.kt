@@ -65,7 +65,7 @@ fun BookModifySubscene(onNavigateBack: () -> Unit, book: Book, type: String) {
             onClick = {
                 filePath = null // Clear the displayed image
                 val fileChooser = JFileChooser().apply {
-                    fileFilter = FileNameExtensionFilter("Image Files", "png", "jpg")
+                    fileFilter = FileNameExtensionFilter("Image Files", "png")
                     isAcceptAllFileFilterUsed = false
                 }
                 val result = fileChooser.showOpenDialog(null)
@@ -185,6 +185,17 @@ fun BookModifySubscene(onNavigateBack: () -> Unit, book: Book, type: String) {
                                 "kind" to kind,
                                 "quantity" to quantity,
                                 "Valid_Quantity" to valid)
+                            //删除本地src/main/temp/ISBN.png
+                            val fileex = "src/main/temp/$isbn.png"
+                            val file = File(fileex)
+                            if (file.exists()) {
+                                try {
+                                    file.delete()
+                                    println("File deleted successfully.")
+                                } catch (e: Exception) {
+                                    println("Error deleting file: ${e.message}")
+                                }
+                            }
                             libraryModule.bookModify(request, type, filePath)
                             if (modifyResult == "success") {
                                 onNavigateBack()
