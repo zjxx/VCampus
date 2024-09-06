@@ -57,12 +57,12 @@ public class ControllerManager {
         routeMapping.registerRoute("course/listAll", courseController::showEnrollList);//向登录学生展示方案课程
         routeMapping.registerRoute("course/select", courseController::selectCourse);//学生选择课程
         routeMapping.registerRoute("course/unselect", courseController::unselectCourse);//学生退课
-        routeMapping.registerRoute("course/courseTable",courseController::showCourseTable);//学生查看课程表
         routeMapping.registerRoute("course/search",courseController::searchCourse);//学生搜索课程
         routeMapping.registerRoute("course/listStudent",courseController::ShowCourseStudent);//老师导出学生选课信息
         routeMapping.registerRoute("course/add",courseController::addCourse);//教务添加课程
         routeMapping.registerRoute("course/delete",courseController::deleteCourse);//教务删除课程
         routeMapping.registerRoute("course/showAll",courseController::showAdminList);//教务查看课程
+        routeMapping.registerRoute("course/showCourseTable",courseController::showStudentCourseTable);//查看课表
 
         routeMapping.registerRoute("score/give",scoreController::giveScore);//老师打分
         routeMapping.registerRoute("score/view",scoreController::viewAllScore);//学生查看成绩

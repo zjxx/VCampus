@@ -173,7 +173,7 @@ public class Main {
 //        }
 
 
-//        //测试CourseController
+        //测试CourseController
 //        {
 //            CourseController courseController = new CourseController();
 //            Gson gson = new Gson();
@@ -220,6 +220,11 @@ public class Main {
 //            String jsonData7 = gson.toJson(request7);
 //            String result7 = courseController.deleteCourse(jsonData7);
 //            System.out.println(result7);
+//            //测试学生查看课表函数
+//            CourseTableShowRequest request8 = new CourseTableShowRequest("213220159");
+//            String jsonData8 = gson.toJson(request8);
+//            String result8 = courseController.showStudentCourseTable(jsonData8);
+//            System.out.println(result8);
 //        }
 //
 //            //测试ScoreController
