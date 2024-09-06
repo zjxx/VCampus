@@ -28,11 +28,11 @@ public class StoreController {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("uuid", item.getUuid().toString());
         jsonObject.addProperty("name", item.getItemName());
-        jsonObject.addProperty("price", item.getPrice());
+        jsonObject.addProperty("price",String.valueOf (item.getPrice()));
         jsonObject.addProperty("pictureLink", item.getPictureLink());
         jsonObject.addProperty("barcode", item.getBarcode());
-        jsonObject.addProperty("stock", item.getStock());
-        jsonObject.addProperty("salesVolume", item.getSalesVolume());
+        jsonObject.addProperty("stock",String.valueOf(item.getStock()) );
+        jsonObject.addProperty("salesVolume", String.valueOf(item.getSalesVolume()));
         jsonObject.addProperty("description", item.getDescription());
         return jsonObject;
     }
@@ -55,15 +55,15 @@ public class StoreController {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("uuid", transaction.getUuid().toString());
         jsonObject.addProperty("itemName", transaction.getStoreItem().getItemName());
-        jsonObject.addProperty("itemPrice", transaction.getStoreItem().getPrice());
-        jsonObject.addProperty("amount", transaction.getAmount());
+        jsonObject.addProperty("itemPrice", String.valueOf(transaction.getStoreItem().getPrice()));
+        jsonObject.addProperty("amount", String.valueOf(transaction.getAmount()));
         jsonObject.addProperty("cardNumber", transaction.getCardNumber());
         jsonObject.addProperty("time", transaction.getTransactionTime().toString());
         return jsonObject;
     }
 
 
-    //处理购买请求
+//处理购买请求,传入itemUuid,amount,cardNumber,itemName
     public String handlePurchase(String jsonData) {
         // 将 JSON 转换为 PurchaseRequest 对象
         PurchaseRequest request = gson.fromJson(jsonData, PurchaseRequest.class);
@@ -80,7 +80,7 @@ public class StoreController {
         if(user.getBalance() < totalPrice) {
             JsonObject response = new JsonObject();
             response.addProperty("status", "failed");
-            response.addProperty("reason", "insufficient balance");
+            response.addProperty("reason", "余额不足");
             return gson.toJson(response);
         }
         user.setBalance(user.getBalance() - totalPrice);
