@@ -137,7 +137,7 @@ public class LibraryController {
         db.save(reader2Book);
         db.update(book);
 
-        data.addProperty("success", "You have borrowed the book successfully.");
+        data.addProperty("status", "success");
         return gson.toJson(data);
     }
 

@@ -104,7 +104,7 @@ public class CourseController {
             }
         }
         //检查课程ID是否存在
-        List<Course> courses = db.getWhere(Course.class, "course_id", request.getCourseId());
+        List<Course> courses = db.getWhere(Course.class, "courseId", request.getCourseId());
         if (courses.isEmpty()) {
             data.addProperty("status","failed");
             data.addProperty("reason", "course not found");
