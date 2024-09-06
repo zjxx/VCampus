@@ -26,9 +26,10 @@ public class ControllerManager {
         routeMapping.registerRoute("lib/search", libraryController::searchBookInfo);
         routeMapping.registerRoute("lib/check", libraryController::viewBorrowRecord);
         routeMapping.registerRouteWithParams("lib/add/file_upload", libraryController::addBook);
+        routeMapping.registerRouteWithParams("lib/modify",libraryController::updateBook);
 
 
-        routeMapping.registerRoute(("shop/addtolist"), storeController::addItem);//添加商品
+        routeMapping.registerRouteWithParams(("shop/addtolist"), storeController::addItem);//添加商品
         routeMapping.registerRoute("shop/search", storeController::searchItems);//搜索商品
         routeMapping.registerRoute("shop/buy", storeController::handlePurchase);//购买商品
         routeMapping.registerRoute("shop/getAllItems", storeController::getAllItems);//获取所有商品

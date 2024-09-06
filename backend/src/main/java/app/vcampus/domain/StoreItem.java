@@ -19,7 +19,7 @@ public class StoreItem {
 
     private Integer price;
 
-    @Column(length = 40)
+    @Column(length = 100)
     private String pictureLink;
 
     @Column(length = 14)

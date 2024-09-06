@@ -9,6 +9,7 @@ import app.vcampus.utils.DataBaseManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import javax.xml.crypto.Data;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -511,6 +512,56 @@ public class LibraryController {
         }
         return gson.toJson(data);
     }
+
+    //修改藏书信息
+    public String updateBook(String jsonData, String additionalParam) {
+        // 解析JSON数据
+        JsonObject data = new JsonObject();
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+        DataBase db = DataBaseManager.getInstance();
+
+        // 删除旧的图书信息
+        List<Book> books = db.getWhere(Book.class, "ISBN", request.get("ISBN").getAsString());
+        if (!books.isEmpty()) {
+            Book oldBook = books.get(0);
+            db.remove(oldBook);
+        } else {
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "No book found to delete.");
+            return gson.toJson(data);
+        }
+
+        // 添加新的图书信息
+        try {
+            String filepath = "C:\\Users\\Administrator\\Desktop\\server\\img\\" + request.get("ISBN").getAsString() + ".jpg";
+            fileOutputStream = new FileOutputStream(filepath);
+            byte[] bytes = java.util.Base64.getDecoder().decode(additionalParam);
+            fileOutputStream.write(bytes);
+            fileOutputStream.close();
+
+            Book newBook = new Book();
+            newBook.setISBN(request.get("ISBN").getAsString());
+            newBook.setBookName(request.get("bookName").getAsString());
+            newBook.setAuthor(request.get("author").getAsString());
+            newBook.setPublisher(request.get("publisher").getAsString());
+            newBook.setPublishedYear(request.get("publishedYear").getAsInt());
+            newBook.setLanguage(request.get("language").getAsString());
+            newBook.setDescription(request.get("description").getAsString());
+            newBook.setKind(request.get("kind").getAsString());
+            newBook.setQuantity(request.get("quantity").getAsInt());
+            newBook.setValid_Quantity(request.get("quantity").getAsInt());
+
+            db.save(newBook);
+            data.addProperty("status", "success");
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "Failed to add the new book.");
+        }
+
+        return gson.toJson(data);
+    }
+
 }
 
 

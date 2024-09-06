@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.*;
 
+import java.io.FileOutputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -258,15 +259,36 @@ public class StoreController {
     }
 
     //添加商品，传入商品的JSON对象
-    public String addItem(String jsonData) {
+    public String addItem(String jsonData, String additionalParam) {
+        JsonObject data = new JsonObject();
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         try {
-            StoreItem newItem = gson.fromJson(jsonData, StoreItem.class);
             DataBase db = DataBaseManager.getInstance();
-            db.persist(newItem);
+            List<StoreItem> storeItems = db.getWhere(StoreItem.class, "itemName", request.get("itemName").getAsString());
+            if (!storeItems.isEmpty()) {
+                data.addProperty("status", "failed");
+                data.addProperty("reason", "Item already exists.");
+                return gson.toJson(data);
+            }
+            String filepath = "C:\\Users\\Administrator\\Desktop\\server\\img\\" + request.get("itemName").getAsString() + ".jpg";
+            FileOutputStream fileOutputStream = new FileOutputStream(filepath);
+            byte[] bytes = java.util.Base64.getDecoder().decode(additionalParam);
+            fileOutputStream.write(bytes);
+            fileOutputStream.close();
 
-            JsonObject response = new JsonObject();
-            response.addProperty("status", "success");
-            return gson.toJson(response);
+            StoreItem newItem = new StoreItem();
+            newItem.setUuid(UUID.randomUUID());
+            newItem.setItemName(request.get("itemName").getAsString());
+            newItem.setPrice(request.get("price").getAsInt());
+            newItem.setPictureLink(filepath);
+            newItem.setBarcode(request.get("barcode").getAsString());
+            newItem.setStock(request.get("stock").getAsInt());
+            newItem.setSalesVolume(request.get("salesVolume").getAsInt());
+            newItem.setDescription(request.get("description").getAsString());
+
+            db.persist(newItem);
+            data.addProperty("status", "success");
+            return gson.toJson(data);
         } catch (Exception e) {
             JsonObject response = new JsonObject();
             response.addProperty("status", "failed");
