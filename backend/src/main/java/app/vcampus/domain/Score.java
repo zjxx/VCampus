@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "score")
 public class Score {
@@ -13,8 +15,9 @@ public class Score {
     private String studentId;
     @Column(length=8)
     private String courseId;
-    @Column(length=16)
-    private String scoreId;
+    @Column(unique = true, nullable = false)
+    private UUID scoreId = UUID.randomUUID();
+
     @Column
     private int score;
     @Column
@@ -35,7 +38,7 @@ public class Score {
     public Score() {
         this.studentId = "";
         this.courseId = "";
-        this.scoreId = "";
+        this.scoreId = UUID.randomUUID();
         this.score = 0;
         this.participationScore = 0;
         this.midtermScore = 0;
@@ -62,13 +65,9 @@ public class Score {
         this.courseId = courseId;
     }
 
-    public String getScoreId() {
-        return scoreId;
-    }
+    public UUID getScoreId() {  return scoreId;}
 
-    public void setScoreId(String scoreId) {
-        this.scoreId = scoreId;
-    }
+    public void setScoreId(UUID scoreId) {  this.scoreId = scoreId; }
 
     public int getScore() {
         return score;
