@@ -6,9 +6,11 @@ import java.util.UUID;
 @Entity
 @Table(name = "enroll")
 public class Enrollment {
-    @Id
+
     @Column(length=13)
     private String studentid;
+
+    @Id
     @Column(unique = true, nullable = false)
     private UUID recordid = UUID.randomUUID();
     @Column(length=8)

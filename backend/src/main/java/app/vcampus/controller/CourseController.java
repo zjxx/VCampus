@@ -149,8 +149,11 @@ public class CourseController {
         enrollment.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         //在Course表中对应课程的Valid_capacity-1
         course.setvalidCapacity(course.getvalidCapacity()-1);
-        db.clear();
-        db.persist(enrollment);
+        //evict掉records，否则会报错
+        for (int i=0;i<records.size();i++) {
+            db.evict(records.get(i));
+        }
+        db.save(enrollment);
         db.update(course);
         data.addProperty("status", "success");
         return gson.toJson(data);
@@ -405,4 +408,34 @@ public class CourseController {
         data.addProperty("status", "success");
         return gson.toJson(data);
     }
+
+    public String modifyCourse(String jsonData){
+        CourseAddRequest request = gson.fromJson(jsonData, CourseAddRequest.class);
+        JsonObject data = new JsonObject();
+        DataBase db = DataBaseManager.getInstance();
+        List<Course> courses = db.getWhere(Course.class,"courseId",request.getCourseId());
+        if(courses.isEmpty()) {
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "course not found");
+        }
+        else {
+            Course course = courses.get(0);
+            course.setcourseName(request.getCourseName());
+            course.setteacherId(request.getTeacherId());
+            course.setteacherName(request.getTeacherName());
+            course.setCredit(Integer.valueOf(request.getCredit()));
+            course.setTime(request.getTime());
+            course.setLocation(request.getLocation());
+            course.setCapacity(Integer.valueOf(request.getCapacity()));
+            course.setMajor(request.getMajor());
+            course.setvalidGrade(request.getGrade());
+            course.setProperty(request.getProperty());
+            course.setvalidCapacity(course.getCapacity());
+            course.setSemester(course.getSemester());
+            db.update(course);
+            data.addProperty("status", "success");
+        }
+        return gson.toJson(data);
+    }
+
 }

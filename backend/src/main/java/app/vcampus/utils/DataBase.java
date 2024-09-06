@@ -129,5 +129,9 @@ public class DataBase {
         session.getTransaction().commit();
     }
 
+    public void evict(Object entity) {
+        session.evict(entity);
+    }
+
 
 }

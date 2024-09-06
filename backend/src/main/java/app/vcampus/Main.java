@@ -4,10 +4,7 @@ import app.vcampus.controller.StoreItemController;
 import app.vcampus.controller.StoreTransactionController;
 import app.vcampus.controller.CourseController;
 import app.vcampus.controller.ScoreController;
-import app.vcampus.domain.StoreItem;
-import app.vcampus.domain.Student;
-import app.vcampus.domain.User;
-import app.vcampus.domain.Book;
+import app.vcampus.domain.*;
 
 import app.vcampus.interfaces.*;
 
@@ -284,8 +281,11 @@ public class Main {
 //                String result7 = scoreController.viewAllScore(jsonData7);
 //                System.out.println(result7);
 //            }
+        DataBase db = DataBaseManager.getInstance();
+        List<Enrollment> enrollments = db.getWhere(Enrollment.class,"studentid","213240000");
 
-            NettyServer nettyServer = new NettyServer(8066);
+
+        NettyServer nettyServer = new NettyServer(8066);
             nettyServer.start();
         }
     }
