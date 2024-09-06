@@ -12,6 +12,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.ui.draw.shadow
 import module.CourseModule
 import module.CourseData
+import module.TimeAndLocationCardData
 
 @Composable
 fun CourseScene(onNavigate: (String) -> Unit, role: String) {
@@ -64,9 +65,12 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                         major = "计算机科学",
                         semester = "第一学期",
                         property = "选修",
-                        time = "",
+                        time ="",
                         location = "",
-                        timeAndLocationCards = listOf(),
+                        timeAndLocationCards = listOf(
+                            TimeAndLocationCardData(dayOfWeek = "星期一", startPeriod = "1", endPeriod = "2", location = "教室A101"),
+                            TimeAndLocationCardData(dayOfWeek = "星期二", startPeriod = "1", endPeriod = "2", location = "教室A101")
+                        ),
                         teacher = "张老师",
                         teacherId = "67890"
                     )
@@ -91,13 +95,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                     "选课" -> SelectCourseSubscene(courseModule)
                     "查看我的课表" -> ViewMyCoursesSubscene()
                     "增加课程" -> AddCourseSubscene()
-                    "修改课程" -> selectedCourse?.let { course ->
-                        ModifyCourseSubscene(
-                            course = course,
-                            onSelectCourse = { selectedCourse, onSuccess -> /* Handle course selection */ },
-                            onUnselectCourse = { selectedCourse, onSuccess -> /* Handle course unselection */ }
-                        )
-                    }
+                    "修改课程" -> selectedCourse?.let { ModifyCourseSubscene(it) }
                     "查看课程" -> ViewTeacherCourseSubscene()
                     else -> Text("请选择一个菜单项")
                 }
