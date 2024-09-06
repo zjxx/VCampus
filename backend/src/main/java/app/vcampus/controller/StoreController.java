@@ -54,17 +54,19 @@ public class StoreController {
     private JsonObject createTransactionJsonObject(StoreTransaction transaction) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("uuid", transaction.getUuid().toString());
-        jsonObject.addProperty("itemUuid", transaction.getItemUuid().toString()); // 添加 itemUuid 字段
+        jsonObject.addProperty("itemUuid", transaction.getItemUuid().toString());
         jsonObject.addProperty("itemName", transaction.getStoreItem().getItemName());
         jsonObject.addProperty("itemPrice", String.valueOf(transaction.getStoreItem().getPrice()));
         jsonObject.addProperty("amount", String.valueOf(transaction.getAmount()));
         jsonObject.addProperty("cardNumber", transaction.getCardNumber());
         jsonObject.addProperty("time", transaction.getTransactionTime().toString());
+        jsonObject.addProperty("pictureLink", transaction.getStoreItem().getPictureLink()); // 添加 pictureLink 字段
         return jsonObject;
     }
 
 
-//处理购买请求,传入itemUuid（商品的UUID）,amount(购买数量),cardNumber（一卡通号）,itemName（商品名称）
+
+    //处理购买请求,传入itemUuid（商品的UUID）,amount(购买数量),cardNumber（一卡通号）,itemName（商品名称）
     public String handlePurchase(String jsonData) {
        try {
            // 将 JSON 转换为 PurchaseRequest 对象
@@ -182,20 +184,24 @@ public class StoreController {
     public String getAllTransaction(String jsonData) {
         try {
             DataBase db = DataBaseManager.getInstance();
-            List<StoreItem> items = db.getAll(StoreItem.class);
-            Collections.shuffle(items);
+            List<StoreTransaction> transactions = db.getAll(StoreTransaction.class);
 
-            List<StoreItem> randomItems = items.subList(0, Math.min(10, items.size()));
+            if (transactions.isEmpty()) {
+                JsonObject response = new JsonObject();
+                response.addProperty("status", "failed");
+                response.addProperty("reason", "no transactions found");
+                return gson.toJson(response);
+            }
 
-            JsonObject itemsObject = new JsonObject();
-            for (int i = 0; i < randomItems.size(); i++) {
-                itemsObject.add("item" + i, createItemJsonObject(randomItems.get(i)));
+            JsonObject transactionsObject = new JsonObject();
+            for (int i = 0; i < transactions.size(); i++) {
+                transactionsObject.add("transaction" + i, createTransactionJsonObject(transactions.get(i)));
             }
 
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");
-            response.addProperty("length", randomItems.size());
-            response.add("items", itemsObject);
+            response.addProperty("length", transactions.size());
+            response.add("transactions", transactionsObject);
             return gson.toJson(response);
         } catch (Exception e) {
             JsonObject response = new JsonObject();
