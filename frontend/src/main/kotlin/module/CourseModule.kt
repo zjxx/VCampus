@@ -200,7 +200,7 @@ class CourseModule {
             "property" to courseData.property,
             "time" to time,
             "location" to location,
-            "teacher" to courseData.teacher,
+            "teacherName" to courseData.teacher,
             "teacherId" to courseData.teacherId// New field
         )
         nettyClient.sendRequest(request, "course/add") { response: String ->
