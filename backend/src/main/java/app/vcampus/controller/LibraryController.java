@@ -410,6 +410,13 @@ public class LibraryController {
         JsonObject data = new JsonObject();
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         try{
+            DataBase db = DataBaseManager.getInstance();
+            List<Book> books = db.getWhere(Book.class, "ISBN", request.get("ISBN").getAsString());
+            if(!books.isEmpty()){
+                data.addProperty("status", "failed");
+                data.addProperty("reason", "The book already exists.");
+                return gson.toJson(data);
+            }
             String filepath="C:\\Users\\Administrator\\Desktop\\server\\img\\"+ request.get("ISBN").getAsString() + ".jpg";
             fileOutputStream = new FileOutputStream(filepath);//指定保持路径
             byte[] bytes = java.util.Base64.getDecoder().decode(additionalParam);
@@ -426,7 +433,7 @@ public class LibraryController {
             book.setKind(request.get("kind").getAsString());
             book.setQuantity(request.get("quantity").getAsInt());
             book.setValid_Quantity(request.get("quantity").getAsInt());
-            DataBase db = DataBaseManager.getInstance();
+
             db.save(book);
             data.addProperty("status", "success");
         }
