@@ -17,15 +17,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 
 @Composable
-fun ModifyCourseCard(course: CourseData, onDeleteSuccess: () -> Unit) {
+fun ModifyCourseCard(courses: List<CourseData>, onDeleteSuccess: () -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var expandedProperty by remember { mutableStateOf(false) }
     val propertyOptions = listOf("必修", "选修")
 
+    val course = courses.first()
     var courseName by remember { mutableStateOf(course.courseName) }
     var courseId by remember { mutableStateOf(course.courseId) }
     var credit by remember { mutableStateOf(course.credit) }
     var property by remember { mutableStateOf(course.property) }
+    var courseIdPrefix by remember { mutableStateOf(course.courseIdPrefix) }
 
     Card(
         modifier = Modifier
@@ -40,7 +42,7 @@ fun ModifyCourseCard(course: CourseData, onDeleteSuccess: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(courseName, modifier = Modifier.weight(2f), fontWeight = FontWeight.Bold)
-                Text("课程号: $courseId", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
+                Text("课程号: $courseIdPrefix", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
                 Text("学分: $credit", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
                 Text("课程性质: $property", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
             }
@@ -55,8 +57,8 @@ fun ModifyCourseCard(course: CourseData, onDeleteSuccess: () -> Unit) {
                             modifier = Modifier.weight(1f).padding(end = 8.dp)
                         )
                         OutlinedTextField(
-                            value = courseId,
-                            onValueChange = { courseId = it },
+                            value = courseIdPrefix,
+                            onValueChange = { courseIdPrefix = it },
                             label = { Text("课程号") },
                             modifier = Modifier.weight(1f)
                         )
@@ -73,6 +75,7 @@ fun ModifyCourseCard(course: CourseData, onDeleteSuccess: () -> Unit) {
                                 value = property,
                                 onValueChange = { property = it },
                                 label = { Text("课程性质") },
+                                modifier = Modifier.fillMaxWidth(),
                                 readOnly = true,
                                 trailingIcon = {
                                     IconButton(onClick = { expandedProperty = true }) {
@@ -87,7 +90,6 @@ fun ModifyCourseCard(course: CourseData, onDeleteSuccess: () -> Unit) {
                                 propertyOptions.forEach { option ->
                                     DropdownMenuItem(onClick = {
                                         property = option
-                                        course.property = option
                                         expandedProperty = false
                                     }) {
                                         Text(option)
@@ -96,7 +98,9 @@ fun ModifyCourseCard(course: CourseData, onDeleteSuccess: () -> Unit) {
                             }
                         }
                     }
-                    ModifydetailCard(course, onDeleteSuccess)
+                    courses.forEach { course ->
+                        ModifydetailCard(course = course, onDeleteSuccess = {})
+                    }
                 }
             }
         }

@@ -18,7 +18,6 @@ import module.TimeAndLocationCardData
 fun CourseScene(onNavigate: (String) -> Unit, role: String) {
     var selectedMenuItem by remember { mutableStateOf("") }
     val courseModule = remember { CourseModule() }
-    var selectedCourse by remember { mutableStateOf<CourseData?>(null) }
 
     Row(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -56,24 +55,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                 }
                 TextButton(onClick = {
                     selectedMenuItem = "修改课程"
-                    selectedCourse = CourseData(
-                        courseName = "示例课程",
-                        courseId = "12345",
-                        credit = "3",
-                        capacity = "50",
-                        grade = "大二",
-                        major = "计算机科学",
-                        semester = "第一学期",
-                        property = "选修",
-                        time ="",
-                        location = "",
-                        timeAndLocationCards = listOf(
-                            TimeAndLocationCardData(dayOfWeek = "星期一", startPeriod = "1", endPeriod = "2", location = "教室A101"),
-                            TimeAndLocationCardData(dayOfWeek = "星期二", startPeriod = "1", endPeriod = "2", location = "教室A101")
-                        ),
-                        teacher = "张老师",
-                        teacherId = "67890"
-                    )
+                    courseModule.ShowAllCourse()
                 }) {
                     Text("修改课程", color = Color.Black) // 设置字体颜色为黑色
                 }
@@ -95,7 +77,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                     "选课" -> SelectCourseSubscene(courseModule)
                     "查看我的课表" -> ViewMyCoursesSubscene()
                     "增加课程" -> AddCourseSubscene()
-                    "修改课程" -> selectedCourse?.let { ModifyCourseSubscene(it) }
+                    "修改课程" -> ModifyCourseSubscene(courseModule)
                     "查看课程" -> ViewTeacherCourseSubscene()
                     else -> Text("请选择一个菜单项")
                 }

@@ -40,7 +40,6 @@ class StudentStatusModule {
         major = responseJson["major"] ?: ""
         academy = responseJson["academy"] ?: ""
         number = responseJson["number"] ?: ""
-
     }
 
     fun addStudentStatus() {

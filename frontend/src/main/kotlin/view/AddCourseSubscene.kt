@@ -34,7 +34,7 @@ fun AddCourseSubscene() {
     var teacher by remember { mutableStateOf("") } // New state
     var teacherId by remember { mutableStateOf("") } // New state
     var timeAndLocationCards by remember { mutableStateOf(listOf(TimeAndLocationCardData("", "", "", ""))) }
-
+    var courseIdPrefix by remember { mutableStateOf("") }
     val gradeOptions = listOf("大一", "大二", "大三", "大四")
     val semesterOptions = listOf("第一学期", "第二学期", "第三学期")
     val propertyOptions = listOf("选修", "任选")
@@ -346,7 +346,8 @@ fun AddCourseSubscene() {
                     location = location,
                     timeAndLocationCards = timeAndLocationCards,
                     teacher = teacher, // New field
-                    teacherId = teacherId // New field
+                    teacherId = teacherId ,// New field
+                 courseIdPrefix = courseIdPrefix
                 )
                 scope.launch {
                     courseModule.addCourse(courseData) { success ->
