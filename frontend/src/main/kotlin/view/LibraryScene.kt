@@ -48,6 +48,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     var addtolistresult by remember { mutableStateOf("") }
     var selectedPdfPath by remember { mutableStateOf<String?>(null) }
     var idSearchResult by remember { mutableStateOf(listOf<String>()) }
+    var modifyResult by remember { mutableStateOf("") }
 
 
     val libraryModule = LibraryModule(
@@ -68,7 +69,9 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
         onIdCheckSuccess = { result ->
             idSearchResult = result
         },
-        onBookModifySuccess = {}
+        onBookModifySuccess = { result ->
+            modifyResult = result
+        }
     )
 
     LaunchedEffect(libraryModule.tempBooks) {
