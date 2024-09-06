@@ -10,10 +10,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Alignment
+import view.component.GlobalDialog
 import view.component.CourseCard
 import module.CourseModule
 
 @Composable
+
 fun SelectCourseSubscene(courseModule: CourseModule) {
     var searchQuery by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
@@ -30,6 +32,7 @@ fun SelectCourseSubscene(courseModule: CourseModule) {
             )
             Button(onClick = {
                 courseModule.searchCourses(searchQuery)
+
             }) {
                 Text("搜索")
             }
@@ -51,4 +54,5 @@ fun SelectCourseSubscene(courseModule: CourseModule) {
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
+    GlobalDialog()
 }

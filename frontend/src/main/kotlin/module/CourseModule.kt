@@ -53,7 +53,8 @@ data class CourseData(
     var location: String,
     var timeAndLocationCards: List<TimeAndLocationCardData>,
     var teacher: String, // New field
-    var teacherId: String // New field
+    var teacherId: String, // New field
+    var courseIdPrefix: String
 )
 
 data class TimeAndLocationCardData(
@@ -82,7 +83,21 @@ class CourseModule {
     var selectedCourses by mutableStateOf(listOf<Course>())
     private val _searchResults = MutableStateFlow(listOf<GroupedCourse>())
     val searchResults: StateFlow<List<GroupedCourse>> get() = _searchResults
+    private val _course = MutableStateFlow<List<CourseData>>(emptyList())
+    val course: StateFlow<List<CourseData>> get() = _course
 
+fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
+    return when (dayOfWeekNumber) {
+        "1" -> "星期一"
+        "2" -> "星期二"
+        "3" -> "星期三"
+        "4" -> "星期四"
+        "5" -> "星期五"
+        "6" -> "星期六"
+        "7" -> "星期日"
+        else -> dayOfWeekNumber
+    }
+}
     fun listCourse() {
         val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId)
         nettyClient.sendRequest(request, "course/listAll") { response: String ->
@@ -91,10 +106,12 @@ class CourseModule {
     }
 
     fun searchCourses(query: String) {
-        _searchResults.value = courses.filter { groupedCourse ->
-            groupedCourse.courses.any { it.courseName.contains(query) }
+        val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId, "query" to query)
+        nettyClient.sendRequest(request, "course/search") { response: String ->
+            handleResponseList(response)
         }
     }
+
 
     private fun handleResponseList(response: String) {
         println("Received response: $response")
@@ -136,10 +153,8 @@ class CourseModule {
                     GroupedCourse(it.key, firstCourse.courseName, firstCourse.credit, firstCourse.property, it.value)
                 }
                 _searchResults.value = this.courses
-            } else {
-                DialogManager.showDialog(responseJson["reason"] as String)
             }
-        } else if (responseJson["status"] == "fail") {
+        } else if (responseJson["status"] == "failed") {
             DialogManager.showDialog(responseJson["reason"] as String)
         }
     }
@@ -221,7 +236,7 @@ class CourseModule {
     }
     fun viewMyclass()
     {
-        val request = mapOf("role" to UserSession.role, "teacherId" to UserSession.userId)
+        val request = mapOf("role" to UserSession.role, "UserId" to UserSession.userId)
         nettyClient.sendRequest(request, "course/view") { response: String ->
             handleResponseView(response)
         }
@@ -244,5 +259,89 @@ class CourseModule {
 
         }
     }
-
+    fun ShowAllCourse()
+    {
+        val request = mapOf("role" to UserSession.role, "UserId" to UserSession.userId)
+        nettyClient.sendRequest(request, "course/showAll") { response: String ->
+            handleResponseShowAll(response)
+        }
+    }
+   private fun handleResponseShowAll(response: String) {
+    println("Received response: $response")
+    val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+    if (responseJson["status"] == "success") {
+        val num = responseJson["number"] as String
+        if (num != "0") {
+            val coursesMap = mutableMapOf<String, MutableList<CourseData>>()
+            for (i in 0 until num.toInt()) {
+                val courseJson = responseJson["course$i"] as Map<String, Any>
+                val courseId = courseJson["courseId"] as String
+                val courseIdPrefix = courseId.substring(0, 7)
+                val timeAndLocationCards = courseJson["time"].toString().split(";").zip(courseJson["location"].toString().split(";")).map {
+    val (time, location) = it
+    val parts = time.split("-")
+    TimeAndLocationCardData(
+        dayOfWeek = mapDayOfWeekNumberToChinese(parts[0]),
+        startPeriod = parts[1],
+        endPeriod = parts[2],
+        location = location
+    )
 }
+                val courseData = CourseData(
+                    courseName = courseJson["courseName"] as String,
+                    courseId = courseId,
+                    credit = courseJson["credit"] as String,
+                    capacity = courseJson["capacity"] as String,
+                    grade = courseJson["validGrade"] as String,
+                    major = courseJson["major"] as String,
+                    semester = courseJson["semester"] as String,
+                    property = courseJson["property"] as String,
+                    time = courseJson["time"] as String,
+                    location = courseJson["location"] as String,
+                    timeAndLocationCards = timeAndLocationCards,
+                    teacher = courseJson["teacherName"] as String,
+                    teacherId = courseJson["teacherId"] as String,
+                    courseIdPrefix = courseIdPrefix
+                )
+                coursesMap.computeIfAbsent(courseIdPrefix) { mutableListOf() }.add(courseData)
+            }
+            _course.value = coursesMap.values.flatten()
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
+        }
+    } else {
+        DialogManager.showDialog(responseJson["reason"] as String)
+    }
+}
+    fun modifyCourse(courseData: CourseData)
+    {
+        val time = courseData.timeAndLocationCards.joinToString(";") { "${it.getDayOfWeekNumber()}-${it.startPeriod}-${it.endPeriod}" }
+        val location = courseData.timeAndLocationCards.joinToString(";") { it.location }
+        val request = mapOf(
+            "courseName" to courseData.courseName,
+            "courseId" to courseData.courseId,
+            "credit" to courseData.credit,
+            "capacity" to courseData.capacity,
+            "grade" to courseData.grade,
+            "major" to courseData.major,
+            "semester" to courseData.semester,
+            "property" to courseData.property,
+            "time" to time,
+            "location" to location,
+            "teacherName" to courseData.teacher,
+            "teacherId" to courseData.teacherId// New field
+        )
+        nettyClient.sendRequest(request, "course/modify") { response: String ->
+            handleResponseModify(response)
+        }
+    }
+    private fun handleResponseModify(response: String) {
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        if (responseJson["status"] == "success") {
+            DialogManager.showDialog("修改课程成功")
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
+        }
+    }
+}
+

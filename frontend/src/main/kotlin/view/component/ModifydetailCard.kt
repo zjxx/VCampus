@@ -4,8 +4,6 @@ package view.component
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -322,7 +320,7 @@ fun ModifydetailCard(course: CourseData, onDeleteSuccess: () -> Unit) {
                     }
                     Button(
                         onClick = {
-
+                            courseModule.modifyCourse(course)
                         },
                         modifier = Modifier.align(Alignment.End).padding(top = 16.dp)
                     ) {
