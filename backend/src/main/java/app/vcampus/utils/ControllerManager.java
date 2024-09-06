@@ -33,18 +33,15 @@ public class ControllerManager {
 
 
         routeMapping.registerRoute(("shop/addtolist"), storeController::addItem);//添加商品
-        routeMapping.registerRoute("searchItems", storeController::searchItems);
-        routeMapping.registerRoute("purchase", storeController::handlePurchase);
-        routeMapping.registerRoute("getAllItems", storeController::getAllItems);
-        routeMapping.registerRoute("getTransactions", storeController::getAllTransaction);
-        routeMapping.registerRoute("searchItems", storeController::searchItems);//搜索商品
-        routeMapping.registerRoute("purchase", storeController::handlePurchase);//购买商品
         routeMapping.registerRoute("shop/search", storeController::searchItems);//搜索商品
         routeMapping.registerRoute("shop/buy", storeController::handlePurchase);//购买商品
-        routeMapping.registerRoute("getAllItems", storeController::getAllItems);//获取所有商品
-        routeMapping.registerRoute("getTransactions", storeController::getAllTransaction);//获取所有交易
-        routeMapping.registerRoute("enterStore",storeController::enterStore);//进入商店展示商品,返回随机商品列表
-        routeMapping.registerRoute("getTransactionsByCardNumber", storeController::getTransactionsByCardNumber);//根据卡号获取交易记录
+        routeMapping.registerRoute("shop/getAllItems", storeController::getAllItems);//获取所有商品
+        routeMapping.registerRoute("shop/getTransactions", storeController::getAllTransaction);//获取所有交易
+        routeMapping.registerRoute("shop/enterStore",storeController::enterStore);//进入商店展示商品,返回随机商品列表
+        routeMapping.registerRoute("shop/getTransactionsByCardNumber", storeController::getTransactionsByCardNumber);//根据卡号获取交易记录
+
+
+
         routeMapping.registerRoute("arc/add", studentInfoController::addStudentStatus);//
         routeMapping.registerRoute("arc/view", studentInfoController::getStudentInfo);
         routeMapping.registerRoute("arc/delete", studentInfoController::deleteStudentStatus);//
