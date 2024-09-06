@@ -106,7 +106,7 @@ fun BookAdminSubscene(onNavigateBack: () -> Unit, libraryModule: LibraryModule) 
             }
         }
     }  else if (currentScene == "BookModifySubscene") {
-        BookModifySubscene(onNavigateBack = { currentScene = "BookAdminSubscene" }, book = book)
+        BookModifySubscene(onNavigateBack = { currentScene = "BookAdminSubscene" }, book = book, "lib/modify/file_upload")
     }
 
 }
