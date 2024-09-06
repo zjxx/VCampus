@@ -58,55 +58,63 @@ Box(
 }
         } else {
             Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(0.2f)
-                    .background(Color.LightGray)
-                    .shadow(4.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = false)
-            ) {
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Collapse",
-                        modifier = Modifier.clickable { isCollapsed = true }
-                    )
-                }
-                Text(
-                    text = "学籍信息",
-                    color = Color.Black,
-                    modifier = Modifier.padding(16.dp)
-                )
-                Divider(color = Color.Gray, thickness = 1.dp)
-                if (role == "student") {
-                    TextButton(onClick = {
-                        selectedMenuItem = "查看个人信息"
-                        studentStatusModule.searchStudentStatus()
-                    }) {
-                        Text("查看个人信息", color = Color.Black)
-                    }
-                    TextButton(onClick = {
-                        selectedMenuItem = "修��密码"
-                    }) {
-                        Text("修改密码", color = Color.Black)
-                    }
-                } else if (role == "admin") {
-                    TextButton(onClick = { selectedMenuItem = "增加学籍" }) {
-                        Text("增加学籍", color = Color.Black)
-                    }
-                    TextButton(onClick = { selectedMenuItem = "修改学籍"
-                    studentStatusModule.onclickModifyStudentStatus{ results ->
-                        searchResults = results
-                    }})
-                    {
-                        Text("修改学籍", color = Color.Black)
-                    }
-                }
+    modifier = Modifier
+        .fillMaxHeight()
+        .weight(0.2f)
+        .background(Color.LightGray)
+        .shadow(4.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = false)
+) {
+    Spacer(modifier = Modifier.height(16.dp))
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End
+    ) {
+        Icon(
+            imageVector = Icons.Default.ArrowBack,
+            contentDescription = "Collapse",
+            modifier = Modifier.clickable { isCollapsed = true }
+        )
+    }
+    Text(
+        text = "学籍信息",
+        color = Color.Black,
+        modifier = Modifier.padding(16.dp)
+    )
+    Divider(color = Color.Gray, thickness = 1.dp)
+    if (role == "student") {
+        TextButton(onClick = {
+            selectedMenuItem = "查看个人信息"
+            studentStatusModule.searchStudentStatus()
+        }) {
+            Icon(imageVector = Icons.Default.Person, contentDescription = "查看个人信息")
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("查看个人信息", color = Color.Black)
+        }
+        TextButton(onClick = {
+            selectedMenuItem = "修改密码"
+        }) {
+            Icon(imageVector = Icons.Default.Lock, contentDescription = "修改密码")
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("修改密码", color = Color.Black)
+        }
+    } else if (role == "admin") {
+        TextButton(onClick = { selectedMenuItem = "增加学籍" }) {
+            Icon(imageVector = Icons.Default.Add, contentDescription = "增加学籍")
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("增加学籍", color = Color.Black)
+        }
+        TextButton(onClick = { selectedMenuItem = "修改学籍"
+            studentStatusModule.onclickModifyStudentStatus { results ->
+                searchResults = results
             }
+        }) {
+            Icon(imageVector = Icons.Default.Edit, contentDescription = "修改学籍")
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("修改学籍", color = Color.Black)
+        }
+    }
+}
         }
 
         Box(
