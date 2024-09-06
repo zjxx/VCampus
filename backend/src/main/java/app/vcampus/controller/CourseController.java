@@ -303,7 +303,7 @@ public class CourseController {
         JsonObject data = new JsonObject();
         DataBase db = DataBaseManager.getInstance();
         //用course_id的前七位提取出一批courses
-        List<Course> courses=db.getLike(Course.class,"course_id",request.getCourseId().substring(0,7));
+        List<Course> courses=db.getLike(Course.class,"courseId",request.getCourseId().substring(0,7));
         //判断有没有重复课程
         for(int i=0;i<courses.size();i++)
         {
