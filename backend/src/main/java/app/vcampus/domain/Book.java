@@ -11,7 +11,7 @@ public class Book {
     @Column(length = 30)
     private String BookName;//书名
 
-    @Column(length = 20)
+    @Column(length = 50)
     private String Author;
 
     @Column(length = 50)
