@@ -16,7 +16,7 @@ public class Score {
     @Column(length=8)
     private String courseId;
     @Column(unique = true, nullable = false)
-    private UUID scoreId = UUID.randomUUID();
+    private UUID scoreId;
 
     @Column
     private int score;
