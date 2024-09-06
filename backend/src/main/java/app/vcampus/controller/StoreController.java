@@ -63,7 +63,7 @@ public class StoreController {
     }
 
 
-//处理购买请求,传入itemUuid,amount,cardNumber,itemName
+//处理购买请求,传入itemUuid（商品的UUID）,amount(购买数量),cardNumber（一卡通号）,itemName（商品名称）
     public String handlePurchase(String jsonData) {
         // 将 JSON 转换为 PurchaseRequest 对象
         PurchaseRequest request = gson.fromJson(jsonData, PurchaseRequest.class);
@@ -104,11 +104,11 @@ public class StoreController {
         return gson.toJson(response);
     }
 
-    //根据关键词搜索商品
+    //根据关键词搜索商品，传入itemname（商品名称）
     public String searchItems(String jsonData) {
         // 从 JSON 请求中提取关键词
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
-        String keyword = request.get("merchandisename").getAsString();
+        String keyword = request.get("itemname").getAsString();
 
         // 查找匹配的商品
         DataBase db = DataBaseManager.getInstance();
@@ -183,7 +183,7 @@ public class StoreController {
         return gson.toJson(response);
     }
 
-    //获取随机商品，用于首页展示
+    //获取随机商品，用于首页展示,返回随机商品列表
     public String enterStore(String jsonData) {
         DataBase db = DataBaseManager.getInstance();
         List<StoreItem> items = db.getAll(StoreItem.class);
@@ -204,7 +204,7 @@ public class StoreController {
         return gson.toJson(response);
     }
 
-    //获取特定一卡通号的订单
+    //获取特定一卡通号的订单，传入cardNumber（一卡通号）
     public String getTransactionsByCardNumber(String jsonData) {
         // 从 JSON 请求中提取一卡通号
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
@@ -257,7 +257,7 @@ public class StoreController {
         return gson.toJson(response);
     }
 
-    //添加商品
+    //添加商品，传入商品的JSON对象
     public String addItem(String jsonData) {
         try {
             StoreItem newItem = gson.fromJson(jsonData, StoreItem.class);
@@ -275,7 +275,7 @@ public class StoreController {
         }
     }
 
-    // 删除商品
+    // 删除商品，传入uuid（商品的UUID）
     public String removeItem(String jsonData) {
         try {
             JsonObject request = gson.fromJson(jsonData, JsonObject.class);
@@ -300,7 +300,7 @@ public class StoreController {
         }
     }
 
-    // 修改商品
+    // 修改商品,传入商品的JSON对象,uuid（商品的UUID）,itemName（商品名称）,price（商品价格）,pictureLink（商品图片链接）,barcode（商品条形码）,stock（商品库存）,salesVolume（商品销量）,description（商品描述）
     public String updateItem(String jsonData) {
         try {
             StoreItem updatedItem = gson.fromJson(jsonData, StoreItem.class);
@@ -329,5 +329,6 @@ public class StoreController {
             return gson.toJson(response);
         }
     }
+
 
 }
