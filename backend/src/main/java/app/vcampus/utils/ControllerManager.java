@@ -12,6 +12,7 @@ public class ControllerManager {
     private final StudentInfoController studentInfoController = new StudentInfoController();
     private final LibraryController libraryController = new LibraryController();
     private final CourseController courseController = new CourseController();
+    private final ScoreController scoreController = new ScoreController();
     private final Gson gson = new Gson();
 
     public ControllerManager() {
@@ -61,6 +62,12 @@ public class ControllerManager {
         routeMapping.registerRoute("course/delete",courseController::deleteCourse);//教务删除课程
         routeMapping.registerRoute("course/showAll",courseController::showAdminList);//教务查看课程
 
+        routeMapping.registerRoute("score/give",scoreController::giveScore);//老师打分
+        routeMapping.registerRoute("score/view",scoreController::viewAllScore);//学生查看成绩
+        routeMapping.registerRoute("score/list",scoreController::listAllScore);//教务查看成绩
+        routeMapping.registerRoute("score/check",scoreController::checkScore);//教务审核成绩
+        routeMapping.registerRoute("score/search",scoreController::ViewMyCourseScore);//教师查看课程成绩
+        routeMapping.registerRoute("score/modify",scoreController::modifyScore);//教师修改成绩
 
     }
     public String handleRequest(String jsonData) {

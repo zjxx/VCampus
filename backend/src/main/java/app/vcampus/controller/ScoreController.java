@@ -1,18 +1,12 @@
 package app.vcampus.controller;
 
-import app.vcampus.domain.Score;
 import app.vcampus.domain.Course;
 import app.vcampus.domain.Enrollment;
+import app.vcampus.domain.Score;
 import app.vcampus.domain.Student;
-import app.vcampus.interfaces.ScoreGiveRequest;
-import app.vcampus.interfaces.ScoreViewAllRequest;
-import app.vcampus.interfaces.ScoreCheckRequest;
-import app.vcampus.interfaces.ScoreModifyRequest;
-import app.vcampus.interfaces.MyCourseScoreListRequest;
-import app.vcampus.interfaces.AllScoreListRequest;
+import app.vcampus.interfaces.*;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -85,8 +79,7 @@ public class ScoreController {
             data.addProperty("status", "failed");
             data.addProperty("reason", "no score found");
             return gson.toJson(data);
-        }
-        else {
+        } else {
             //循环判断每一个成绩的status是否为审核通过
             for (int i = 0; i < scores.size(); i++) {
                 Score score = scores.get(i);
@@ -115,7 +108,7 @@ public class ScoreController {
     }
 
     //教务查看未审核成绩
-    public String listAllScore(String jsonData){
+    public String listAllScore(String jsonData) {
         AllScoreListRequest request = gson.fromJson(jsonData, AllScoreListRequest.class);
         JsonObject data = new JsonObject();
         DataBase db = DataBaseManager.getInstance();
@@ -124,9 +117,8 @@ public class ScoreController {
             data.addProperty("status", "failed");
             data.addProperty("reason", "no score found");
             return gson.toJson(data);
-        }
-        else {
-           //按课程号对成绩排序
+        } else {
+            //按课程号对成绩排序
             scores.sort((score1, score2) -> score1.getCourseId().compareTo(score2.getCourseId()));
             String tempCourseId = "";
             int cnt = 0;
@@ -134,7 +126,7 @@ public class ScoreController {
             for (int i = 0; i < scores.size(); i++) {
                 Score score = scores.get(i);
                 if (!score.getCourseId().equals(tempCourseId)) {
-                    data.add("course"+i, courseScoreData);
+                    data.add("course" + i, courseScoreData);
                     courseScoreData = new JsonObject();
                     JsonObject studentScore = new JsonObject();
                     studentScore.addProperty("courseId", score.getCourseId());
@@ -142,39 +134,39 @@ public class ScoreController {
                     //学生姓名
                     List<Student> students = db.getWhere(Student.class, "studentId", score.getStudentId());
                     Student student = students.get(0);
-                    studentScore .addProperty("studentName", student.getUsername());
-                    studentScore .addProperty("participationScore", score.getParticipationScore());
-                    studentScore .addProperty("midtermScore", score.getMidtermScore());
-                    studentScore .addProperty("finalScore", score.getFinalScore());
-                    studentScore .addProperty("score", score.getScore());
-                    studentScore .addProperty("credit", score.getCredit());
-                    studentScore .addProperty("semester", score.getSemester());
-                    studentScore .addProperty("status", score.getStatus());
+                    studentScore.addProperty("studentName", student.getUsername());
+                    studentScore.addProperty("participationScore", score.getParticipationScore());
+                    studentScore.addProperty("midtermScore", score.getMidtermScore());
+                    studentScore.addProperty("finalScore", score.getFinalScore());
+                    studentScore.addProperty("score", score.getScore());
+                    studentScore.addProperty("credit", score.getCredit());
+                    studentScore.addProperty("semester", score.getSemester());
+                    studentScore.addProperty("status", score.getStatus());
                     tempCourseId = score.getCourseId();
                     cnt = 1;
-                    courseScoreData.add("student"+cnt, studentScore);
+                    courseScoreData.add("student" + cnt, studentScore);
                 } else {
                     JsonObject studentScore = new JsonObject();
                     studentScore.addProperty("courseId", score.getCourseId());
-                    studentScore .addProperty("studentId", score.getStudentId());
+                    studentScore.addProperty("studentId", score.getStudentId());
                     //学生姓名
                     List<Student> students = db.getWhere(Student.class, "studentId", score.getStudentId());
                     Student student = students.get(0);
-                    studentScore .addProperty("studentName", student.getUsername());
-                    studentScore .addProperty("participationScore", score.getParticipationScore());
-                    studentScore .addProperty("midtermScore", score.getMidtermScore());
-                    studentScore .addProperty("finalScore", score.getFinalScore());
-                    studentScore .addProperty("score", score.getScore());
-                    studentScore .addProperty("credit", score.getCredit());
-                    studentScore .addProperty("semester", score.getSemester());
-                    studentScore .addProperty("status", score.getStatus());
+                    studentScore.addProperty("studentName", student.getUsername());
+                    studentScore.addProperty("participationScore", score.getParticipationScore());
+                    studentScore.addProperty("midtermScore", score.getMidtermScore());
+                    studentScore.addProperty("finalScore", score.getFinalScore());
+                    studentScore.addProperty("score", score.getScore());
+                    studentScore.addProperty("credit", score.getCredit());
+                    studentScore.addProperty("semester", score.getSemester());
+                    studentScore.addProperty("status", score.getStatus());
                     tempCourseId = score.getCourseId();
                     cnt += 1;
-                    courseScoreData.add("student"+cnt, studentScore);
+                    courseScoreData.add("student" + cnt, studentScore);
                 }
             }
             //添加最后一个课程的成绩
-            data.add("course"+scores.size(), courseScoreData);
+            data.add("course" + scores.size(), courseScoreData);
             data.addProperty("status", "success");
             return gson.toJson(data);
         }
@@ -223,8 +215,8 @@ public class ScoreController {
         MyCourseScoreListRequest request = gson.fromJson(jsonData, MyCourseScoreListRequest.class);
         JsonObject data = new JsonObject();
         DataBase db = DataBaseManager.getInstance();
-        JsonObject unpassedData= new JsonObject();
-        JsonObject passedData= new JsonObject();
+        JsonObject unpassedData = new JsonObject();
+        JsonObject passedData = new JsonObject();
         List<Score> scores = db.getWhere(Score.class, "status", "审核未通过");
         if (scores.isEmpty()) {
             unpassedData.addProperty("status", "failed");
@@ -253,7 +245,7 @@ public class ScoreController {
                         //学生姓名
                         List<Student> students = db.getWhere(Student.class, "studentId", score.getStudentId());
                         Student student = students.get(0);
-                        studentScore .addProperty("studentName", student.getUsername());
+                        studentScore.addProperty("studentName", student.getUsername());
                         studentScore.addProperty("participationScore", score.getParticipationScore());
                         studentScore.addProperty("midtermScore", score.getMidtermScore());
                         studentScore.addProperty("finalScore", score.getFinalScore());
@@ -271,7 +263,7 @@ public class ScoreController {
                         //学生姓名
                         List<Student> students = db.getWhere(Student.class, "studentId", score.getStudentId());
                         Student student = students.get(0);
-                        studentScore .addProperty("studentName", student.getUsername());
+                        studentScore.addProperty("studentName", student.getUsername());
                         studentScore.addProperty("participationScore", score.getParticipationScore());
                         studentScore.addProperty("midtermScore", score.getMidtermScore());
                         studentScore.addProperty("finalScore", score.getFinalScore());
@@ -317,7 +309,7 @@ public class ScoreController {
                         //学生姓名
                         List<Student> students = db.getWhere(Student.class, "studentId", score.getStudentId());
                         Student student = students.get(0);
-                        studentScore .addProperty("studentName", student.getUsername());
+                        studentScore.addProperty("studentName", student.getUsername());
                         studentScore.addProperty("participationScore", score.getParticipationScore());
                         studentScore.addProperty("midtermScore", score.getMidtermScore());
                         studentScore.addProperty("finalScore", score.getFinalScore());
@@ -335,7 +327,7 @@ public class ScoreController {
                         //学生姓名
                         List<Student> students = db.getWhere(Student.class, "studentId", score.getStudentId());
                         Student student = students.get(0);
-                        studentScore .addProperty("studentName", student.getUsername());
+                        studentScore.addProperty("studentName", student.getUsername());
                         studentScore.addProperty("participationScore", score.getParticipationScore());
                         studentScore.addProperty("midtermScore", score.getMidtermScore());
                         studentScore.addProperty("finalScore", score.getFinalScore());
