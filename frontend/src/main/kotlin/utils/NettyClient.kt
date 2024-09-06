@@ -73,7 +73,7 @@ class NettyClient(private val host: String, private val port: Int) {
         }.start()
     }
 
-    fun sendFile(type: String,filePath: String, responseHandler: (String) -> Unit) {
+    fun sendFile(request: Any,type: String,filePath: String, responseHandler: (String) -> Unit) {
         Thread {
             val group = NioEventLoopGroup()
             try {
@@ -99,12 +99,9 @@ class NettyClient(private val host: String, private val port: Int) {
                 val fileBytes = Files.readAllBytes(Paths.get(filePath))
                 val encodedFile = Base64.getEncoder().encodeToString(fileBytes)
 
-
-                // 创建请求对象
-                val req = mutableMapOf<String, Any>(
-                    "role" to role,
-                    "type" to type
-                )
+                val req = gson.fromJson(gson.toJson(request), MutableMap::class.java) as MutableMap<String, Any>
+                req["role"] = role // 添加新的键值对
+                req["type"] = type // 添加新的键值对
                 val jsonRequest = gson.toJson(req)
                 val chunks = splitData(encodedFile, 512) // Split data into 512B chunks
 

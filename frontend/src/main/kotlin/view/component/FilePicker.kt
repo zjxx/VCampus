@@ -44,7 +44,7 @@ fun FilePicker() {
                 modifier = Modifier.size(216.dp)
             )
             Button(onClick = {
-                nettyClient.sendFile("lib/file_upload", it) { response ->
+                nettyClient.sendFile("","lib/file_upload", it) { response ->
                     println("Server response: $response")
                 }
             }) {
