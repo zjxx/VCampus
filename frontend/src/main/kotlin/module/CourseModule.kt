@@ -75,6 +75,13 @@ data class TimeAndLocationCardData(
     }
   }
 }
+data class CourseScheduleItem(
+    val courseName: String,
+    val dayOfWeek: String,
+    val startPeriod: Int,
+    val endPeriod:  Int,
+    val location: String
+)
 
 class CourseModule {
     private val nettyClient = NettyClientProvider.nettyClient
@@ -85,6 +92,8 @@ class CourseModule {
     val searchResults: StateFlow<List<GroupedCourse>> get() = _searchResults
     private val _course = MutableStateFlow<List<CourseData>>(emptyList())
     val course: StateFlow<List<CourseData>> get() = _course
+    private val _courseSchedule = MutableStateFlow<List<CourseScheduleItem>>(emptyList())
+    val courseSchedule: StateFlow<List<CourseScheduleItem>> get() = _courseSchedule
 
 fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
     return when (dayOfWeekNumber) {
@@ -339,6 +348,38 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         if (responseJson["status"] == "success") {
             DialogManager.showDialog("修改课程成功")
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
+        }
+    }
+    fun classTable()
+    {
+        val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId)
+        nettyClient.sendRequest(request, "course/table") { response: String ->
+            handleResponseTable(response)
+        }
+    }
+    private fun handleResponseTable(response: String) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        if (responseJson["status"] == "success") {
+            val courses = mutableListOf<CourseScheduleItem>()
+            val num = "1"
+            for (i in 0 until num.toInt()) {
+                val courseJson = responseJson["course$i"] as Map<String, Any>
+                val courseName = courseJson["courseName"] as String
+                val time = courseJson["time"] as String
+                val location =courseJson["location"] as String
+                val timeSlots = time.split(";")
+                for (timeSlot in timeSlots) {
+                    val parts = timeSlot.split("-")
+                    val dayOfWeek = mapDayOfWeekNumberToChinese(parts[0])
+                    val startPeriod = parts[1].toInt()
+                    val endPeriod = parts[2].toInt()
+                    courses.add(CourseScheduleItem(courseName, dayOfWeek, startPeriod, endPeriod, location))
+                }
+            }
+            _courseSchedule.value = courses
         } else {
             DialogManager.showDialog(responseJson["reason"] as String)
         }
