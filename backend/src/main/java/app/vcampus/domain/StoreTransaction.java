@@ -12,7 +12,7 @@ public class StoreTransaction {
     public UUID uuid = UUID.randomUUID();
 
     @ManyToOne
-    @JoinColumn(name = "itemUuid", referencedColumnName = "uuid", insertable = false, updatable = false)
+    @JoinColumn(name = "itemUuid", referencedColumnName = "uuid", insertable = false, updatable = true)
     public StoreItem storeItem;
 
     public Integer itemPrice;
@@ -24,12 +24,27 @@ public class StoreTransaction {
 
     public LocalDateTime time;
 
+    @Column(name = "itemUuid")
+    private UUID itemUuid;
+
+    @PostUpdate
+    public void onPostUpdate() {
+        // 如果 storeItem 的 uuid 发生变化，更新 itemUuid
+        if (storeItem != null) {
+            this.itemUuid = storeItem.getUuid();
+        }
+    }
+
     public UUID getUuid() {
         return uuid;
     }
 
     public StoreItem getStoreItem() {
         return storeItem;
+    }
+
+    public UUID getItemUuid() {
+        return itemUuid;
     }
 
     public Integer getItemPrice() {
@@ -54,6 +69,10 @@ public class StoreTransaction {
 
     public void setStoreItem(StoreItem storeItem) {
         this.storeItem = storeItem;
+    }
+
+    public void setItemUuid(UUID itemUuid) {
+        this.itemUuid = itemUuid;
     }
 
     public void setItemPrice(Integer itemPrice) {
