@@ -11,9 +11,9 @@ import module.CourseModule
 import view.component.ModifyCourseCard
 
 @Composable
-fun ModifyCourseSubscene(course: CourseData) {
+fun ModifyCourseSubscene(course: CourseData,) {
     Column(modifier = Modifier.padding(16.dp)) {
         Text("修改课程", style = MaterialTheme.typography.h5, modifier = Modifier.padding(bottom = 16.dp))
-        ModifyCourseCard(course = course)
+        ModifyCourseCard(course = course, onDeleteSuccess = {})
     }
 }

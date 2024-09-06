@@ -17,7 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 
 @Composable
-fun ModifyCourseCard(course: CourseData) {
+fun ModifyCourseCard(course: CourseData, onDeleteSuccess: () -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     var expandedProperty by remember { mutableStateOf(false) }
     val propertyOptions = listOf("必修", "选修")
@@ -50,19 +50,13 @@ fun ModifyCourseCard(course: CourseData) {
                     Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
                         OutlinedTextField(
                             value = courseName,
-                            onValueChange = {
-                                courseName = it
-                                course.courseName = it
-                            },
+                            onValueChange = { courseName = it },
                             label = { Text("课程名称") },
                             modifier = Modifier.weight(1f).padding(end = 8.dp)
                         )
                         OutlinedTextField(
                             value = courseId,
-                            onValueChange = {
-                                courseId = it
-                                course.courseId = it
-                            },
+                            onValueChange = { courseId = it },
                             label = { Text("课程号") },
                             modifier = Modifier.weight(1f)
                         )
@@ -70,10 +64,7 @@ fun ModifyCourseCard(course: CourseData) {
                     Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
                         OutlinedTextField(
                             value = credit,
-                            onValueChange = {
-                                credit = it
-                                course.credit = it
-                            },
+                            onValueChange = { credit = it },
                             label = { Text("学分") },
                             modifier = Modifier.weight(1f).padding(end = 8.dp)
                         )
@@ -87,8 +78,7 @@ fun ModifyCourseCard(course: CourseData) {
                                     IconButton(onClick = { expandedProperty = true }) {
                                         Icon(Icons.Default.ArrowDropDown, contentDescription = null)
                                     }
-                                },
-                                modifier = Modifier.fillMaxWidth()
+                                }
                             )
                             DropdownMenu(
                                 expanded = expandedProperty,
@@ -106,7 +96,7 @@ fun ModifyCourseCard(course: CourseData) {
                             }
                         }
                     }
-                    ModifydetailCard(course)
+                    ModifydetailCard(course, onDeleteSuccess)
                 }
             }
         }
