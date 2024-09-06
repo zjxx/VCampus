@@ -383,6 +383,7 @@ public class CourseController {
             data.addProperty("reason", "no course found");
             return gson.toJson(data);
         }
+        data.addProperty("number",String.valueOf(enrollments.size()));
         for(int i = 0; i < enrollments.size(); i++) {
             Enrollment enrollment=enrollments.get(i);
             JsonObject courseData=new JsonObject();
