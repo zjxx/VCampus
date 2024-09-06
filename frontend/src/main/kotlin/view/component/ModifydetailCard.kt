@@ -19,7 +19,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.ui.Alignment
 
 @Composable
-fun ModifydetailCard(course: CourseData, onSelectCourse: (CourseData, onSuccess: (Boolean) -> Unit) -> Unit, onUnselectCourse: (CourseData, onSuccess: (Boolean) -> Unit) -> Unit) {
+fun ModifydetailCard(course: CourseData) {
     var expanded by remember { mutableStateOf(false) }
     var timeAndLocationCards by remember { mutableStateOf(course.timeAndLocationCards) }
     var credit by remember { mutableStateOf(course.credit) }
@@ -27,6 +27,7 @@ fun ModifydetailCard(course: CourseData, onSelectCourse: (CourseData, onSuccess:
     var major by remember { mutableStateOf(course.major) }
     var teacher by remember { mutableStateOf(course.teacher) }
     var teacherId by remember { mutableStateOf(course.teacherId) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()

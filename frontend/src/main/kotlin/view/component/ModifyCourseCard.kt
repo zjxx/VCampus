@@ -17,7 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 
 @Composable
-fun ModifyCourseCard(course: CourseData, onSelectCourse: (CourseData, onSuccess: (Boolean) -> Unit) -> Unit, onUnselectCourse: (CourseData, onSuccess: (Boolean) -> Unit) -> Unit) {
+fun ModifyCourseCard(course: CourseData) {
     var expanded by remember { mutableStateOf(false) }
     var expandedProperty by remember { mutableStateOf(false) }
     val propertyOptions = listOf("必修", "选修")
@@ -106,7 +106,7 @@ fun ModifyCourseCard(course: CourseData, onSelectCourse: (CourseData, onSuccess:
                             }
                         }
                     }
-                    ModifydetailCard(course, onSelectCourse, onUnselectCourse)
+                    ModifydetailCard(course)
                 }
             }
         }
