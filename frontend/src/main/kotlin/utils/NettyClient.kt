@@ -14,7 +14,7 @@ import io.netty.handler.logging.LogLevel
 import io.netty.handler.logging.LoggingHandler
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.Base64
+import java.util.*
 
 class NettyClient(private val host: String, private val port: Int) {
     private var role: String = "null"
@@ -73,7 +73,7 @@ class NettyClient(private val host: String, private val port: Int) {
         }.start()
     }
 
-    fun sendFile(request: Any,type: String,filePath: String, responseHandler: (String) -> Unit) {
+    fun sendFile(request: Any,type: String, filePath: String, responseHandler: (String) -> Unit) {
         Thread {
             val group = NioEventLoopGroup()
             try {

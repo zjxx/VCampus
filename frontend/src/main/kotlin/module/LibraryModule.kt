@@ -12,9 +12,11 @@ class LibraryModule (
     private val onCheckSuccess: (List<Book>) -> Unit,
     private val onImageFetchSuccess: (String) -> Unit,
     private val onAddToListSuccess: (String) -> Unit,
+    private val onIdCheckSuccess: (List<String>) -> Unit,
 ) {
     private val nettyClient = NettyClientProvider.nettyClient
     var tempBooks = mutableListOf<Book>()
+    var searchIdResult = mutableListOf<String>()
 
     fun libSearch(bookname: String, flag: String) {
         tempBooks.clear()
@@ -67,9 +69,11 @@ class LibraryModule (
         }
     }
 
+    //______________________________________________________________________________________________
+    //check
     fun libCheck(userId: String) {
         tempBooks.clear()
-        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId)
+        val request = mapOf("role" to UserSession.role, "userId" to userId)
         nettyClient.sendRequest(request, "lib/check") { response: String ->
             handleResponseCheck(response)
         }
@@ -197,7 +201,26 @@ class LibraryModule (
         }
     }
 
+    //__________________________________________________________________________________________
+    //id搜索
+    fun libIdCheck(searchId: String) {
+        tempBooks.clear()
+        val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "searchId" to searchId)
+        nettyClient.sendRequest(request, "lib/idcheck") { response: String ->
+            handleResponseIdCheck(response)
+        }
+    }
 
+    fun handleResponseIdCheck(response: String) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        println("Response status: ${responseJson["status"]}")
+
+        if (responseJson["status"] == "success" ) {
+
+        }
+        onIdCheckSuccess(searchIdResult)
+    }
 
 //__________________________________________________________________________________________
     fun fetchImageUrl(input: String) {
