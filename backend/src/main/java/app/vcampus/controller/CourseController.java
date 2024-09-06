@@ -103,7 +103,7 @@ public class CourseController {
             }
         }
         //检查课程ID是否存在
-        List<Course> courses = db.getWhere(Course.class, "course_id", request.getCourseId());
+        List<Course> courses = db.getWhere(Course.class, "courseId", request.getCourseId());
         if (courses.isEmpty()) {
             data.addProperty("status","failed");
             data.addProperty("reason", "course not found");
@@ -121,11 +121,11 @@ public class CourseController {
         //将课程时间转换为数组
         String[] courseTime = course.getTime().split(",");
         //找出学生选的课程时间段
-        List<Enrollment> records = db.getWhere(Enrollment.class, "student_id", request.getStudentId());
+        List<Enrollment> records = db.getWhere(Enrollment.class, "studentid", request.getStudentId());
         for (int i=0;i<records.size();i++) {
             Enrollment record = records.get(i);
             //用Enrollment中的课程id去course表中找到对应的课程时间段
-            List<Course> courseList = db.getWhere(Course.class, "course_id", record.getcourseid());
+            List<Course> courseList = db.getWhere(Course.class, "courseId", record.getcourseid());
             Course course1 = courseList.get(0);
             //将course1的课程时间转换为数组
             String[] course1Time = course1.getTime().split(",");
@@ -302,7 +302,7 @@ public class CourseController {
         JsonObject data = new JsonObject();
         DataBase db = DataBaseManager.getInstance();
         //用course_id的前七位提取出一批courses
-        List<Course> courses=db.getLike(Course.class,"course_id",request.getCourseId().substring(0,7));
+        List<Course> courses=db.getLike(Course.class,"courseId",request.getCourseId().substring(0,7));
         //判断有没有重复课程
         for(int i=0;i<courses.size();i++)
         {
@@ -365,6 +365,39 @@ public class CourseController {
             }
             data.addProperty("status", "success");
         }
+        return gson.toJson(data);
+    }
+
+    //教务查看所有课
+    public String showAdminList(String jsonData) {
+        EnrollmentShowRequest request = gson.fromJson(jsonData, EnrollmentShowRequest.class);
+        JsonObject data = new JsonObject();
+        DataBase db = DataBaseManager.getInstance();
+
+               // 在courses里面筛选出符合major的数据
+        List<Course> courses = db.getLike(Course.class,"courseId","");
+
+        //打包返回所有课程数据的json数据
+        data.addProperty("number", String.valueOf(courses.size()));
+        for(int i = 0; i < courses.size(); i++) {
+            Course course = courses.get(i);
+            JsonObject courseData = new JsonObject();
+            courseData.addProperty("courseId", course.getcourseId());
+            courseData.addProperty("courseName", course.getcourseName());
+            courseData.addProperty("teacherName", course.getteacherName());
+            courseData.addProperty("teacherId", course.getteacherId());
+            courseData.addProperty("semester", course.getSemester());
+            courseData.addProperty("credit", String.valueOf(course.getCredit()));
+            courseData.addProperty("time", course.getTime());
+            courseData.addProperty("location", course.getLocation());
+            courseData.addProperty("capacity", String.valueOf(course.getCapacity()));
+            courseData.addProperty("property",course.getProperty());
+            courseData.addProperty("validCapacity", String.valueOf(course.getvalidCapacity()));
+            courseData.addProperty("major",course.getMajor());
+            courseData.addProperty("validGrade",course.getvalidGrade());
+            data.add("course" + i, courseData);
+        }
+        data.addProperty("status", "success");
         return gson.toJson(data);
     }
 }

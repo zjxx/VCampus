@@ -132,7 +132,7 @@ public class LibraryController {
         db.save(reader2Book);
         db.update(book);
 
-        data.addProperty("success", "You have borrowed the book successfully.");
+        data.addProperty("status", "success");
         return gson.toJson(data);
     }
 
@@ -410,10 +410,31 @@ public class LibraryController {
         JsonObject data = new JsonObject();
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         try{
-            fileOutputStream = new FileOutputStream("1uploaded_image.jpg");//指定保持路径
+            DataBase db = DataBaseManager.getInstance();
+            List<Book> books = db.getWhere(Book.class, "ISBN", request.get("ISBN").getAsString());
+            if(!books.isEmpty()){
+                data.addProperty("status", "failed");
+                data.addProperty("reason", "The book already exists.");
+                return gson.toJson(data);
+            }
+            String filepath="C:\\Users\\Administrator\\Desktop\\server\\img\\"+ request.get("ISBN").getAsString() + ".jpg";
+            fileOutputStream = new FileOutputStream(filepath);//指定保持路径
             byte[] bytes = java.util.Base64.getDecoder().decode(additionalParam);
             fileOutputStream.write(bytes);
             fileOutputStream.close();
+            Book book = new Book();
+            book.setISBN(request.get("ISBN").getAsString());
+            book.setBookName(request.get("bookName").getAsString());
+            book.setAuthor(request.get("author").getAsString());
+            book.setPublisher(request.get("publisher").getAsString());
+            book.setPublishedYear(request.get("publishedYear").getAsInt());
+            book.setLanguage(request.get("language").getAsString());
+            book.setDescription(request.get("description").getAsString());
+            book.setKind(request.get("kind").getAsString());
+            book.setQuantity(request.get("quantity").getAsInt());
+            book.setValid_Quantity(request.get("quantity").getAsInt());
+
+            db.save(book);
             data.addProperty("status", "success");
         }
         catch (Exception e){

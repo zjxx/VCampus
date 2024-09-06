@@ -22,9 +22,9 @@ public class Course {
     private String semester;
     @Column
     private Integer credit;
-    @Column(length = 7)
+    @Column(length = 39)
     private String location;
-    @Column(length =20)
+    @Column(length =39)
     private String time;
     @Column
     private Integer capacity;

@@ -1,17 +1,13 @@
 package app.vcampus.utils;
 
-import app.vcampus.controller.StoreController;
-import app.vcampus.controller.StoreTransactionController;
-import app.vcampus.controller.StudentInfoController;
-import app.vcampus.controller.UserController;
-import app.vcampus.controller.LibraryController;
-import app.vcampus.controller.CourseController;
+import app.vcampus.controller.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 public class ControllerManager {
     private final UserController userController = new UserController();
     private final StoreController storeController = new StoreController();
+    private final ShoppingCartController ShoppingCartController = new ShoppingCartController();
     private final RouteMapping routeMapping = new RouteMapping();
     private final StudentInfoController studentInfoController = new StudentInfoController();
     private final LibraryController libraryController = new LibraryController();
@@ -29,22 +25,25 @@ public class ControllerManager {
         routeMapping.registerRoute("lib/fetchImageUrl", libraryController::searchBookInfo);
         routeMapping.registerRoute("lib/search", libraryController::searchBookInfo);
         routeMapping.registerRoute("lib/check", libraryController::viewBorrowRecord);
-        routeMapping.registerRouteWithParams("lib/file_upload", libraryController::addBook);
+        routeMapping.registerRouteWithParams("lib/add/file_upload", libraryController::addBook);
 
 
         routeMapping.registerRoute(("shop/addtolist"), storeController::addItem);//添加商品
-        routeMapping.registerRoute("searchItems", storeController::searchItems);
-        routeMapping.registerRoute("purchase", storeController::handlePurchase);
-        routeMapping.registerRoute("getAllItems", storeController::getAllItems);
-        routeMapping.registerRoute("getTransactions", storeController::getAllTransaction);
-        routeMapping.registerRoute("searchItems", storeController::searchItems);//搜索商品
-        routeMapping.registerRoute("purchase", storeController::handlePurchase);//购买商品
         routeMapping.registerRoute("shop/search", storeController::searchItems);//搜索商品
         routeMapping.registerRoute("shop/buy", storeController::handlePurchase);//购买商品
-        routeMapping.registerRoute("getAllItems", storeController::getAllItems);//获取所有商品
-        routeMapping.registerRoute("getTransactions", storeController::getAllTransaction);//获取所有交易
-        routeMapping.registerRoute("enterStore",storeController::enterStore);//进入商店展示商品,返回随机商品列表
-        routeMapping.registerRoute("getTransactionsByCardNumber", storeController::getTransactionsByCardNumber);//根据卡号获取交易记录
+        routeMapping.registerRoute("shop/getAllItems", storeController::getAllItems);//获取所有商品
+        routeMapping.registerRoute("shop/getAllTransactions", storeController::getAllTransaction);//获取所有交易
+        routeMapping.registerRoute("shop/enterStore",storeController::enterStore);//进入商店展示商品,返回随机商品列表
+        routeMapping.registerRoute("shop/getTransactionsByCardNumber", storeController::getTransactionsByCardNumber);//根据卡号获取交易记录
+        routeMapping.registerRoute(("shop/deleteItem"), storeController::removeItem);//删除商品
+        routeMapping.registerRoute(("shop/modifyItem"), storeController::updateItem);//修改商品信息
+        routeMapping.registerRoute(("shop/addItemToCart"), ShoppingCartController::addItemToCart);//添加商品到购物车
+        routeMapping.registerRoute(("shop/removeItemFromCart"), ShoppingCartController::removeItemFromCart);//从购物车移除商品
+        routeMapping.registerRoute(("shop/viewCart"), ShoppingCartController::viewCart);//查看购物车内容
+
+
+
+
         routeMapping.registerRoute("arc/add", studentInfoController::addStudentStatus);//
         routeMapping.registerRoute("arc/view", studentInfoController::getStudentInfo);
         routeMapping.registerRoute("arc/delete", studentInfoController::deleteStudentStatus);//
@@ -60,6 +59,7 @@ public class ControllerManager {
         routeMapping.registerRoute("course/listStudent",courseController::ShowCourseStudent);//老师导出学生选课信息
         routeMapping.registerRoute("course/add",courseController::addCourse);//教务添加课程
         routeMapping.registerRoute("course/delete",courseController::deleteCourse);//教务删除课程
+        routeMapping.registerRoute("course/showAll",courseController::showAdminList);//教务查看课程
 
 
     }
