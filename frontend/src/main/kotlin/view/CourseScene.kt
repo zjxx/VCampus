@@ -11,8 +11,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.animation.Crossfade
 import androidx.compose.ui.draw.shadow
 import module.CourseModule
-import module.CourseData
-import module.TimeAndLocationCardData
 
 @Composable
 fun CourseScene(onNavigate: (String) -> Unit, role: String) {
@@ -23,51 +21,49 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .weight(0.2f) // 设置宽度占父容器的20%
-                .background(Color.LightGray) // 设置背景颜色为浅灰色
-                .shadow(4.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = false) // 添加左右阴影效果
+                .weight(0.2f)
+                .background(Color.LightGray)
+                .shadow(4.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = false)
         ) {
             Text(
                 text = "课程管理",
                 color = Color.Black,
                 modifier = Modifier.padding(16.dp)
             )
-            Divider(color = Color.Gray, thickness = 1.dp) // 添加分隔栏
+            Divider(color = Color.Gray, thickness = 1.dp)
             if (role == "student") {
                 TextButton(onClick = {
                     selectedMenuItem = "选课"
                     courseModule.listCourse()
                 }) {
-                    Text("选课", color = Color.Black) // 设置字体颜色为黑色
+                    Text("选课", color = Color.Black)
                 }
                 TextButton(onClick = {
                     selectedMenuItem = "查看我的课表"
+                    courseModule.classTable()
                 }) {
-                    Text("查看我的课表", color = Color.Black) // 设置字体颜色为黑色
+                    Text("查看我的课表", color = Color.Black)
                 }
             }
-            if(role=="admin")
-            {
+            if (role == "admin") {
                 TextButton(onClick = {
                     selectedMenuItem = "增加课程"
                 }) {
-                    Text("增加课程", color = Color.Black) // 设置字体颜色为黑色
+                    Text("增加课程", color = Color.Black)
                 }
                 TextButton(onClick = {
                     selectedMenuItem = "修改课程"
                     courseModule.ShowAllCourse()
                 }) {
-                    Text("修改课程", color = Color.Black) // 设置字体颜色为黑色
+                    Text("修改课程", color = Color.Black)
                 }
-
             }
-            if(role=="teacher")
-            {
+            if (role == "teacher") {
                 TextButton(onClick = {
                     selectedMenuItem = "查看课程"
                     courseModule.viewMyclass()
                 }) {
-                    Text("查看课程", color = Color.Black) // 设置字体颜色为黑色
+                    Text("查看课程", color = Color.Black)
                 }
             }
         }
@@ -75,7 +71,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
             Crossfade(targetState = selectedMenuItem) { menuItem ->
                 when (menuItem) {
                     "选课" -> SelectCourseSubscene(courseModule)
-                    "查看我的课表" -> ViewMyCoursesSubscene()
+                    "查看我的课表" -> ViewMyCoursesSubscene(courseModule)
                     "增加课程" -> AddCourseSubscene()
                     "修改课程" -> ModifyCourseSubscene(courseModule)
                     "查看课程" -> ViewTeacherCourseSubscene()
