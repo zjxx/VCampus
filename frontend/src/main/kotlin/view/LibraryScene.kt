@@ -67,7 +67,8 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
         },
         onIdCheckSuccess = { result ->
             idSearchResult = result
-        }
+        },
+        onBookModifySuccess = {}
     )
 
     LaunchedEffect(libraryModule.tempBooks) {
@@ -465,8 +466,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                             .clip(RoundedCornerShape(8.dp))
                                             .background(Color(0xFF228042))
                                             .clickable {
-                                                // Add action for "录入图书"
-
+                                                currentScene = "BookModifySubscene"
                                             }
                                             .padding(10.dp)
                                     ) {
@@ -498,7 +498,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                             .clip(RoundedCornerShape(8.dp))
                                             .background(Color(0xFF228042))
                                             .clickable {
-                                                libraryModule.libSearch(searchText.text, searchType)
+                                                libraryModule.libIdCheck(searchText.text)
                                             }
                                             .padding(16.dp)
                                     ) {
@@ -519,5 +519,9 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
 
     } else if (currentScene == "BookAdminSubscene") {
         BookAdminSubscene(onNavigateBack = { currentScene = "LibraryScene" }, libraryModule = libraryModule)
+
+    } else if (currentScene == "BookModifySubscene") {
+        BookModifySubscene(onNavigateBack = { currentScene = "LibraryScene" }, book = Book(), "lib/add/file_upload")
+
     }
 }
