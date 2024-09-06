@@ -3,8 +3,8 @@ package module
 import com.google.gson.Gson
 import data.Book
 import data.UserSession
-import network.NettyClientProvider
-import network.downloadImageIfNotExists
+import utils.NettyClientProvider
+import utils.downloadImageIfNotExists
 import view.component.DialogManager
 
 class LibraryModule (

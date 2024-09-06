@@ -1,9 +1,7 @@
 // FilePicker.kt
 package view.component
 
-import androidx.compose.foundation.Image
 import androidx.compose.runtime.*
-import androidx.compose.ui.window.singleWindowApplication
 import java.io.File
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -11,12 +9,9 @@ import androidx.compose.material.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.unit.dp
-import java.nio.file.Files
-import java.nio.file.Paths
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
-import network.NettyClient
-import network.NettyClientProvider
+import utils.NettyClientProvider
 import view.AsyncImage
 import view.loadImageBitmap
 

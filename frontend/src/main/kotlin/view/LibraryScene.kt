@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import data.Book
 import data.UserSession
 import module.LibraryModule
-import network.downloadPdfIfNotExists
+import utils.downloadPdfIfNotExists
 import view.component.FilePicker
 import view.component.GlobalState
 import view.component.LocalPdfViewer

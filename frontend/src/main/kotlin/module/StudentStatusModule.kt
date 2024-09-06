@@ -5,7 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import com.google.gson.Gson
 import data.UserSession
-import network.NettyClientProvider
+import utils.NettyClientProvider
 import view.component.DialogManager
 
 class StudentStatusModule {

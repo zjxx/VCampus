@@ -1,4 +1,4 @@
-package network
+package utils
 
 import com.google.gson.Gson
 import io.netty.bootstrap.Bootstrap

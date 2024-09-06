@@ -2,7 +2,7 @@ package module
 
 import com.google.gson.Gson
 import data.UserSession
-import network.NettyClientProvider
+import utils.NettyClientProvider
 import view.component.DialogManager
 
 class ShopModule (
