@@ -230,4 +230,19 @@ class CourseModule {
     {
         println("Received response: $response")
     }
+    fun deleteCourse(course: CourseData,onDeleteSuccess: () -> Unit) {
+        val request = mapOf("role" to UserSession.role, "courseId" to course.courseId, "teacherId" to course.teacherId)
+        nettyClient.sendRequest(request, "course/delete") { response: String ->
+            println("Received response: $response")
+            val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+             if (responseJson["status"] == "success") {
+                DialogManager.showDialog("删除课程成功")
+                 onDeleteSuccess()
+            } else {
+                DialogManager.showDialog(responseJson["reason"] as String)
+            }
+
+        }
+    }
+
 }
