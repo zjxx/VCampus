@@ -35,7 +35,7 @@ fun PdfViewer(filePath: String, onDismiss: () -> Unit) {
         images = withContext(Dispatchers.IO) {
             val pdfFile = File(filePath)
             if (pdfFile.exists()) {
-                PDDocument.load(pdfFile).use { document ->
+                PDDocument.load(pdfFile,"123").use { document ->
                     totalPages = document.numberOfPages
                     val renderer = PDFRenderer(document)
                     val bufferedImage = renderer.renderImageWithDPI(currentPage - 1, 300f)

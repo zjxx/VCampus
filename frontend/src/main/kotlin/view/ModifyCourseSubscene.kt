@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import module.CourseModule
 import module.CourseData
+import view.component.pageTitle
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.unit.dp
@@ -24,6 +25,7 @@ fun ModifyCourseSubscene(courseModule: CourseModule) {
             .padding(16.dp)
             .verticalScroll(scrollState)
     ) {
+        pageTitle(heading = "修改课程", caption = "修改课程")
         groupedCourses.forEach { (courseIdPrefix, courses) ->
             ModifyCourseCard(courses = courses, onDeleteSuccess = {})
         }
