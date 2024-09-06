@@ -1,19 +1,31 @@
 // src/main/kotlin/view/ModifyCourseSubscene.kt
 package view
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import module.CourseData
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import module.CourseModule
+import module.CourseData
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.unit.dp
 import view.component.ModifyCourseCard
 
 @Composable
-fun ModifyCourseSubscene(course: CourseData,) {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text("修改课程", style = MaterialTheme.typography.h5, modifier = Modifier.padding(bottom = 16.dp))
-        ModifyCourseCard(course = course, onDeleteSuccess = {})
+fun ModifyCourseSubscene(courseModule: CourseModule) {
+    val courses by courseModule.course.collectAsState()
+    val groupedCourses = courses.groupBy { it.courseIdPrefix }
+    val scrollState = rememberScrollState()
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(scrollState)
+    ) {
+        groupedCourses.forEach { (courseIdPrefix, courses) ->
+            ModifyCourseCard(courses = courses, onDeleteSuccess = {})
+        }
     }
 }
