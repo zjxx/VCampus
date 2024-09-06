@@ -53,7 +53,7 @@ fun CameraComponent() {
                         }
                     } else {
                         scope.launch(Dispatchers.IO) {
-                            stopRecording()
+                            stopRecording(selectedCamera!!)
                         }
                     }
                 }) {
@@ -77,6 +77,7 @@ private var canvasFrame: CanvasFrame? = null
 
 private suspend fun startRecording(grabber: FrameGrabber) {
     withContext(Dispatchers.IO) {
+        closeCameraFeed(grabber)
         try {
             grabber.start()
         } catch (e: Exception) {
@@ -102,13 +103,14 @@ private suspend fun startRecording(grabber: FrameGrabber) {
 }
 
 
-private suspend fun stopRecording() {
+private suspend fun stopRecording(grabber: FrameGrabber) {
     withContext(Dispatchers.IO) {
         recorder?.stop()
         recorder?.release()
         recorder = null
         canvasFrame?.dispose()
         canvasFrame = null
+        grabber.stop()
     }
 }
 
@@ -136,6 +138,13 @@ private suspend fun displayCameraFeed(grabber: FrameGrabber) {
             if (frame == null) break
             canvasFrame?.showImage(frame)
         }
+    }
+}
+
+private suspend fun closeCameraFeed(grabber: FrameGrabber) {
+    withContext(Dispatchers.IO) {
+        canvasFrame?.dispose()
+        canvasFrame = null
         grabber.stop()
     }
 }
