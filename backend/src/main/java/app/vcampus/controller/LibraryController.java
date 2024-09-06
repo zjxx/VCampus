@@ -455,10 +455,10 @@ public class LibraryController {
         //判断用户身份,如果是管理员,则显示用户借阅记录
         if (request.getRole().equals("admin")) {
             //判断用户存不存在
-            List<User> readers = db.getWhere(User.class, "Reader_id", request.getSearchId());
+            List<User> readers = db.getWhere(User.class, "userId", request.getSearchId());
             if (!readers.isEmpty()) {
                 //在借阅记录中查找该用户的所有借阅记录
-                List<Reader2Book> borrowedBooks = db.getWhere(Reader2Book.class, "Reader_id", request.getSearchId());
+                List<Reader2Book> borrowedBooks = db.getWhere(Reader2Book.class, "Reader_ID", request.getSearchId());
                 if (!borrowedBooks.isEmpty()) {
                     //遍历借阅记录，将借阅信息添加到json对象中
                     for (int i = 0; i < borrowedBooks.size(); i++) {
