@@ -5,123 +5,119 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "score")
 public class Score {
     @Id
     @Column(length=13)
-    private String student_id;
+    private String studentId;
     @Column(length=8)
-    private String course_id;
-    @Column(length=16)
-    private String grade_id;
+    private String courseId;
+    @Column(unique = true, nullable = false)
+    private UUID scoreId;
+
     @Column
-    private int grade;
+    private int score;
     @Column
-    private int participation_grade;
+    private int participationScore;
     @Column
-    private int midterm_grade;
+    private int midtermScore;
     @Column
-    private int final_grade;
+    private int finalScore;
     @Column
-    private int semester;
+    private String semester;
     @Column
-    private int year;
+    private int credit;
+    @Column(length = 5)
+    private String status;
+    @Column(length = 13)
+    private String teacherId;
 
     public Score() {
-        this.student_id = "";
-        this.course_id = "";
-        this.grade_id = "";
-        this.grade = 0;
-        this.participation_grade = 0;
-        this.midterm_grade = 0;
-        this.final_grade = 0;
-        this.semester = 0;
-        this.year = 0;
+        this.studentId = "";
+        this.courseId = "";
+        this.scoreId = UUID.randomUUID();
+        this.score = 0;
+        this.participationScore = 0;
+        this.midtermScore = 0;
+        this.finalScore = 0;
+        this.semester = "";
+        this.credit = 0;
+        this.status = "";
+        this.teacherId = "";
     }
 
-    public Score(String student_id, String course_id, String grade_id, int grade, int participation_grade, int midterm_grade, int final_grade, int semester, int year) {
-        this.student_id = student_id;
-        this.course_id = course_id;
-        this.grade_id = grade_id;
-        this.grade = grade;
-        this.participation_grade = participation_grade;
-        this.midterm_grade = midterm_grade;
-        this.final_grade = final_grade;
-        this.semester = semester;
-        this.year = year;
+    public String getStudentId() {
+        return studentId;
     }
 
-    public String getStudent_id() {
-        return student_id;
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
     }
 
-    public void setStudent_id(String student_id) {
-        this.student_id = student_id;
+    public String getCourseId() {
+        return courseId;
     }
 
-    public String getCourse_id() {
-        return course_id;
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
     }
 
-    public void setCourse_id(String course_id) {
-        this.course_id = course_id;
+    public UUID getScoreId() {  return scoreId;}
+
+    public void setScoreId(UUID scoreId) {  this.scoreId = scoreId; }
+
+    public int getScore() {
+        return score;
     }
 
-    public String getGrade_id() {
-        return grade_id;
+    public void setScore(int score) {
+        this.score = score;
     }
 
-    public void setGrade_id(String grade_id) {
-        this.grade_id = grade_id;
+    public int getParticipationScore() {
+        return participationScore;
     }
 
-    public int getGrade() {
-        return grade;
+    public void setParticipationScore(int participationScore) {
+        this.participationScore = participationScore;
     }
 
-    public void setGrade(int grade) {
-        this.grade = grade;
+    public int getMidtermScore() {
+        return midtermScore;
     }
 
-    public int getParticipation_grade() {
-        return participation_grade;
+    public void setMidtermScore(int midtermScore) {
+        this.midtermScore = midtermScore;
     }
 
-    public void setParticipation_grade(int participation_grade) {
-        this.participation_grade = participation_grade;
+    public int getFinalScore() {
+        return finalScore;
     }
 
-    public int getMidterm_grade() {
-        return midterm_grade;
+    public void setFinalScore(int finalScore) {
+        this.finalScore = finalScore;
     }
 
-    public void setMidterm_grade(int midterm_grade) {
-        this.midterm_grade = midterm_grade;
-    }
-
-    public int getFinal_grade() {
-        return final_grade;
-    }
-
-    public void setFinal_grade(int final_grade) {
-        this.final_grade = final_grade;
-    }
-
-    public int getSemester() {
+    public String getSemester() {
         return semester;
     }
 
-    public void setSemester(int semester) {
+    public void setSemester(String semester) {
         this.semester = semester;
     }
 
-    public int getYear() {
-        return year;
-    }
+    public int getCredit() { return credit; }
 
-    public void setYear(int year) {
-        this.year = year;
-    }
+    public void setCredit(int credit) { this.credit = credit; }
 
+    public String getStatus() { return status; }
+
+    public void setStatus(String status) { this.status = status; }
+
+    public String getTeacherId() { return teacherId; }
+
+    public void setTeacherId(String teacherId) { this.teacherId = teacherId; }
 }

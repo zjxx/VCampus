@@ -418,7 +418,7 @@ public class LibraryController {
                 data.addProperty("reason", "The book already exists.");
                 return gson.toJson(data);
             }
-            String filepath="C:\\Users\\Administrator\\Desktop\\server\\img\\"+ request.get("ISBN").getAsString() + ".jpg";
+            String filepath="C:\\Users\\Administrator\\Desktop\\server\\img\\"+ request.get("ISBN").getAsString() + ".png";
             fileOutputStream = new FileOutputStream(filepath);//指定保持路径
             byte[] bytes = java.util.Base64.getDecoder().decode(additionalParam);
             fileOutputStream.write(bytes);
@@ -428,12 +428,12 @@ public class LibraryController {
             book.setBookName(request.get("bookName").getAsString());
             book.setAuthor(request.get("author").getAsString());
             book.setPublisher(request.get("publisher").getAsString());
-            book.setPublishedYear(request.get("publishedYear").getAsInt());
+            book.setPublishedYear(request.get("publishDate").getAsInt());
             book.setLanguage(request.get("language").getAsString());
             book.setDescription(request.get("description").getAsString());
             book.setKind(request.get("kind").getAsString());
             book.setQuantity(request.get("quantity").getAsInt());
-            book.setValid_Quantity(request.get("quantity").getAsInt());
+            book.setValid_Quantity(request.get("Valid_Quantity").getAsInt());
 
             db.save(book);
             data.addProperty("status", "success");
@@ -455,10 +455,10 @@ public class LibraryController {
         //判断用户身份,如果是管理员,则显示用户借阅记录
         if (request.getRole().equals("admin")) {
             //判断用户存不存在
-            List<User> readers = db.getWhere(User.class, "Reader_id", request.getSearchId());
+            List<User> readers = db.getWhere(User.class, "userId", request.getSearchId());
             if (!readers.isEmpty()) {
                 //在借阅记录中查找该用户的所有借阅记录
-                List<Reader2Book> borrowedBooks = db.getWhere(Reader2Book.class, "Reader_id", request.getSearchId());
+                List<Reader2Book> borrowedBooks = db.getWhere(Reader2Book.class, "Reader_ID", request.getSearchId());
                 if (!borrowedBooks.isEmpty()) {
                     //遍历借阅记录，将借阅信息添加到json对象中
                     for (int i = 0; i < borrowedBooks.size(); i++) {
@@ -533,7 +533,7 @@ public class LibraryController {
 
         // 添加新的图书信息
         try {
-            String filepath = "C:\\Users\\Administrator\\Desktop\\server\\img\\" + request.get("ISBN").getAsString() + ".jpg";
+            String filepath = "C:\\Users\\Administrator\\Desktop\\server\\img\\" + request.get("ISBN").getAsString() + ".png";
             fileOutputStream = new FileOutputStream(filepath);
             byte[] bytes = java.util.Base64.getDecoder().decode(additionalParam);
             fileOutputStream.write(bytes);
@@ -544,12 +544,12 @@ public class LibraryController {
             newBook.setBookName(request.get("bookName").getAsString());
             newBook.setAuthor(request.get("author").getAsString());
             newBook.setPublisher(request.get("publisher").getAsString());
-            newBook.setPublishedYear(request.get("publishedYear").getAsInt());
+            newBook.setPublishedYear(request.get("publishDate").getAsInt());
             newBook.setLanguage(request.get("language").getAsString());
             newBook.setDescription(request.get("description").getAsString());
             newBook.setKind(request.get("kind").getAsString());
             newBook.setQuantity(request.get("quantity").getAsInt());
-            newBook.setValid_Quantity(request.get("quantity").getAsInt());
+            newBook.setValid_Quantity(request.get("Valid_Quantity").getAsInt());
 
             db.save(newBook);
             data.addProperty("status", "success");

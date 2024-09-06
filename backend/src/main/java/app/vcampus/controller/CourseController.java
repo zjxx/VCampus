@@ -3,7 +3,6 @@ package app.vcampus.controller;
 import app.vcampus.domain.Course;
 import app.vcampus.domain.Enrollment;
 import app.vcampus.domain.Student;
-import app.vcampus.domain.Score;
 import app.vcampus.interfaces.CourseSelectRequest;
 import app.vcampus.interfaces.EnrollmentShowRequest;
 import app.vcampus.interfaces.CourseUnselectRequest;
