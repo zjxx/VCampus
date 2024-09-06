@@ -402,6 +402,7 @@ public class CourseController {
                 courseData.addProperty("time", course.getTime());
                 courseData.addProperty("location", course.getLocation());
                 courseData.addProperty("semester", course.getSemester());
+                courseData.addProperty("teacherName", course.getteacherName());
             }
             data.add("course" + i, courseData);
         }
