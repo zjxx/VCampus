@@ -1,4 +1,3 @@
-// src/main/kotlin/view/ViewTeacherCourseSubscene.kt
 package view
 
 import androidx.compose.runtime.*
@@ -10,15 +9,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import module.Class
 import module.CourseModule
+import view.component.ConfirmCard
 import view.component.classCard
 
 @Composable
-fun ViewTeacherCourseSubscene(classes: List<Class>) {
+fun ConfirmGrade(classes: List<Class>) {
 
 
     Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp)) {
         classes.forEach { classItem: Class ->
-            classCard(
+            ConfirmCard(
                 courseName = classItem.courseName,
                 courseId = classItem.courseId,
                 timeAndLocationCards = classItem.timeAndLocationCards,
