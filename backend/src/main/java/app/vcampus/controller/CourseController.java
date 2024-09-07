@@ -481,7 +481,7 @@ public class CourseController {
                     String isScored = "false";
                     for (Score score : scores) {
                         if (score.getCourseId().equals(course.getcourseId())) {
-                            studentData.addProperty("score", score.getScore());
+                            studentData.addProperty("score", String.valueOf(score.getScore()));
                             isScored = "true";
                             break;
                         }
