@@ -460,6 +460,7 @@ public class CourseController {
             Course course = courses.get(i);
             JsonObject courseData = new JsonObject();
             courseData.addProperty("courseName", course.getcourseName());
+            courseData.addProperty("courseId", course.getcourseId());
             courseData.addProperty("time", course.getTime());
             courseData.addProperty("location", course.getLocation());
             // 查询选修该课程的所有学生
