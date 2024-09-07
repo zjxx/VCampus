@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.sp
 import data.Book
 import module.LibraryModule
 import utils.NettyClientProvider
+import java.awt.FileDialog
+import java.awt.Frame
 import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
@@ -64,14 +66,22 @@ fun BookModifySubscene(onNavigateBack: () -> Unit, book: Book, type: String) {
         Button(
             onClick = {
                 filePath = null // Clear the displayed image
-                val fileChooser = JFileChooser().apply {
-                    fileFilter = FileNameExtensionFilter("Image Files", "png")
-                    isAcceptAllFileFilterUsed = false
+                //FileDialog限制只能png
+
+                val fileDialog = FileDialog(Frame(), "Select Image", FileDialog.LOAD)
+                fileDialog.isVisible = true
+                val selectedFile = fileDialog.file
+                if (selectedFile != null) {
+                    filePath = "${fileDialog.directory}$selectedFile"
                 }
-                val result = fileChooser.showOpenDialog(null)
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    filePath = fileChooser.selectedFile.absolutePath
-                }
+//                val fileChooser = JFileChooser().apply {
+//                    fileFilter = FileNameExtensionFilter("Image Files", "png")
+//                    isAcceptAllFileFilterUsed = false
+//                }
+//                val result = fileChooser.showOpenDialog(null)
+//                if (result == JFileChooser.APPROVE_OPTION) {
+//                    filePath = fileChooser.selectedFile.absolutePath
+//                }
             },
             modifier = Modifier.size(168.dp, 64.dp).padding(bottom = 16.dp),
             colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF228042))
