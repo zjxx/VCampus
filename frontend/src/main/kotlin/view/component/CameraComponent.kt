@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.bytedeco.javacv.CanvasFrame
@@ -20,6 +21,8 @@ fun CameraComponent() {
     val scope = rememberCoroutineScope()
     var expanded by remember { mutableStateOf(false) }
     var selectedCameraIndex by remember { mutableStateOf(-1) }
+    var recordingTime by remember { mutableStateOf(0) }
+    var selectedPath by remember { mutableStateOf("") }
 
     val cameras = remember {
         mutableStateListOf<FrameGrabber>().apply {
@@ -60,21 +63,56 @@ fun CameraComponent() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            if (selectedCamera != null) {
-                Button(onClick = {
+            TextField(
+                value = selectedPath,
+                onValueChange = { selectedPath = it },
+                label = { Text("Selected Path") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(onClick = {
+                val fileChooser = java.awt.FileDialog(null as java.awt.Frame?, "Select Path", java.awt.FileDialog.LOAD)
+                fileChooser.isVisible = true
+                val directory = fileChooser.directory
+                if (directory != null) {
+                    selectedPath = directory
+                }
+            }) {
+                Text("Choose Path")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
                     isRecording = !isRecording
                     if (isRecording) {
+                        recordingTime = 0
+                        val outputPath = "$selectedPath/video_${System.currentTimeMillis()}.mp4"
                         scope.launch(Dispatchers.IO) {
-                            startRecording(selectedCamera!!)
+                            startRecording(selectedCamera!!, outputPath)
                         }
                     } else {
                         scope.launch(Dispatchers.IO) {
                             stopRecording(selectedCamera!!)
                         }
                     }
-                }) {
-                    Text(if (isRecording) "Stop Recording" else "Start Recording")
+                },
+                enabled = selectedCamera != null && selectedPath.isNotEmpty()
+            ) {
+                Text(if (isRecording) "Stop Recording" else "Start Recording")
+            }
+
+            if (isRecording) {
+                LaunchedEffect(Unit) {
+                    while (isRecording) {
+                        delay(1000)
+                        recordingTime++
+                    }
                 }
+                Text("Recording Time: ${recordingTime}s")
             }
         }
 
@@ -91,7 +129,7 @@ fun CameraComponent() {
 private var recorder: FFmpegFrameRecorder? = null
 private var canvasFrame: CanvasFrame? = null
 
-private suspend fun startRecording(grabber: FrameGrabber) {
+private suspend fun startRecording(grabber: FrameGrabber, outputPath: String) {
     withContext(Dispatchers.IO) {
         closeCameraFeed(grabber)
         try {
@@ -101,7 +139,7 @@ private suspend fun startRecording(grabber: FrameGrabber) {
             return@withContext
         }
 
-        recorder = FFmpegFrameRecorder("output.mp4", grabber.imageWidth, grabber.imageHeight).apply {
+        recorder = FFmpegFrameRecorder(outputPath, grabber.imageWidth, grabber.imageHeight).apply {
             start()
         }
 
@@ -117,7 +155,6 @@ private suspend fun startRecording(grabber: FrameGrabber) {
         }
     }
 }
-
 
 private suspend fun stopRecording(grabber: FrameGrabber) {
     withContext(Dispatchers.IO) {
