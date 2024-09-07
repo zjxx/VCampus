@@ -42,7 +42,7 @@ public class ShoppingCartController {
     }
 
 
-    // 从购物车移除商品，传入 userId(用户一卡通号), itemId（商品名称）, uuid（每个购物车的uuid）
+    // 从购物车移除商品，传入 userId(用户一卡通号), itemId（商品uuid）, uuid（每个购物车的uuid）
     public String removeItemFromCart(String jsonData) {
         try {
             JsonObject request = gson.fromJson(jsonData, JsonObject.class);
@@ -99,7 +99,7 @@ public class ShoppingCartController {
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");
             response.addProperty("length", cartItems.size());
-            response.add("items", itemsObject);
+            response.addProperty("items", gson.toJson(itemsObject));
             return gson.toJson(response);
         } catch (Exception e) {
             JsonObject response = new JsonObject();

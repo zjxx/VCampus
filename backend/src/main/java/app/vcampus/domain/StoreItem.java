@@ -1,9 +1,6 @@
 package app.vcampus.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
@@ -31,6 +28,9 @@ public class StoreItem {
 
     @Column(length = 100)
     private String description;
+
+    @PreUpdate
+    public void onPreUpdate() {}
 
     public UUID getUuid() {
         return uuid;

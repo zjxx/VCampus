@@ -2,6 +2,7 @@ package app.vcampus.controller;
 
 import app.vcampus.domain.Course;
 import app.vcampus.domain.Enrollment;
+import app.vcampus.domain.Score;
 import app.vcampus.domain.Student;
 import app.vcampus.interfaces.CourseSelectRequest;
 import app.vcampus.interfaces.EnrollmentShowRequest;
@@ -19,6 +20,7 @@ import app.vcampus.utils.DataBaseManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.io.FileOutputStream;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +29,7 @@ import java.text.SimpleDateFormat;
 public class CourseController {
     private final Gson gson = new Gson();
 
+    private FileOutputStream fileOutputStream;
     //向学生显示选课列表
     public String showEnrollList(String jsonData) {
         EnrollmentShowRequest request = gson.fromJson(jsonData, EnrollmentShowRequest.class);
@@ -149,6 +152,10 @@ public class CourseController {
         enrollment.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         //在Course表中对应课程的Valid_capacity-1
         course.setvalidCapacity(course.getvalidCapacity()-1);
+        //evict掉records，否则会报错
+        for (int i=0;i<records.size();i++) {
+            db.evict(records.get(i));
+        }
         db.save(enrollment);
         db.update(course);
         data.addProperty("status", "success");
@@ -383,6 +390,7 @@ public class CourseController {
             data.addProperty("reason", "no course found");
             return gson.toJson(data);
         }
+        data.addProperty("number",String.valueOf(enrollments.size()));
         for(int i = 0; i < enrollments.size(); i++) {
             Enrollment enrollment=enrollments.get(i);
             JsonObject courseData=new JsonObject();
@@ -397,9 +405,140 @@ public class CourseController {
                 courseData.addProperty("time", course.getTime());
                 courseData.addProperty("location", course.getLocation());
                 courseData.addProperty("semester", course.getSemester());
+                courseData.addProperty("teacherName", course.getteacherName());
             }
             data.add("course" + i, courseData);
         }
+        data.addProperty("status", "success");
+        return gson.toJson(data);
+    }
+
+    public String modifyCourse(String jsonData){
+        CourseAddRequest request = gson.fromJson(jsonData, CourseAddRequest.class);
+        JsonObject data = new JsonObject();
+        DataBase db = DataBaseManager.getInstance();
+        List<Course> courses = db.getWhere(Course.class,"courseId",request.getCourseId());
+        if(courses.isEmpty()) {
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "course not found");
+        }
+        else {
+            Course course = courses.get(0);
+            course.setcourseName(request.getCourseName());
+            course.setteacherId(request.getTeacherId());
+            course.setteacherName(request.getTeacherName());
+            course.setCredit(Integer.valueOf(request.getCredit()));
+            course.setTime(request.getTime());
+            course.setLocation(request.getLocation());
+            course.setCapacity(Integer.valueOf(request.getCapacity()));
+            course.setMajor(request.getMajor());
+            course.setvalidGrade(request.getGrade());
+            course.setProperty(request.getProperty());
+            course.setvalidCapacity(course.getCapacity());
+            course.setSemester(course.getSemester());
+            db.update(course);
+            data.addProperty("status", "success");
+        }
+        return gson.toJson(data);
+    }
+
+    // 根据老师ID查询该老师的所有课程，并返回对应课程的学生信息
+    public String getCoursesByTeacherId(String jsonData) {
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+        String teacherId = request.get("teacherId").getAsString();
+        JsonObject data = new JsonObject();
+        DataBase db = DataBaseManager.getInstance();
+
+        // 查询该老师的所有课程
+        List<Course> courses = db.getWhere(Course.class, "teacherId", teacherId);
+        if (courses.isEmpty()) {
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "no courses found for this teacher");
+            return gson.toJson(data);
+        }
+
+        // 构建返回数据
+        data.addProperty("number", String.valueOf(courses.size()));
+        for (int i = 0; i < courses.size(); i++) {
+            Course course = courses.get(i);
+            JsonObject courseData = new JsonObject();
+            courseData.addProperty("courseName", course.getcourseName());
+            courseData.addProperty("courseId", course.getcourseId());
+            courseData.addProperty("time", course.getTime());
+            courseData.addProperty("location", course.getLocation());
+            // 查询选修该课程的所有学生
+            List<Enrollment> enrollments = db.getWhere(Enrollment.class, "courseid", course.getcourseId());
+            JsonObject studentsData = new JsonObject();
+            studentsData.addProperty("number", String.valueOf(enrollments.size()));
+            for (int j = 0; j < enrollments.size(); j++) {
+                Enrollment enrollment = enrollments.get(j);
+                JsonObject studentData = new JsonObject();
+                List<Student> students = db.getWhere(Student.class, "studentId", enrollment.getstudentid());
+                if (!students.isEmpty()) {
+                    Student student = students.get(0);
+                    studentData.addProperty("studentId", student.getStudentId());
+                    studentData.addProperty("name", student.getUsername());
+                    studentData.addProperty("gender", String.valueOf(student.getGender()));
+                    List<Score> scores = db.getWhere(Score.class, "studentId", student.getStudentId());
+                    String isScored = "false";
+                    String scoreStr = "";
+                    String participationScoreStr = "";
+                    String midtermScoreStr = "";
+                    String finalScoreStr = "";
+                    for (Score score : scores) {
+                        if (score.getCourseId().equals(course.getcourseId())) {
+                            scoreStr = String.valueOf(score.getScore());
+                            participationScoreStr = String.valueOf(score.getParticipationScore());
+                            midtermScoreStr = String.valueOf(score.getMidtermScore());
+                            finalScoreStr = String.valueOf(score.getFinalScore());
+                            isScored = "true";
+                            break;
+                        }
+                    }
+                    studentData.addProperty("score", scoreStr);
+                    studentData.addProperty("ParticipationScore", participationScoreStr);
+                    studentData.addProperty("MidtermScore", midtermScoreStr);
+                    studentData.addProperty("FinalScore", finalScoreStr);
+
+                    studentData.addProperty("isScored", isScored);
+
+                }
+                studentsData.add("student" + j, studentData);
+            }
+            courseData.add("students", studentsData);
+            List<Score> scoreclass = db.getWhere(Score.class, "courseId", course.getcourseId());
+            String classStatus="";
+            if(scoreclass.isEmpty())
+            {
+                classStatus="未提交";
+            }
+            else
+            {
+                classStatus=scoreclass.get(0).getStatus();
+            }
+            courseData.addProperty("classStatus",classStatus);
+            data.add("course" + i, courseData);
+        }
+        data.addProperty("status", "success");
+        return gson.toJson(data);
+    }
+
+
+
+    public String videoUpload(String jsonData,String additionalParam){
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+
+        String filepath="ts.mp4";
+        try {
+            fileOutputStream = new FileOutputStream(filepath);//指定保持路径
+            byte[] bytes = java.util.Base64.getDecoder().decode(additionalParam);
+            fileOutputStream.write(bytes);
+            fileOutputStream.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        JsonObject data = new JsonObject();
         data.addProperty("status", "success");
         return gson.toJson(data);
     }

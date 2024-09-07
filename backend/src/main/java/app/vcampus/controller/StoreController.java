@@ -24,8 +24,12 @@ public class StoreController {
     private final StoreTransactionController storeTransactionController = new StoreTransactionController();
 
     //创建商品的JSON对象
-    private JsonObject createItemJsonObject(StoreItem item)
+    private String createItemJsonObject(StoreItem item)
     {
+        String description = "";
+        if (item.getDescription() != null) {
+            description = item.getDescription();
+        }
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("uuid", item.getUuid().toString());
         jsonObject.addProperty("name", item.getItemName());
@@ -34,16 +38,17 @@ public class StoreController {
         jsonObject.addProperty("barcode", item.getBarcode());
         jsonObject.addProperty("stock",String.valueOf(item.getStock()) );
         jsonObject.addProperty("salesVolume", String.valueOf(item.getSalesVolume()));
-        jsonObject.addProperty("description", item.getDescription());
-        return jsonObject;
+        jsonObject.addProperty("description", description);
+
+        return gson.toJson(jsonObject);
     }
 
     //创建交易对象
-    private StoreTransaction createStoreTransaction(StoreItem storeItem, PurchaseRequest request)
-    {
+    private StoreTransaction createStoreTransaction(StoreItem storeItem, PurchaseRequest request) {
         StoreTransaction transaction = new StoreTransaction();
         transaction.setUuid(UUID.randomUUID());
         transaction.setStoreItem(storeItem);
+        transaction.setItemUuid(storeItem.getUuid()); // 设置 itemUuid 字段
         transaction.setTime(LocalDateTime.now());
         transaction.setAmount(request.getAmount());
         transaction.setCardNumber(request.getCardNumber());
@@ -51,20 +56,22 @@ public class StoreController {
     }
 
     //创建交易的JSON对象
-    private JsonObject createTransactionJsonObject(StoreTransaction transaction)
-    {
+    private JsonObject createTransactionJsonObject(StoreTransaction transaction) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("uuid", transaction.getUuid().toString());
+        jsonObject.addProperty("itemUuid", transaction.getItemUuid().toString());
         jsonObject.addProperty("itemName", transaction.getStoreItem().getItemName());
         jsonObject.addProperty("itemPrice", String.valueOf(transaction.getStoreItem().getPrice()));
         jsonObject.addProperty("amount", String.valueOf(transaction.getAmount()));
         jsonObject.addProperty("cardNumber", transaction.getCardNumber());
         jsonObject.addProperty("time", transaction.getTransactionTime().toString());
+        jsonObject.addProperty("pictureLink", transaction.getStoreItem().getPictureLink()); // 添加 pictureLink 字段
         return jsonObject;
     }
 
 
-//处理购买请求,传入itemUuid（商品的UUID）,amount(购买数量),cardNumber（一卡通号）,itemName（商品名称）
+
+    //处理购买请求,传入itemUuid（商品的UUID）,amount(购买数量),cardNumber（一卡通号）,itemName（商品名称）
     public String handlePurchase(String jsonData) {
        try {
            // 将 JSON 转换为 PurchaseRequest 对象
@@ -131,13 +138,13 @@ public class StoreController {
 
             JsonObject itemsObject = new JsonObject();
             for (int i = 0; i < items.size(); i++) {
-                itemsObject.add("item" + i, createItemJsonObject(items.get(i)));
+                itemsObject.addProperty("item" + i, createItemJsonObject(items.get(i)));
             }
 
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");
-            response.addProperty("length", items.size());
-            response.add("items", itemsObject);
+            response.addProperty("length", String.valueOf(items.size()));
+            response.addProperty("items", gson.toJson(itemsObject));
             return gson.toJson(response);
         } catch (Exception e) {
             JsonObject response = new JsonObject();
@@ -162,13 +169,13 @@ public class StoreController {
 
             JsonObject itemsObject = new JsonObject();
             for (int i = 0; i < items.size(); i++) {
-                itemsObject.add("item" + i, createItemJsonObject(items.get(i)));
+                itemsObject.addProperty("item" + i, createItemJsonObject(items.get(i)));
             }
 
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");
-            response.addProperty("length", items.size());
-            response.add("items", itemsObject);
+            response.addProperty("length",String.valueOf(items.size()));
+            response.addProperty("items", gson.toJson(itemsObject));
             return gson.toJson(response);
         } catch (Exception e) {
             JsonObject response = new JsonObject();
@@ -182,20 +189,24 @@ public class StoreController {
     public String getAllTransaction(String jsonData) {
         try {
             DataBase db = DataBaseManager.getInstance();
-            List<StoreItem> items = db.getAll(StoreItem.class);
-            Collections.shuffle(items);
+            List<StoreTransaction> transactions = db.getAll(StoreTransaction.class);
 
-            List<StoreItem> randomItems = items.subList(0, Math.min(10, items.size()));
+            if (transactions.isEmpty()) {
+                JsonObject response = new JsonObject();
+                response.addProperty("status", "failed");
+                response.addProperty("reason", "no transactions found");
+                return gson.toJson(response);
+            }
 
-            JsonObject itemsObject = new JsonObject();
-            for (int i = 0; i < randomItems.size(); i++) {
-                itemsObject.add("item" + i, createItemJsonObject(randomItems.get(i)));
+            JsonObject transactionsObject = new JsonObject();
+            for (int i = 0; i < transactions.size(); i++) {
+                transactionsObject.add("transaction" + i, createTransactionJsonObject(transactions.get(i)));
             }
 
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");
-            response.addProperty("length", randomItems.size());
-            response.add("items", itemsObject);
+            response.addProperty("length", String.valueOf(transactions.size()));
+            response.add("transactions", transactionsObject);
             return gson.toJson(response);
         } catch (Exception e) {
             JsonObject response = new JsonObject();
@@ -216,13 +227,13 @@ public class StoreController {
 
             JsonObject itemsObject = new JsonObject();
             for (int i = 0; i < randomItems.size(); i++) {
-                itemsObject.add("item" + i, createItemJsonObject(randomItems.get(i)));
+                itemsObject.addProperty("item" + i, createItemJsonObject(randomItems.get(i)));
             }
 
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");
-            response.addProperty("length", randomItems.size());
-            response.add("items", itemsObject);
+            response.addProperty("length", String.valueOf(randomItems.size()));
+            response.addProperty("items", gson.toJson(itemsObject));
             return gson.toJson(response);
         } catch (Exception e) {
             JsonObject response = new JsonObject();
@@ -258,7 +269,7 @@ public class StoreController {
 
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");
-            response.add("transactions", transactionsObject);
+            response.addProperty("transactions", gson.toJson(transactionsObject));
             return gson.toJson(response);
         }
         catch (Exception e) {

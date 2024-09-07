@@ -115,67 +115,93 @@ public class ScoreController {
 
     //教务查看未审核成绩
     public String listAllScore(String jsonData) {
-        AllScoreListRequest request = gson.fromJson(jsonData, AllScoreListRequest.class);
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         JsonObject data = new JsonObject();
         DataBase db = DataBaseManager.getInstance();
-        List<Score> scores = db.getWhere(Score.class, "status", "未审核");
-        if (scores.isEmpty()) {
+
+        // 查询该老师的所有课程
+        List<Course> courses = db.getLike(Course.class, "teacherId", "");
+        if (courses.isEmpty()) {
             data.addProperty("status", "failed");
-            data.addProperty("reason", "no score found");
-            return gson.toJson(data);
-        } else {
-            //按课程号对成绩排序
-            scores.sort((score1, score2) -> score1.getCourseId().compareTo(score2.getCourseId()));
-            String tempCourseId = "";
-            int cnt = 0;
-            JsonObject courseScoreData = new JsonObject();
-            for (int i = 0; i < scores.size(); i++) {
-                Score score = scores.get(i);
-                if (!score.getCourseId().equals(tempCourseId)) {
-                    data.add("course" + i, courseScoreData);
-                    courseScoreData = new JsonObject();
-                    JsonObject studentScore = new JsonObject();
-                    studentScore.addProperty("courseId", score.getCourseId());
-                    studentScore.addProperty("studentId", score.getStudentId());
-                    //学生姓名
-                    List<Student> students = db.getWhere(Student.class, "studentId", score.getStudentId());
-                    Student student = students.get(0);
-                    studentScore.addProperty("studentName", student.getUsername());
-                    studentScore.addProperty("participationScore", score.getParticipationScore());
-                    studentScore.addProperty("midtermScore", score.getMidtermScore());
-                    studentScore.addProperty("finalScore", score.getFinalScore());
-                    studentScore.addProperty("score", score.getScore());
-                    studentScore.addProperty("credit", score.getCredit());
-                    studentScore.addProperty("semester", score.getSemester());
-                    studentScore.addProperty("status", score.getStatus());
-                    tempCourseId = score.getCourseId();
-                    cnt = 1;
-                    courseScoreData.add("student" + cnt, studentScore);
-                } else {
-                    JsonObject studentScore = new JsonObject();
-                    studentScore.addProperty("courseId", score.getCourseId());
-                    studentScore.addProperty("studentId", score.getStudentId());
-                    //学生姓名
-                    List<Student> students = db.getWhere(Student.class, "studentId", score.getStudentId());
-                    Student student = students.get(0);
-                    studentScore.addProperty("studentName", student.getUsername());
-                    studentScore.addProperty("participationScore", score.getParticipationScore());
-                    studentScore.addProperty("midtermScore", score.getMidtermScore());
-                    studentScore.addProperty("finalScore", score.getFinalScore());
-                    studentScore.addProperty("score", score.getScore());
-                    studentScore.addProperty("credit", score.getCredit());
-                    studentScore.addProperty("semester", score.getSemester());
-                    studentScore.addProperty("status", score.getStatus());
-                    tempCourseId = score.getCourseId();
-                    cnt += 1;
-                    courseScoreData.add("student" + cnt, studentScore);
-                }
-            }
-            //添加最后一个课程的成绩
-            data.add("course" + scores.size(), courseScoreData);
-            data.addProperty("status", "success");
+            data.addProperty("reason", "no courses found for this teacher");
             return gson.toJson(data);
         }
+
+        // 构建返回数据
+        int number=0;
+        for (Course course : courses) {
+            List<Score> scores = db.getWhere(Score.class, "courseId", course.getcourseId());
+            if(scores.isEmpty()){
+                continue;
+            }
+            if(!scores.get(0).getStatus().equals("未审核")){
+                continue;
+            }
+            number++;
+        }
+
+        data.addProperty("number", String.valueOf(number));
+        number=0;
+        for (int i = 0; i < courses.size(); i++) {
+            Course course = courses.get(i);
+            JsonObject courseData = new JsonObject();
+            courseData.addProperty("courseName", course.getcourseName());
+            courseData.addProperty("courseId", course.getcourseId());
+            courseData.addProperty("time", course.getTime());
+            courseData.addProperty("location", course.getLocation());
+            List<Score> scoresofclass = db.getWhere(Score.class, "courseId", course.getcourseId());
+            if(scoresofclass.isEmpty()){
+                continue;
+            }
+            if(!scoresofclass.get(0).getStatus().equals("未审核")){
+                continue;
+            }
+            number++;
+            // 查询选修该课程的所有学生
+            List<Enrollment> enrollments = db.getWhere(Enrollment.class, "courseid", course.getcourseId());
+            JsonObject studentsData = new JsonObject();
+            studentsData.addProperty("number", String.valueOf(enrollments.size()));
+            for (int j = 0; j < enrollments.size(); j++) {
+                Enrollment enrollment = enrollments.get(j);
+                JsonObject studentData = new JsonObject();
+                List<Student> students = db.getWhere(Student.class, "studentId", enrollment.getstudentid());
+                if (!students.isEmpty()) {
+                    Student student = students.get(0);
+                    studentData.addProperty("studentId", student.getStudentId());
+                    studentData.addProperty("name", student.getUsername());
+                    studentData.addProperty("gender", String.valueOf(student.getGender()));
+                    List<Score> scores = db.getWhere(Score.class, "studentId", student.getStudentId());
+                    String isScored = "false";
+                    String scoreStr = "";
+                    String participationScoreStr = "";
+                    String midtermScoreStr = "";
+                    String finalScoreStr = "";
+                    for (Score score : scores) {
+                        if (score.getCourseId().equals(course.getcourseId())) {
+                            scoreStr = String.valueOf(score.getScore());
+                            participationScoreStr = String.valueOf(score.getParticipationScore());
+                            midtermScoreStr = String.valueOf(score.getMidtermScore());
+                            finalScoreStr = String.valueOf(score.getFinalScore());
+                            isScored = "true";
+                            break;
+                        }
+                    }
+                    studentData.addProperty("score", scoreStr);
+                    studentData.addProperty("ParticipationScore", participationScoreStr);
+                    studentData.addProperty("MidtermScore", midtermScoreStr);
+                    studentData.addProperty("FinalScore", finalScoreStr);
+
+                    studentData.addProperty("isScored", isScored);
+
+                }
+                studentsData.add("student" + j, studentData);
+            }
+            courseData.add("students", studentsData);
+            data.add("course" + (number-1), courseData);
+        }
+        data.addProperty("status", "success");
+
+        return gson.toJson(data);
     }
 
     //教务审核成绩

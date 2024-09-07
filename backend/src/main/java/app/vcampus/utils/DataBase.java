@@ -113,6 +113,10 @@ public class DataBase {
         sessionFactory.close();
     }
 
+    public void clear() {
+        session.clear();
+    }
+
     public void disableForeignKeyChecks() {
         session.beginTransaction();
         session.createNativeQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
@@ -123,6 +127,10 @@ public class DataBase {
         session.beginTransaction();
         session.createNativeQuery("SET FOREIGN_KEY_CHECKS = 1").executeUpdate();
         session.getTransaction().commit();
+    }
+
+    public void evict(Object entity) {
+        session.evict(entity);
     }
 
 
