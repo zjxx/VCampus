@@ -376,6 +376,7 @@ public class ScoreController {
                 score.setFinalScore(Integer.parseInt(request.getFinalScore()));
                 score.setScore(Integer.parseInt(request.getScore()));
                 score.setStatus("未审核");
+                //保存修改
                 db.save(score);
                 data.addProperty("status", "success");
             }

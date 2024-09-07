@@ -97,13 +97,13 @@ public class DataBase {
 
     public void update(Object entity) {
         session.beginTransaction();
-        session.update(entity);
+        session.update(entity);//
         session.getTransaction().commit();
     }
 
     public void save(Object entity) {
         session.beginTransaction();
-        session.save(entity);
+        session.save(entity);//功能是保存，但是如果有主键的话，会更新，如果没有主键的话，会插入
         session.getTransaction().commit();
     }
 
