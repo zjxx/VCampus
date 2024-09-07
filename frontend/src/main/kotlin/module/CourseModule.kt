@@ -84,7 +84,16 @@ data class CourseScheduleItem(
     val location: String,
     val teacherName:String
 )
-data class Student(val studentId: String, val name: String, val gender: String, val score: String,val isScored:String)
+data class Student(
+    val studentId: String,
+    val name: String,
+    val gender: String,
+    var score: String,
+    val isScored:String,
+    var ParticipationScore: String,
+    var MidtermScore: String,
+    var FinalScore: String
+)
 data class Class(
     val courseName: String,
     val courseId: String,
@@ -96,10 +105,16 @@ data class Class(
 data class StudentScore(
     val studentId: String,
     val courseId: String,
-    val regularGrade: String,
-    val midtermGrade: String,
-    val finalGrade: String,
-    val overallGrade: String
+    var regularGrade: String,
+    var midtermGrade: String,
+    var finalGrade: String,
+    var overallGrade: String,
+)
+
+data class ScoreStatus(
+    val courseId: String,
+    val classStatus: String
+
 )
 class CourseModule {
     private val nettyClient = NettyClientProvider.nettyClient
@@ -310,7 +325,10 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
                     val gender = studentJson["gender"] as String
                     val score = studentJson["score"] as String
                     val isScored = studentJson["isScored"] as String
-                    students.add(Student(studentId, name, gender, score,isScored))
+                    val ParticipationScore = studentJson["ParticipationScore"] as String
+                    val MidtermScore = studentJson["MidtermScore"] as String
+                    val FinalScore = studentJson["FinalScore"] as String
+                    students.add(Student(studentId, name, gender, score,isScored,ParticipationScore,MidtermScore,FinalScore))
                 }
                 val classItem = Class(courseName, courseId,time, location, students, timeAndLocationCards)
                 classesMap.computeIfAbsent(courseName) { mutableListOf() }.add(classItem)
@@ -485,6 +503,119 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         if (responseJson["status"] == "success") {
             DialogManager.showDialog("打分成功")
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
+        }
+    }
+    fun viewScore() {
+    val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId)
+    nettyClient.sendRequest(request, "score/view") { response: String ->
+        handleResponseViewScore(response)
+    }
+    }
+    private fun handleResponseViewScore(response: String) {
+    println("Received response: $response")
+    }
+    fun ModifyScore(studentScore: StudentScore) {
+    val request = mapOf(
+        "role" to UserSession.role,
+        "teacherId" to UserSession.userId,
+        "studentId" to studentScore.studentId,
+        "courseId" to studentScore.courseId,
+        "ParticipationScore" to studentScore.regularGrade,
+        "MidtermScore" to studentScore.midtermGrade,
+        "FinalScore" to studentScore.finalGrade,
+        "Score" to studentScore.overallGrade
+    )
+    nettyClient.sendRequest(request, "score/modify") { response: String ->
+        handleResponseModifyScore(response)
+       }
+    }
+    private fun handleResponseModifyScore(response: String) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        if (responseJson["status"] == "success") {
+            DialogManager.showDialog("修改成功")
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
+        }
+    }
+    fun ConfirmGrade(onClassesReceived: (List<module.Class>) -> Unit) {
+        val request = mapOf("role" to UserSession.role, "teacherId" to UserSession.userId)
+        nettyClient.sendRequest(request, "score/list") { response: String ->
+            handleResponseConfirm(response, onClassesReceived)
+        }
+    }
+    private fun handleResponseConfirm(response: String, onClassesReceived: (List<module.Class>) -> Unit) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        if (responseJson["status"] == "success") {
+            val num = responseJson["number"] as String
+            if (num != "0") {
+                val classesMap = mutableMapOf<String, MutableList<module.Class>>()
+                for (i in 0 until num.toInt()) {
+                    val courseJson = responseJson["course$i"] as Map<String, Any>
+                    val courseName = courseJson["courseName"] as String
+                    val courseId = courseJson["courseId"] as String
+                    val time = courseJson["time"] as String
+                    val location = courseJson["location"] as String
+                    val timeAndLocationCards = time.split(";").zip(location.split(";")).map {
+                        val (timeSlot, loc) = it
+                        val parts = timeSlot.split("-")
+                        TimeAndLocationCardData(
+                            dayOfWeek = parts[0],
+                            startPeriod = parts[1],
+                            endPeriod = parts[2],
+                            location = loc
+                        )
+                    }
+                    val studentsJson = courseJson["students"] as Map<String, Any>
+                    val numberOfStudents = (studentsJson["number"] as String).toInt()
+                    val students = mutableListOf<Student>()
+                    for (j in 0 until numberOfStudents) {
+                        val studentJson = studentsJson["student$j"] as Map<String, Any>
+                        val studentId = studentJson["studentId"] as String
+                        val name = studentJson["name"] as String
+                        val gender = studentJson["gender"] as String
+                        val score = studentJson["score"] as String
+                        val isScored = studentJson["isScored"] as String
+                        val ParticipationScore = studentJson["ParticipationScore"] as String
+                        val MidtermScore = studentJson["MidtermScore"] as String
+                        val FinalScore = studentJson["FinalScore"] as String
+                        students.add(Student(studentId, name, gender, score,isScored,ParticipationScore,MidtermScore,FinalScore))
+                    }
+                    val classItem = Class(courseName, courseId,time, location, students, timeAndLocationCards)
+                    classesMap.computeIfAbsent(courseName) { mutableListOf() }.add(classItem)
+                }
+                val classes = classesMap.map {
+                    val firstClass = it.value.first()
+                    Class(firstClass.courseName,firstClass.courseId, firstClass.time, firstClass.location, firstClass.students, firstClass.timeAndLocationCards)
+                }
+                onClassesReceived(classes)
+            }
+        } else if (responseJson["status"] == "failed") {
+            DialogManager.showDialog(responseJson["reason"] as String)
+        }
+    }
+
+    fun CheckGrade(scoreStatus: ScoreStatus)
+    {
+        val request = mapOf(
+            "role" to UserSession.role,
+            "userId" to UserSession.userId,
+            "courseId" to scoreStatus.courseId,
+            "classStatus" to scoreStatus.classStatus
+        )
+        nettyClient.sendRequest(request, "score/check") { response: String ->
+            handleResponseCheck(response)
+        }
+    }
+    private fun handleResponseCheck(response:String)
+    {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        if (responseJson["status"] == "success") {
+            DialogManager.showDialog("提交成功")
         } else {
             DialogManager.showDialog(responseJson["reason"] as String)
         }
