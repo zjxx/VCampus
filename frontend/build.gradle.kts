@@ -36,6 +36,9 @@ dependencies {
     implementation("org.bytedeco:javacv-platform:1.5.6")
     implementation("org.bytedeco:opencv-platform:4.5.3-1.5.6")
     implementation("io.github.kevinnzou:compose-webview-multiplatform:1.9.20")
+    implementation("uk.co.caprica:vlcj:4.7.0")
+    implementation("uk.co.caprica:vlcj-natives:4.7.0")
+
 
 
 
