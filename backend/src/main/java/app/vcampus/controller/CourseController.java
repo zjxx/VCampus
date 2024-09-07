@@ -439,4 +439,58 @@ public class CourseController {
         return gson.toJson(data);
     }
 
+    // 根据老师ID查询该老师的所有课程，并返回对应课程的学生信息
+    public String getCoursesByTeacherId(String jsonData) {
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+        String teacherId = request.get("teacherId").getAsString();
+        JsonObject data = new JsonObject();
+        DataBase db = DataBaseManager.getInstance();
+
+        // 查询该老师的所有课程
+        List<Course> courses = db.getWhere(Course.class, "teacherId", teacherId);
+        if (courses.isEmpty()) {
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "no courses found for this teacher");
+            return gson.toJson(data);
+        }
+
+        // 构建返回数据
+        data.addProperty("number", String.valueOf(courses.size()));
+        for (int i = 0; i < courses.size(); i++) {
+            Course course = courses.get(i);
+            JsonObject courseData = new JsonObject();
+            courseData.addProperty("courseId", course.getcourseId());
+            courseData.addProperty("courseName", course.getcourseName());
+            courseData.addProperty("teacherName", course.getteacherName());
+            courseData.addProperty("credit", String.valueOf(course.getCredit()));
+            courseData.addProperty("time", course.getTime());
+            courseData.addProperty("location", course.getLocation());
+            courseData.addProperty("capacity", String.valueOf(course.getCapacity()));
+            courseData.addProperty("property", course.getProperty());
+            courseData.addProperty("validCapacity", String.valueOf(course.getvalidCapacity()));
+            courseData.addProperty("major", course.getMajor());
+            courseData.addProperty("validGrade", course.getvalidGrade());
+
+            // 查询选修该课程的所有学生
+            List<Enrollment> enrollments = db.getWhere(Enrollment.class, "courseid", course.getcourseId());
+            JsonObject studentsData = new JsonObject();
+            studentsData.addProperty("number", enrollments.size());
+            for (int j = 0; j < enrollments.size(); j++) {
+                Enrollment enrollment = enrollments.get(j);
+                JsonObject studentData = new JsonObject();
+                List<Student> students = db.getWhere(Student.class, "studentId", enrollment.getstudentid());
+                if (!students.isEmpty()) {
+                    Student student = students.get(0);
+                    studentData.addProperty("studentId", student.getStudentId());
+                    studentData.addProperty("name", student.getUsername());
+                    studentData.addProperty("gender", student.getGender());
+                }
+                studentsData.add("student" + j, studentData);
+            }
+            courseData.add("students", studentsData);
+            data.add("course" + i, courseData);
+        }
+        data.addProperty("status", "success");
+        return gson.toJson(data);
+    }
 }
