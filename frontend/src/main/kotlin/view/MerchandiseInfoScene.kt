@@ -1,85 +1,104 @@
 // MerchandiseInfoScene.kt
 package view
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.Merchandise
 import module.ShopModule
+import view.component.GlobalState
 import java.io.File
 
-@Composable
-fun MerchandiseInfoScene(item: Merchandise) {
-    var quantity by remember { mutableStateOf(1) }
-    val shopModule = ShopModule(
-        onSearchSuccess = { },
-        onBuySuccess = { result -> },
-        onEnterSuccess = { },
-        onAddItemToCartSuccess = { result -> },
-        onRemoveItemFromCartSuccesss = { result -> },
-        onShopAddToListSuccess = { result -> },
-        onGetAllTransactionsSuccess = { result -> },
-        onGetTransactionsByCardNumberSuccess = { result -> },
-    )
+fun getItem(): Merchandise {
+    return GlobalState.selectedItem ?: Merchandise()
+}
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        // Top section
-        Row(modifier = Modifier.weight(0.6f).padding(16.dp)) {
-            AsyncImage(
-                load = { loadImageBitmap(File(item.imageRes)) },
-                painterFor = { remember { BitmapPainter(it) } },
-                contentDescription = "Merchandise Image",
-                modifier = Modifier.size(128.dp)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Column {
-                Text(text = item.itemname, fontSize = 20.sp)
+@Composable
+fun MerchandiseInfoScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
+
+    val item = getItem()
+
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        // Back button
+        Text(
+            text = "<",
+            fontSize = 32.sp,
+            modifier = Modifier
+                .clickable { onNavigateBack() }
+                .padding(8.dp)
+        )
+
+        // Upper half: Image and details
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(16.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            // Merchandise image
+            Box(
+                modifier = Modifier
+                    .weight(0.4f)
+                    .padding(16.dp),
+                contentAlignment = Alignment.TopStart
+            ) {
+                AsyncImage(
+                    load = { loadImageBitmap(File(item.imageRes)) },
+                    painterFor = { remember { BitmapPainter(it) } },
+                    contentDescription = "Merchandise Image",
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
+            // Merchandise details
+            Column(
+                modifier = Modifier
+                    .weight(0.6f)
+                    .padding(16.dp)
+            ) {
+                Text(text = "${item.itemname}", fontSize = 24.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                Text(text = "\n> 价格: ${item.price}\n> uuid: ${item.itemUuid}", fontSize = 16.sp, color = Color.DarkGray)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = item.description, fontSize = 16.sp)
+
+                Divider(color = Color(0xFF228042), thickness = 1.dp)
+
+                Text(text = "\n描述:  ${item.description}", fontSize = 18.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "商品ID: ${item.itemUuid}", fontSize = 16.sp)
-                Text(text = "库存: ${item.stock}", fontSize = 16.sp)
+                Text(text = "\n销量:  ${item.salesVolume}\n", fontSize = 18.sp)
+
+                Divider(color = Color(0xFF228042), thickness = 1.dp)
+
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "销量: ${item.salesVolume}", fontSize = 16.sp)
-                Text(text = "价格: ${item.price}", fontSize = 16.sp)
+                val stockColor = if (item.stock == "0") Color.Red else Color.Black
+                Text(text = "库存: ${item.stock}", fontSize = 16.sp, color = stockColor)
             }
         }
 
-        // Bottom section
-        Column(modifier = Modifier.weight(0.4f).padding(16.dp)) {
-            // Quantity selector
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "数量: ", fontSize = 16.sp)
-                OutlinedTextField(
-                    value = quantity.toString(),
-                    onValueChange = { quantity = it.toIntOrNull() ?: 1 },
-                    modifier = Modifier.width(80.dp),
-                    singleLine = true
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Add to Cart button
+        // Buy button
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            contentAlignment = Alignment.BottomEnd
+        ) {
             Button(
-                onClick = { shopModule.addItemToCart(item.itemUuid, "cartUuid") },
-                modifier = Modifier.fillMaxWidth().padding(8.dp)
+                onClick = { shopModule.shopBuy(item.itemUuid, "1", item.itemname) },
+                modifier = Modifier.size(168.dp, 48.dp),
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF228042))
             ) {
-                Text(text = "加入购物车", fontSize = 16.sp)
-            }
-
-            // Buy Now button
-            Button(
-                onClick = { shopModule.shopBuy(item.itemUuid, quantity.toString(), item.itemname) },
-                modifier = Modifier.fillMaxWidth().padding(8.dp)
-            ) {
-                Text(text = "立即购买", fontSize = 16.sp)
+                Text(text = "购买", color = Color.White, fontSize = 18.sp)
             }
         }
     }

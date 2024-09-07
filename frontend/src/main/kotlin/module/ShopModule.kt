@@ -18,7 +18,8 @@ class ShopModule (
     private val onShopAddToListSuccess: (String) -> Unit,
     private val onGetAllTransactionsSuccess: (List<StoreTransaction>) -> Unit,
     private val onGetTransactionsByCardNumberSuccess: (List<StoreTransaction>) -> Unit,
-){
+    private val onViewSuccess: (List<Merchandise>) -> Unit
+    ){
     private val nettyClient = NettyClientProvider.nettyClient
     var tempItems = mutableListOf<Merchandise>()
     var tempTransactions = mutableListOf<StoreTransaction>()
@@ -37,21 +38,29 @@ class ShopModule (
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         println("Response status: ${responseJson["status"]}")
+
         if (responseJson["status"] == "success") {
             val num = responseJson["length"] as String
+            val itemResponse = responseJson["items"] as String
+            val itemResponseJson = Gson().fromJson(itemResponse, MutableMap::class.java) as MutableMap<String, Any>
+
             if (!num.equals("0")) {
                 for (i in 0 until num.toInt()) {
-                    val itemIndex = responseJson["item" + i.toString()] as String
+
+                    val itemIndex = itemResponseJson["item" + i.toString()] as String
+                    println("item0: ${itemResponseJson["item0"]}")
                     val itemJson = Gson().fromJson(itemIndex, MutableMap::class.java) as MutableMap<String, Any>
                     println("itemJson: ${itemJson}")
+                    println("itemResponseJson: ${itemResponseJson}")
 
                     var imageURL = itemJson["uuid"] as String
                     var tempImage = "http://47.99.141.236/img/" + imageURL + ".jpg"
                     var localPath = "src/main/temp/" + imageURL + ".jpg"
                     downloadImageIfNotExists(tempImage, localPath)
+
                     val item = Merchandise(
                         itemUuid = itemJson["uuid"] as String,
-                        itemname = itemJson["itemname"] as String,
+                        itemname = itemJson["name"] as String,
                         price = itemJson["price"] as String,
                         imageRes = localPath,
                         barcode = itemJson["barcode"] as String,
@@ -218,7 +227,7 @@ class ShopModule (
                     println("image: ${item.imageRes}")
                     tempItems.add(item)
                 }
-                onSearchSuccess(tempItems)
+                onViewSuccess(tempItems)
             }
         } else {
             DialogManager.showDialog(responseJson["reason"] as String)
