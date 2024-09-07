@@ -18,6 +18,8 @@ fun CameraComponent() {
     var selectedCamera by remember { mutableStateOf<FrameGrabber?>(null) }
     var isRecording by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    var expanded by remember { mutableStateOf(false) }
+    var selectedCameraIndex by remember { mutableStateOf(-1) }
 
     val cameras = remember {
         mutableStateListOf<FrameGrabber>().apply {
@@ -35,11 +37,25 @@ fun CameraComponent() {
         Column(modifier = Modifier.weight(1f)) {
             Text("Select Camera", style = MaterialTheme.typography.h6)
             Spacer(modifier = Modifier.height(8.dp))
-            cameras.forEachIndexed { index, camera ->
-                Button(onClick = { selectedCamera = camera }) {
-                    Text("Camera ${camera.toString()}")
+
+            Box {
+                Button(onClick = { expanded = true }) {
+                    Text(if (selectedCameraIndex == -1) "Select Camera" else "Camera $selectedCameraIndex")
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    cameras.forEachIndexed { index, camera ->
+                        DropdownMenuItem(onClick = {
+                            selectedCamera = camera
+                            selectedCameraIndex = index
+                            expanded = false
+                        }) {
+                            Text("Camera $index")
+                        }
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
