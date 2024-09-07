@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.bytedeco.ffmpeg.global.avcodec
 import org.bytedeco.javacv.CanvasFrame
 import org.bytedeco.javacv.FFmpegFrameRecorder
 import org.bytedeco.javacv.FrameGrabber
@@ -138,10 +139,13 @@ private suspend fun startRecording(grabber: FrameGrabber, outputPath: String) {
             println("Error starting grabber: ${e.message}")
             return@withContext
         }
-
-        recorder = FFmpegFrameRecorder(outputPath, grabber.imageWidth, grabber.imageHeight).apply {
-            start()
-        }
+recorder = FFmpegFrameRecorder(outputPath, grabber.imageWidth, grabber.imageHeight).apply {
+    videoCodec = avcodec.AV_CODEC_ID_H264 // 设置视频编码器
+    format = "mp4" // 设置输出格式
+    frameRate = 30.0 // 设置帧率
+    videoBitrate = 2000000 // 设置比特率
+    start()
+}
 
         while (true) {
             val frame = try {
@@ -201,3 +205,4 @@ private suspend fun closeCameraFeed(grabber: FrameGrabber) {
         grabber.stop()
     }
 }
+
