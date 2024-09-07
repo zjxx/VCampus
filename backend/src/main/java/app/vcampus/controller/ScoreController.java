@@ -129,7 +129,17 @@ public class ScoreController {
 
         // 构建返回数据
         int number=0;
-
+        for (Course course : courses) {
+            List<Score> scores = db.getWhere(Score.class, "courseId", course.getcourseId());
+            if(scores.isEmpty()){
+                continue;
+            }
+            if(!scores.get(0).getStatus().equals("未审核")){
+                continue;
+            }
+            number++;
+        }
+        data.addProperty("number", String.valueOf(number));
         for (int i = 0; i < courses.size(); i++) {
             Course course = courses.get(i);
             JsonObject courseData = new JsonObject();
@@ -184,11 +194,10 @@ public class ScoreController {
                 studentsData.add("student" + j, studentData);
             }
             courseData.add("students", studentsData);
-            number++;
             data.add("course" + i, courseData);
         }
         data.addProperty("status", "success");
-        data.addProperty("number", String.valueOf(number));
+
         return gson.toJson(data);
     }
 
