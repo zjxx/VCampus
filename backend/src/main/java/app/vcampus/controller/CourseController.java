@@ -465,7 +465,7 @@ public class CourseController {
             // 查询选修该课程的所有学生
             List<Enrollment> enrollments = db.getWhere(Enrollment.class, "courseid", course.getcourseId());
             JsonObject studentsData = new JsonObject();
-            studentsData.addProperty("number", enrollments.size());
+            studentsData.addProperty("number", String.valueOf(enrollments.size()));
             for (int j = 0; j < enrollments.size(); j++) {
                 Enrollment enrollment = enrollments.get(j);
                 JsonObject studentData = new JsonObject();
@@ -474,7 +474,7 @@ public class CourseController {
                     Student student = students.get(0);
                     studentData.addProperty("studentId", student.getStudentId());
                     studentData.addProperty("name", student.getUsername());
-                    studentData.addProperty("gender", student.getGender());
+                    studentData.addProperty("gender", String.valueOf(student.getGender()));
                 }
                 studentsData.add("student" + j, studentData);
             }
