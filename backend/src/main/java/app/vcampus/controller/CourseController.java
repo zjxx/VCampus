@@ -2,6 +2,7 @@ package app.vcampus.controller;
 
 import app.vcampus.domain.Course;
 import app.vcampus.domain.Enrollment;
+import app.vcampus.domain.Score;
 import app.vcampus.domain.Student;
 import app.vcampus.interfaces.CourseSelectRequest;
 import app.vcampus.interfaces.EnrollmentShowRequest;
@@ -476,6 +477,17 @@ public class CourseController {
                     studentData.addProperty("studentId", student.getStudentId());
                     studentData.addProperty("name", student.getUsername());
                     studentData.addProperty("gender", String.valueOf(student.getGender()));
+                    List<Score> scores = db.getWhere(Score.class, "studentId", student.getStudentId());
+                    String isScored = "false";
+                    for (Score score : scores) {
+                        if (score.getCourseId().equals(course.getcourseId())) {
+                            studentData.addProperty("score", score.getScore());
+                            isScored = "true";
+                            break;
+                        }
+                    }
+                    studentData.addProperty("isScored", isScored);
+
                 }
                 studentsData.add("student" + j, studentData);
             }
