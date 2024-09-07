@@ -197,7 +197,7 @@ public class ScoreController {
                 studentsData.add("student" + j, studentData);
             }
             courseData.add("students", studentsData);
-            data.add("course" + number, courseData);
+            data.add("course" + (number-1), courseData);
         }
         data.addProperty("status", "success");
 
