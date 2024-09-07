@@ -11,14 +11,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.Alignment
+import module.Student
+import module.TimeAndLocationCardData
+import module.StudentScore
+import module.CourseModule
+import kotlin.math.roundToInt
 
-data class Student(val name: String, val cardNumber: String)
 
 @Composable
 fun classCard(
     courseName: String,
-    classTime: String,
-    classroom: String,
+    courseId: String,
+    timeAndLocationCards: List<TimeAndLocationCardData>,
     studentCount: Int,
     students: List<Student>,
 ) {
@@ -34,13 +38,16 @@ fun classCard(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = courseName, fontWeight = FontWeight.Bold)
-            Text(text = "时间: $classTime")
-            Text(text = "教室: $classroom")
+            Text(text = "课程ID: $courseId", fontWeight = FontWeight.Bold)
+            timeAndLocationCards.forEach { card ->
+                Text(text = "时间: 周${card.dayOfWeek} ${card.startPeriod}节-${card.endPeriod}节")
+                Text(text = "教室: ${card.location}")
+            }
             Text(text = "人数: $studentCount")
             AnimatedVisibility(visible = expanded) {
                 Column {
                     students.forEach { student ->
-                        studentCard(student)
+                        studentCard(student, courseId)
                     }
                 }
             }
@@ -49,12 +56,19 @@ fun classCard(
 }
 
 @Composable
-fun studentCard(student: Student) {
+fun studentCard(student: Student, courseId: String) {
     var expanded by remember { mutableStateOf(false) }
-    var regularGrade by remember { mutableStateOf("85") }
-    var midtermGrade by remember { mutableStateOf("88") }
-    var finalGrade by remember { mutableStateOf("90") }
-    var overallGrade by remember { mutableStateOf("89") }
+    var regularGrade by remember { mutableStateOf("") }
+    var midtermGrade by remember { mutableStateOf("") }
+    var finalGrade by remember { mutableStateOf("") }
+    val courseModule = CourseModule()
+
+    val overallGrade = remember(regularGrade, midtermGrade, finalGrade) {
+        val regular = regularGrade.toFloatOrNull() ?: 0f
+        val midterm = midtermGrade.toFloatOrNull() ?: 0f
+        val final = finalGrade.toFloatOrNull() ?: 0f
+        (regular * 0.3f + midterm * 0.2f + final * 0.5f).roundToInt().toString()
+    }
 
     Card(
         modifier = Modifier
@@ -68,7 +82,10 @@ fun studentCard(student: Student) {
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(text = student.name, fontWeight = FontWeight.Bold)
-                    Text(text = "一卡通号: ${student.cardNumber}")
+                    Text(text = "一卡通号: ${student.studentId}")
+                }
+                if (student.isScored == "true") {
+                    Text(text = "成绩: ${student.score}", fontWeight = FontWeight.Bold, modifier = Modifier.padding(end = 8.dp))
                 }
                 Button(onClick = { expanded = !expanded }) {
                     Text(text = if (expanded) "收起" else "打分")
@@ -96,22 +113,28 @@ fun studentCard(student: Student) {
                             value = finalGrade,
                             onValueChange = { finalGrade = it },
                             label = { Text("期末成绩") },
-                            modifier = Modifier.weight(1f).padding(end = 8.dp)
-                        )
-                        OutlinedTextField(
-                            value = overallGrade,
-                            onValueChange = { overallGrade = it },
-                            label = { Text("综合成绩") },
                             modifier = Modifier.weight(1f)
                         )
                     }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(text = "综合成绩: $overallGrade", fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End
                     ) {
                         Button(
-                            onClick = { /* Handle submit action */ },
+                            onClick = {
+                                val studentScore = StudentScore(
+                                    studentId = student.studentId,
+                                    courseId = courseId,
+                                    regularGrade = regularGrade,
+                                    midtermGrade = midtermGrade,
+                                    finalGrade = finalGrade,
+                                    overallGrade = overallGrade
+                                )
+                                courseModule.giveScore(studentScore)
+                            },
                             modifier = Modifier.width(150.dp)
                         ) {
                             Text(text = "提交")
