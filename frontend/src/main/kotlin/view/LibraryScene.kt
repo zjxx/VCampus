@@ -1,5 +1,7 @@
 package view
 
+
+import WebViewComponent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -424,25 +426,26 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
 
                             "显示图片" -> {
                                 Column(modifier = Modifier.padding(top = 8.dp)) {
-                                    FilePicker()
-                                    CameraComponent()
-                                    Button(onClick = {
-                                        val imageISBN = "9787550263932"
-                                        val filePath = "src/main/temp/" + imageISBN + ".pdf"
-                                        //到时这个filePath改成src/main/temp/书的ISBN.pdf
-                                        if (!File(filePath).exists()) {
-                                            downloadPdfIfNotExists(
-                                                "http://47.99.141.236/img/" + imageISBN + ".pdf",
-                                                filePath
-                                            )
-                                        }
-                                        selectedPdfPath = filePath
-                                    }) {
-                                        Text("展示pdf")
-                                    }
-                                    selectedPdfPath?.let { path ->
-                                        LocalPdfViewer(filePath = path, onDismiss = { selectedPdfPath = null })
-                                    }
+                                    WebViewComponent(url = "https://www.engineeringvillage.com/search/quick.url")
+//                                    FilePicker()
+//                                    CameraComponent()
+//                                    Button(onClick = {
+//                                        val imageISBN = "9787550263932"
+//                                        val filePath = "src/main/temp/" + imageISBN + ".pdf"
+//                                        //到时这个filePath改成src/main/temp/书的ISBN.pdf
+//                                        if (!File(filePath).exists()) {
+//                                            downloadPdfIfNotExists(
+//                                                "http://47.99.141.236/img/" + imageISBN + ".pdf",
+//                                                filePath
+//                                            )
+//                                        }
+//                                        selectedPdfPath = filePath
+//                                    }) {
+//                                        Text("展示pdf")
+//                                    }
+//                                    selectedPdfPath?.let { path ->
+//                                        LocalPdfViewer(filePath = path, onDismiss = { selectedPdfPath = null })
+//                                    }
                                 }
                             }
                         }

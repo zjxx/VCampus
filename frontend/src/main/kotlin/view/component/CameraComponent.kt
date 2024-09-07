@@ -5,6 +5,8 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.multiplatform.webview.web.WebView
+import com.multiplatform.webview.web.rememberWebViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -14,6 +16,7 @@ import org.bytedeco.javacv.CanvasFrame
 import org.bytedeco.javacv.FFmpegFrameRecorder
 import org.bytedeco.javacv.FrameGrabber
 import org.bytedeco.javacv.OpenCVFrameGrabber
+
 
 @Composable
 fun CameraComponent() {
@@ -38,6 +41,7 @@ fun CameraComponent() {
     }
 
     Row(modifier = Modifier.padding(16.dp)) {
+
         Column(modifier = Modifier.weight(1f)) {
             Text("Select Camera", style = MaterialTheme.typography.h6)
             Spacer(modifier = Modifier.height(8.dp))

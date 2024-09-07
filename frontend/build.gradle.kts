@@ -4,6 +4,7 @@ plugins {
     kotlin("jvm")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("org.openjfx.javafxplugin") version "0.1.0"
 }
 
 group = "com.example"
@@ -14,7 +15,7 @@ repositories {
     maven(
          "https://packages.jetbrains.team/maven/p/skija/maven"
     )
-
+    maven("https://jogamp.org/deployment/maven")
     google()
 }
 
@@ -34,6 +35,7 @@ dependencies {
     implementation("org.jetbrains.skija:skija-shared:0.93.6")
     implementation("org.bytedeco:javacv-platform:1.5.6")
     implementation("org.bytedeco:opencv-platform:4.5.3-1.5.6")
+    implementation("io.github.kevinnzou:compose-webview-multiplatform:1.9.20")
 
 
 
@@ -48,5 +50,16 @@ compose.desktop {
             packageName = "demo1"
             packageVersion = "1.0.0"
         }
+        jvmArgs("--add-opens", "java.desktop/sun.awt=ALL-UNNAMED")
+        jvmArgs("--add-opens", "java.desktop/java.awt.peer=ALL-UNNAMED") // recommended but not necessary
+
+        if (System.getProperty("os.name").contains("Mac")) {
+            jvmArgs("--add-opens", "java.desktop/sun.lwawt=ALL-UNNAMED")
+            jvmArgs("--add-opens", "java.desktop/sun.lwawt.macosx=ALL-UNNAMED")
+        }
+        buildTypes.release.proguard {
+            configurationFiles.from("compose-desktop.pro")
+        }
     }
 }
+

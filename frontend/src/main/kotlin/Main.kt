@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
@@ -15,16 +16,55 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import data.NaviItem
 import data.UserSession
+import dev.datlag.kcef.KCEF
+import kotlinx.coroutines.Dispatchers
 import view.*
 import view.component.GlobalDialog
 import view.component.TopNavBar
+import java.io.File
+import kotlin.math.max
+import kotlinx.coroutines.withContext
 
 @Composable
 @Preview
 fun App() {
     var currentScene by remember { mutableStateOf("LoginScene") }
     var naviItems by remember { mutableStateOf(emptyList<NaviItem>()) }
+    var restartRequired by remember { mutableStateOf(false) }
+    var downloading by remember { mutableStateOf(0F) }
+    var initialized by remember { mutableStateOf(false) }
 
+    LaunchedEffect(Unit) {
+        withContext(Dispatchers.IO) {
+            KCEF.init(builder = {
+                installDir(File("kcef-bundle"))
+                progress {
+                    onDownloading {
+                        downloading = max(it, 0F)
+                    }
+                    onInitialized {
+                        initialized = true
+                    }
+                }
+                settings {
+                    cachePath = File("cache").absolutePath
+                }
+            }, onError = {
+                if (it != null) {
+                    it.printStackTrace()
+                }
+            }, onRestartRequired = {
+                restartRequired = true
+            })
+        }
+    }
+
+
+    DisposableEffect(Unit) {
+        onDispose {
+            KCEF.disposeBlocking()
+        }
+    }
     MaterialTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             if (currentScene != "LoginScene") {
