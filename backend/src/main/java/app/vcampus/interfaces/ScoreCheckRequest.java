@@ -4,12 +4,12 @@ public class ScoreCheckRequest {
 	private String userId;
     private String courseId;
 
-    private String status;
+    private String classStatus;
 
-    public ScoreCheckRequest(String userId, String courseId,String status) {
+    public ScoreCheckRequest(String userId, String courseId,String classStatus) {
         this.userId = userId;
         this.courseId = courseId;
-        this.status = status;
+        this.classStatus = classStatus;
     }
     public String getUserId() {
         return userId;}
@@ -25,8 +25,8 @@ public class ScoreCheckRequest {
         this.courseId = courseId;}
 
     public String getStatus() {
-        return status;}
+        return classStatus;}
 
     public void setStatus(String status) {
-        this.status = status;}
+        this.classStatus = status;}
 }
