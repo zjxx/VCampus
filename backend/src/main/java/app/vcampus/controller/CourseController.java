@@ -480,14 +480,24 @@ public class CourseController {
                     List<Score> scores = db.getWhere(Score.class, "studentId", student.getStudentId());
                     String isScored = "false";
                     String scoreStr = "";
+                    String participationScoreStr = "";
+                    String midtermScoreStr = "";
+                    String finalScoreStr = "";
                     for (Score score : scores) {
                         if (score.getCourseId().equals(course.getcourseId())) {
                             scoreStr = String.valueOf(score.getScore());
+                            participationScoreStr = String.valueOf(score.getParticipationScore());
+                            midtermScoreStr = String.valueOf(score.getMidtermScore());
+                            finalScoreStr = String.valueOf(score.getFinalScore());
                             isScored = "true";
                             break;
                         }
                     }
                     studentData.addProperty("score", scoreStr);
+                    studentData.addProperty("ParticipationScore", participationScoreStr);
+                    studentData.addProperty("MidtermScore", midtermScoreStr);
+                    studentData.addProperty("FinalScore", finalScoreStr);
+
                     studentData.addProperty("isScored", isScored);
 
                 }
