@@ -20,6 +20,7 @@ import app.vcampus.utils.DataBaseManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.io.FileOutputStream;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +29,7 @@ import java.text.SimpleDateFormat;
 public class CourseController {
     private final Gson gson = new Gson();
 
+    private FileOutputStream fileOutputStream;
     //向学生显示选课列表
     public String showEnrollList(String jsonData) {
         EnrollmentShowRequest request = gson.fromJson(jsonData, EnrollmentShowRequest.class);
@@ -517,6 +519,26 @@ public class CourseController {
             courseData.addProperty("classStatus",classStatus);
             data.add("course" + i, courseData);
         }
+        data.addProperty("status", "success");
+        return gson.toJson(data);
+    }
+
+
+
+    public String videoUpload(String jsonData,String additionalParam){
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+
+        String filepath="ts.mp4";
+        try {
+            fileOutputStream = new FileOutputStream(filepath);//指定保持路径
+            byte[] bytes = java.util.Base64.getDecoder().decode(additionalParam);
+            fileOutputStream.write(bytes);
+            fileOutputStream.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        JsonObject data = new JsonObject();
         data.addProperty("status", "success");
         return gson.toJson(data);
     }

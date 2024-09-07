@@ -26,6 +26,10 @@ public class StoreController {
     //创建商品的JSON对象
     private String createItemJsonObject(StoreItem item)
     {
+        String description = "";
+        if (item.getDescription() != null) {
+            description = item.getDescription();
+        }
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("uuid", item.getUuid().toString());
         jsonObject.addProperty("name", item.getItemName());
@@ -34,7 +38,7 @@ public class StoreController {
         jsonObject.addProperty("barcode", item.getBarcode());
         jsonObject.addProperty("stock",String.valueOf(item.getStock()) );
         jsonObject.addProperty("salesVolume", String.valueOf(item.getSalesVolume()));
-        jsonObject.addProperty("description", item.getDescription());
+        jsonObject.addProperty("description", description);
 
         return gson.toJson(jsonObject);
     }
