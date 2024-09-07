@@ -136,14 +136,8 @@ private var canvasFrame: CanvasFrame? = null
 
 private suspend fun startRecording(grabber: FrameGrabber, outputPath: String) {
     withContext(Dispatchers.IO) {
-        closeCameraFeed(grabber)
-        try {
-            grabber.start()
-        } catch (e: Exception) {
-            println("Error starting grabber: ${e.message}")
-            return@withContext
-        }
-recorder = FFmpegFrameRecorder(outputPath, grabber.imageWidth, grabber.imageHeight).apply {
+
+    recorder = FFmpegFrameRecorder(outputPath, grabber.imageWidth, grabber.imageHeight).apply {
     videoCodec = avcodec.AV_CODEC_ID_H264 // 设置视频编码器
     format = "mp4" // 设置输出格式
     frameRate = 30.0 // 设置帧率
@@ -151,16 +145,6 @@ recorder = FFmpegFrameRecorder(outputPath, grabber.imageWidth, grabber.imageHeig
     start()
 }
 
-        while (true) {
-            val frame = try {
-                grabber.grab()
-            } catch (e: Exception) {
-                println("Error grabbing frame: ${e.message}")
-                break
-            }
-            if (frame == null) break
-            recorder?.record(frame)
-        }
     }
 }
 
@@ -198,6 +182,7 @@ private suspend fun displayCameraFeed(grabber: FrameGrabber) {
             }
             if (frame == null) break
             canvasFrame?.showImage(frame)
+            recorder?.record(frame)
         }
     }
 }
@@ -206,7 +191,7 @@ private suspend fun closeCameraFeed(grabber: FrameGrabber) {
     withContext(Dispatchers.IO) {
         canvasFrame?.dispose()
         canvasFrame = null
-        grabber.stop()
+
     }
 }
 

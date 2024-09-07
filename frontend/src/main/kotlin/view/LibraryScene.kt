@@ -2,6 +2,7 @@ package view
 
 
 import WebViewComponent
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -27,10 +28,7 @@ import data.Book
 import data.UserSession
 import module.LibraryModule
 import utils.downloadPdfIfNotExists
-import view.component.CameraComponent
-import view.component.FilePicker
-import view.component.GlobalState
-import view.component.LocalPdfViewer
+import view.component.*
 import java.io.File
 
 
@@ -426,9 +424,9 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
 
                             "显示图片" -> {
                                 Column(modifier = Modifier.padding(top = 8.dp)) {
-                                    WebViewComponent(url = "https://www.engineeringvillage.com/search/quick.url")
+                                    //WebViewComponent(url = "https://www.engineeringvillage.com/search/quick.url")
 //                                    FilePicker()
-//                                    CameraComponent()
+                                    VideoPlayerScreen()
 //                                    Button(onClick = {
 //                                        val imageISBN = "9787550263932"
 //                                        val filePath = "src/main/temp/" + imageISBN + ".pdf"
