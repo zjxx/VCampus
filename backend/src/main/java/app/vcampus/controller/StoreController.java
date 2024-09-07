@@ -131,14 +131,16 @@ public class StoreController {
                 response.addProperty("reason", "no such item");
                 return gson.toJson(response);
             }
-            JsonObject response = new JsonObject();
+
+            JsonObject itemsObject = new JsonObject();
             for (int i = 0; i < items.size(); i++) {
-                response.addProperty("item" + i, createItemJsonObject(items.get(i)));
+                itemsObject.addProperty("item" + i, createItemJsonObject(items.get(i)));
             }
 
-
+            JsonObject response = new JsonObject();
             response.addProperty("status", "success");
             response.addProperty("length", String.valueOf(items.size()));
+            response.addProperty("items", gson.toJson(itemsObject));
             return gson.toJson(response);
         } catch (Exception e) {
             JsonObject response = new JsonObject();
@@ -160,14 +162,16 @@ public class StoreController {
                 response.addProperty("reason", "no item in store");
                 return gson.toJson(response);
             }
-            JsonObject response = new JsonObject();
+
+            JsonObject itemsObject = new JsonObject();
             for (int i = 0; i < items.size(); i++) {
-                response.addProperty("item" + i, createItemJsonObject(items.get(i)));
+                itemsObject.addProperty("item" + i, createItemJsonObject(items.get(i)));
             }
 
-
+            JsonObject response = new JsonObject();
             response.addProperty("status", "success");
             response.addProperty("length",String.valueOf(items.size()));
+            response.addProperty("items", gson.toJson(itemsObject));
             return gson.toJson(response);
         } catch (Exception e) {
             JsonObject response = new JsonObject();
@@ -217,13 +221,15 @@ public class StoreController {
 
             List<StoreItem> randomItems = items.subList(0, Math.min(10, items.size()));
 
-            JsonObject response = new JsonObject();
+            JsonObject itemsObject = new JsonObject();
             for (int i = 0; i < randomItems.size(); i++) {
-                response.addProperty("item" + i, createItemJsonObject(randomItems.get(i)));
+                itemsObject.addProperty("item" + i, createItemJsonObject(randomItems.get(i)));
             }
 
+            JsonObject response = new JsonObject();
             response.addProperty("status", "success");
             response.addProperty("length", String.valueOf(randomItems.size()));
+            response.addProperty("items", gson.toJson(itemsObject));
             return gson.toJson(response);
         } catch (Exception e) {
             JsonObject response = new JsonObject();
