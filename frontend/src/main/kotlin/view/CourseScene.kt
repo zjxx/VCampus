@@ -49,10 +49,14 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                         Icon(imageVector = Icons.Default.Person, contentDescription = "选课")
                         Spacer(modifier = Modifier.height(16.dp))
                         Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看我的课表")
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Icon(imageVector = Icons.Default.PhotoCamera, contentDescription = "查看我的成绩")
                     } else if (role == "admin") {
                         Icon(imageVector = Icons.Default.Add, contentDescription = "增加课程")
                         Spacer(modifier = Modifier.height(16.dp))
                         Icon(imageVector = Icons.Default.Edit, contentDescription = "修改课程")
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Icon(imageVector = Icons.Default.Calculate, contentDescription = "成绩管理")
                     } else if (role == "teacher") {
                         Icon(imageVector = Icons.Default.ViewList, contentDescription = "查看课程")
                         Spacer(modifier = Modifier.height(16.dp))
@@ -103,6 +107,14 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("查看我的课表", color = Color.Black)
                     }
+                    TextButton(onClick = {
+                        selectedMenuItem = "查看我的成绩"
+                        courseModule.viewScore()
+                    }) {
+                        Icon(imageVector = Icons.Default.PhotoCamera, contentDescription = "查看我的课表")
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("查看我的成绩", color = Color.Black)
+                    }
                 }
                 if (role == "admin") {
                     TextButton(onClick = {
@@ -119,6 +131,16 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                         Icon(imageVector = Icons.Default.Edit, contentDescription = "修改课程")
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("修改课程", color = Color.Black)
+                    }
+                    TextButton(onClick = {
+                        selectedMenuItem = "成绩管理"
+                        courseModule.ConfirmGrade { receivedClasses ->
+                            classes = receivedClasses
+                        }
+                    }) {
+                        Icon(imageVector = Icons.Default.Calculate, contentDescription = "成绩管理")
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("成绩管理", color = Color.Black)
                     }
                 }
                 if (role == "teacher") {
@@ -150,8 +172,10 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                 when (menuItem) {
                     "选课" -> SelectCourseSubscene(courseModule)
                     "查看我的课表" -> ViewMyCoursesSubscene(courseModule)
+                    "查看我的成绩" -> MygradeSubscene(courseModule)
                     "增加课程" -> AddCourseSubscene()
                     "修改课程" -> ModifyCourseSubscene(courseModule)
+                    "成绩管理" -> ConfirmGrade(classes)
                     "查看课程" -> ViewTeacherCourseSubscene(classes)
                     "打分" -> RecordSubscene()
                     else -> Text("请选择一个菜单项")
