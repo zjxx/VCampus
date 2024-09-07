@@ -113,14 +113,14 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         nettyClient.sendRequest(request, "course/listAll") { response: String ->
             handleResponseList(response)
         }
-    }
+    }//显示所有课程
 
     fun searchCourses(query: String) {
         val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId, "query" to query)
         nettyClient.sendRequest(request, "course/search") { response: String ->
             handleResponseList(response)
         }
-    }
+    }//搜索
 
 
     private fun handleResponseList(response: String) {
@@ -175,7 +175,7 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
             val success = handleResponseSelect(response, course)
             onSuccess(success)
         }
-    }
+    }//选课
 
     private fun handleResponseSelect(response: String, course: Course): Boolean {
         println("Received response: $response")
@@ -196,7 +196,7 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
             val success = handleResponseUnselect(response, course)
             onSuccess(success)
         }
-    }
+    }//退选
 
     private fun handleResponseUnselect(response: String, course: Course): Boolean {
         println("Received response: $response")
@@ -245,7 +245,7 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
             val success = handleResponseAdd(response)
             onSuccess(success)
         }
-    }
+    }//教务增加课程
 
     private fun handleResponseAdd(response: String): Boolean {
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -372,7 +372,7 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         nettyClient.sendRequest(request, "course/table") { response: String ->
             handleResponseTable(response)
         }
-    }
+    }//课表
     private fun handleResponseTable(response: String) {
     println("Received response: $response")
     val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -401,5 +401,17 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         DialogManager.showDialog(responseJson["reason"] as String)
     }
 }
+    fun viewScore()
+    {
+        val request = mapOf("role" to UserSession.role, "teacherId" to UserSession.userId)
+        nettyClient.sendRequest(request, "score/search") { response: String ->
+            handleResponseClass(response)
+        }
+    }
+    private fun handleResponseClass(response: String)
+    {
+        println("Received response: $response")
+
+    }
 }
 
