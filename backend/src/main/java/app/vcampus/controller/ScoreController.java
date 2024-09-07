@@ -139,7 +139,9 @@ public class ScoreController {
             }
             number++;
         }
+
         data.addProperty("number", String.valueOf(number));
+        number=0;
         for (int i = 0; i < courses.size(); i++) {
             Course course = courses.get(i);
             JsonObject courseData = new JsonObject();
@@ -154,6 +156,7 @@ public class ScoreController {
             if(!scoresofclass.get(0).getStatus().equals("未审核")){
                 continue;
             }
+            number++;
             // 查询选修该课程的所有学生
             List<Enrollment> enrollments = db.getWhere(Enrollment.class, "courseid", course.getcourseId());
             JsonObject studentsData = new JsonObject();
@@ -194,7 +197,7 @@ public class ScoreController {
                 studentsData.add("student" + j, studentData);
             }
             courseData.add("students", studentsData);
-            data.add("course" + i, courseData);
+            data.add("course" + number, courseData);
         }
         data.addProperty("status", "success");
 
