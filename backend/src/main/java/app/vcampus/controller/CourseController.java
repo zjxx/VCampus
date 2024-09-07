@@ -504,6 +504,17 @@ public class CourseController {
                 studentsData.add("student" + j, studentData);
             }
             courseData.add("students", studentsData);
+            List<Score> scoreclass = db.getWhere(Score.class, "courseId", course.getcourseId());
+            String classStatus="";
+            if(scoreclass.isEmpty())
+            {
+                classStatus="未提交";
+            }
+            else
+            {
+                classStatus=scoreclass.get(0).getStatus();
+            }
+            courseData.addProperty("classStatus",classStatus);
             data.add("course" + i, courseData);
         }
         data.addProperty("status", "success");
