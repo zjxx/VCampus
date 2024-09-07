@@ -35,7 +35,7 @@ fun App() {
             Box(modifier = Modifier.fillMaxSize()) {
                 when (currentScene) {
                     "LoginScene" -> LoginScene(onLoginSuccess = {
-                        currentScene = "StudentScene"
+                        currentScene = "/home"
                         naviItems = when (UserSession.role) {
                             "student" -> listOf(
                                 NaviItem("主页", "/home", Icons.Default.Home, listOf("user")),
