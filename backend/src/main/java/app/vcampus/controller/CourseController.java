@@ -459,18 +459,9 @@ public class CourseController {
         for (int i = 0; i < courses.size(); i++) {
             Course course = courses.get(i);
             JsonObject courseData = new JsonObject();
-            courseData.addProperty("courseId", course.getcourseId());
             courseData.addProperty("courseName", course.getcourseName());
-            courseData.addProperty("teacherName", course.getteacherName());
-            courseData.addProperty("credit", String.valueOf(course.getCredit()));
             courseData.addProperty("time", course.getTime());
             courseData.addProperty("location", course.getLocation());
-            courseData.addProperty("capacity", String.valueOf(course.getCapacity()));
-            courseData.addProperty("property", course.getProperty());
-            courseData.addProperty("validCapacity", String.valueOf(course.getvalidCapacity()));
-            courseData.addProperty("major", course.getMajor());
-            courseData.addProperty("validGrade", course.getvalidGrade());
-
             // 查询选修该课程的所有学生
             List<Enrollment> enrollments = db.getWhere(Enrollment.class, "courseid", course.getcourseId());
             JsonObject studentsData = new JsonObject();
