@@ -1,3 +1,5 @@
+
+
 package view.component
 
 import androidx.compose.animation.AnimatedVisibility
@@ -6,27 +8,30 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.Alignment
-import module.Student
-import module.TimeAndLocationCardData
-import module.StudentScore
+import module.*
 import module.CourseModule
 import kotlin.math.roundToInt
 
 
 @Composable
-fun classCard(
+fun ConfirmCard(
     courseName: String,
     courseId: String,
     timeAndLocationCards: List<TimeAndLocationCardData>,
     studentCount: Int,
     students: List<Student>,
 ) {
+    val courseModule = CourseModule()
     var expanded by remember { mutableStateOf(false) }
+    var selectedOption by remember { mutableStateOf("审核通过") }
+    var dropdownExpanded by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
@@ -46,26 +51,74 @@ fun classCard(
             AnimatedVisibility(visible = expanded) {
                 Column {
                     students.forEach { student ->
-                        studentCard(student, courseId)
+                        Confirmdetail(student, courseId)
                     }
+
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Box(modifier = Modifier.weight(1f)) {
+                    OutlinedTextField(
+                        value = selectedOption,
+                        onValueChange = { selectedOption = it },
+                        label = { Text("审核状态") },
+                        readOnly = true,
+                        trailingIcon = {
+                            IconButton(onClick = { dropdownExpanded = true }) {
+                                Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    DropdownMenu(
+                        expanded = dropdownExpanded,
+                        onDismissRequest = { dropdownExpanded = false }
+                    ) {
+                        listOf("审核通过", "审核未通过").forEach { option ->
+                            DropdownMenuItem(onClick = {
+                                selectedOption = option
+                                dropdownExpanded = false
+                            }) {
+                                Text(option)
+                            }
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                Button(
+                    onClick = {
+                        val scoreStatus = ScoreStatus(
+                            courseId = courseId,
+                           classStatus = selectedOption
+                        )
+                        courseModule.CheckGrade(scoreStatus)
+                    },
+                    modifier = Modifier
+                        .height(50.dp)
+                        .width(150.dp)
+                ) {
+                    Text("提交")
                 }
             }
         }
     }
 }
-
+    }}
 @Composable
-fun studentCard(student: Student, courseId: String) {
+fun Confirmdetail(student: Student, courseId: String) {
     var expanded by remember { mutableStateOf(false) }
+    var regularGrade by remember { mutableStateOf(student.ParticipationScore) }
+    var midtermGrade by remember { mutableStateOf(student.MidtermScore) }
+    var finalGrade by remember { mutableStateOf(student.FinalScore) }
     val courseModule = CourseModule()
-    var ParticipationScore by remember { mutableStateOf(student.ParticipationScore) }
-    var MidtermScore by remember { mutableStateOf(student.MidtermScore) }
-    var FinalScore by remember { mutableStateOf(student.FinalScore) }
 
-    val overallGrade = remember(ParticipationScore, MidtermScore, FinalScore) {
-        val regular = ParticipationScore.toFloatOrNull() ?: 0f
-        val midterm = MidtermScore.toFloatOrNull() ?: 0f
-        val final = FinalScore.toFloatOrNull() ?: 0f
+    val overallGrade = remember(regularGrade, midtermGrade, finalGrade) {
+        val regular = regularGrade.toFloatOrNull() ?: 0f
+        val midterm = midtermGrade.toFloatOrNull() ?: 0f
+        val final = finalGrade.toFloatOrNull() ?: 0f
         (regular * 0.3f + midterm * 0.2f + final * 0.5f).roundToInt().toString()
     }
 
@@ -87,7 +140,7 @@ fun studentCard(student: Student, courseId: String) {
                     Text(text = "成绩: ${student.score}", fontWeight = FontWeight.Bold, modifier = Modifier.padding(end = 8.dp))
                 }
                 Button(onClick = { expanded = !expanded }) {
-                    Text(text = if (expanded) "收起" else "打分")
+                    Text(text = if (expanded) "收起" else "具体信息")
                 }
             }
             AnimatedVisibility(visible = expanded) {
@@ -97,67 +150,31 @@ fun studentCard(student: Student, courseId: String) {
                 ) {
                     Row {
                         OutlinedTextField(
-                            value = ParticipationScore,
-                            onValueChange = { ParticipationScore = it },
+                            value = regularGrade,
+                            onValueChange = { regularGrade = it },
                             label = { Text("平时分") },
+                            readOnly=true,
                             modifier = Modifier.weight(1f).padding(end = 8.dp)
+
                         )
                         OutlinedTextField(
-                            value = MidtermScore,
-                            onValueChange = { MidtermScore = it },
+                            value = midtermGrade,
+                            onValueChange = { midtermGrade = it },
                             label = { Text("期中成绩") },
+                            readOnly=true,
                             modifier = Modifier.weight(1f).padding(end = 8.dp)
                         )
                         OutlinedTextField(
-                            value = FinalScore,
-                            onValueChange = { FinalScore = it },
+                            value = finalGrade,
+                            onValueChange = { finalGrade = it },
                             label = { Text("期末成绩") },
+                            readOnly=true,
                             modifier = Modifier.weight(1f)
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(text = "综合成绩: $overallGrade", fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(16.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        if (student.isScored == "true") {
-                            Button(
-                                onClick = {
-                                    val studentScore = StudentScore(
-                                        studentId = student.studentId,
-                                        courseId = courseId,
-                                        regularGrade = student.ParticipationScore,
-                                        midtermGrade = student.MidtermScore,
-                                        finalGrade = student.FinalScore,
-                                        overallGrade = overallGrade
-                                    )
-                                    courseModule.ModifyScore(studentScore)
-                                },
-                                modifier = Modifier.width(150.dp)
-                            ) {
-                                Text(text = "修改")
-                            }
-                        } else {
-                            Button(
-                                onClick = {
-                                    val studentScore = StudentScore(
-                                        studentId = student.studentId,
-                                        courseId = courseId,
-                                        regularGrade = student.ParticipationScore,
-                                        midtermGrade = student.MidtermScore,
-                                        finalGrade = student.FinalScore,
-                                        overallGrade = overallGrade
-                                    )
-                                    courseModule.giveScore(studentScore)
-                                },
-                                modifier = Modifier.width(150.dp)
-                            ) {
-                                Text(text = "提交")
-                            }
-                        }
-                    }
                 }
             }
         }
