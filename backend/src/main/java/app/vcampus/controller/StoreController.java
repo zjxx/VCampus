@@ -134,7 +134,7 @@ public class StoreController {
 
             JsonObject itemsObject = new JsonObject();
             for (int i = 0; i < items.size(); i++) {
-                itemsObject.add("item" + i, createItemJsonObject(items.get(i)));
+                itemsObject.addProperty("item" + i, createItemJsonObject(items.get(i)));
             }
 
             JsonObject response = new JsonObject();
@@ -165,7 +165,7 @@ public class StoreController {
 
             JsonObject itemsObject = new JsonObject();
             for (int i = 0; i < items.size(); i++) {
-                itemsObject.add("item" + i, createItemJsonObject(items.get(i)));
+                itemsObject.addProperty("item" + i, createItemJsonObject(items.get(i)));
             }
 
             JsonObject response = new JsonObject();
@@ -223,7 +223,7 @@ public class StoreController {
 
             JsonObject itemsObject = new JsonObject();
             for (int i = 0; i < randomItems.size(); i++) {
-                itemsObject.add("item" + i, createItemJsonObject(randomItems.get(i)));
+                itemsObject.addProperty("item" + i, createItemJsonObject(randomItems.get(i)));
             }
 
             JsonObject response = new JsonObject();
