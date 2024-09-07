@@ -479,13 +479,15 @@ public class CourseController {
                     studentData.addProperty("gender", String.valueOf(student.getGender()));
                     List<Score> scores = db.getWhere(Score.class, "studentId", student.getStudentId());
                     String isScored = "false";
+                    String scoreStr = "";
                     for (Score score : scores) {
                         if (score.getCourseId().equals(course.getcourseId())) {
-                            studentData.addProperty("score", String.valueOf(score.getScore()));
+                            scoreStr = String.valueOf(score.getScore());
                             isScored = "true";
                             break;
                         }
                     }
+                    studentData.addProperty("score", scoreStr);
                     studentData.addProperty("isScored", isScored);
 
                 }
