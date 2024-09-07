@@ -138,7 +138,7 @@ public class StoreController {
 
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");
-            response.addProperty("length", items.size());
+            response.addProperty("length", String.valueOf(items.size()));
             response.add("items", itemsObject);
             return gson.toJson(response);
         } catch (Exception e) {
@@ -169,7 +169,7 @@ public class StoreController {
 
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");
-            response.addProperty("length", items.size());
+            response.addProperty("length",String.valueOf(items.size()));
             response.add("items", itemsObject);
             return gson.toJson(response);
         } catch (Exception e) {
@@ -200,7 +200,7 @@ public class StoreController {
 
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");
-            response.addProperty("length", transactions.size());
+            response.addProperty("length", String.valueOf(transactions.size()));
             response.add("transactions", transactionsObject);
             return gson.toJson(response);
         } catch (Exception e) {
@@ -227,7 +227,7 @@ public class StoreController {
 
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");
-            response.addProperty("length", randomItems.size());
+            response.addProperty("length", String.valueOf(randomItems.size()));
             response.add("items", itemsObject);
             return gson.toJson(response);
         } catch (Exception e) {
