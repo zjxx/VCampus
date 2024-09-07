@@ -99,7 +99,7 @@ public class ShoppingCartController {
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");
             response.addProperty("length", cartItems.size());
-            response.add("items", itemsObject);
+            response.addProperty("items", gson.toJson(itemsObject));
             return gson.toJson(response);
         } catch (Exception e) {
             JsonObject response = new JsonObject();
