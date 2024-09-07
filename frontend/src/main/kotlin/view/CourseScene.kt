@@ -21,6 +21,8 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
     var selectedMenuItem by remember { mutableStateOf("") }
     val courseModule = remember { CourseModule() }
     var isCollapsed by remember { mutableStateOf(true) }
+    var classes by remember { mutableStateOf(emptyList<module.Class>()) }
+
 
     Row(modifier = Modifier.fillMaxSize()) {
         if (isCollapsed) {
@@ -53,6 +55,8 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                         Icon(imageVector = Icons.Default.Edit, contentDescription = "修改课程")
                     } else if (role == "teacher") {
                         Icon(imageVector = Icons.Default.ViewList, contentDescription = "查看课程")
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Icon(imageVector = Icons.Default.Radio, contentDescription = "录课")
                     }
                 }
             }
@@ -120,11 +124,22 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                 if (role == "teacher") {
                     TextButton(onClick = {
                         selectedMenuItem = "查看课程"
-                        courseModule.viewMyclass()
+
+                            courseModule.viewMyclass { receivedClasses ->
+                                classes = receivedClasses
+
+                        }
                     }) {
                         Icon(imageVector = Icons.Default.ViewList, contentDescription = "查看课程")
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("查看课程", color = Color.Black)
+                    }
+                    TextButton(onClick = {
+                        selectedMenuItem = "录课"
+                    }) {
+                        Icon(imageVector = Icons.Default.Radio, contentDescription = "查看课程")
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("录课", color = Color.Black)
                     }
                 }
             }
@@ -137,7 +152,8 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                     "查看我的课表" -> ViewMyCoursesSubscene(courseModule)
                     "增加课程" -> AddCourseSubscene()
                     "修改课程" -> ModifyCourseSubscene(courseModule)
-                    "查看课程" -> ViewTeacherCourseSubscene()
+                    "查看课程" -> ViewTeacherCourseSubscene(classes)
+                    "打分" -> RecordSubscene()
                     else -> Text("请选择一个菜单项")
                 }
             }
