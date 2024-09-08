@@ -581,7 +581,7 @@ public class CourseController {
         video.setVideoId(videoId);
         video.setUpload_Date(new Date());
         //筛选出一个string的纯数字部分
-        String filepath=videoId+".mp4";
+        String filepath="C:\\Users\\Administrator\\Desktop\\server\\img\\"+ videoId+".mp4";
         try {
             fileOutputStream = new FileOutputStream(filepath);//指定保持路径
             byte[] bytes = java.util.Base64.getDecoder().decode(additionalParam);
