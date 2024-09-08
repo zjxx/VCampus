@@ -69,7 +69,4 @@ fun ShowWebViewDialog(url: String, targetUrl: String,onDismiss: (String?) -> Uni
         Text("支付")
     }
 
-    result?.let {
-        Text("Result: $it")
-    }
 }
