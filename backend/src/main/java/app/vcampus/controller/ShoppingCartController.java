@@ -102,8 +102,8 @@ public class ShoppingCartController {
                 StoreItem item = db.getWhere(StoreItem.class, "uuid", cartItem.getItemId()).get(0);
                 String storeitem = storeController.createItemJsonObject(item);
                 JsonObject itemObject = new JsonObject();
-                itemObject.addProperty("quantity", String.valueOf(cartItem.getQuantity()));
                 itemsObject.addProperty("item" + i, storeitem);
+                itemsObject.addProperty("quantity",String.valueOf(cartItem.getQuantity()));
             }
 
             JsonObject response = new JsonObject();
