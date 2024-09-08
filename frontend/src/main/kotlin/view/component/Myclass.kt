@@ -52,7 +52,6 @@ fun classCard(
         }
     }
 }
-
 @Composable
 fun classVideoCard(
     courseName: String,
@@ -60,6 +59,7 @@ fun classVideoCard(
     timeAndLocationCards: List<TimeAndLocationCardData>,
     videoCount: Int,
     videos: List<Video>,
+    onRecordNewVideo: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -83,9 +83,7 @@ fun classVideoCard(
                     videos.forEach { vi ->
                         videoCard(vi)
                     }
-                    Button(onClick = {
-
-                    }) {
+                    Button(onClick = onRecordNewVideo) {
                         Text("录制新视频")
                     }
                 }
@@ -93,7 +91,6 @@ fun classVideoCard(
         }
     }
 }
-
 @Composable
 fun videoCard(video: Video) {
 

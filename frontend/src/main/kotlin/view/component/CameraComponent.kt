@@ -26,7 +26,7 @@ fun CameraComponent() {
     var expanded by remember { mutableStateOf(false) }
     var selectedCameraIndex by remember { mutableStateOf(-1) }
     var recordingTime by remember { mutableStateOf(0) }
-    var selectedPath by remember { mutableStateOf("") }
+    var selectedPath by remember { mutableStateOf("src/main/temp/") }
 
     val cameras = remember {
         mutableStateListOf<FrameGrabber>().apply {
@@ -68,25 +68,9 @@ fun CameraComponent() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            TextField(
-                value = selectedPath,
-                onValueChange = { selectedPath = it },
-                label = { Text("Selected Path") },
-                modifier = Modifier.fillMaxWidth()
-            )
+
 
             Spacer(modifier = Modifier.height(8.dp))
-
-            Button(onClick = {
-                val fileChooser = java.awt.FileDialog(null as java.awt.Frame?, "Select Path", java.awt.FileDialog.LOAD)
-                fileChooser.isVisible = true
-                val directory = fileChooser.directory
-                if (directory != null) {
-                    selectedPath = directory
-                }
-            }) {
-                Text("Choose Path")
-            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
