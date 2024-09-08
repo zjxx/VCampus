@@ -5,20 +5,20 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.foundation.layout.Column
 import module.CourseModule
-import view.component.courseCard
+import view.component.courseCard // Ensure this import is present
 
 @Composable
 fun MygradeSubscene(courseModule: CourseModule) {
-    val courses by courseModule.course.collectAsState()
+    val courses by courseModule.ScoreMy.collectAsState()
     Column {
-        courses.forEach { course ->
+        courses.forEach { scoreMy ->
             courseCard(
-                courseName = course.courseName,
-                courseId = course.courseId,
-                overallGrade = course.grade,
-                regularGrade = "85", // Replace with actual data
-                midtermGrade = "90", // Replace with actual data
-                finalGrade = "95" // Replace with actual data
+                courseName = scoreMy.courseName,
+                courseId = scoreMy.courseId,
+                overallGrade = scoreMy.score,
+                regularGrade = scoreMy.participationScore,
+                midtermGrade = scoreMy.midtermScore,
+                finalGrade = scoreMy.finalScore
             )
         }
     }
