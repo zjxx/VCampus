@@ -15,6 +15,11 @@ import java.util.Random;
 public class UserController {
     private final Gson gson = new Gson();
     private final EmailService emailService = new EmailService();
+    private String generateVerificationCode() {
+        Random random = new Random();
+        int code = 100000 + random.nextInt(900000);
+        return String.valueOf(code);
+    }
 
     public String login(String jsonData) {
         // 解析 JSON 数据
@@ -137,9 +142,28 @@ public class UserController {
         return gson.toJson(response);
     }
 
-    private String generateVerificationCode() {
-        Random random = new Random();
-        int code = 100000 + random.nextInt(900000);
-        return String.valueOf(code);
+    public String updatePassword(String jsonData) {
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+        String userId = request.get("userId").getAsString();
+        String newPassword = request.get("newPassword").getAsString();
+
+        DataBase db = DataBaseManager.getInstance();
+        User user = db.getWhere(User.class, "userId", userId).get(0);
+        JsonObject response = new JsonObject();
+
+        if (user==null) {
+            response.addProperty("status", "fail");
+            response.addProperty("message", "User not found.");
+            return gson.toJson(response);
+        }
+
+        user.setPassword(newPassword);
+        db.persist(user);
+
+        response.addProperty("status", "success");
+        response.addProperty("message", "Password updated successfully.");
+        return gson.toJson(response);
     }
+
+
 }
