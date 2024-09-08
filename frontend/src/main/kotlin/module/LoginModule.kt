@@ -41,7 +41,7 @@ class LoginModule(
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         if (responseJson["status"] == "success") {
-           UserSession.code = responseJson["Code"] as String
+           UserSession.code = responseJson["code"] as String
             DialogManager.showDialog(responseJson["message"] as String)
         } else {
             DialogManager.showDialog(responseJson["message"] as String)
