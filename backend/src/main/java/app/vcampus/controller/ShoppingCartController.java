@@ -1,6 +1,7 @@
 package app.vcampus.controller;
 
 import app.vcampus.domain.ShoppingCartItem;
+import app.vcampus.controller.StoreController;
 import app.vcampus.domain.StoreItem;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 public class ShoppingCartController {
     private final Gson gson = new Gson();
+    private final StoreController storeController = new StoreController();
 
     // 添加商品到购物车，传入 userId, itemId, quantity
     public String addItemToCart(String jsonData) {
@@ -98,14 +100,15 @@ public class ShoppingCartController {
             for (int i = 0; i < cartItems.size(); i++) {
                 ShoppingCartItem cartItem = cartItems.get(i);
                 StoreItem item = db.getWhere(StoreItem.class, "uuid", cartItem.getItemId()).get(0);
-                JsonObject itemObject = gson.toJsonTree(item).getAsJsonObject();
+                String storeitem = storeController.createItemJsonObject(item);
+                JsonObject itemObject = new JsonObject();
                 itemObject.addProperty("quantity", String.valueOf(cartItem.getQuantity()));
-                itemsObject.addProperty("item" + i, gson.toJson(itemObject));
+                itemsObject.addProperty("item" + i, storeitem);
             }
 
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");
-            response.addProperty("length", cartItems.size());
+            response.addProperty("length", String.valueOf(cartItems.size()));
             response.addProperty("items", gson.toJson(itemsObject));
             return gson.toJson(response);
         } catch (Exception e) {
