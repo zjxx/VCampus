@@ -42,7 +42,7 @@ public class ShoppingCartController {
     }
 
 
-    // 从购物车移除商品，传入 userId(用户一卡通号), itemId（商品uuid）, uuid（每个购物车的uuid）
+    // 从购物车移除商品，传入 userId(用户一卡通号), itemId（商品uuid），quantity（数量）
     public String removeItemFromCart(String jsonData) {
         try {
             JsonObject request = gson.fromJson(jsonData, JsonObject.class);
@@ -99,8 +99,8 @@ public class ShoppingCartController {
                 ShoppingCartItem cartItem = cartItems.get(i);
                 StoreItem item = db.getWhere(StoreItem.class, "uuid", cartItem.getItemId()).get(0);
                 JsonObject itemObject = gson.toJsonTree(item).getAsJsonObject();
-                itemObject.addProperty("quantity", cartItem.getQuantity());
-                itemsObject.add("item" + i, itemObject);
+                itemObject.addProperty("quantity", String.valueOf(cartItem.getQuantity()));
+                itemsObject.addProperty("item" + i, gson.toJson(itemObject));
             }
 
             JsonObject response = new JsonObject();
