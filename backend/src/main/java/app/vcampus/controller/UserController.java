@@ -171,6 +171,12 @@ public class UserController {
            String userId = request.get("userId").getAsString();
            String newEmail = request.get("email").getAsString();
 
+           if(newEmail == null || newEmail.isEmpty()||userId == null || userId.isEmpty()){
+               JsonObject response = new JsonObject();
+               response.addProperty("status", "fail");
+               response.addProperty("message", "输入为空");
+               return gson.toJson(response);
+           }
            DataBase db = DataBaseManager.getInstance();
            User user = db.getWhere(User.class, "userId", userId).get(0);
            JsonObject response = new JsonObject();
