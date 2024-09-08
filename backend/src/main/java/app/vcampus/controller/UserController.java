@@ -127,7 +127,7 @@ public class UserController {
         emailService.sendEmail(email, "虚拟校园系统验证码", "重置密码验证码是: " + verificationCode);
 
         response.addProperty("status", "success");
-        response.addProperty("verificationCode", verificationCode);
+        response.addProperty("code", verificationCode);
         return gson.toJson(response);
     }
 
