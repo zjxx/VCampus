@@ -269,6 +269,7 @@ public class StoreController {
 
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");
+            response.addProperty("length", String.valueOf(transactions.size()));
             response.addProperty("transactions", gson.toJson(transactionsObject));
             return gson.toJson(response);
         }
