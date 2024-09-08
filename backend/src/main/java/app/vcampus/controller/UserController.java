@@ -105,7 +105,7 @@ public class UserController {
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         String userId = request.get("userId").getAsString();
         String email = request.get("email").getAsString();
-        if(email == null || email.isEmpty()||userId == null || userId.isEmpty()){ {
+        if(email == null || email.isEmpty()||userId == null || userId.isEmpty()){
             JsonObject response = new JsonObject();
             response.addProperty("status", "fail");
             response.addProperty("message", "输入为空");
