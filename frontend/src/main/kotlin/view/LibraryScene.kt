@@ -42,7 +42,7 @@ import java.io.File
 @Composable
 fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     var selectedOption by remember {
-        if (role == "student") mutableStateOf("查找书籍") else mutableStateOf("管理书籍")
+        if (role == "student"||role=="teacher") mutableStateOf("查找书籍") else mutableStateOf("管理书籍")
     }
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var imageUrl by remember { mutableStateOf("") }
@@ -113,7 +113,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                 modifier = Modifier.clickable { isCollapsed = false }
                             )
                             Spacer(modifier = Modifier.height(16.dp))
-                            if (role == "student") {
+                            if (role == "student"||role == "teacher") {
                                 Icon(imageVector = Icons.Default.Person, contentDescription = "查找书籍")
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看已借阅书籍信息")
@@ -146,7 +146,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                 modifier = Modifier.clickable { isCollapsed = true }
                             )
                         }
-                        if (role == "student") {
+                        if (role == "student"||role == "teacher") {
                             TextButton(
                                 onClick = { selectedOption = "查找书籍" },
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
@@ -205,7 +205,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                         .weight(0.8f)
                         .padding(16.dp)
                 ) {
-                    if (role == "student") {//学生界面
+                    if (role == "student"|| role == "teacher") {//学生界面
                         when (selectedOption) {
                             "查找书籍" -> {
                                 Row(
