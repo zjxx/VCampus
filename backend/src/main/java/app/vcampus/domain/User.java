@@ -24,6 +24,9 @@ public class User {
 
   private int role;
 
+  @Column(length = 50)
+  private  String email;
+
     public String getUsername() {
         return username;
     }
@@ -63,7 +66,14 @@ public class User {
         return balance;
     }
 
+    public String getEmail() {
+        return email;
+    }
 
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
 
     public int getRole() {

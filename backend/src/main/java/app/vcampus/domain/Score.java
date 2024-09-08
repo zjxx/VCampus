@@ -10,11 +10,13 @@ import java.util.UUID;
 @Entity
 @Table(name = "score")
 public class Score {
-    @Id
+
     @Column(length=13)
     private String studentId;
     @Column(length=8)
     private String courseId;
+
+    @Id
     @Column(unique = true, nullable = false)
     private UUID scoreId;
 

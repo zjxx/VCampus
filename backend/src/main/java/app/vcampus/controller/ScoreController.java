@@ -62,6 +62,8 @@ public class ScoreController {
                     data.addProperty("status", "failed");
                     data.addProperty("reason", "course not found");
                 }
+            } catch (NumberFormatException e) {
+                throw new RuntimeException(e);
             }
             catch (Exception e) {
                 data.addProperty("status", "failed");
@@ -118,27 +120,32 @@ public class ScoreController {
             data.addProperty("reason", "no score found");
             return gson.toJson(data);
         } else {
+            data.addProperty("number", String.valueOf(scores.size()));
             //循环判断每一个成绩的status是否为审核通过
             for (int i = 0; i < scores.size(); i++) {
                 Score score = scores.get(i);
                 JsonObject scoreData = new JsonObject();
+                String partScore= "";
+                String midScore= "";
+                String finalScore= "";
+                String scoreStr = "";
                 if (score.getStatus().equals("审核通过")) {
-                    scoreData.addProperty("courseId", score.getCourseId());
-                    scoreData.addProperty("semester", score.getSemester());
-                    scoreData.addProperty("credit", score.getCredit());
-                    scoreData.addProperty("participationScore", score.getParticipationScore());
-                    scoreData.addProperty("midtermScore", score.getMidtermScore());
-                    scoreData.addProperty("finalScore", score.getFinalScore());
-                    scoreData.addProperty("score", score.getScore());
-                    data.add("score" + i, scoreData);
-                } else {
-                    //如果审核未通过则显示该课程成绩没出
-                    scoreData.addProperty("courseId", score.getCourseId());
-                    scoreData.addProperty("semester", score.getSemester());
-                    scoreData.addProperty("credit", score.getCredit());
-                    scoreData.addProperty("message", "score not out yet");
-                    data.add("score" + i, scoreData);
+                   partScore= String.valueOf(score.getParticipationScore());
+                   midScore= String.valueOf(score.getMidtermScore());
+                   finalScore= String.valueOf(score.getFinalScore());
+                   scoreStr = String.valueOf(score.getScore());
                 }
+                List<Course> courses = db.getWhere(Course.class, "courseId", score.getCourseId());
+                scoreData.addProperty("courseName", courses.get(0).getcourseName());
+                scoreData.addProperty("courseId", score.getCourseId());
+                scoreData.addProperty("semester", score.getSemester());
+                scoreData.addProperty("credit", String.valueOf(score.getCredit()));
+                scoreData.addProperty("participationScore", partScore);
+                scoreData.addProperty("midtermScore", midScore);
+                scoreData.addProperty("finalScore", finalScore);
+                scoreData.addProperty("score", scoreStr);
+                scoreData.addProperty("status", score.getStatus());
+                data.add("score" + i, scoreData);
             }
             data.addProperty("status", "success");
             return gson.toJson(data);
