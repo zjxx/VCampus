@@ -165,5 +165,35 @@ public class UserController {
         return gson.toJson(response);
     }
 
+    public String updateEmail(String jsonData) {
+       try{
+           JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+           String userId = request.get("userId").getAsString();
+           String newEmail = request.get("email").getAsString();
+
+           DataBase db = DataBaseManager.getInstance();
+           User user = db.getWhere(User.class, "userId", userId).get(0);
+           JsonObject response = new JsonObject();
+
+           if (user==null) {
+               response.addProperty("status", "fail");
+               response.addProperty("message", "User not found.");
+               return gson.toJson(response);
+           }
+
+           user.setEmail(newEmail);
+           db.persist(user);
+
+           response.addProperty("status", "success");
+           response.addProperty("message", "Email updated successfully.");
+           return gson.toJson(response);
+       }
+         catch (Exception e){
+              JsonObject response = new JsonObject();
+              response.addProperty("status", "fail");
+              response.addProperty("message", e.getMessage());
+              return gson.toJson(response);
+         }
+    }
 
 }
