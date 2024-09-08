@@ -10,6 +10,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color
 import module.LoginModule
 
+// src/main/kotlin/view/component/ForgotPasswordDialog.kt
+
+// src/main/kotlin/view/component/ForgotPasswordDialog.kt
+
 @Composable
 fun ForgotPasswordDialog(onDismiss: () -> Unit, onLoginSuccess: () -> Unit) {
     var email by remember { mutableStateOf("") }
@@ -21,6 +25,10 @@ fun ForgotPasswordDialog(onDismiss: () -> Unit, onLoginSuccess: () -> Unit) {
     if (showModifyPasswordDialog) {
         ModifyPasswordDialog(
             onDismiss = { showModifyPasswordDialog = false },
+            onSuccess = {
+                showModifyPasswordDialog = false
+                onDismiss() // Dismiss the ForgotPasswordDialog
+            },
             userId = cardNumber
         )
     } else {

@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.ui.Alignment
 import module.CourseModule
+import view.ModifyCourseSubscene
 
 @Composable
 fun ModifydetailCard(course: CourseData, onDeleteSuccess: () -> Unit) {
@@ -27,6 +28,8 @@ fun ModifydetailCard(course: CourseData, onDeleteSuccess: () -> Unit) {
     var teacherId by remember { mutableStateOf(course.teacherId) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     val courseModule = CourseModule()
+    val courses by courseModule.course.collectAsState()
+
     if (showDeleteDialog) {
     AlertDialog(
         onDismissRequest = { showDeleteDialog = false },
@@ -36,7 +39,6 @@ fun ModifydetailCard(course: CourseData, onDeleteSuccess: () -> Unit) {
             TextButton(onClick = {
                 courseModule.deleteCourse(course) {
                     onDeleteSuccess()
-                    courseModule.ShowAllCourse() // Refresh the course list
                     showDeleteDialog = false
                 }
             }) {
@@ -50,6 +52,7 @@ fun ModifydetailCard(course: CourseData, onDeleteSuccess: () -> Unit) {
         }
     )
 }
+
 
     Card(
         modifier = Modifier
