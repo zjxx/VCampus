@@ -9,7 +9,7 @@ import java.util.UUID;
 @Table(name = "video")
 public class Video {
     @Id
-    @Column(unique = true, nullable = false,length = 30)
+    @Column(unique = true, nullable = false,length = 50)
     private String videoId;
 
     @Column(length = 8)
