@@ -1,4 +1,3 @@
-// 修改 LoginScene.kt
 package view
 
 import androidx.compose.foundation.Image
@@ -16,12 +15,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.draw.shadow
 import view.component.ErrorDialog
 import view.component.pageTitle
+import view.component.ForgotPasswordDialog
 import module.LoginModule
 
 @Composable
 fun LoginScene(onLoginSuccess: () -> Unit) {
     var username by remember { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
+    var showForgotPasswordDialog by remember { mutableStateOf(false) }
 
     val loginModule = LoginModule(
         onLoginSuccess = onLoginSuccess
@@ -96,8 +97,8 @@ fun LoginScene(onLoginSuccess: () -> Unit) {
                                 ) {
                                     Spacer(Modifier.weight(1F))
                                     TextButton(
-                                        onClick = {
-                                        }, colors = ButtonDefaults.textButtonColors(
+                                        onClick = { showForgotPasswordDialog = true },
+                                        colors = ButtonDefaults.textButtonColors(
                                             contentColor = Color(0xFF006400)
                                         )
                                     ) {
@@ -121,4 +122,10 @@ fun LoginScene(onLoginSuccess: () -> Unit) {
         }
     }
 
+    if (showForgotPasswordDialog) {
+        ForgotPasswordDialog(
+            onDismiss = { showForgotPasswordDialog = false },
+            onLoginSuccess = onLoginSuccess
+        )
+    }
 }
