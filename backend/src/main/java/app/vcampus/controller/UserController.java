@@ -37,6 +37,7 @@ public class UserController {
                 }
                 data.addProperty("role", UserType.fromIndex((int) user.getRole()));
                 data.addProperty("userId", user.getUserId());
+                data.addProperty("username", user.getUsername());
                 return gson.toJson(data);
             } else {
                 data.addProperty("message", "Wrong password.");
