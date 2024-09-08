@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.io.FileOutputStream;
+import java.util.Base64;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
@@ -569,7 +570,55 @@ public class CourseController {
         return gson.toJson(data);
     }
 
+    public String getRecordCoursesByStudent(String jsonData) {
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+        String studentId = request.get("studentId").getAsString();
+        JsonObject data = new JsonObject();
+        DataBase db = DataBaseManager.getInstance();
 
+        List<Enrollment> enrollments = db.getWhere(Enrollment.class, "studentid", studentId);
+
+        // 查询该老师的所有课程
+        List<Course> courses = new ArrayList<>();
+        for (Enrollment enrollment:enrollments){
+            List<Course> thiscourse = db.getWhere(Course.class, "courseId", enrollment.getcourseid());
+            courses.addAll(thiscourse);
+        }
+
+        if (courses.isEmpty()) {
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "no courses found for this teacher");
+            return gson.toJson(data);
+        }
+
+        // 构建返回数据
+        data.addProperty("number", String.valueOf(courses.size()));
+        for (int i = 0; i < courses.size(); i++) {
+            Course course = courses.get(i);
+            JsonObject courseData = new JsonObject();
+            courseData.addProperty("courseName", course.getcourseName());
+            courseData.addProperty("courseId", course.getcourseId());
+            courseData.addProperty("time", course.getTime());
+            courseData.addProperty("location", course.getLocation());
+            // 查询选修该课程的所有video
+            List<Video> videos = db.getWhere(Video.class, "courseId", course.getcourseId());
+            JsonObject videosData = new JsonObject();
+            videosData.addProperty("number", String.valueOf(videos.size()));
+            for (int j = 0; j < videos.size(); j++) {
+                Video video = videos.get(j);
+                JsonObject videoData = new JsonObject();
+                videoData.addProperty("videoId", video.getVideoId().toString());
+                videoData.addProperty("videoName", video.getVideoName());
+                videoData.addProperty("upload_Date", video.getUpload_Date().toString());
+
+                videosData.add("video" + j, videoData);
+            }
+            courseData.add("videos", videosData);
+            data.add("course" + i, courseData);
+        }
+        data.addProperty("status", "success");
+        return gson.toJson(data);
+    }
 
     public String videoUpload(String jsonData,String additionalParam){
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
@@ -584,7 +633,7 @@ public class CourseController {
         String filepath="C:\\Users\\Administrator\\Desktop\\server\\img\\"+ videoId+".mp4";
         try {
             fileOutputStream = new FileOutputStream(filepath);//指定保持路径
-            byte[] bytes = java.util.Base64.getDecoder().decode(additionalParam);
+            byte[] bytes = Base64.getDecoder().decode(additionalParam);
             fileOutputStream.write(bytes);
             fileOutputStream.close();
         }
