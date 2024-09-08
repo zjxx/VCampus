@@ -15,6 +15,7 @@ dependencies {
     implementation("org.hibernate.orm:hibernate-core:6.2.7.Final")
     implementation("io.netty:netty-all:4.1.97.Final")
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.sun.mail:javax.mail:1.6.2")
 
 }
 

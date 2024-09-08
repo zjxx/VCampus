@@ -21,6 +21,7 @@ public class StudentInfoController {
         studentInfoRequest request = gson.fromJson(jsonData, studentInfoRequest.class);
         DataBase db = DataBaseManager.getInstance();
         Student student = db.getWhere(Student.class, "studentId", request.getUserId()).get(0);
+        User user = db.getWhere(User.class, "userId", request.getUserId()).get(0);
         JsonObject data = new JsonObject();
         data.addProperty("studentId", student.getStudentId());
         data.addProperty("name", student.getUsername());
@@ -29,6 +30,7 @@ public class StudentInfoController {
         data.addProperty("major", student.getMajor());        //将MajorType转换为String类型
         data.addProperty("academy", student.getAcademy());
         data.addProperty("nativePlace", student.getNativePlace());
+        data.addProperty("email", user.getEmail()==null?"":user.getEmail());
         return gson.toJson(data);
     }
 

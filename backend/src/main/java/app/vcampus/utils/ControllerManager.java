@@ -18,6 +18,8 @@ public class ControllerManager {
     public ControllerManager() {
         // 注册路由
         routeMapping.registerRoute("login", userController::login);
+        routeMapping.registerRoute("addEmail", userController::addEmail);
+        routeMapping.registerRoute("sendCode",userController::sendVerificationCode);
 
         routeMapping.registerRoute("lib/search", libraryController::searchBookInfo);
         routeMapping.registerRoute("lib/addtolist", libraryController::borrowBook);
