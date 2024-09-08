@@ -52,6 +52,8 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                         Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看我的课表")
                         Spacer(modifier = Modifier.height(16.dp))
                         Icon(imageVector = Icons.Default.PhotoCamera, contentDescription = "查看我的成绩")
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Icon(imageVector = Icons.Default.Videocam, contentDescription = "云课堂")
                     } else if (role == "admin") {
                         Icon(imageVector = Icons.Default.Add, contentDescription = "增加课程")
                         Spacer(modifier = Modifier.height(16.dp))
@@ -115,6 +117,16 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                         Icon(imageVector = Icons.Default.PhotoCamera, contentDescription = "查看我的课表")
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("查看我的成绩", color = Color.Black)
+                    }
+                    TextButton(onClick = {
+                        selectedMenuItem = "云课堂"
+                        courseModule.studentViewRecording { receivedClasses ->
+                            videoclasses = receivedClasses
+                        }
+                    }) {
+                        Icon(imageVector = Icons.Default.Videocam, contentDescription = "查看我的课表")
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("云课堂", color = Color.Black)
                     }
                 }
                 if (role == "admin") {
@@ -180,6 +192,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                     "成绩管理" -> ConfirmGrade(classes)
                     "查看课程" -> ViewTeacherCourseSubscene(classes)
                     "录课" -> RecordTeacherCourseSubscene(videoclasses)
+                    "云课堂" -> StudentCourseSubscene(videoclasses)
                     "打分" -> RecordSubscene()
                     else -> Text("请选择一个菜单项")
                 }

@@ -377,6 +377,14 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         }
     }
 
+
+    fun studentViewRecording(onClassesReceived: (List<module.videoClass>) -> Unit) {
+        val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId)
+        nettyClient.sendRequest(request, "course/getCourseRecordByStudent") { response: String ->
+            handleResponseRecord(response, onClassesReceived)
+        }
+    }
+
     fun deleteCourse(course: CourseData,onDeleteSuccess: () -> Unit) {
         val request = mapOf("role" to UserSession.role,"userId" to UserSession.userId, "courseId" to course.courseId )
         nettyClient.sendRequest(request, "course/delete") { response: String ->
