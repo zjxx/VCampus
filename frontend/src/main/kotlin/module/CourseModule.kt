@@ -620,7 +620,7 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
                         val FinalScore = studentJson["FinalScore"] as String
                         students.add(Student(studentId, name, gender, score,isScored,ParticipationScore,MidtermScore,FinalScore))
                     }
-                    val classStatus = courseJson["classStatus"] as String
+                    val classStatus = "未审核"
                     val classItem = Class(courseName, courseId,time, location, students, timeAndLocationCards,classStatus)
                     classesMap.computeIfAbsent(courseName) { mutableListOf() }.add(classItem)
                 }
