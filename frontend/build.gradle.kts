@@ -42,7 +42,12 @@ dependencies {
 
 
 }
+tasks {
+    withType<org.gradle.jvm.tasks.Jar> {
+        isZip64 = true
 
+    }
+}
 compose.desktop {
     application {
         mainClass = "MainKt"
@@ -50,7 +55,8 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "demo1"
-            packageVersion = "1.0.0"
+            packageVersion = "1.0.1"
+
         }
         jvmArgs("--add-opens", "java.desktop/sun.awt=ALL-UNNAMED")
         jvmArgs("--add-opens", "java.desktop/java.awt.peer=ALL-UNNAMED") // recommended but not necessary
@@ -62,6 +68,7 @@ compose.desktop {
         buildTypes.release.proguard {
             configurationFiles.from("compose-desktop.pro")
         }
+
     }
 }
 

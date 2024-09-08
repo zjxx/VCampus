@@ -24,6 +24,7 @@ class LoginModule(
             UserSession.userId = responseJson["userId"] as String
             UserSession.role = responseJson["role"] as String
             UserSession.status = responseJson["status"] as String
+            UserSession.userName = responseJson["username"] as String
             onLoginSuccess()
         } else {
             DialogManager.showDialog(responseJson["message"] as String)

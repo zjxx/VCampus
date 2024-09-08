@@ -167,6 +167,15 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         else -> dayOfWeekNumber
     }
 }
+    fun mapGradeToChinese(grade: String): String {
+        return when (grade) {
+            "21" -> "大四"
+            "22" -> "大三"
+            "23" -> "大二"
+            "24" -> "大一"
+            else -> grade
+        }
+    }
     fun listCourse() {
         val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId)
         nettyClient.sendRequest(request, "course/listAll") { response: String ->
@@ -377,6 +386,14 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         }
     }
 
+
+    fun studentViewRecording(onClassesReceived: (List<module.videoClass>) -> Unit) {
+        val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId)
+        nettyClient.sendRequest(request, "course/getCourseRecordByStudent") { response: String ->
+            handleResponseRecord(response, onClassesReceived)
+        }
+    }
+
     fun deleteCourse(course: CourseData,onDeleteSuccess: () -> Unit) {
         val request = mapOf("role" to UserSession.role,"userId" to UserSession.userId, "courseId" to course.courseId )
         nettyClient.sendRequest(request, "course/delete") { response: String ->
@@ -424,7 +441,7 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
                     courseId = courseId,
                     credit = courseJson["credit"] as String,
                     capacity = courseJson["capacity"] as String,
-                    grade = courseJson["validGrade"] as String,
+                    grade = mapGradeToChinese(courseJson["validGrade"] as String),
                     major = courseJson["major"] as String,
                     semester = courseJson["semester"] as String,
                     property = courseJson["property"] as String,

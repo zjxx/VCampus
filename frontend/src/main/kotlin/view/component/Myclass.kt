@@ -16,6 +16,7 @@ import module.*
 import utils.downloadMp4IfNotExists
 import kotlin.math.roundToInt
 import androidx.compose.ui.graphics.Color
+import data.UserSession.role
 
 
 @Composable
@@ -85,8 +86,10 @@ fun classVideoCard(
                     videos.forEach { vi ->
                         videoCard(vi)
                     }
-                    Button(onClick = onRecordNewVideo) {
-                        Text("录制新视频")
+                    if(role=="teacher") {
+                        Button(onClick = onRecordNewVideo) {
+                            Text("录制新视频")
+                        }
                     }
                 }
             }
