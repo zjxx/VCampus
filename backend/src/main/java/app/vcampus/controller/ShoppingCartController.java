@@ -47,14 +47,21 @@ public class ShoppingCartController {
         try {
             JsonObject request = gson.fromJson(jsonData, JsonObject.class);
             String userId = request.get("userId").getAsString();
-            UUID itemId = UUID.fromString(request.get("itemId").getAsString());
-            UUID uuid = UUID.fromString(request.get("uuid").getAsString()); // Get the UUID
+            UUID itemId = UUID.fromString(request.get("itemId").getAsString());// Get the UUID
+            int quantity = request.get("quantity").getAsInt();
 
             DataBase db = DataBaseManager.getInstance();
             List<ShoppingCartItem> cartItems = db.getWhere(ShoppingCartItem.class, "userId", userId);
             for (ShoppingCartItem cartItem : cartItems) {
-                if (cartItem.getItemId().equals(itemId) && cartItem.getUuid().equals(uuid)) {
-                    db.remove(cartItem);
+                if (cartItem.getItemId().equals(itemId) ) {
+                    if(quantity <= 0 )
+                    {
+                        db.remove(cartItem);
+                    }
+                    else {
+                        cartItem.setQuantity(quantity);
+                        db.persist(cartItem);
+                    }
                     break;
                 }
             }
