@@ -12,6 +12,10 @@ import app.vcampus.interfaces.CourseTableShowRequest;
 import app.vcampus.interfaces.CourseStudentShowRequest;
 import app.vcampus.interfaces.CourseAddRequest;
 import app.vcampus.interfaces.CourseDeleteRequest;
+import app.vcampus.interfaces.VideoUploadRequest;
+import app.vcampus.interfaces.VideoDeleteRequest;
+import app.vcampus.interfaces.VideoWatchRequest;
+import app.vcampus.interfaces.VideoRankRequest;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
 
