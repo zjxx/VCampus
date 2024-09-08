@@ -9,8 +9,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color
 import module.LoginModule
 
+// src/main/kotlin/view/component/ModifyPasswordDialog.kt
+
 @Composable
-fun ModifyPasswordDialog(onDismiss: () -> Unit, userId: String) {
+fun ModifyPasswordDialog(onDismiss: () -> Unit, onSuccess: () -> Unit, userId: String) {
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     val loginModule = LoginModule {}
@@ -22,6 +24,8 @@ fun ModifyPasswordDialog(onDismiss: () -> Unit, userId: String) {
         },
         text = {
             Column {
+                Text("")
+                Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = newPassword,
                     onValueChange = { newPassword = it },
@@ -43,7 +47,7 @@ fun ModifyPasswordDialog(onDismiss: () -> Unit, userId: String) {
                     if (newPassword == confirmPassword) {
                         loginModule.updatePassword(userId, newPassword, {
                             DialogManager.showDialog("密码修改成功")
-                            onDismiss()
+                            onSuccess()
                         }, { errorMessage ->
                             DialogManager.showDialog(errorMessage)
                         })

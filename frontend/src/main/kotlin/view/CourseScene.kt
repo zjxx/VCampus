@@ -22,6 +22,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
     val courseModule = remember { CourseModule() }
     var isCollapsed by remember { mutableStateOf(true) }
     var classes by remember { mutableStateOf(emptyList<module.Class>()) }
+    var videoclasses by remember { mutableStateOf(emptyList<module.videoClass>()) }
 
 
     Row(modifier = Modifier.fillMaxSize()) {
@@ -146,10 +147,8 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                 if (role == "teacher") {
                     TextButton(onClick = {
                         selectedMenuItem = "查看课程"
-
-                            courseModule.viewMyclass { receivedClasses ->
-                                classes = receivedClasses
-
+                        courseModule.viewMyclass { receivedClasses ->
+                            classes = receivedClasses
                         }
                     }) {
                         Icon(imageVector = Icons.Default.ViewList, contentDescription = "查看课程")
@@ -158,6 +157,9 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                     }
                     TextButton(onClick = {
                         selectedMenuItem = "录课"
+                        courseModule.recordMyclass { receivedClasses ->
+                            videoclasses = receivedClasses
+                        }
                     }) {
                         Icon(imageVector = Icons.Default.Radio, contentDescription = "查看课程")
                         Spacer(modifier = Modifier.width(8.dp))
@@ -177,6 +179,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                     "修改课程" -> ModifyCourseSubscene(courseModule)
                     "成绩管理" -> ConfirmGrade(classes)
                     "查看课程" -> ViewTeacherCourseSubscene(classes)
+                    "录课" -> RecordTeacherCourseSubscene(videoclasses)
                     "打分" -> RecordSubscene()
                     else -> Text("请选择一个菜单项")
                 }

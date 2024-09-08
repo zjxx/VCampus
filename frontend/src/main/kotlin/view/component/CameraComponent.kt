@@ -18,16 +18,17 @@ import org.bytedeco.javacv.FrameGrabber
 import org.bytedeco.javacv.OpenCVFrameGrabber
 
 
+// src/main/kotlin/view/component/CameraComponent.kt
 @Composable
-fun CameraComponent() {
+fun CameraComponent(onRecordingFinished: (String) -> Unit) {
     var selectedCamera by remember { mutableStateOf<FrameGrabber?>(null) }
     var isRecording by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     var expanded by remember { mutableStateOf(false) }
     var selectedCameraIndex by remember { mutableStateOf(-1) }
     var recordingTime by remember { mutableStateOf(0) }
-    var selectedPath by remember { mutableStateOf("") }
-
+    var selectedPath by remember { mutableStateOf("src/main/temp/") }
+    var path by remember { mutableStateOf("") }
     val cameras = remember {
         mutableStateListOf<FrameGrabber>().apply {
             for (i in 0 until 10) {
@@ -41,7 +42,6 @@ fun CameraComponent() {
     }
 
     Row(modifier = Modifier.padding(16.dp)) {
-
         Column(modifier = Modifier.weight(1f)) {
             Text("Select Camera", style = MaterialTheme.typography.h6)
             Spacer(modifier = Modifier.height(8.dp))
@@ -68,40 +68,20 @@ fun CameraComponent() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            TextField(
-                value = selectedPath,
-                onValueChange = { selectedPath = it },
-                label = { Text("Selected Path") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Button(onClick = {
-                val fileChooser = java.awt.FileDialog(null as java.awt.Frame?, "Select Path", java.awt.FileDialog.LOAD)
-                fileChooser.isVisible = true
-                val directory = fileChooser.directory
-                if (directory != null) {
-                    selectedPath = directory
-                }
-            }) {
-                Text("Choose Path")
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             Button(
                 onClick = {
                     isRecording = !isRecording
                     if (isRecording) {
                         recordingTime = 0
                         val outputPath = "$selectedPath/video_${System.currentTimeMillis()}.mp4"
+                        path = outputPath
                         scope.launch(Dispatchers.IO) {
                             startRecording(selectedCamera!!, outputPath)
                         }
                     } else {
                         scope.launch(Dispatchers.IO) {
                             stopRecording(selectedCamera!!)
+                            onRecordingFinished(path)
                         }
                     }
                 },

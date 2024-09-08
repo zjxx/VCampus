@@ -84,6 +84,12 @@ data class CourseScheduleItem(
     val location: String,
     val teacherName:String
 )
+data class Video(
+    val videoId: String,
+    val videoName: String,
+    val courseId: String,
+    val upload_Date:String
+)
 data class Student(
     val studentId: String,
     val name: String,
@@ -102,6 +108,14 @@ data class Class(
     val students: List<Student>,
     val timeAndLocationCards: List<TimeAndLocationCardData>,
      val classStatus: String // New property
+)
+data class videoClass(
+    val courseName: String,
+    val courseId: String,
+    val time: String,
+    val location: String,
+    val videos: List<Video>,
+    val timeAndLocationCards: List<TimeAndLocationCardData> // New property
 )
 data class StudentScore(
     val studentId: String,
@@ -356,6 +370,13 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
     }
 }
 
+    fun recordMyclass(onClassesReceived: (List<module.videoClass>) -> Unit) {
+        val request = mapOf("role" to UserSession.role, "teacherId" to UserSession.userId)
+        nettyClient.sendRequest(request, "course/getCourseRecord") { response: String ->
+            handleResponseRecord(response, onClassesReceived)
+        }
+    }
+
     fun deleteCourse(course: CourseData,onDeleteSuccess: () -> Unit) {
         val request = mapOf("role" to UserSession.role,"userId" to UserSession.userId, "courseId" to course.courseId )
         nettyClient.sendRequest(request, "course/delete") { response: String ->
@@ -489,6 +510,56 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         DialogManager.showDialog(responseJson["reason"] as String)
     }
 }
+
+    private fun handleResponseRecord(response: String, onClassesReceived: (List<module.videoClass>) -> Unit) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        if (responseJson["status"] == "success") {
+            val num = responseJson["number"] as String
+            if (num != "0") {
+                val classesMap = mutableMapOf<String, MutableList<module.videoClass>>()
+                for (i in 0 until num.toInt()) {
+                    val courseJson = responseJson["course$i"] as Map<String, Any>
+                    val courseName = courseJson["courseName"] as String
+                    val courseId = courseJson["courseId"] as String
+                    val time = courseJson["time"] as String
+                    val location = courseJson["location"] as String
+                    val timeAndLocationCards = time.split(";").zip(location.split(";")).map {
+                        val (timeSlot, loc) = it
+                        val parts = timeSlot.split("-")
+                        TimeAndLocationCardData(
+                            dayOfWeek = parts[0],
+                            startPeriod = parts[1],
+                            endPeriod = parts[2],
+                            location = loc
+                        )
+                    }
+                    val videosJson = courseJson["videos"] as Map<String, Any>
+                    val numberOfVideos = (videosJson["number"] as String).toInt()
+                    val videos = mutableListOf<Video>()
+                    for (j in 0 until numberOfVideos) {
+                        val studentJson = videosJson["video$j"] as Map<String, Any>
+                        val videoId = studentJson["videoId"] as String
+                        val videoname = studentJson["videoName"] as String
+                        val upload_Date = studentJson["upload_Date"] as String
+                        videos.add(Video(videoId,videoname ,courseId,upload_Date))
+                    }
+                    val classItem = videoClass(courseName, courseId,time, location, videos, timeAndLocationCards)
+                    classesMap.computeIfAbsent(courseName) { mutableListOf() }.add(classItem)
+                }
+                val classes = classesMap.map {
+                    val firstClass = it.value.first()
+                    videoClass(firstClass.courseName,firstClass.courseId, firstClass.time, firstClass.location, firstClass.videos, firstClass.timeAndLocationCards)
+                }
+                onClassesReceived(classes)
+            }
+        } else if (responseJson["status"] == "failed") {
+            DialogManager.showDialog(responseJson["reason"] as String)
+        }
+    }
+
+
+
    fun giveScore(studentScore: StudentScore) {
     val request = mapOf(
         "role" to UserSession.role,
@@ -620,7 +691,7 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
                         val FinalScore = studentJson["FinalScore"] as String
                         students.add(Student(studentId, name, gender, score,isScored,ParticipationScore,MidtermScore,FinalScore))
                     }
-                    val classStatus = courseJson["classStatus"] as String
+                    val classStatus = "未审核"
                     val classItem = Class(courseName, courseId,time, location, students, timeAndLocationCards,classStatus)
                     classesMap.computeIfAbsent(courseName) { mutableListOf() }.add(classItem)
                 }
