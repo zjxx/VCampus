@@ -12,12 +12,16 @@ import module.Class
 import module.CourseModule
 import module.videoClass
 import view.component.CameraComponent
+import view.component.VideoPlayerScreen
 import view.component.classCard
 import view.component.classVideoCard
 
+// src/main/kotlin/view/RecordTeacherCourseSubscene.kt
 @Composable
 fun RecordTeacherCourseSubscene(classes: List<videoClass>) {
     var currentView by remember { mutableStateOf("classVideoCard") }
+    var courseId by remember { mutableStateOf("") }
+    var recordedVideoPath by remember { mutableStateOf<String?>(null) }
 
     when (currentView) {
         "classVideoCard" -> {
@@ -29,13 +33,22 @@ fun RecordTeacherCourseSubscene(classes: List<videoClass>) {
                         timeAndLocationCards = classItem.timeAndLocationCards,
                         videoCount = classItem.videos.size,
                         videos = classItem.videos,
-                        onRecordNewVideo = { currentView = "CameraComponent" }
+                        onRecordNewVideo = {
+                            currentView = "CameraComponent"
+                            courseId = classItem.courseId
+                        }
                     )
                 }
             }
         }
         "CameraComponent" -> {
-            CameraComponent()
+            CameraComponent(onRecordingFinished = { videoPath ->
+                recordedVideoPath = videoPath
+                currentView = "VideoPlayerScreen"
+            })
+        }
+        "VideoPlayerScreen" -> {
+            recordedVideoPath?.let { VideoPlayerScreen(it,courseId) }
         }
     }
 }

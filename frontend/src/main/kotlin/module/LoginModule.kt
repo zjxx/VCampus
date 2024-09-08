@@ -19,7 +19,7 @@ class LoginModule(
     private fun handleResponse(response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
-        if (responseJson["status"] == "success") {
+        if (responseJson["status"] == "success"||responseJson["status"] == "noemail") {
             nettyClient.setRole(responseJson["role"] as String)
             UserSession.userId = responseJson["userId"] as String
             UserSession.role = responseJson["role"] as String

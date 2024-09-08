@@ -15,33 +15,35 @@ import utils.NettyClient
 import utils.NettyClientProvider
 
 @Composable
-fun VideoPlayerScreen() {
-    var videoPath by remember { mutableStateOf<String?>(null) }
+fun VideoPlayerScreen(path: String,courseId:String) {
+    var videoPath by remember { mutableStateOf<String?>(path) }
     val mediaPlayerComponent = remember { EmbeddedMediaPlayerComponent() }
     val nettyClient = NettyClientProvider.nettyClient
-
+    var videoName by remember { mutableStateOf<String>("") }
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Row {
-            Button(onClick = {
-            val fileDialog = FileDialog(Frame(), "Select Video", FileDialog.LOAD)
-            fileDialog.isVisible = true
-            val selectedFile = fileDialog.file
-            if (selectedFile != null) {
-                videoPath = "${fileDialog.directory}$selectedFile"
-            }
-        }) {
-            Text("Select Video")
-        }
-            videoPath?.let { path ->
 
-                Button(onClick = {
-                    nettyClient.sendFile(request = mapOf("key" to "value"), type = "course/file_upload/video", filePath = path) { response ->
-                        println("Response: $response")
-                    }
-                }) {
-                    Text("Send Video")
+        Row {
+            //写一个文本框，输入了文本框下面的button才能点击
+            TextField(
+                value = videoName,
+                onValueChange = { videoName = it },
+                label = { Text("Video Name") },
+                modifier = Modifier.weight(1f)
+            )
+            Button(onClick = {
+                nettyClient.sendVideo(
+                    request = mapOf("courseId" to courseId, "videoName" to videoName),
+                    type = "course/file_upload/video",
+                    filePath = path
+                ) { response ->
+                    println("Response: $response")
                 }
-            } }
+            }) {
+                Text("Send Video")
+            }
+        }
+
+
 
 
         Spacer(modifier = Modifier.height(16.dp))

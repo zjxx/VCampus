@@ -103,7 +103,54 @@ class NettyClient(private val host: String, private val port: Int) {
                 req["role"] = role // 添加新的键值对
                 req["type"] = type // 添加新的键值对
                 val jsonRequest = gson.toJson(req)
-                val chunks = splitData(encodedFile, 512) // Split data into 512B chunks
+                val chunks = splitData(encodedFile, 64) // Split data into 512B chunks
+
+                // 发送请求
+                future.channel().writeAndFlush(jsonRequest)
+                for (chunk in chunks) {
+                    future.channel().writeAndFlush(chunk)
+                }
+                future.channel().writeAndFlush("END_OF_MESSAGE")
+                // 等待连接关闭
+                future.channel().closeFuture().sync()
+            } finally {
+                group.shutdownGracefully()
+            }
+        }.start()
+    }
+
+
+    fun sendVideo(request: Any,type: String, filePath: String, responseHandler: (String) -> Unit) {
+        Thread {
+            val group = NioEventLoopGroup()
+            try {
+                val bootstrap = Bootstrap()
+                bootstrap.group(group)
+                    .channel(NioSocketChannel::class.java)
+                    .option(ChannelOption.SO_KEEPALIVE, true)
+                    .handler(object : ChannelInitializer<SocketChannel>() {
+                        override fun initChannel(ch: SocketChannel) {
+                            ch.pipeline().addLast(
+                                LoggingHandler(LogLevel.INFO),
+                                StringDecoder(),
+                                StringEncoder(),
+                                NettyClientHandler(responseHandler)
+                            )
+                        }
+                    })
+
+                // 启动客户端
+                val future: ChannelFuture = bootstrap.connect(host, port).sync()
+
+                // 读取文件并编码为 Base64
+                val fileBytes = Files.readAllBytes(Paths.get(filePath))
+                val encodedFile = Base64.getEncoder().encodeToString(fileBytes)
+
+                val req = gson.fromJson(gson.toJson(request), MutableMap::class.java) as MutableMap<String, Any>
+                req["role"] = role // 添加新的键值对
+                req["type"] = type // 添加新的键值对
+                val jsonRequest = gson.toJson(req)
+                val chunks = splitData(encodedFile, 1) // Split data into 512B chunks
 
                 // 发送请求
                 future.channel().writeAndFlush(jsonRequest)
