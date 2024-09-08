@@ -60,6 +60,8 @@ public class ScoreController {
                     data.addProperty("status", "failed");
                     data.addProperty("reason", "course not found");
                 }
+            } catch (NumberFormatException e) {
+                throw new RuntimeException(e);
             }
         }
         //如果该学生已经提交过该课程的成绩，检查成绩的status是不是审核未通过，如果是，则更新成绩，否则不更新
