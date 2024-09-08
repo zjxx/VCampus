@@ -21,6 +21,7 @@ public class ControllerManager {
         routeMapping.registerRoute("addEmail", userController::addEmail);
         routeMapping.registerRoute("sendCode",userController::sendVerificationCode);
         routeMapping.registerRoute("updatePassword", userController::updatePassword);
+        routeMapping.registerRoute("updateEmail", userController::updateEmail);
 
         routeMapping.registerRoute("lib/search", libraryController::searchBookInfo);
         routeMapping.registerRoute("lib/addtolist", libraryController::borrowBook);
