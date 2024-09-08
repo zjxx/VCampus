@@ -100,7 +100,8 @@ data class Class(
     val time: String,
     val location: String,
     val students: List<Student>,
-    val timeAndLocationCards: List<TimeAndLocationCardData> // New property
+    val timeAndLocationCards: List<TimeAndLocationCardData>,
+     val classStatus: String // New property
 )
 data class StudentScore(
     val studentId: String,
@@ -116,6 +117,17 @@ data class ScoreStatus(
     val classStatus: String
 
 )
+data class ScoreMy(
+    val courseName: String,
+    val courseId: String,
+    val semester: String,
+    val credit: String,
+    val participationScore: String,
+    val midtermScore: String,
+    val finalScore: String,
+    val score: String,
+    val status: String
+)
 class CourseModule {
     private val nettyClient = NettyClientProvider.nettyClient
 
@@ -127,7 +139,8 @@ class CourseModule {
     val course: StateFlow<List<CourseData>> get() = _course
     private val _courseSchedule = MutableStateFlow<List<CourseScheduleItem>>(emptyList())
     val courseSchedule: StateFlow<List<CourseScheduleItem>> get() = _courseSchedule
-
+    private val _ScoreMy = MutableStateFlow<List<ScoreMy>>(emptyList())
+    val ScoreMy: StateFlow<List<ScoreMy>> get() = _ScoreMy
 fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
     return when (dayOfWeekNumber) {
         "1" -> "星期一"
@@ -301,7 +314,7 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
                     val (timeSlot, loc) = it
                     val parts = timeSlot.split("-")
                     TimeAndLocationCardData(
-                        dayOfWeek = parts[0],
+                        dayOfWeek = mapDayOfWeekNumberToChinese(parts[0]),
                         startPeriod = parts[1],
                         endPeriod = parts[2],
                         location = loc
@@ -322,12 +335,13 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
                     val FinalScore = studentJson["FinalScore"] as String
                     students.add(Student(studentId, name, gender, score,isScored,ParticipationScore,MidtermScore,FinalScore))
                 }
-                val classItem = Class(courseName, courseId,time, location, students, timeAndLocationCards)
+                val classStatus = courseJson["classStatus"] as String
+                val classItem = Class(courseName, courseId,time, location, students, timeAndLocationCards,classStatus)
                 classesMap.computeIfAbsent(courseName) { mutableListOf() }.add(classItem)
             }
             val classes = classesMap.map {
                 val firstClass = it.value.first()
-                Class(firstClass.courseName,firstClass.courseId, firstClass.time, firstClass.location, firstClass.students, firstClass.timeAndLocationCards)
+                Class(firstClass.courseName,firstClass.courseId, firstClass.time, firstClass.location, firstClass.students, firstClass.timeAndLocationCards,firstClass.classStatus)
             }
             onClassesReceived(classes)
         }
@@ -343,7 +357,7 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
 }
 
     fun deleteCourse(course: CourseData,onDeleteSuccess: () -> Unit) {
-        val request = mapOf("role" to UserSession.role, "courseId" to course.courseId, "teacherId" to course.teacherId)
+        val request = mapOf("role" to UserSession.role,"userId" to UserSession.userId, "courseId" to course.courseId )
         nettyClient.sendRequest(request, "course/delete") { response: String ->
             println("Received response: $response")
             val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -503,12 +517,40 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
     val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId)
     nettyClient.sendRequest(request, "score/view") { response: String ->
         handleResponseViewScore(response)
-    }
+      }
     }
     private fun handleResponseViewScore(response: String) {
-    println("Received response: $response")
-    val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        if (responseJson["status"] == "success") {
+            val numberOfCourses = responseJson["number"].toString().toInt()
+            val courses = mutableListOf<ScoreMy>()
 
+            for (i in 0 until numberOfCourses) {
+                val courseKey = "score$i"
+                val courseJson = responseJson[courseKey] as Map<String, Any>
+                val scoreMy = ScoreMy(
+                    courseName = courseJson["courseName"] as String,
+                    courseId = courseJson["courseId"] as String,
+                    semester = courseJson["semester"] as String,
+                    credit = courseJson["credit"] as String,
+                    participationScore = courseJson["participationScore"] as String,
+                    midtermScore = courseJson["midtermScore"] as String,
+                    finalScore = courseJson["finalScore"] as String,
+                    score = courseJson["score"] as String,
+                    status = courseJson["status"] as String
+                )
+                courses.add(scoreMy)
+            }
+
+            // Update the UI with the parsed courses
+            updateCourseCards(courses)
+        } else {
+            DialogManager.showDialog(responseJson["message"] as String)
+        }
+    }
+    fun updateCourseCards(courses: List<ScoreMy>) {
+        _ScoreMy.value = courses
     }
     fun ModifyScore(studentScore: StudentScore) {
     val request = mapOf(
@@ -539,7 +581,7 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         nettyClient.sendRequest(request, "score/list") { response: String ->
             handleResponseConfirm(response, onClassesReceived)
         }
-    }
+    }//教务审核
     private fun handleResponseConfirm(response: String, onClassesReceived: (List<module.Class>) -> Unit) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -557,7 +599,7 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
                         val (timeSlot, loc) = it
                         val parts = timeSlot.split("-")
                         TimeAndLocationCardData(
-                            dayOfWeek = parts[0],
+                            dayOfWeek = mapDayOfWeekNumberToChinese(parts[0]),
                             startPeriod = parts[1],
                             endPeriod = parts[2],
                             location = loc
@@ -578,12 +620,13 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
                         val FinalScore = studentJson["FinalScore"] as String
                         students.add(Student(studentId, name, gender, score,isScored,ParticipationScore,MidtermScore,FinalScore))
                     }
-                    val classItem = Class(courseName, courseId,time, location, students, timeAndLocationCards)
+                    val classStatus = courseJson["classStatus"] as String
+                    val classItem = Class(courseName, courseId,time, location, students, timeAndLocationCards,classStatus)
                     classesMap.computeIfAbsent(courseName) { mutableListOf() }.add(classItem)
                 }
                 val classes = classesMap.map {
                     val firstClass = it.value.first()
-                    Class(firstClass.courseName,firstClass.courseId, firstClass.time, firstClass.location, firstClass.students, firstClass.timeAndLocationCards)
+                    Class(firstClass.courseName,firstClass.courseId, firstClass.time, firstClass.location, firstClass.students, firstClass.timeAndLocationCards,firstClass.classStatus)
                 }
                 onClassesReceived(classes)
             }

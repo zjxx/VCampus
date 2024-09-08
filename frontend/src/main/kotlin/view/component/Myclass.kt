@@ -16,6 +16,7 @@ import module.TimeAndLocationCardData
 import module.StudentScore
 import module.CourseModule
 import kotlin.math.roundToInt
+import androidx.compose.ui.graphics.Color
 
 
 @Composable
@@ -25,9 +26,10 @@ fun classCard(
     timeAndLocationCards: List<TimeAndLocationCardData>,
     studentCount: Int,
     students: List<Student>,
+    classStatus: String
 ) {
     var expanded by remember { mutableStateOf(false) }
-
+    val courseIdColor = if (classStatus == "审核未通过") Color.Red else Color.Black
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -36,10 +38,10 @@ fun classCard(
         elevation = 4.dp
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = courseName, fontWeight = FontWeight.Bold)
-            Text(text = "课程ID: $courseId", fontWeight = FontWeight.Bold)
+            Text(text = courseName, fontWeight = FontWeight.Bold,color = courseIdColor)
+            Text(text = "课程ID: $courseId", fontWeight = FontWeight.Bold,color = courseIdColor)
             timeAndLocationCards.forEach { card ->
-                Text(text = "时间: 周${card.dayOfWeek} ${card.startPeriod}节-${card.endPeriod}节")
+                Text(text = "时间: ${card.dayOfWeek} ${card.startPeriod}节-${card.endPeriod}节")
                 Text(text = "教室: ${card.location}")
             }
             Text(text = "人数: $studentCount")

@@ -10,11 +10,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun courseCard(courseName: String, courseId: String, overallGrade: String, regularGrade: String, midtermGrade: String, finalGrade: String) {
-    var expanded = remember { mutableStateOf(false) }
-
+    val expanded = remember { mutableStateOf(false) }
+    val gradeColor = if (overallGrade.toIntOrNull() ?: 0 < 60) Color.Red else Color.Black
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -23,9 +24,9 @@ fun courseCard(courseName: String, courseId: String, overallGrade: String, regul
         elevation = 4.dp
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = courseName, fontWeight = FontWeight.Bold)
-            Text(text = "课程ID: $courseId", fontWeight = FontWeight.Bold)
-            Text(text = "总成绩: $overallGrade", fontWeight = FontWeight.Bold)
+            Text(text = courseName, fontWeight = FontWeight.Bold, color = gradeColor)
+            Text(text = "课程ID: $courseId", fontWeight = FontWeight.Bold, color = gradeColor)
+            Text(text = "总成绩: $overallGrade", fontWeight = FontWeight.Bold, color = gradeColor)
             AnimatedVisibility(visible = expanded.value) {
                 Column(modifier = Modifier.padding(top = 16.dp)) {
                     Text(text = "平时成绩: $regularGrade")
