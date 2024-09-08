@@ -1,8 +1,10 @@
 package view
 
 
+import PaymentWebViewDialog
+import ShowWebViewDialog
 import WebViewComponent
-
+import WebViewDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,9 +26,12 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.gson.Gson
+import com.google.gson.JsonParser
 import data.Book
 import data.UserSession
 import module.LibraryModule
+import sendPostRequest
 import utils.downloadPdfIfNotExists
 import view.component.*
 import java.io.File
@@ -424,9 +429,14 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
 
                             "显示图片" -> {
                                 Column(modifier = Modifier.padding(top = 8.dp)) {
-                                    //WebViewComponent(url = "https://www.engineeringvillage.com/search/quick.url")
-//                                    FilePicker()
-                                    VideoPlayerScreen()
+                                    PaymentWebViewDialog(1.0) {//最低1块钱
+                                        if(it == "success"){
+                                            println(it)
+                                        }
+
+                                    }
+                                //                                    FilePicker()
+                                    //VideoPlayerScreen()
 //                                    Button(onClick = {
 //                                        val imageISBN = "9787550263932"
 //                                        val filePath = "src/main/temp/" + imageISBN + ".pdf"
