@@ -1,9 +1,6 @@
 package app.vcampus.controller;
 
-import app.vcampus.domain.Course;
-import app.vcampus.domain.Enrollment;
-import app.vcampus.domain.Score;
-import app.vcampus.domain.Student;
+import app.vcampus.domain.*;
 import app.vcampus.interfaces.CourseSelectRequest;
 import app.vcampus.interfaces.EnrollmentShowRequest;
 import app.vcampus.interfaces.CourseUnselectRequest;
@@ -334,12 +331,18 @@ public class CourseController {
         }
         else {
             Course course = courses.get(0);
-            db.delete(course);
+
             List<Enrollment> records = db.getWhere(Enrollment.class, "courseid", request.getCourseId());
             for (int i = 0; i < records.size(); i++) {
                 Enrollment record = records.get(i);
                 db.delete(record);
             }
+            List<Score> scores = db.getWhere(Score.class, "courseId", request.getCourseId());
+            for (int i = 0; i < scores.size(); i++) {
+                Score score = scores.get(i);
+                db.delete(score);
+            }
+            db.delete(course);
             data.addProperty("status", "success");
         }
         return gson.toJson(data);
@@ -523,12 +526,59 @@ public class CourseController {
         return gson.toJson(data);
     }
 
+    public String getRecordCourses(String jsonData) {
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+        String teacherId = request.get("teacherId").getAsString();
+        JsonObject data = new JsonObject();
+        DataBase db = DataBaseManager.getInstance();
+
+        // 查询该老师的所有课程
+        List<Course> courses = db.getWhere(Course.class, "teacherId", teacherId);
+        if (courses.isEmpty()) {
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "no courses found for this teacher");
+            return gson.toJson(data);
+        }
+
+        // 构建返回数据
+        data.addProperty("number", String.valueOf(courses.size()));
+        for (int i = 0; i < courses.size(); i++) {
+            Course course = courses.get(i);
+            JsonObject courseData = new JsonObject();
+            courseData.addProperty("courseName", course.getcourseName());
+            courseData.addProperty("courseId", course.getcourseId());
+            courseData.addProperty("time", course.getTime());
+            courseData.addProperty("location", course.getLocation());
+            // 查询选修该课程的所有video
+            List<Video> videos = db.getWhere(Video.class, "courseId", course.getcourseId());
+            JsonObject videosData = new JsonObject();
+            videosData.addProperty("number", String.valueOf(videos.size()));
+            for (int j = 0; j < videos.size(); j++) {
+                Video video = videos.get(j);
+                JsonObject videoData = new JsonObject();
+                videoData.addProperty("videoId", video.getVideoId().toString());
+                videoData.addProperty("videoName", video.getVideoName());
+                videoData.addProperty("upload_Date", video.getUpload_Date().toString());
+
+                videosData.add("video" + j, videoData);
+            }
+            courseData.add("videos", videosData);
+            data.add("course" + i, courseData);
+        }
+        data.addProperty("status", "success");
+        return gson.toJson(data);
+    }
+
 
 
     public String videoUpload(String jsonData,String additionalParam){
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
-
-        String filepath="ts.mp4";
+        Video video = new Video();
+        video.setCourseId(request.get("courseId").getAsString());
+        video.setVideoName(request.get("videoName").getAsString());
+        video.setVideoId(request.get("videoId").getAsString());
+        video.setUpload_Date(new Date());
+        String filepath="C:\\Users\\Administrator\\Desktop\\server\\img\\"+ request.get("videoId").getAsString();
         try {
             fileOutputStream = new FileOutputStream(filepath);//指定保持路径
             byte[] bytes = java.util.Base64.getDecoder().decode(additionalParam);
@@ -538,6 +588,8 @@ public class CourseController {
         catch (Exception e) {
             e.printStackTrace();
         }
+        DataBase db = DataBaseManager.getInstance();
+        db.save(video);
         JsonObject data = new JsonObject();
         data.addProperty("status", "success");
         return gson.toJson(data);

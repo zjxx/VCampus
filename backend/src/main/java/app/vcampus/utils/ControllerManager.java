@@ -65,6 +65,7 @@ public class ControllerManager {
         routeMapping.registerRoute("course/table",courseController::showStudentCourseTable);//查看课表
         routeMapping.registerRoute("course/modify",courseController::modifyCourse);//教务修改课程信息
         routeMapping.registerRoute("course/getCoursesByTeacherId",courseController::getCoursesByTeacherId);//查看课程信息
+        routeMapping.registerRoute("course/getCourseRecord",courseController::getRecordCourses);//查看录课信息
         routeMapping.registerRouteWithParams("course/file_upload/video",courseController::videoUpload);//教务添加课程
 
         routeMapping.registerRoute("score/give",scoreController::giveScore);//老师打分
