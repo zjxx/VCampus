@@ -23,7 +23,7 @@ class LoginModule(
             nettyClient.setRole(responseJson["role"] as String)
             UserSession.userId = responseJson["userId"] as String
             UserSession.role = responseJson["role"] as String
-            //UserSession.userName = responseJson["userName"] as String
+            UserSession.status = responseJson["status"] as String
             onLoginSuccess()
         } else {
             DialogManager.showDialog(responseJson["message"] as String)
@@ -41,7 +41,7 @@ class LoginModule(
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         if (responseJson["status"] == "success") {
-           // UserSession.code = responseJson["Code"] as String
+           UserSession.code = responseJson["code"] as String
             DialogManager.showDialog(responseJson["message"] as String)
         } else {
             DialogManager.showDialog(responseJson["message"] as String)
@@ -64,6 +64,24 @@ class LoginModule(
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         if (responseJson["status"] == "success") {
             onSuccess()
+        } else {
+            onError(responseJson["message"] as String)
+        }
+    }
+    fun updateEmail(userId: String, email: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        val request = mapOf("userId" to userId, "email" to email)
+        nettyClient.sendRequest(request, "updateEmail") { response: String ->
+            handleResponseUpdateEmail(response, onSuccess, onError)
+        }
+    }
+
+    private fun handleResponseUpdateEmail(response: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        if (responseJson["status"] == "success") {
+            onSuccess()
+            DialogManager.showDialog(responseJson["message"] as String)
+
         } else {
             onError(responseJson["message"] as String)
         }

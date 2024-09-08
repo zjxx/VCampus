@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.ui.Alignment
 import module.CourseModule
+import view.ModifyCourseSubscene
 
 @Composable
 fun ModifydetailCard(course: CourseData, onDeleteSuccess: () -> Unit) {
@@ -27,28 +28,31 @@ fun ModifydetailCard(course: CourseData, onDeleteSuccess: () -> Unit) {
     var teacherId by remember { mutableStateOf(course.teacherId) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     val courseModule = CourseModule()
+    val courses by courseModule.course.collectAsState()
+
     if (showDeleteDialog) {
-        AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
-            title = { Text("确认删除") },
-            text = { Text("你确定要删除该课程吗？") },
-            confirmButton = {
-                TextButton(onClick = {
-                    courseModule.deleteCourse(course) {
-                        onDeleteSuccess()
-                        showDeleteDialog = false
-                    }
-                }) {
-                    Text("确定")
+    AlertDialog(
+        onDismissRequest = { showDeleteDialog = false },
+        title = { Text("确认删除") },
+        text = { Text("你确定要删除该课程吗？") },
+        confirmButton = {
+            TextButton(onClick = {
+                courseModule.deleteCourse(course) {
+                    onDeleteSuccess()
+                    showDeleteDialog = false
                 }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("取消")
-                }
+            }) {
+                Text("确定")
             }
-        )
-    }
+        },
+        dismissButton = {
+            TextButton(onClick = { showDeleteDialog = false }) {
+                Text("取消")
+            }
+        }
+    )
+}
+
 
     Card(
         modifier = Modifier
