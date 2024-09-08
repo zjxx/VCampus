@@ -33,7 +33,9 @@ import data.UserSession
 import module.LibraryModule
 import sendPostRequest
 import utils.downloadPdfIfNotExists
-import view.component.*
+import view.component.GlobalState
+import view.component.LocalPdfViewer
+import view.component.VideoPlayerScreen
 import java.io.File
 
 
@@ -400,23 +402,23 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                                     ) {
                                                         Text("还书", fontSize = 14.sp, color = Color.White)
                                                     }
-                                                    Spacer(modifier = Modifier.height(8.dp))
-                                                    Button(
-                                                        onClick = {
-                                                            libraryModule.libRenewBook(
-                                                                UserSession.userId ?: "",
-                                                                book.isbn
-                                                            )
-                                                        },
-                                                        modifier = Modifier.size(100.dp, 36.dp),
-                                                        colors = ButtonDefaults.buttonColors(
-                                                            backgroundColor = Color(
-                                                                0xFF228042
-                                                            )
-                                                        )
-                                                    ) {
-                                                        Text("续借", fontSize = 14.sp, color = Color.White)
-                                                    }
+//                                                    Spacer(modifier = Modifier.height(8.dp))
+//                                                    Button(
+//                                                        onClick = {
+//                                                            libraryModule.libRenewBook(
+//                                                                UserSession.userId ?: "",
+//                                                                book.isbn
+//                                                            )
+//                                                        },
+//                                                        modifier = Modifier.size(100.dp, 36.dp),
+//                                                        colors = ButtonDefaults.buttonColors(
+//                                                            backgroundColor = Color(
+//                                                                0xFF228042
+//                                                            )
+//                                                        )
+//                                                    ) {
+//                                                        Text("续借", fontSize = 14.sp, color = Color.White)
+//                                                    }
                                                 }
                                             }
                                         }

@@ -1,8 +1,12 @@
 package data
 
 data class Merchandise(
-    val id: String,
-    val name: String,
-    val price: Double,
-    val imageRes: Int
+    val itemUuid: String = "",
+    val itemname: String = "",
+    val price: String = "",
+    val imageRes: String = "",
+    val barcode: String = "",
+    val stock: String = "",
+    val salesVolume: String = "",
+    val description: String = "",
 )

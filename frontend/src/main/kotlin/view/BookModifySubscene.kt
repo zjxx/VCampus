@@ -138,31 +138,31 @@ fun BookModifySubscene(onNavigateBack: () -> Unit, book: Book, type: String) {
                         value = kind,
                         onValueChange = { kind = it },
                         label = { Text("类型") },
-                        modifier = Modifier.width(96.dp).padding(end = 8.dp)
+                        modifier = Modifier.weight(1f).padding(end = 8.dp)
                     )
                     OutlinedTextField(
                         value = publisher,
                         onValueChange = { publisher = it },
                         label = { Text("出版社") },
-                        modifier = Modifier.weight(1f).padding(end = 8.dp)
+                        modifier = Modifier.weight(2f).padding(end = 8.dp)
                     )
                     OutlinedTextField(
                         value = publishDate,
                         onValueChange = { publishDate = it },
                         label = { Text("出版日期") },
-                        modifier = Modifier.width(108.dp).padding(end = 8.dp)
+                        modifier = Modifier.weight(0.8f).padding(end = 8.dp)
                     )
                     OutlinedTextField(
                         value = quantity,
                         onValueChange = { quantity = it },
                         label = { Text("书籍总数") },
-                        modifier = Modifier.width(84.dp).padding(end = 8.dp)
+                        modifier = Modifier.weight(0.5f).padding(end = 8.dp)
                     )
                     OutlinedTextField(
                         value = valid,
                         onValueChange = { valid = it },
                         label = { Text("剩余可借") },
-                        modifier = Modifier.width(84.dp)
+                        modifier = Modifier.weight(0.5f)
                     )
                 }
 
@@ -207,6 +207,9 @@ fun BookModifySubscene(onNavigateBack: () -> Unit, book: Book, type: String) {
                                 }
                             }
                             libraryModule.bookModify(request, type, filePath)
+                            if (modifyResult == "success") {
+                                onNavigateBack()
+                            }
                         },
                         modifier = Modifier.size(168.dp, 48.dp),
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF228042))

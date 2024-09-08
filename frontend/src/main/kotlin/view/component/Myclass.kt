@@ -128,9 +128,9 @@ fun studentCard(student: Student, courseId: String) {
                                     val studentScore = StudentScore(
                                         studentId = student.studentId,
                                         courseId = courseId,
-                                        regularGrade = student.ParticipationScore,
-                                        midtermGrade = student.MidtermScore,
-                                        finalGrade = student.FinalScore,
+                                        regularGrade = ParticipationScore,
+                                        midtermGrade = MidtermScore,
+                                        finalGrade = FinalScore,
                                         overallGrade = overallGrade
                                     )
                                     courseModule.ModifyScore(studentScore)
@@ -145,9 +145,9 @@ fun studentCard(student: Student, courseId: String) {
                                     val studentScore = StudentScore(
                                         studentId = student.studentId,
                                         courseId = courseId,
-                                        regularGrade = student.ParticipationScore,
-                                        midtermGrade = student.MidtermScore,
-                                        finalGrade = student.FinalScore,
+                                        regularGrade = ParticipationScore,
+                                        midtermGrade = MidtermScore,
+                                        finalGrade = FinalScore,
                                         overallGrade = overallGrade
                                     )
                                     courseModule.giveScore(studentScore)
