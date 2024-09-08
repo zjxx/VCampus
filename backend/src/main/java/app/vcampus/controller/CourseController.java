@@ -574,14 +574,14 @@ public class CourseController {
     public String videoUpload(String jsonData,String additionalParam){
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         Video video = new Video();
-        String videoId=request.get("videoId").getAsString().replaceAll("\\D+", "");
-
+        List<Video> videos = DataBaseManager.getInstance().getWhere(Video.class, "courseId", request.get("courseId").getAsString());
+        String videoId=String.valueOf(videos.size()+1);
         video.setCourseId(request.get("courseId").getAsString());
         video.setVideoName(request.get("videoName").getAsString());
         video.setVideoId(videoId);
         video.setUpload_Date(new Date());
         //筛选出一个string的纯数字部分
-        String filepath="C:\\Users\\Administrator\\Desktop\\server\\img\\"+ videoId+".mp4";
+        String filepath=videoId+".mp4";
         try {
             fileOutputStream = new FileOutputStream(filepath);//指定保持路径
             byte[] bytes = java.util.Base64.getDecoder().decode(additionalParam);
