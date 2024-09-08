@@ -147,14 +147,6 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         }
     }//显示所有课程
 
-    fun searchCourses(query: String) {
-        val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId, "query" to query)
-        nettyClient.sendRequest(request, "course/search") { response: String ->
-            handleResponseList(response)
-        }
-    }//搜索
-
-
     private fun handleResponseList(response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -515,6 +507,8 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
     }
     private fun handleResponseViewScore(response: String) {
     println("Received response: $response")
+    val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+
     }
     fun ModifyScore(studentScore: StudentScore) {
     val request = mapOf(

@@ -22,28 +22,14 @@ fun SelectCourseSubscene(courseModule: CourseModule) {
     val groupedCourses by courseModule.searchResults.collectAsState()
 
     Column(modifier = Modifier.verticalScroll(scrollState).padding(16.dp)) {
-        // 搜索框和搜索按钮
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            TextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
-                label = { Text("搜索课程") },
-                modifier = Modifier.weight(1f).padding(end = 8.dp)
-            )
-            Button(onClick = {
-                courseModule.searchCourses(searchQuery)
-
-            }) {
-                Text("搜索")
-            }
-        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         // Title bar
         Row(modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
-            Text("课程号前缀", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
-            Text("课程名称", modifier = Modifier.weight(2f), fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.weight(0.15f))
+            Text("课程号前缀", modifier = Modifier.weight(0.95f), fontWeight = FontWeight.Bold)
+            Text("课程名称", modifier = Modifier.weight(1.8f), fontWeight = FontWeight.Bold)
             Text("学分", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
             Text("课程性质", modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
         }
