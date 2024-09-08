@@ -153,7 +153,11 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                 Text(text = "查看购物车", fontSize = 18.sp, color = Color.Black)
                             }
                             TextButton(
-                                onClick = { selectedOption = "消费记录" },
+                                onClick = {
+                                    selectedOption = "消费记录"
+                                    UserSession.userId?.let { userId ->
+                                        shopModule.getTransactionsByCardNumber(userId)}
+                                },
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
                                 Icon(imageVector = Icons.Default.Image, contentDescription = "消费记录")
@@ -421,8 +425,8 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                             .fillMaxHeight()
                                             .padding(8.dp)
                                     ) {
-                                        items(tempItems.size) { index ->
-                                            val item = tempItems[index]
+                                        items(tempTransactions.size) { index ->
+                                            val transaction = tempTransactions[index]
 
                                             Row(
                                                 modifier = Modifier
@@ -436,39 +440,12 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                 Column(
                                                     modifier = Modifier.weight(1f)
                                                 ) {
-                                                    Text(text = item.itemname, color = Color.Black, fontSize = 16.sp)
+                                                    Text(text = transaction.itemName, color = Color.Black, fontSize = 16.sp)
                                                     //Text(text = conditionText, color = textColor, fontSize = 16.sp)
                                                     Text(
-                                                        text = "价格 > ${item.price}\n库存 > ${item.stock}",
+                                                        text = "价格 > ${transaction.itemPrice}\n数量 > ${transaction.amount}",
                                                         fontSize = 12.sp
                                                     )
-                                                }
-                                                Column(
-                                                    modifier = Modifier.align(Alignment.CenterVertically),
-                                                    verticalArrangement = Arrangement.Center,
-                                                    horizontalAlignment = Alignment.CenterHorizontally
-                                                ) {
-
-                                                    Button(
-                                                        onClick = {
-                                                            shopModule.removeItemFromCart(
-                                                                item.itemUuid,
-                                                                item.quantity,
-                                                            )
-                                                        },
-                                                        modifier = Modifier.size(100.dp, 36.dp),
-                                                        colors = ButtonDefaults.buttonColors(
-                                                            backgroundColor = Color(0xFF228042)
-                                                        ),
-                                                        //enabled = item. != "haveBorrowed"
-                                                    ) {
-                                                        Text(
-                                                            "移除",
-                                                            fontSize = 14.sp,
-                                                            color = Color.White,
-                                                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-                                                        )
-                                                    }
                                                 }
                                             }
                                         }

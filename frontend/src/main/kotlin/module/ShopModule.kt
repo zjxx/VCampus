@@ -1,6 +1,7 @@
 package module
 
 import com.google.gson.Gson
+import com.google.gson.JsonParser
 import data.Merchandise
 import data.StoreTransaction
 import data.UserSession
@@ -232,14 +233,14 @@ class ShopModule (
 
                     val item = Merchandise(
                         itemUuid = itemJson["uuid"] as String,
-                        itemname = itemJson["itemName"] as String,
+                        itemname = itemJson["name"] as String,
                         price = itemJson["price"] as String,
                         imageRes = localPath,
                         barcode = itemJson["barcode"] as String,
                         stock = itemJson["stock"] as String,
                         salesVolume = itemJson["salesVolume"] as String,
                         description = itemJson["description"] as String,
-                        quantity = itemJson["quantity"] as String
+                        //quantity = itemJson["quantity"] as String
                     )
                     println("image: ${item.imageRes}")
                     tempItems.add(item)
@@ -315,19 +316,35 @@ class ShopModule (
 
         if (responseJson["status"] == "success") {
             val num = responseJson["length"] as String
+            val transactionResponse = responseJson["transactions"] as String
+            val transactionResponseJson =
+                Gson().fromJson(transactionResponse, MutableMap::class.java) as MutableMap<String, Any>
+
             if (!num.equals("0")) {
                 for (i in 0 until num.toInt()) {
 
-                    val temp = StoreTransaction(
-                        uuid = responseJson["uuid"] as String,
-                        itemUuid = responseJson["itemUuid"] as String,
-                        itemName = responseJson["itemName"] as String,
-                        itemPrice = responseJson["itemPrice"] as String,
-                        amount = responseJson["barcode"] as String,
-                        cardNumber = responseJson["stock"] as String,
-                        time = responseJson["salesVolume"] as String,
+                    val transactionIndex = transactionResponseJson["transaction" + i.toString()] as String
+                    println("transaction0: ${transactionResponseJson["transaction0"]}")
+                    val transactionJson =
+                        Gson().fromJson(transactionIndex, MutableMap::class.java) as MutableMap<String, Any>
+                    println("transactionJson: ${transactionJson}")
+                    println("transactionResponseJson: ${transactionResponseJson}")
+
+//                    var imageURL = itemJ son["uuid"] as String
+//                    var tempImage = "http://47.99.141.236/img/" + imageURL + ".jpg"
+//                    var localPath = "src/main/temp/" + imageURL + ".jpg"
+//                    downloadImageIfNotExists(tempImage, localPath)
+
+                    val transaction = StoreTransaction(
+                        uuid = transactionJson["uuid"] as String,
+                        itemUuid = transactionJson["itemUuid"] as String,
+                        itemName = transactionJson["itemName"] as String,
+                        itemPrice = transactionJson["itemPrice"] as String,
+                        amount = transactionJson["quantity"] as String,
+                        time = transactionJson["time"] as String,
                     )
-                    tempTransactions.add(temp)
+                    //println("image: ${transaction.imageRes}")
+                    tempTransactions.add(transaction)
                 }
                 onGetAllTransactionsSuccess(tempTransactions)
             }
@@ -348,24 +365,30 @@ class ShopModule (
 
     private fun handleGetTransactionsByCardNumber (response: String) {
         println("Received response: $response")
-        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
-        println("Response status: ${responseJson["status"]}")
+        val responseJson = JsonParser.parseString(response).asJsonObject
+        val status = responseJson.get("status").asString
+        println("Response status: ${status}")
 
-        if (responseJson["status"] == "success") {
-            val num = responseJson["length"] as String
+        if (status == "success") {
+            val num = responseJson.get("length").asString
+            val transactions = responseJson.get("transactions").asString
+            val transactionsJson = JsonParser.parseString(transactions).asJsonObject
+
             if (!num.equals("0")) {
                 for (i in 0 until num.toInt()) {
 
-                    val temp = StoreTransaction(
-                        uuid = responseJson["uuid"] as String,
-                        itemUuid = responseJson["itemUuid"] as String,
-                        itemName = responseJson["itemName"] as String,
-                        itemPrice = responseJson["itemPrice"] as String,
-                        amount = responseJson["barcode"] as String,
-                        cardNumber = responseJson["stock"] as String,
-                        time = responseJson["salesVolume"] as String,
+                    val eachTransactionJson = transactionsJson.getAsJsonObject("transaction" + i.toString())
+
+                    val transaction = StoreTransaction(
+                        uuid = eachTransactionJson.get("uuid").asString,
+                        itemUuid = eachTransactionJson.get("itemUuid").asString,
+                        itemName = eachTransactionJson.get("itemName").asString,
+                        itemPrice = eachTransactionJson.get("itemPrice").asString,
+                        amount = eachTransactionJson.get("amount").asString,
+                        time = eachTransactionJson.get("time").asString,
                     )
-                    tempTransactions.add(temp)
+                    //println("image: ${transaction.imageRes}")
+                    tempTransactions.add(transaction)
                 }
                 onGetTransactionsByCardNumberSuccess(tempTransactions)
             }

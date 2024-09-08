@@ -1,6 +1,6 @@
 package data
 
-class StoreTransaction (
+data class StoreTransaction (
     val uuid: String = "",
     val itemUuid: String = "",
     val itemName: String = "",
