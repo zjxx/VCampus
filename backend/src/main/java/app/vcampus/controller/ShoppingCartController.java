@@ -105,7 +105,7 @@ public class ShoppingCartController {
 
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");
-            response.addProperty("length", cartItems.size());
+            response.addProperty("length", String.valueOf(cartItems.size()));
             response.addProperty("items", gson.toJson(itemsObject));
             return gson.toJson(response);
         } catch (Exception e) {
