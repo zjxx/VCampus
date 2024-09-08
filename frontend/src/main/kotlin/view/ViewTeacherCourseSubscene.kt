@@ -24,6 +24,7 @@ fun ViewTeacherCourseSubscene(classes: List<Class>) {
                 timeAndLocationCards = classItem.timeAndLocationCards,
                 studentCount = classItem.students.size,
                 students = classItem.students,
+                classStatus = classItem.classStatus
             )
         }
     }
