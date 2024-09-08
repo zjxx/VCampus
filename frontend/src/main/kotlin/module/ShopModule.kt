@@ -116,21 +116,29 @@ class ShopModule (
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         println("Response status: ${responseJson["status"]}")
+
         if (responseJson["status"] == "success") {
             val num = responseJson["length"] as String
+            val itemResponse = responseJson["items"] as String
+            val itemResponseJson = Gson().fromJson(itemResponse, MutableMap::class.java) as MutableMap<String, Any>
+
             if (!num.equals("0")) {
                 for (i in 0 until num.toInt()) {
-                    val itemIndex = responseJson["item" + i.toString()] as String
+
+                    val itemIndex = itemResponseJson["item" + i.toString()] as String
+                    println("item0: ${itemResponseJson["item0"]}")
                     val itemJson = Gson().fromJson(itemIndex, MutableMap::class.java) as MutableMap<String, Any>
                     println("itemJson: ${itemJson}")
+                    println("itemResponseJson: ${itemResponseJson}")
 
                     var imageURL = itemJson["uuid"] as String
                     var tempImage = "http://47.99.141.236/img/" + imageURL + ".jpg"
                     var localPath = "src/main/temp/" + imageURL + ".jpg"
                     downloadImageIfNotExists(tempImage, localPath)
+
                     val item = Merchandise(
                         itemUuid = itemJson["uuid"] as String,
-                        itemname = itemJson["itemname"] as String,
+                        itemname = itemJson["name"] as String,
                         price = itemJson["price"] as String,
                         imageRes = localPath,
                         barcode = itemJson["barcode"] as String,
@@ -163,7 +171,7 @@ class ShopModule (
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         println("Response status: ${responseJson["status"]}")
         if (responseJson["status"] == "success") {
-            onAddItemToCartSuccess
+            DialogManager.showDialog("添加成功")
         } else {
             DialogManager.showDialog(responseJson["reason"] as String)
         }
@@ -171,8 +179,8 @@ class ShopModule (
 
     //_______________________________________________________________________________________
     //从购物车移除
-    fun removeItemFromCart(uuid: String, cartUuid: String) {
-        val request = mapOf("userId" to UserSession.userId.toString(), "itemId" to uuid, "uuid" to cartUuid)
+    fun removeItemFromCart(uuid: String, quantity: String) {
+        val request = mapOf("userId" to UserSession.userId.toString(), "itemId" to uuid, "quantity" to quantity)
         nettyClient.sendRequest(request,"shop/removeItemFromCart") { response: String ->
             handleRemoveItemFromCart(response)
         }
@@ -202,27 +210,36 @@ class ShopModule (
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         println("Response status: ${responseJson["status"]}")
+
         if (responseJson["status"] == "success") {
             val num = responseJson["length"] as String
+            val itemResponse = responseJson["items"] as String
+            val itemResponseJson = Gson().fromJson(itemResponse, MutableMap::class.java) as MutableMap<String, Any>
+
             if (!num.equals("0")) {
                 for (i in 0 until num.toInt()) {
-                    val itemIndex = responseJson["item" + i.toString()] as String
+
+                    val itemIndex = itemResponseJson["item" + i.toString()] as String
+                    println("item0: ${itemResponseJson["item0"]}")
                     val itemJson = Gson().fromJson(itemIndex, MutableMap::class.java) as MutableMap<String, Any>
                     println("itemJson: ${itemJson}")
+                    println("itemResponseJson: ${itemResponseJson}")
 
                     var imageURL = itemJson["uuid"] as String
                     var tempImage = "http://47.99.141.236/img/" + imageURL + ".jpg"
                     var localPath = "src/main/temp/" + imageURL + ".jpg"
                     downloadImageIfNotExists(tempImage, localPath)
+
                     val item = Merchandise(
                         itemUuid = itemJson["uuid"] as String,
-                        itemname = itemJson["itemname"] as String,
+                        itemname = itemJson["itemName"] as String,
                         price = itemJson["price"] as String,
                         imageRes = localPath,
                         barcode = itemJson["barcode"] as String,
                         stock = itemJson["stock"] as String,
                         salesVolume = itemJson["salesVolume"] as String,
-                        description = itemJson["description"] as String
+                        description = itemJson["description"] as String,
+                        quantity = itemJson["quantity"] as String
                     )
                     println("image: ${item.imageRes}")
                     tempItems.add(item)
@@ -322,7 +339,7 @@ class ShopModule (
     //_______________________________________________________________________________________
     //获取订单记录:User
     fun getTransactionsByCardNumber (cardNumber: String) {
-        tempItems.clear()
+        tempTransactions.clear()
         val request = mapOf("cardNumber" to cardNumber)
         nettyClient.sendRequest(request, "shop/getTransactionsByCardNumber") { response: String ->
             handleGetTransactionsByCardNumber(response)

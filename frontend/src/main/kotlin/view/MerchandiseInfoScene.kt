@@ -157,8 +157,8 @@ fun MerchandiseInfoScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
                                 .size(136.dp, 48.dp)
                                 .clip(
                                     RoundedCornerShape(
-                                        topStart = 20.dp,
-                                        bottomStart = 20.dp,
+                                        topStart = 18.dp,
+                                        bottomStart = 18.dp,
                                         topEnd = 0.dp,
                                         bottomEnd = 0.dp
                                     )
@@ -181,8 +181,8 @@ fun MerchandiseInfoScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
                                     RoundedCornerShape(
                                         topStart = 0.dp,
                                         bottomStart = 0.dp,
-                                        topEnd = 20.dp,
-                                        bottomEnd = 20.dp
+                                        topEnd = 18.dp,
+                                        bottomEnd = 18.dp
                                     )
                                 )
                                 .padding(start = 0.dp), // Remove padding between buttons

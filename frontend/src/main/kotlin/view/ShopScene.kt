@@ -1,6 +1,7 @@
 package view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -37,9 +38,8 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
     var imageUrl by remember { mutableStateOf("") }
     //var inputText by remember { mutableStateOf(TextFieldValue("")) }
     var tempItems by remember { mutableStateOf(listOf<Merchandise>()) }
-    var tempStoreTransaction by remember { mutableStateOf(listOf<StoreTransaction>()) }
+    var tempTransactions by remember { mutableStateOf(listOf<StoreTransaction>()) }
     var currentScene by remember { mutableStateOf("ShopScene") }
-
     var isCollapsed by remember { mutableStateOf(true) }
 
     val shopModule = ShopModule(
@@ -56,7 +56,10 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
         onRemoveItemFromCartSuccesss = {},
         onShopAddToListSuccess = {},
         onGetAllTransactionsSuccess = {},
-        onGetTransactionsByCardNumberSuccess = {},
+        onGetTransactionsByCardNumberSuccess = { result ->
+            tempTransactions = emptyList()
+            tempTransactions = result
+        },
         onViewSuccess = { result ->
             tempItems = emptyList()
             tempItems = result
@@ -194,7 +197,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                     fontSize = 24.sp,
                                     fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                                 )
-                                Spacer (modifier = Modifier.height(12.dp))
+                                Spacer(modifier = Modifier.height(12.dp))
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically
@@ -231,16 +234,16 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                         val item = tempItems[index]
                                         Row(
                                             modifier = Modifier
-                                                .padding(8.dp)
+                                                .padding(6.dp)
                                                 .clip(RoundedCornerShape(8.dp))
                                                 .background(Color(0xFFFDFBEC))
                                                 .clickable {
                                                     GlobalState.selectedItem = item
                                                     currentScene = "MerchandiseInfoScene"
                                                 }
-                                                .padding(8.dp)
+                                                .padding(6.dp)
                                         ) {
-                                            Box (
+                                            Box(
                                                 modifier = Modifier
                                                     .size(108.dp)
                                                     .clip(RoundedCornerShape(8.dp))
@@ -325,6 +328,64 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                             )
                                         }
                                     }
+                                    LazyVerticalGrid(
+                                        columns = GridCells.Fixed(2),
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .padding(8.dp)
+                                    ) {
+                                        items(tempItems.size) { index ->
+                                            val item = tempItems[index]
+
+                                            Row(
+                                                modifier = Modifier
+                                                    .padding(8.dp)
+                                                    .clip(RoundedCornerShape(8.dp))
+                                                    .background(Color(0xFFFDFBEC))
+                                                    .border(1.dp, Color.LightGray)
+                                                    .height(120.dp)
+                                                    .padding(8.dp)
+                                            ) {
+                                                Column(
+                                                    modifier = Modifier.weight(1f)
+                                                ) {
+                                                    Text(text = item.itemname, color = Color.Black, fontSize = 16.sp)
+                                                    //Text(text = conditionText, color = textColor, fontSize = 16.sp)
+                                                    Text(
+                                                        text = "价格 > ${item.price}\n库存 > ${item.stock}",
+                                                        fontSize = 12.sp
+                                                    )
+                                                }
+                                                Column(
+                                                    modifier = Modifier.align(Alignment.CenterVertically),
+                                                    verticalArrangement = Arrangement.Center,
+                                                    horizontalAlignment = Alignment.CenterHorizontally
+                                                ) {
+
+                                                    Button(
+                                                        onClick = {
+                                                            shopModule.removeItemFromCart(
+                                                                item.itemUuid,
+                                                                item.quantity,
+                                                            )
+                                                        },
+                                                        modifier = Modifier.size(100.dp, 36.dp),
+                                                        colors = ButtonDefaults.buttonColors(
+                                                            backgroundColor = Color(0xFF228042)
+                                                        ),
+                                                        //enabled = item. != "haveBorrowed"
+                                                    ) {
+                                                        Text(
+                                                            "移除",
+                                                            fontSize = 14.sp,
+                                                            color = Color.White,
+                                                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
 
@@ -359,14 +420,63 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                         modifier = Modifier
                                             .fillMaxHeight()
                                             .padding(8.dp)
-                                     ){
+                                    ) {
+                                        items(tempItems.size) { index ->
+                                            val item = tempItems[index]
 
+                                            Row(
+                                                modifier = Modifier
+                                                    .padding(8.dp)
+                                                    .clip(RoundedCornerShape(8.dp))
+                                                    .background(Color(0xFFFDFBEC))
+                                                    .border(1.dp, Color.LightGray)
+                                                    .height(120.dp)
+                                                    .padding(8.dp)
+                                            ) {
+                                                Column(
+                                                    modifier = Modifier.weight(1f)
+                                                ) {
+                                                    Text(text = item.itemname, color = Color.Black, fontSize = 16.sp)
+                                                    //Text(text = conditionText, color = textColor, fontSize = 16.sp)
+                                                    Text(
+                                                        text = "价格 > ${item.price}\n库存 > ${item.stock}",
+                                                        fontSize = 12.sp
+                                                    )
+                                                }
+                                                Column(
+                                                    modifier = Modifier.align(Alignment.CenterVertically),
+                                                    verticalArrangement = Arrangement.Center,
+                                                    horizontalAlignment = Alignment.CenterHorizontally
+                                                ) {
+
+                                                    Button(
+                                                        onClick = {
+                                                            shopModule.removeItemFromCart(
+                                                                item.itemUuid,
+                                                                item.quantity,
+                                                            )
+                                                        },
+                                                        modifier = Modifier.size(100.dp, 36.dp),
+                                                        colors = ButtonDefaults.buttonColors(
+                                                            backgroundColor = Color(0xFF228042)
+                                                        ),
+                                                        //enabled = item. != "haveBorrowed"
+                                                    ) {
+                                                        Text(
+                                                            "移除",
+                                                            fontSize = 14.sp,
+                                                            color = Color.White,
+                                                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-
                     //________________________________________________________________________________________ ↓ for admin ↓
 
                     else if (role == "admin") {
@@ -492,7 +602,6 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                         }
                     }
                 }
-
             }
         }
     } else if (currentScene == "MerchandiseInfoScene") {

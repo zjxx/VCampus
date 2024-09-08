@@ -9,4 +9,6 @@ data class Merchandise(
     val stock: String = "",
     val salesVolume: String = "",
     val description: String = "",
+
+    val quantity: String = "",
 )
