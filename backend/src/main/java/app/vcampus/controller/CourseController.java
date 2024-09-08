@@ -18,10 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.io.FileOutputStream;
-import java.util.Base64;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.text.SimpleDateFormat;
 
 public class CourseController {
@@ -624,7 +621,7 @@ public class CourseController {
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         Video video = new Video();
         List<Video> videos = DataBaseManager.getInstance().getWhere(Video.class, "courseId", request.get("courseId").getAsString());
-        String videoId=String.valueOf(videos.size()+1);
+        String videoId= UUID.randomUUID().toString();
         video.setCourseId(request.get("courseId").getAsString());
         video.setVideoName(request.get("videoName").getAsString());
         video.setVideoId(videoId);
