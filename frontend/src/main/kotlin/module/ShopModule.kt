@@ -151,8 +151,8 @@ class ShopModule (
 
     //_______________________________________________________________________________________
     //添加购物车
-    fun addItemToCart(uuid: String, cartUuid: String) {
-        val request = mapOf("userId" to UserSession.userId.toString(), "itemId" to uuid, "uuid" to cartUuid)
+    fun addItemToCart(uuid: String, quantity: String) {
+        val request = mapOf("userId" to UserSession.userId.toString(), "itemId" to uuid, "quantity" to quantity)
         nettyClient.sendRequest(request,"shop/addItemToCart") { response: String ->
             handleAddItemToCart(response)
         }
