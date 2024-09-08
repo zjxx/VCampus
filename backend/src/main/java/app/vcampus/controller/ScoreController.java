@@ -123,6 +123,8 @@ public class ScoreController {
                    finalScore= String.valueOf(score.getFinalScore());
                    scoreStr = String.valueOf(score.getScore());
                 }
+                List<Course> courses = db.getWhere(Course.class, "courseId", score.getCourseId());
+                scoreData.addProperty("courseName", courses.get(0).getcourseName());
                 scoreData.addProperty("courseId", score.getCourseId());
                 scoreData.addProperty("semester", score.getSemester());
                 scoreData.addProperty("credit", String.valueOf(score.getCredit()));
