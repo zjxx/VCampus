@@ -84,19 +84,22 @@ fun App() {
                                 NaviItem("图书馆", "/library", Icons.Default.Book, listOf("library_user", "library_staff")),
                                 NaviItem("超市", "/shop", Icons.Default.ShoppingCart, listOf("shop_user", "shop_staff")),
                                 NaviItem("课程", "/course", Icons.Default.DateRange, listOf("student", "affairs_staff")),
+                                NaviItem("办事平台", "/affairs", Icons.Default.Build, listOf("affairs_staff")),
                             )
                             "admin" -> listOf(
                                 NaviItem("主页", "/home", Icons.Default.Home, listOf("user")),
                                 NaviItem("教务", "/student_status", Icons.Default.DateRange, listOf("student", "affairs_staff")),
                                 NaviItem("图书馆", "/library", Icons.Default.Book, listOf("library_user", "library_staff")),
                                 NaviItem("超市", "/shop", Icons.Default.ShoppingCart, listOf("shop_user", "shop_staff")),
-                                NaviItem("课程管理", "/course", Icons.Default.DateRange, listOf("student", "affairs_staff"))
+                                NaviItem("课程管理", "/course", Icons.Default.DateRange, listOf("student", "affairs_staff")),
+                                NaviItem("办事平台", "/affairs", Icons.Default.Build, listOf("affairs_staff")),
                                 )
                             "teacher" -> listOf(
                                 NaviItem("主页", "/home", Icons.Default.Home, listOf("user")),
                                 NaviItem("图书馆", "/library", Icons.Default.Book, listOf("library_user", "library_staff")),
                                 NaviItem("超市", "/shop", Icons.Default.ShoppingCart, listOf("shop_user", "shop_staff")),
-                                NaviItem("课程", "/course", Icons.Default.DateRange, listOf("student", "affairs_staff"))
+                                NaviItem("课程", "/course", Icons.Default.DateRange, listOf("student", "affairs_staff")),
+                                NaviItem("办事平台", "/affairs", Icons.Default.Build, listOf("affairs_staff")),
                             )
 
                             else -> emptyList()
@@ -118,6 +121,9 @@ fun App() {
                         currentScene = path
                     }, role = UserSession.role ?: "")// 添加超市场景
                     "/course" -> CourseScene(onNavigate = { path ->
+                        currentScene = path
+                    }, role = UserSession.role ?: "")
+                    "/affairs" -> AffairsScene(onNavigate = { path ->
                         currentScene = path
                     }, role = UserSession.role ?: "")
                 // 添加更多场景
