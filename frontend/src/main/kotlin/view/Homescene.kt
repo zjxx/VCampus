@@ -3,12 +3,20 @@ package view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import data.Course
 import data.UserSession
 import module.LoginModule
 import view.component.EmailDialog
@@ -19,7 +27,7 @@ import java.util.*
 fun HomeScene(onLogout: () -> Unit) {
     var showEmailDialog by remember { mutableStateOf(UserSession.status == "noemail") }
     val loginModule = LoginModule(onLoginSuccess = {}, onLogout = onLogout)
-
+    val scrollState = rememberScrollState()
     if (showEmailDialog) {
         EmailDialog(
             onDismiss = { showEmailDialog = false },
@@ -45,28 +53,65 @@ fun HomeScene(onLogout: () -> Unit) {
         else -> "用户"
     }
 
-    Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-Column {
-    Column(modifier = Modifier.width(200.dp).height(80.dp)) {
-        Image(
-            painter = painterResource("p1.jpg"),
-            contentDescription = null,
-            modifier = Modifier.fillMaxWidth().height(100.dp)
-        )
-    }
-    Column(modifier = Modifier.fillMaxSize()) {
-        Text("$greeting, $userName$roleTitle")
-        Text("一卡通号: $userId")
-        Spacer(modifier = Modifier.height(16.dp))
-        // 添加更多内容
-    }
-}
+    val courses = remember { mutableStateOf(UserSession.courses) }
 
-        Button(
-            onClick = { loginModule.logout() },
-            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
-        ) {
-            Text("登出")
+    Box(modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(16.dp)) {
+        Column {
+            Column(modifier = Modifier.width(200.dp).height(80.dp)) {
+                Image(
+                    painter = painterResource("p1.jpg"),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxWidth().height(100.dp)
+                )
+            }
+            Column(modifier = Modifier.fillMaxSize()) {
+                Text("$greeting, $userName$roleTitle")
+                Spacer(modifier = Modifier.height(16.dp))
+                // 添加更多内容
+                Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+                    Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.Schedule,
+                                    contentDescription = null
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("我的课表")
+                            }
+                            Divider(modifier = Modifier.padding(vertical = 8.dp))
+                            courses.value.forEach { course ->
+                                Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                                    Column(modifier = Modifier.padding(8.dp)) {
+                                        Text("课程名: ${course.name}", fontWeight = FontWeight.Bold)
+                                        Text(" ${course.time}节    教室： ${course.classroom}",color = Color.Gray,
+                                            fontSize = 12.sp)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Divider(
+                        modifier = Modifier
+                            .padding(vertical = 8.dp)
+                            .height(2.dp),
+                        thickness = 2.dp
+                    )
+                    Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text("跑操次数: 10", fontWeight = FontWeight.Bold)
+                            Text("srtp学分: 5", fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = { loginModule.logout() },
+                    modifier = Modifier.align(Alignment.End).padding(16.dp)
+                ) {
+                    Text("登出")
+                }
+            }
         }
     }
 }
