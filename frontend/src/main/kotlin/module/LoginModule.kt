@@ -2,6 +2,7 @@ package module
 
 import com.google.gson.Gson
 import data.UserSession
+import data.Course
 import utils.NettyClientProvider
 import view.component.DialogManager
 
@@ -26,6 +27,20 @@ class LoginModule(
             UserSession.role = responseJson["role"] as String
             UserSession.status = responseJson["status"] as String
             UserSession.userName = responseJson["username"] as String
+            val courses = mutableListOf<Course>()
+            val numberOfCourses = responseJson["number"]?.toString()?.toIntOrNull() ?: 0
+            for (i in 0 until numberOfCourses) {
+                val courseJson = responseJson["course$i"] as? Map<String, String> ?: continue
+                val time = courseJson["time"] ?: "Unknown"
+                val modifiedTime = time.substringAfter("-")
+                val course = Course(
+                    name = courseJson["courseName"] ?: "Unknown",
+                    time = modifiedTime,
+                    classroom = courseJson["location"] ?: "Unknown"
+                )
+                courses.add(course)
+            }
+            UserSession.courses = courses
             onLoginSuccess()
         } else {
             DialogManager.showDialog(responseJson["message"] as String)
