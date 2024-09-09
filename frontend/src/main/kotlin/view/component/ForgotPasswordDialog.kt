@@ -15,12 +15,12 @@ import module.LoginModule
 // src/main/kotlin/view/component/ForgotPasswordDialog.kt
 
 @Composable
-fun ForgotPasswordDialog(onDismiss: () -> Unit, onLoginSuccess: () -> Unit) {
+fun ForgotPasswordDialog(onDismiss: () -> Unit, onLoginSuccess: () -> Unit, onLogout: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var cardNumber by remember { mutableStateOf("") }
     var verificationCode by remember { mutableStateOf("") }
     var showModifyPasswordDialog by remember { mutableStateOf(false) }
-    val loginModule = LoginModule(onLoginSuccess)
+    val loginModule = LoginModule(onLoginSuccess,onLogout)
 
     if (showModifyPasswordDialog) {
         ModifyPasswordDialog(
@@ -29,7 +29,9 @@ fun ForgotPasswordDialog(onDismiss: () -> Unit, onLoginSuccess: () -> Unit) {
                 showModifyPasswordDialog = false
                 onDismiss() // Dismiss the ForgotPasswordDialog
             },
-            userId = cardNumber
+            userId = cardNumber,
+            onLoginSuccess={},
+            onLogout={}
         )
     } else {
         AlertDialog(
@@ -65,7 +67,11 @@ fun ForgotPasswordDialog(onDismiss: () -> Unit, onLoginSuccess: () -> Unit) {
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Button(
-                            onClick = { loginModule.sendVerificationCode(email, cardNumber) },
+                            onClick = { if (email.contains("@")) {
+                                loginModule.sendVerificationCode(email, cardNumber)
+                            } else {
+                                DialogManager.showDialog("邮箱输入错误，请重新输入")
+                            } },
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = Color(0xFF006400),
                                 contentColor = Color.White
