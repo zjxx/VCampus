@@ -107,8 +107,8 @@ class ShopModule (
     //_______________________________________________________________________________________
     //获取随机商品
     fun enterShop() {
-        val request = ""
-        nettyClient.sendRequest(request,"shop/entershop") { response: String ->
+        val request = mapOf("" to String)
+        nettyClient.sendRequest(request,"shop/enterStore") { response: String ->
             handleEnterShop(response)
         }
     }
@@ -154,7 +154,7 @@ class ShopModule (
             }
         }
         else {
-            DialogManager.showDialog(responseJson["reason"] as String)
+            DialogManager.showDialog(responseJson["message"] as String)
         }
     }
 
@@ -240,7 +240,7 @@ class ShopModule (
                         stock = itemJson["stock"] as String,
                         salesVolume = itemJson["salesVolume"] as String,
                         description = itemJson["description"] as String,
-                        //quantity = itemJson["quantity"] as String
+                        quantity = itemJson["quantity"] as String
                     )
                     println("image: ${item.imageRes}")
                     tempItems.add(item)
@@ -253,7 +253,7 @@ class ShopModule (
     }
 
     //_______________________________________________________________________________________
-    //增加商品or增加商品
+    //增加商品or修改商品
     fun shopAddToList (request: Any, type: String, filePath: String?) {
         filePath?.let {
             nettyClient.sendFile(request, type, it) { response: String ->
