@@ -5,20 +5,14 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.multiplatform.webview.web.WebView
-import com.multiplatform.webview.web.rememberWebViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.bytedeco.ffmpeg.global.avcodec
-import org.bytedeco.javacv.CanvasFrame
-import org.bytedeco.javacv.FFmpegFrameRecorder
-import org.bytedeco.javacv.FrameGrabber
-import org.bytedeco.javacv.OpenCVFrameGrabber
+import org.bytedeco.javacv.*
+import java.util.concurrent.TimeUnit
 
-
-// src/main/kotlin/view/component/CameraComponent.kt
 @Composable
 fun CameraComponent(onRecordingFinished: (String) -> Unit) {
     var selectedCamera by remember { mutableStateOf<FrameGrabber?>(null) }
@@ -31,12 +25,26 @@ fun CameraComponent(onRecordingFinished: (String) -> Unit) {
     var path by remember { mutableStateOf("") }
     val cameras = remember {
         mutableStateListOf<FrameGrabber>().apply {
-            for (i in 0 until 10) {
+            for (i in 0 until 1) {
                 try {
                     add(OpenCVFrameGrabber(i))
                 } catch (e: Exception) {
                     // Ignore unavailable cameras
                 }
+            }
+            // Add desktop recording option
+            try {
+                val desktopGrabber = FFmpegFrameGrabber("desktop").apply {
+                    format = "gdigrab"
+                    setOption("offset_x", "0")
+                    setOption("offset_y", "0")
+                    setOption("framerate", "25")
+                    setOption("draw_mouse", "0")
+                    setOption("video_size", "1920x1080")
+                }
+                add(desktopGrabber)
+            } catch (e: Exception) {
+                // Ignore if desktop recording is not available
             }
         }
     }
@@ -60,7 +68,7 @@ fun CameraComponent(onRecordingFinished: (String) -> Unit) {
                             selectedCameraIndex = index
                             expanded = false
                         }) {
-                            Text("Camera $index")
+                            Text(if (index == cameras.size - 1) "Desktop" else "Camera $index")
                         }
                     }
                 }
@@ -116,15 +124,13 @@ private var canvasFrame: CanvasFrame? = null
 
 private suspend fun startRecording(grabber: FrameGrabber, outputPath: String) {
     withContext(Dispatchers.IO) {
-
-    recorder = FFmpegFrameRecorder(outputPath, grabber.imageWidth, grabber.imageHeight).apply {
-    videoCodec = avcodec.AV_CODEC_ID_H264 // 设置视频编码器
-    format = "mp4" // 设置输出格式
-    frameRate = 30.0 // 设置帧率
-    videoBitrate = 2000000 // 设置比特率
-    start()
-}
-
+        recorder = FFmpegFrameRecorder(outputPath, grabber.imageWidth, grabber.imageHeight).apply {
+            videoCodec = avcodec.AV_CODEC_ID_H264 // 设置视频编码器
+            format = "mp4" // 设置输出格式
+            frameRate = 30.0 // 设置帧率
+            videoBitrate = 200000 // 设置比特率
+            start()
+        }
     }
 }
 
@@ -171,7 +177,5 @@ private suspend fun closeCameraFeed(grabber: FrameGrabber) {
     withContext(Dispatchers.IO) {
         canvasFrame?.dispose()
         canvasFrame = null
-
     }
 }
-

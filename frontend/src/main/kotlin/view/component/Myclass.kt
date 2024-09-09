@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -16,6 +18,7 @@ import module.*
 import utils.downloadMp4IfNotExists
 import kotlin.math.roundToInt
 import androidx.compose.ui.graphics.Color
+import data.UserSession
 import data.UserSession.role
 
 
@@ -98,9 +101,11 @@ fun classVideoCard(
 }
 @Composable
 fun videoCard(video: Video) {
-
     var showDialog by remember { mutableStateOf(false) }
     var videoUrl by remember { mutableStateOf<String?>(null) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    val courseModule = CourseModule()
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -108,12 +113,24 @@ fun videoCard(video: Video) {
         elevation = 4.dp
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = video.videoName, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "上传时间: ${video.upload_Date}")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(text = video.videoName, fontWeight = FontWeight.Bold)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "上传时间: ${video.upload_Date}")
+                }
+                if(UserSession.role == "teacher") {
+                    IconButton(onClick = { showDeleteDialog = true }) {
+                        Icon(Icons.Default.Delete, contentDescription = "删除")
+                    }
+                }
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Button(onClick = {
-                val videoLocalPath= "src/main/temp/" + video.videoId + ".mp4"
+                val videoLocalPath = "src/main/temp/" + video.videoId + ".mp4"
                 val videoRemoteUrl = "http://47.99.141.236/img/" + video.videoId + ".mp4"
                 videoUrl = videoLocalPath
                 downloadMp4IfNotExists(videoRemoteUrl, videoLocalPath)
@@ -128,7 +145,8 @@ fun videoCard(video: Video) {
         AlertDialog(
             onDismissRequest = {
                 showDialog = false
-                videoUrl= null },
+                videoUrl = null
+            },
             title = { Text(text = "Video Player") },
             text = {
                 videoUrl?.let { VideoPlayer(url = it) }
@@ -139,6 +157,28 @@ fun videoCard(video: Video) {
                 }
             },
             properties = DialogProperties(usePlatformDefaultWidth = false)
+        )
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("确认删除") },
+            text = { Text("你确定要删除该视频吗？") },
+            confirmButton = {
+                TextButton(onClick = {
+                    courseModule.deleteVideo(video) {
+                        showDeleteDialog = false
+                    }
+                }) {
+                    Text("确定")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("取消")
+                }
+            }
         )
     }
 }

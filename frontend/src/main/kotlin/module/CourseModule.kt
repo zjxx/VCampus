@@ -408,6 +408,23 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
 
         }
     }
+
+    fun deleteVideo(video: Video,onDeleteSuccess: () -> Unit) {
+        val request = mapOf( "role" to UserSession.role,"videoId" to video.videoId )
+        nettyClient.sendRequest(request, "course/deleteVideo") { response: String ->
+            println("Received response: $response")
+            val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+            if (responseJson["status"] == "success") {
+                DialogManager.showDialog("删除视频成功")
+                onDeleteSuccess()
+            } else {
+                DialogManager.showDialog("删除失败")
+            }
+
+        }
+    }
+
+
     fun ShowAllCourse()
     {
         val request = mapOf("role" to UserSession.role, "UserId" to UserSession.userId)

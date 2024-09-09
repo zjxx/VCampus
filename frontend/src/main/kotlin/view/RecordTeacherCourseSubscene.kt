@@ -11,10 +11,7 @@ import androidx.compose.ui.unit.dp
 import module.Class
 import module.CourseModule
 import module.videoClass
-import view.component.CameraComponent
-import view.component.VideoPlayerScreen
-import view.component.classCard
-import view.component.classVideoCard
+import view.component.*
 
 // src/main/kotlin/view/RecordTeacherCourseSubscene.kt
 @Composable
@@ -48,7 +45,7 @@ fun RecordTeacherCourseSubscene(classes: List<videoClass>) {
             })
         }
         "VideoPlayerScreen" -> {
-            recordedVideoPath?.let { VideoPlayerScreen(it,courseId) }
+            recordedVideoPath?.let { VideoPlayerScreen(it,courseId,{DialogManager.showDialog("上传成功")}) }
         }
     }
 }
