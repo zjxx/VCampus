@@ -637,103 +637,98 @@ public class CourseController {
         data.addProperty("status", "success");
         return gson.toJson(data);
     }
-
-    public String videoDelete(String jsonData) {
-        VideoDeleteRequest request = gson.fromJson(jsonData, VideoDeleteRequest.class);
-        JsonObject data = new JsonObject();
-        DataBase db = DataBaseManager.getInstance();
-        List<Video> videos = db.getWhere(Video.class, "videoId", request.getVideoId());
-        if (videos.isEmpty()) {
-            data.addProperty("status", "failed");
-            data.addProperty("reason", "video not found");
-        } else {
-            Video video = videos.get(0);
-            db.delete(video);
-            data.addProperty("status", "success");
-        }
-        return gson.toJson(data);
-    }
-
-    //向学生展示视频
-    public String ShowVideo(String jsonData) {
-        VideoShowRequest request = gson.fromJson(jsonData, VideoShowRequest.class);
-        JsonObject data = new JsonObject();
-        DataBase db = DataBaseManager.getInstance();
-        //查找学生的选课记录，展示所有课程对应的视频
-        List<Enrollment> enrollments = db.getWhere(Enrollment.class, "studentid", request.getStudentId());
-        if (enrollments.isEmpty()) {
-            data.addProperty("status", "failed");
-            data.addProperty("reason", "no course found");
-            return gson.toJson(data);
-        } else {
-            //按照课程传课程视频
-            for (int i = 0; i < enrollments.size(); i++) {
-                Enrollment enrollment = enrollments.get(i);
-                JsonObject courseData = new JsonObject();
-                List<Course> courses = db.getWhere(Course.class, "courseId", enrollment.getcourseid());
-                Course course = courses.get(0);
-                courseData.addProperty("courseName", course.getcourseName());
-                courseData.addProperty("teacherName", course.getteacherName());
-                //筛选出该课程的所有视频
-                List<Video> videos = db.getWhere(Video.class, "courseId", enrollment.getcourseid());
-                if (videos.isEmpty()) {
-                    courseData.addProperty("number", "0");
-                } else {
-                    courseData.addProperty("number", String.valueOf(videos.size()));
-                    for (int j = 0; j < videos.size(); j++) {
-                        Video video = videos.get(j);
-                        JsonObject videoData = new JsonObject();
-                        videoData.addProperty("videoId", String.valueOf(video.getVideoId()));
-                        videoData.addProperty("videoName", video.getVideoName());
-                        courseData.add("video" + j, videoData);
-                    }
-                }
-                data.add("course" + i, courseData);
-            }
-            data.addProperty("status", "success");
-            return gson.toJson(data);
-        }
-    }
-
-
-//    //学生查看视频
-//    public String WatchVideo(String jsonData) {
-//
-//    }
-
-    //管理员查看所有视频
-    public String showVideoList(String jsonData) {
-        VideoListRequest request = gson.fromJson(jsonData, VideoListRequest.class);
-        JsonObject data = new JsonObject();
-        DataBase db = DataBaseManager.getInstance();
-        //按课程分组展示所有视频
-        List<Video> videos = db.getLike(Video.class, "videoId", "");
-        if (videos.isEmpty()) {
-            data.addProperty("status", "failed");
-            data.addProperty("reason", "no video found");
-            return gson.toJson(data);
-        }
-        //将视频按照课程号排序
-        videos.sort((o1, o2) -> o1.getCourseId().compareTo(o2.getCourseId()));
-        String tempCourseId = "";
-        int cnt = 0;
-        JsonObject videoData = new JsonObject();
-        for (int i = 0; i < videos.size(); i++) {
-            Video video = videos.get(i);
-            if (tempCourseId.equals(video.getCourseId())) {
-
-            } else {
-                if (!tempCourseId.equals("")) {
-                    data.add("course" + cnt, videoData);
-                    cnt++;
-                    tempCourseId = video.getCourseId();
-                }
-            }
-            videoData.addProperty("videoId", String.valueOf(video.getVideoId()));
-            videoData.addProperty("videoName", video.getVideoName());
-            videoData.addProperty("number", cnt);
-            data.add("video" + i, videoData);
-        }
-
-    }
 }
+
+//    public String videoDelete(String jsonData) {
+//        VideoDeleteRequest request = gson.fromJson(jsonData, VideoDeleteRequest.class);
+//        JsonObject data = new JsonObject();
+//        DataBase db = DataBaseManager.getInstance();
+//        List<Video> videos = db.getWhere(Video.class, "videoId", request.getVideoId());
+//        if (videos.isEmpty()) {
+//            data.addProperty("status", "failed");
+//            data.addProperty("reason", "video not found");
+//        } else {
+//            Video video = videos.get(0);
+//            db.delete(video);
+//            data.addProperty("status", "success");
+//        }
+//        return gson.toJson(data);
+//    }
+//
+//    //向学生展示视频
+//    public String ShowVideo(String jsonData) {
+//        VideoShowRequest request = gson.fromJson(jsonData, VideoShowRequest.class);
+//        JsonObject data = new JsonObject();
+//        DataBase db = DataBaseManager.getInstance();
+//        //查找学生的选课记录，展示所有课程对应的视频
+//        List<Enrollment> enrollments = db.getWhere(Enrollment.class, "studentid", request.getStudentId());
+//        if (enrollments.isEmpty()) {
+//            data.addProperty("status", "failed");
+//            data.addProperty("reason", "no course found");
+//            return gson.toJson(data);
+//        } else {
+//            //按照课程传课程视频
+//            for (int i = 0; i < enrollments.size(); i++) {
+//                Enrollment enrollment = enrollments.get(i);
+//                JsonObject courseData = new JsonObject();
+//                List<Course> courses = db.getWhere(Course.class, "courseId", enrollment.getcourseid());
+//                Course course = courses.get(0);
+//                courseData.addProperty("courseName", course.getcourseName());
+//                courseData.addProperty("teacherName", course.getteacherName());
+//                //筛选出该课程的所有视频
+//                List<Video> videos = db.getWhere(Video.class, "courseId", enrollment.getcourseid());
+//                if (videos.isEmpty()) {
+//                    courseData.addProperty("number", "0");
+//                } else {
+//                    courseData.addProperty("number", String.valueOf(videos.size()));
+//                    for (int j = 0; j < videos.size(); j++) {
+//                        Video video = videos.get(j);
+//                        JsonObject videoData = new JsonObject();
+//                        videoData.addProperty("videoId", String.valueOf(video.getVideoId()));
+//                        videoData.addProperty("videoName", video.getVideoName());
+//                        courseData.add("video" + j, videoData);
+//                    }
+//                }
+//                data.add("course" + i, courseData);
+//            }
+//            data.addProperty("status", "success");
+//            return gson.toJson(data);
+//        }
+//    }
+//
+//
+//    //管理员查看所有视频
+//    public String showVideoList(String jsonData) {
+//        VideoListRequest request = gson.fromJson(jsonData, VideoListRequest.class);
+//        JsonObject data = new JsonObject();
+//        DataBase db = DataBaseManager.getInstance();
+//        //按课程分组展示所有视频
+//        List<Video> videos = db.getLike(Video.class, "videoId", "");
+//        if (videos.isEmpty()) {
+//            data.addProperty("status", "failed");
+//            data.addProperty("reason", "no video found");
+//            return gson.toJson(data);
+//        }
+//        //将视频按照课程号排序
+//        videos.sort((o1, o2) -> o1.getCourseId().compareTo(o2.getCourseId()));
+//        String tempCourseId = "";
+//        int cnt = 0;
+//        JsonObject videoData = new JsonObject();
+//        for (int i = 0; i < videos.size(); i++) {
+//            Video video = videos.get(i);
+//            if (tempCourseId.equals(video.getCourseId())) {
+//
+//            } else {
+//                if (!tempCourseId.equals("")) {
+//                    data.add("course" + cnt, videoData);
+//                    cnt++;
+//                    tempCourseId = video.getCourseId();
+//                }
+//            }
+//            videoData.addProperty("videoId", String.valueOf(video.getVideoId()));
+//            videoData.addProperty("videoName", video.getVideoName());
+//            videoData.addProperty("number", cnt);
+//            data.add("video" + i, videoData);
+//        }
+//
+//}
