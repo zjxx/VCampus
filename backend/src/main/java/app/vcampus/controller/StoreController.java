@@ -401,7 +401,7 @@ public class StoreController {
             existingItem.setPictureLink(filepath);
             existingItem.setBarcode(request.get("barcode").getAsString());
             existingItem.setStock(request.get("stock").getAsInt());
-            existingItem.setSalesVolume(request.get("salesVolume").getAsInt());
+            existingItem.setSalesVolume(request.get("salesVolumn").getAsInt());
             existingItem.setDescription(request.get("description").getAsString());
             db.disableForeignKeyChecks();
             db.persist(existingItem);
