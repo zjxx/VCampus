@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -127,6 +128,8 @@ fun App() {
 
 fun main() = application {
     Window(
+        title = "VCampus",
+        icon = painterResource("p3.svg"),
         onCloseRequest = ::exitApplication,
         state = rememberWindowState(size = DpSize(1200.dp, 700.dp)) // 设置窗口初始大小
     ) {
