@@ -387,7 +387,7 @@ public class StoreController {
     public String updateItem(String jsonData, String additionalParam) {
         try {
             JsonObject request = gson.fromJson(jsonData, JsonObject.class);
-            String filepath = "C:\\Users\\Administrator\\Desktop\\server\\img\\" + request.get("uuid").getAsString() + ".jpg";
+            String filepath = "C:\\Users\\Administrator\\Desktop\\server\\img\\" + request.get("uuid") + ".jpg";
             FileOutputStream fileOutputStream = new FileOutputStream(filepath);
             byte[] bytes = java.util.Base64.getDecoder().decode(additionalParam);
             fileOutputStream.write(bytes);
@@ -403,6 +403,7 @@ public class StoreController {
             existingItem.setStock(request.get("stock").getAsInt());
             existingItem.setSalesVolume(request.get("salesVolumn").getAsInt());
             existingItem.setDescription(request.get("description").getAsString());
+
             db.disableForeignKeyChecks();
             db.persist(existingItem);
             db.enableForeignKeyChecks();
