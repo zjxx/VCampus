@@ -1,5 +1,7 @@
 package app.vcampus.controller;
 
+import app.vcampus.domain.Course;
+import app.vcampus.domain.Enrollment;
 import app.vcampus.domain.User;
 import app.vcampus.utils.EmailService;
 import app.vcampus.enums.UserType;
@@ -10,6 +12,7 @@ import app.vcampus.utils.PasswordUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -40,6 +43,44 @@ public class UserController {
                 data.addProperty("role", UserType.fromIndex((int) user.getRole()));
                 data.addProperty("userId", user.getUserId());
                 data.addProperty("username", user.getUsername());
+                               //获取今天是星期几的string
+                Date date = new Date();
+                int day = date.getDay();
+                if(day==0){
+                    day=7;
+                }
+
+                if(user.getRole()==0) {
+                    List<Course> coursetoday = new java.util.ArrayList<>();
+                    List<Enrollment> enrollments = db.getWhere(Enrollment.class, "studentid", user.getUserId());
+
+                    for (Enrollment enroll : enrollments) {
+                        List<Course> courses = db.getWhere(Course.class, "courseId", enroll.getcourseid());
+                        for (Course course : courses) {
+                            String[] time = course.getTime().split(";");
+                            for (int i = 0; i < time.length; i++) {
+                                if (time[i].startsWith(String.valueOf(day))) {
+                                    Course course1 = new Course();
+                                    course1.setcourseId(course.getcourseId());
+                                    course1.setcourseName(course.getcourseName());
+                                    course1.setteacherName(course.getteacherName());
+                                    course1.setLocation(course.getLocation().split(";")[i]);
+                                    course1.setTime(time[i]);
+                                    coursetoday.add(course1);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    data.addProperty("number", String.valueOf(coursetoday.size()));
+                    for (int i = 0; i < coursetoday.size(); i++) {
+                        JsonObject course = new JsonObject();
+                        course.addProperty("courseName", coursetoday.get(i).getcourseName());
+                        course.addProperty("location", coursetoday.get(i).getLocation());
+                        course.addProperty("time", coursetoday.get(i).getTime());
+                        data.add("course" + i, course);
+                    }
+                }
                 return gson.toJson(data);
             } else {
                 data.addProperty("message", "密码错误");
