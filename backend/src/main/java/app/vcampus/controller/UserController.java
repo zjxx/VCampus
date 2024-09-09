@@ -40,12 +40,12 @@ public class UserController {
                 data.addProperty("username", user.getUsername());
                 return gson.toJson(data);
             } else {
-                data.addProperty("message", "Wrong password.");
+                data.addProperty("message", "密码错误");
                 data.addProperty("status", "fail");
                 return gson.toJson(data);
             }
         }
-        data.addProperty("message", "User not found.");
+        data.addProperty("message", "没有找到对应用户");
         data.addProperty("status", "fail");
         return gson.toJson(data);
     }
@@ -62,7 +62,7 @@ public class UserController {
 
         if (users.isEmpty()) {
             response.addProperty("status", "fail");
-            response.addProperty("message", "User not found.");
+            response.addProperty("message", "没有找到对应用户");
             return gson.toJson(response);
         }
 
@@ -71,7 +71,7 @@ public class UserController {
         db.persist(user);
 
         response.addProperty("status", "success");
-        response.addProperty("message", "Email added successfully.");
+        response.addProperty("message", "成功添加邮箱地址");
         return gson.toJson(response);
     }
 
@@ -88,14 +88,14 @@ public class UserController {
 
         if (users.isEmpty()) {
             response.addProperty("status", "fail");
-            response.addProperty("message", "User not found.");
+            response.addProperty("message", "没有找到对应用户");
             return gson.toJson(response);
         }
 
         User user = users.get(0);
         if (!user.getPassword().equals(oldPassword)) {
             response.addProperty("status", "fail");
-            response.addProperty("message", "Old password is incorrect.");
+            response.addProperty("message", "旧密码错误");
             return gson.toJson(response);
         }
 
@@ -103,7 +103,7 @@ public class UserController {
         db.persist(user);
 
         response.addProperty("status", "success");
-        response.addProperty("message", "Password changed successfully.");
+        response.addProperty("message", "成功修改密码");
         return gson.toJson(response);
     }
 
@@ -124,14 +124,14 @@ public class UserController {
 
         if (users.isEmpty()) {
             response.addProperty("status", "fail");
-            response.addProperty("message", "User not found.");
+            response.addProperty("message", "没有找到对应用户");
             return gson.toJson(response);
         }
 
         User user = users.get(0);
         if (!user.getEmail().equals(email)) {
             response.addProperty("status", "fail");
-            response.addProperty("message", "Email does not match.");
+            response.addProperty("message", "邮箱地址错误");
             return gson.toJson(response);
         }
 
@@ -154,7 +154,7 @@ public class UserController {
 
         if (user==null) {
             response.addProperty("status", "fail");
-            response.addProperty("message", "User not found.");
+            response.addProperty("message", "没有找到对应用户");
             return gson.toJson(response);
         }
 
@@ -162,7 +162,7 @@ public class UserController {
         db.persist(user);
 
         response.addProperty("status", "success");
-        response.addProperty("message", "Password updated successfully.");
+        response.addProperty("message", "成功修改密码");
         return gson.toJson(response);
     }
 
@@ -184,7 +184,7 @@ public class UserController {
 
            if (user==null) {
                response.addProperty("status", "fail");
-               response.addProperty("message", "User not found.");
+               response.addProperty("message", "没有找到对应用户");
                return gson.toJson(response);
            }
 
@@ -192,7 +192,7 @@ public class UserController {
            db.persist(user);
 
            response.addProperty("status", "success");
-           response.addProperty("message", "Email updated successfully.");
+           response.addProperty("message", "成功修改邮箱地址");
            return gson.toJson(response);
        }
          catch (Exception e){
