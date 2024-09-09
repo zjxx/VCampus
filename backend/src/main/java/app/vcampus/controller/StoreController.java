@@ -132,7 +132,7 @@ public class StoreController {
             if (items.isEmpty()) {
                 JsonObject response = new JsonObject();
                 response.addProperty("status", "failed");
-                response.addProperty("reason", "no such item");
+                response.addProperty("reason", "没有找到该商品");
                 return gson.toJson(response);
             }
 
@@ -163,7 +163,7 @@ public class StoreController {
             if (items.isEmpty()) {
                 JsonObject response = new JsonObject();
                 response.addProperty("status", "failed");
-                response.addProperty("reason", "no item in store");
+                response.addProperty("reason", "商店中没有商品");
                 return gson.toJson(response);
             }
 
@@ -194,7 +194,7 @@ public class StoreController {
             if (transactions.isEmpty()) {
                 JsonObject response = new JsonObject();
                 response.addProperty("status", "failed");
-                response.addProperty("reason", "no transactions found");
+                response.addProperty("reason", "没有交易记录");
                 return gson.toJson(response);
             }
 
@@ -257,7 +257,7 @@ public class StoreController {
             {
                 JsonObject response = new JsonObject();
                 response.addProperty("status", "failed");
-                response.addProperty("reason", "no transaction for this card number");
+                response.addProperty("reason", "该一卡通号没有交易记录");
                 return gson.toJson(response);
             }
 
@@ -295,7 +295,7 @@ public class StoreController {
         {
             JsonObject response = new JsonObject();
             response.addProperty("status", "failed");
-            response.addProperty("reason", "no such item");
+            response.addProperty("reason", "没有找到该商品");
             return gson.toJson(response);
         }
 
@@ -315,7 +315,7 @@ public class StoreController {
             List<StoreItem> storeItems = db.getWhere(StoreItem.class, "itemName", request.get("itemName").getAsString());
             if (!storeItems.isEmpty()) {
                 data.addProperty("status", "failed");
-                data.addProperty("reason", "Item already exists.");
+                data.addProperty("reason", "该商品已经存在");
                 return gson.toJson(data);
             }
             StoreItem newItem = new StoreItem();
@@ -361,7 +361,7 @@ public class StoreController {
             if (file.exists()) {
                 if (!file.delete()) {
                     response.addProperty("status", "failed");
-                    response.addProperty("reason", "Failed to delete the image file.");
+                    response.addProperty("reason", "删除商品图片失败");
                     return gson.toJson(response);
                 }
             }
