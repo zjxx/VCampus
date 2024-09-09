@@ -19,8 +19,6 @@ import utils.NettyClientProvider
 import java.awt.FileDialog
 import java.awt.Frame
 import java.io.File
-import javax.swing.JFileChooser
-import javax.swing.filechooser.FileNameExtensionFilter
 
 @Composable
 fun BookModifySubscene(onNavigateBack: () -> Unit, book: Book, type: String) {
@@ -34,7 +32,7 @@ fun BookModifySubscene(onNavigateBack: () -> Unit, book: Book, type: String) {
     var description by remember { mutableStateOf(book.description) }
     var quantity by remember { mutableStateOf(book.quantity.toString()) }
     var valid by remember { mutableStateOf(book.valid.toString()) }
-    var filePath by remember { mutableStateOf<String?>(null) }
+    var filePath by remember { mutableStateOf<String?>("src/main/temp/$isbn.png") }
     var modifyResult by remember { mutableStateOf("") }
     val nettyClient = NettyClientProvider.nettyClient
     var idSearchResult by remember { mutableStateOf(listOf<String>()) }

@@ -303,7 +303,7 @@ class ShopModule (
     //获取所有交易记录:Admin
     fun getAllTransactions () {
         tempItems.clear()
-        val request = ""
+        val request = mapOf("" to String)
         nettyClient.sendRequest(request, "shop/getAllTransactions") { response: String ->
             handleGetAllTransactions(response)
         }
@@ -311,37 +311,28 @@ class ShopModule (
 
     private fun handleGetAllTransactions (response: String) {
         println("Received response: $response")
-        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
-        println("Response status: ${responseJson["status"]}")
+        val responseJson = JsonParser.parseString(response).asJsonObject
+        val status = responseJson.get("status").asString
+        println("Response status: ${status}")
 
-        if (responseJson["status"] == "success") {
-            val num = responseJson["length"] as String
-            val transactionResponse = responseJson["transactions"] as String
-            val transactionResponseJson =
-                Gson().fromJson(transactionResponse, MutableMap::class.java) as MutableMap<String, Any>
+        if (status == "success") {
+            val num = responseJson.get("length").asString
+            val transactionsJson = responseJson.getAsJsonObject("transactions")
+            //val transactionsJson = JsonParser.parseString(transactions).asJsonObject
 
             if (!num.equals("0")) {
                 for (i in 0 until num.toInt()) {
 
-                    val transactionIndex = transactionResponseJson["transaction" + i.toString()] as String
-                    println("transaction0: ${transactionResponseJson["transaction0"]}")
-                    val transactionJson =
-                        Gson().fromJson(transactionIndex, MutableMap::class.java) as MutableMap<String, Any>
-                    println("transactionJson: ${transactionJson}")
-                    println("transactionResponseJson: ${transactionResponseJson}")
-
-//                    var imageURL = itemJ son["uuid"] as String
-//                    var tempImage = "http://47.99.141.236/img/" + imageURL + ".jpg"
-//                    var localPath = "src/main/temp/" + imageURL + ".jpg"
-//                    downloadImageIfNotExists(tempImage, localPath)
+                    val eachTransactionJson = transactionsJson.getAsJsonObject("transaction" + i.toString())
 
                     val transaction = StoreTransaction(
-                        uuid = transactionJson["uuid"] as String,
-                        itemUuid = transactionJson["itemUuid"] as String,
-                        itemName = transactionJson["itemName"] as String,
-                        itemPrice = transactionJson["itemPrice"] as String,
-                        amount = transactionJson["quantity"] as String,
-                        time = transactionJson["time"] as String,
+                        uuid = eachTransactionJson.get("uuid").asString,
+                        itemUuid = eachTransactionJson.get("itemUuid").asString,
+                        itemName = eachTransactionJson.get("itemName").asString,
+                        itemPrice = eachTransactionJson.get("itemPrice").asString,
+                        amount = eachTransactionJson.get("amount").asString,
+                        cardNumber = eachTransactionJson.get("cardNumber").asString,
+                        time = eachTransactionJson.get("time").asString,
                     )
                     //println("image: ${transaction.imageRes}")
                     tempTransactions.add(transaction)

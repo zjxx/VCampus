@@ -23,10 +23,10 @@ import java.io.File
 fun MerchandiseAdminScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
     val item = GlobalState.selectedItem ?: Merchandise()
 
-    var currentScene by remember { mutableStateOf("BookAdminSubscene") }
+    var currentScene by remember { mutableStateOf("MerchandiseAdminScene") }
     //var selectedItem by remember { mutableStateOf<Merchandise?>(null) }
 
-    if (currentScene == "BookAdminSubscene") {
+    if (currentScene == "MerchandiseAdminScene") {
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
             // Back button
             Text(

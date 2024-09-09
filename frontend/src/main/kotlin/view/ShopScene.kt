@@ -57,7 +57,10 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
         onAddItemToCartSuccess = {},
         onRemoveItemFromCartSuccesss = {},
         onShopAddToListSuccess = {},
-        onGetAllTransactionsSuccess = {},
+        onGetAllTransactionsSuccess = { result ->
+            tempTransactions = emptyList()
+            tempTransactions = result
+        },
         onGetTransactionsByCardNumberSuccess = { result ->
             tempTransactions = emptyList()
             tempTransactions = result
@@ -177,12 +180,15 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                 Text(text = "管理商品", fontSize = 18.sp, color = Color.Black)
                             }
                             TextButton(
-                                onClick = { selectedOption = "消费记录" },
+                                onClick = {
+                                    selectedOption = "交易记录"
+                                    shopModule.getAllTransactions()
+                                },
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
                                 Icon(imageVector = Icons.Default.List, contentDescription = "消费记录")
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "消费记录", fontSize = 18.sp, color = Color.Black)
+                                Text(text = "交易记录", fontSize = 18.sp, color = Color.Black)
                             }
                         }
                     }
@@ -582,37 +588,63 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                             }
 
                             "交易记录" -> {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .padding(16.dp)
-                                ) {
+                                Column {
                                     Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp),
+                                        horizontalArrangement = Arrangement.End
                                     ) {
-                                        OutlinedTextField(
-                                            value = searchText,
-                                            onValueChange = { searchText = it },
-                                            modifier = Modifier.weight(1f),
-                                            singleLine = true
-                                        )
-                                        Spacer(modifier = Modifier.width(16.dp))
-                                        Box(
-                                            modifier = Modifier
-                                                .clip(RoundedCornerShape(8.dp))
-                                                .background(Color(0xFF228042))
-                                                .clickable {
-                                                    shopModule.getAllTransactions()
-                                                }
-                                                .padding(16.dp)
+                                        Button(
+                                            onClick = {
+                                                selectedOption = "交易记录"
+                                                shopModule.getAllTransactions()
+                                            },
+                                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                                            shape = CircleShape,
+                                            modifier = Modifier.size(48.dp)
                                         ) {
-                                            Text(text = "搜索", color = Color.White, fontSize = 16.sp)
+                                            Icon(
+                                                Icons.Default.Refresh,
+                                                contentDescription = "刷新",
+                                                tint = Color(0xFF228042)
+                                            )
                                         }
                                     }
-                                    Spacer(modifier = Modifier.height(12.dp))
-                                    Divider(color = Color.Gray, thickness = 1.dp)
-                                    // Display borrowing records
+                                    LazyVerticalGrid(
+                                        columns = GridCells.Fixed(2),
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .padding(8.dp)
+                                    ) {
+                                        if(!tempTransactions.isEmpty()){
+                                        items(tempTransactions.size) { index ->
+                                            val transaction = tempTransactions[index]
+
+                                            Row(
+                                                modifier = Modifier
+                                                    .padding(8.dp)
+                                                    .clip(RoundedCornerShape(8.dp))
+                                                    .background(Color(0xFFFDFBEC))
+                                                    .border(1.dp, Color.LightGray)
+                                                    .height(120.dp)
+                                                    .padding(8.dp)
+                                            ) {
+                                                Column(
+                                                    modifier = Modifier.weight(1f)
+                                                ) {
+                                                    Text(text = transaction.itemName, color = Color.Black, fontSize = 16.sp)
+                                                    //Text(text = conditionText, color = textColor, fontSize = 16.sp)
+                                                    Text(
+                                                        text = "价格: ${transaction.itemPrice}\n数量: ${transaction.amount}",
+                                                        fontSize = 12.sp
+                                                    )
+                                                    Text(text = transaction.time, fontSize = 12.sp)
+                                                }
+                                            }
+                                        }
+                                        }
+                                    }
                                 }
                             }
                         }
