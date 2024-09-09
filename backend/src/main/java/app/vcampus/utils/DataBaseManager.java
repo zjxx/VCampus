@@ -1,7 +1,7 @@
 package app.vcampus.utils;
 
 public class DataBaseManager {
-    private static DataBase instance;
+    private volatile static DataBase instance;
 
     private DataBaseManager() {
         // private constructor to prevent instantiation
@@ -9,8 +9,10 @@ public class DataBaseManager {
 
     public static synchronized DataBase getInstance() {
         if (instance == null) {
-            instance = new DataBase();
-            instance.init();
+            synchronized (DataBase.class){
+                instance = new DataBase();
+                instance.init();
+            }
         }
         return instance;
     }
