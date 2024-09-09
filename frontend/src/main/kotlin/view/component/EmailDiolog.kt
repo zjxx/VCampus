@@ -19,7 +19,7 @@ fun EmailDialog(onDismiss: () -> Unit, onConfirm: (String) -> Unit) {
         },
         text = {
             Column {
-                Text("")
+                Text("绑定邮箱")
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = email,

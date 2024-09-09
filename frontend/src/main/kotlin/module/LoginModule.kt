@@ -6,7 +6,8 @@ import utils.NettyClientProvider
 import view.component.DialogManager
 
 class LoginModule(
-    private val onLoginSuccess: () -> Unit
+    private val onLoginSuccess: () -> Unit,
+    private val onLogout: () -> Unit
 ) {
     private val nettyClient = NettyClientProvider.nettyClient
     fun onLoginClick(username: String, password: String) {
@@ -86,5 +87,8 @@ class LoginModule(
         } else {
             onError(responseJson["message"] as String)
         }
+    }
+    fun logout(){
+        onLogout()
     }
 }

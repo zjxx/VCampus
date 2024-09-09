@@ -1,4 +1,4 @@
-
+// src/main/kotlin/Main.kt
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -105,7 +105,9 @@ fun App() {
                     "StudentScene" -> StudentScene(onNavigate = { path ->
                         currentScene = path
                     }, role = UserSession.role ?: "")
-                    "/home" -> HomeScene()
+                    "/home" -> HomeScene(onLogout = {
+                        currentScene = "LoginScene"
+                    })
                     "/student_status" -> StudentStatusScene(onNavigate = { path ->
                         currentScene = path
                     }, role = UserSession.role ?: "")

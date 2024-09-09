@@ -12,10 +12,10 @@ import module.LoginModule
 // src/main/kotlin/view/component/ModifyPasswordDialog.kt
 
 @Composable
-fun ModifyPasswordDialog(onDismiss: () -> Unit, onSuccess: () -> Unit, userId: String) {
+fun ModifyPasswordDialog(onDismiss: () -> Unit, onSuccess: () -> Unit, userId: String, onLoginSuccess: () -> Unit, onLogout: () -> Unit) {
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    val loginModule = LoginModule {}
+    val loginModule = LoginModule (onLoginSuccess, onLogout)
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -24,7 +24,7 @@ fun ModifyPasswordDialog(onDismiss: () -> Unit, onSuccess: () -> Unit, userId: S
         },
         text = {
             Column {
-                Text("")
+                Text("请输入你的新密码", fontSize = 16.sp)
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = newPassword,
