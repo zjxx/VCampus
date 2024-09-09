@@ -14,6 +14,25 @@ import java.util.UUID;
 public class ShoppingCartController {
     private final Gson gson = new Gson();
     private final StoreController storeController = new StoreController();
+    private String createShoppingCartObjectJson(StoreItem item,int quantity)
+    {
+        String description = "";
+        if (item.getDescription() != null) {
+            description = item.getDescription();
+        }
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("uuid", item.getUuid().toString());
+        jsonObject.addProperty("name", item.getItemName());
+        jsonObject.addProperty("price",String.valueOf (item.getPrice()));
+        jsonObject.addProperty("pictureLink", item.getPictureLink());
+        jsonObject.addProperty("barcode", item.getBarcode());
+        jsonObject.addProperty("stock",String.valueOf(item.getStock()) );
+        jsonObject.addProperty("salesVolume", String.valueOf(item.getSalesVolume()));
+        jsonObject.addProperty("description", description);
+        jsonObject.addProperty("quantity",String.valueOf(quantity));
+
+        return gson.toJson(jsonObject);
+    }
 
     // 添加商品到购物车，传入 userId, itemId, quantity
     public String addItemToCart(String jsonData) {
@@ -110,10 +129,9 @@ public class ShoppingCartController {
             for (int i = 0; i < cartItems.size(); i++) {
                 ShoppingCartItem cartItem = cartItems.get(i);
                 StoreItem item = db.getWhere(StoreItem.class, "uuid", cartItem.getItemId()).get(0);
-                String storeitem = storeController.createItemJsonObject(item);
+                String shoppingCartObjectJson = createShoppingCartObjectJson(item,cartItem.getQuantity());
                 JsonObject itemObject = new JsonObject();
-                itemsObject.addProperty("item" + i, storeitem);
-                itemsObject.addProperty("quantity",String.valueOf(cartItem.getQuantity()));
+                itemsObject.addProperty("item" + i, shoppingCartObjectJson);
             }
 
             JsonObject response = new JsonObject();
