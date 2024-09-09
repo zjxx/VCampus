@@ -7,4 +7,5 @@ object UserSession {
     var userName: String? = null
     var code: String? = null
     var status: String? = null
+    var courses: List<Course> = emptyList()
 }
