@@ -25,7 +25,8 @@ fun LoginScene(onLoginSuccess: () -> Unit) {
     var showForgotPasswordDialog by remember { mutableStateOf(false) }
 
     val loginModule = LoginModule(
-        onLoginSuccess = onLoginSuccess
+        onLoginSuccess = onLoginSuccess,
+        onLogout = {}
     )
 
     Box(Modifier.fillMaxSize().shadow(8.dp), contentAlignment = Alignment.Center) {
@@ -125,7 +126,8 @@ fun LoginScene(onLoginSuccess: () -> Unit) {
     if (showForgotPasswordDialog) {
         ForgotPasswordDialog(
             onDismiss = { showForgotPasswordDialog = false },
-            onLoginSuccess = onLoginSuccess
+            onLoginSuccess = onLoginSuccess,
+            onLogout = {}
         )
     }
 }
