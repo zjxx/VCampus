@@ -26,6 +26,7 @@ import data.StoreTransaction
 import data.UserSession
 import module.ShopModule
 import view.component.GlobalState
+import view.component.selectedItemList
 import java.io.File
 
 
@@ -41,6 +42,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
     var tempTransactions by remember { mutableStateOf(listOf<StoreTransaction>()) }
     var currentScene by remember { mutableStateOf("ShopScene") }
     var isCollapsed by remember { mutableStateOf(true) }
+    //var totalPrice by remember { mutableStateOf(0.0) }
 
     val shopModule = ShopModule(
         onSearchSuccess = { result ->
@@ -71,6 +73,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
     }
 
     if (currentScene == "ShopScene") {
+        tempItems = selectedItemList
         Row(modifier = Modifier.fillMaxSize()) {
             // 侧边导航栏
 
@@ -96,7 +99,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                 modifier = Modifier.clickable { isCollapsed = false }
                             )
                             Spacer(modifier = Modifier.height(16.dp))
-                            if (role == "student") {
+                            if (role == "student" || role == "teacher") {
                                 Icon(imageVector = Icons.Default.Person, contentDescription = "购物")
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看购物车")
@@ -129,11 +132,11 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                 modifier = Modifier.clickable { isCollapsed = true }
                             )
                         }
-                        if (role == "student") {
+                        if (role == "student" || role == "teacher") {
                             TextButton(
                                 onClick = {
                                     selectedOption = "购物"
-                                    shopModule.enterShop()
+                                    //shopModule.enterShop()
                                 },
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
@@ -309,7 +312,9 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                             }
 
                             "查看购物车" -> {
-                                Column {
+                                Column (
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -335,11 +340,12 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                     LazyVerticalGrid(
                                         columns = GridCells.Fixed(2),
                                         modifier = Modifier
-                                            .fillMaxHeight()
+                                            .weight(1f)
                                             .padding(8.dp)
                                     ) {
                                         items(tempItems.size) { index ->
                                             val item = tempItems[index]
+                                            //totalPrice = totalPrice + (item.price.toDouble() * item.quantity.toDouble())
 
                                             Row(
                                                 modifier = Modifier
@@ -356,7 +362,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                     Text(text = item.itemname, color = Color.Black, fontSize = 16.sp)
                                                     //Text(text = conditionText, color = textColor, fontSize = 16.sp)
                                                     Text(
-                                                        text = "价格 > ${item.price}\n库存 > ${item.stock}",
+                                                        text = "价格: ${item.price}\n库存: ${item.stock}\n数量：${item.quantity}",
                                                         fontSize = 12.sp
                                                     )
                                                 }
@@ -388,6 +394,38 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                     }
                                                 }
                                             }
+                                        }
+                                    }
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
+                                        horizontalArrangement = Arrangement.End,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Button(
+                                            onClick = {
+                                                // e
+                                            },
+                                            modifier = Modifier
+                                                .size(136.dp, 48.dp)
+                                                .clip(
+                                                    RoundedCornerShape(
+                                                        topStart = 18.dp,
+                                                        bottomStart = 18.dp,
+                                                        topEnd = 18.dp,
+                                                        bottomEnd = 18.dp
+                                                    )
+                                                )
+                                                .padding(start = 0.dp), // Remove padding between buttons
+                                            colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFFE5A00))
+                                        ) {
+                                            Text(
+                                                text = "结算",
+                                                color = Color.White,
+                                                fontSize = 18.sp,
+                                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                                            )
                                         }
                                     }
                                 }
@@ -422,7 +460,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                     LazyVerticalGrid(
                                         columns = GridCells.Fixed(2),
                                         modifier = Modifier
-                                            .fillMaxHeight()
+                                            .weight(1f)
                                             .padding(8.dp)
                                     ) {
                                         items(tempTransactions.size) { index ->
@@ -443,9 +481,10 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                     Text(text = transaction.itemName, color = Color.Black, fontSize = 16.sp)
                                                     //Text(text = conditionText, color = textColor, fontSize = 16.sp)
                                                     Text(
-                                                        text = "价格 > ${transaction.itemPrice}\n数量 > ${transaction.amount}",
+                                                        text = "价格: ${transaction.itemPrice}\n数量: ${transaction.amount}",
                                                         fontSize = 12.sp
                                                     )
+                                                    Text(text = transaction.time, fontSize = 12.sp)
                                                 }
                                             }
                                         }
@@ -458,7 +497,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
 
                     else if (role == "admin") {
                         when (selectedOption) {
-                            "管理书籍" -> {
+                            "管理商品" -> {
                                 Column(
                                     modifier = Modifier
                                         .fillMaxHeight()
@@ -506,7 +545,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                     .background(Color.White)
                                                     .clickable {
                                                         GlobalState.selectedItem = item
-                                                        currentScene = ""
+                                                        currentScene = "MerchandiseAdminScene"
                                                     }
                                                     .padding(8.dp)
                                             ) {
@@ -532,7 +571,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                 .clip(RoundedCornerShape(8.dp))
                                                 .background(Color(0xFF228042))
                                                 .clickable {
-                                                    currentScene = ".."
+                                                    currentScene = "MerchandiseModifyScene"
                                                 }
                                                 .padding(10.dp)
                                         ) {
@@ -583,5 +622,9 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
         }
     } else if (currentScene == "MerchandiseInfoScene") {
         MerchandiseInfoScene(onNavigateBack = { currentScene = "ShopScene" }, shopModule = shopModule)
+    } else if (currentScene == "MerchandiseAdminScene") {
+        MerchandiseAdminScene(onNavigateBack = { currentScene = "ShopScene" }, shopModule = shopModule)
+    } else if (currentScene == "MerchandiseModifyScene") {
+        MerchandiseModifyScene(onNavigateBack = { currentScene = "ShopScene" }, item = Merchandise(), "shop/addtolist/file_upload" )
     }
 }

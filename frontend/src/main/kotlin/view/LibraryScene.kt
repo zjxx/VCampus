@@ -2,9 +2,6 @@ package view
 
 
 import PaymentWebViewDialog
-import ShowWebViewDialog
-import WebViewComponent
-import WebViewDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -26,16 +23,12 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.gson.Gson
-import com.google.gson.JsonParser
 import data.Book
 import data.UserSession
 import module.LibraryModule
-import sendPostRequest
 import utils.downloadPdfIfNotExists
 import view.component.GlobalState
 import view.component.LocalPdfViewer
-import view.component.VideoPlayerScreen
 import java.io.File
 
 
@@ -146,7 +139,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                 modifier = Modifier.clickable { isCollapsed = true }
                             )
                         }
-                        if (role == "student"||role == "teacher") {
+                        if (role == "student" || role == "teacher") {
                             TextButton(
                                 onClick = { selectedOption = "查找书籍" },
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)

@@ -2,21 +2,38 @@
 package view.component
 
 import androidx.compose.foundation.background
-import androidx.compose.ui.Alignment
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import data.Merchandise
 import data.NaviItem
+import module.ShopModule
+
 
 @Composable
 fun TopNavBar(naviItems: List<NaviItem>, onItemSelected: (NaviItem) -> Unit) {
     var selectedItem by remember { mutableStateOf<NaviItem?>(null) }
+    val shopModule = ShopModule(
+        onSearchSuccess = {},
+        onBuySuccess = {},
+        onEnterSuccess = { result ->
+            selectedItemList = emptyList()
+            selectedItemList = result
+        },
+        onAddItemToCartSuccess = {},
+        onRemoveItemFromCartSuccesss = {},
+        onShopAddToListSuccess = {},
+        onGetAllTransactionsSuccess = {},
+        onGetTransactionsByCardNumberSuccess = {},
+        onViewSuccess = {}
+    )
 
     Row(
         modifier = Modifier
@@ -32,6 +49,9 @@ fun TopNavBar(naviItems: List<NaviItem>, onItemSelected: (NaviItem) -> Unit) {
                     .padding(horizontal = 8.dp, vertical = 4.dp)
                     .clickable {
                         selectedItem = item
+                        if (item.path == "/shop") {
+                            shopModule.enterShop()
+                        }
                         onItemSelected(item)
                     }
                     .background(if (item == selectedItem) Color(0xFF004d00) else Color.Transparent)
