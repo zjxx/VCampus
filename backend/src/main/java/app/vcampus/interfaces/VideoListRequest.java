@@ -1,4 +1,4 @@
 package app.vcampus.interfaces;
 
-public class VideoRankRequest {
+public class VideoListRequest {
 }
