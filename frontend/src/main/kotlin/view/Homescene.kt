@@ -9,11 +9,11 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Schedule
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import data.Course
@@ -68,39 +68,47 @@ fun HomeScene(onLogout: () -> Unit) {
                 Text("$greeting, $userName$roleTitle")
                 Spacer(modifier = Modifier.height(16.dp))
                 // 添加更多内容
-                Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-                    Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.Default.Schedule,
-                                    contentDescription = null
+                if (role == "student") {
+                    Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+                        Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Default.Schedule,
+                                        contentDescription = null
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text("我的课表")
+                                }
+                                Divider(
+                                    modifier = Modifier
+                                        .padding(vertical = 8.dp)
+                                        .height(2.dp),
+                                    color = Color.Black,
+                                    thickness = 2.dp
                                 )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("我的课表")
-                            }
-                            Divider(modifier = Modifier.padding(vertical = 8.dp))
-                            courses.value.forEach { course ->
-                                Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                                    Column(modifier = Modifier.padding(8.dp)) {
-                                        Text("课程名: ${course.name}", fontWeight = FontWeight.Bold)
-                                        Text(" ${course.time}节    教室： ${course.classroom}",color = Color.Gray,
-                                            fontSize = 12.sp)
+                                courses.value.forEach { course ->
+                                    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                                        Column(modifier = Modifier.padding(8.dp)) {
+                                            Text("课程名: ${course.name}", fontWeight = FontWeight.Bold, color = Color.Black)
+                                            Text(" ${course.time}节    教室： ${course.classroom}", color = Color.Gray, fontSize = 12.sp)
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    Divider(
-                        modifier = Modifier
-                            .padding(vertical = 8.dp)
-                            .height(2.dp),
-                        thickness = 2.dp
-                    )
-                    Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text("跑操次数: 10", fontWeight = FontWeight.Bold)
-                            Text("srtp学分: 5", fontWeight = FontWeight.Bold)
+                        Divider(
+                            modifier = Modifier
+                                .padding(vertical = 8.dp)
+                                .height(2.dp),
+                            color = Color.Black,
+                            thickness = 2.dp
+                        )
+                        Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Text("跑操次数: 10", fontWeight = FontWeight.Bold, color = Color.Black)
+                                Text("srtp学分: 5", fontWeight = FontWeight.Bold, color = Color.Black)
+                            }
                         }
                     }
                 }
