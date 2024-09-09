@@ -394,8 +394,8 @@ public class StoreController {
             fileOutputStream.close();
 
             DataBase db = DataBaseManager.getInstance();
-            String uuid = request.get("uuid").getAsString();
-            StoreItem existingItem = db.getWhere(StoreItem.class, "uuid", uuid).get(0);
+            String itemname = request.get("itemName").getAsString();
+            StoreItem existingItem = db.getWhere(StoreItem.class, "itemName", itemname).get(0);
             existingItem.setItemName(request.get("itemName").getAsString());
             existingItem.setPrice(request.get("price").getAsInt());
             existingItem.setPictureLink(filepath);
