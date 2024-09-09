@@ -6,6 +6,7 @@ import app.vcampus.enums.UserType;
 import app.vcampus.interfaces.loginRequest;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
+import app.vcampus.utils.PasswordUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -26,10 +27,11 @@ public class UserController {
         loginRequest request = gson.fromJson(jsonData, loginRequest.class);
         JsonObject data = new JsonObject();
         DataBase db = DataBaseManager.getInstance();
-        List<User> users = db.getWhere(User.class,"userId",request.getUsername());
+        List<User> users = db.getWhere(User.class, "userId", request.getUsername());
         if (!users.isEmpty()) {
             User user = users.get(0);
-            if (user.getPassword().equals(request.getPassword())) {
+            String hashedPassword = PasswordUtils.hashPassword(request.getPassword());
+            if (user.getPassword().equals(hashedPassword)) {
                 if (user.getEmail() == null || user.getEmail().isEmpty()) {
                     data.addProperty("status", "noemail");
                 } else {
@@ -93,13 +95,15 @@ public class UserController {
         }
 
         User user = users.get(0);
-        if (!user.getPassword().equals(oldPassword)) {
+        String hashedOldPassword = PasswordUtils.hashPassword(oldPassword);
+        if (!user.getPassword().equals(hashedOldPassword)) {
             response.addProperty("status", "fail");
             response.addProperty("message", "旧密码错误");
             return gson.toJson(response);
         }
 
-        user.setPassword(newPassword);
+        String hashedNewPassword = PasswordUtils.hashPassword(newPassword);
+        user.setPassword(hashedNewPassword);
         db.persist(user);
 
         response.addProperty("status", "success");
@@ -152,13 +156,14 @@ public class UserController {
         User user = db.getWhere(User.class, "userId", userId).get(0);
         JsonObject response = new JsonObject();
 
-        if (user==null) {
+        if (user == null) {
             response.addProperty("status", "fail");
             response.addProperty("message", "没有找到对应用户");
             return gson.toJson(response);
         }
 
-        user.setPassword(newPassword);
+        String hashedNewPassword = PasswordUtils.hashPassword(newPassword);
+        user.setPassword(hashedNewPassword);
         db.persist(user);
 
         response.addProperty("status", "success");

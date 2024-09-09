@@ -24,7 +24,7 @@ public class StoreController {
     private final StoreTransactionController storeTransactionController = new StoreTransactionController();
 
     //创建商品的JSON对象
-    public String createItemJsonObject(StoreItem item)
+    private String createItemJsonObject(StoreItem item)
     {
         String description = "";
         if (item.getDescription() != null) {
