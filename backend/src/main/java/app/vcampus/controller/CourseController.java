@@ -346,6 +346,26 @@ public class CourseController {
         return gson.toJson(data);
     }
 
+
+    //删除课程视频
+    public String deleteVideo(String jsonData){
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+        JsonObject data = new JsonObject();
+        DataBase db=DataBaseManager.getInstance();
+        List<Video> videos = db.getWhere(Video.class,"videoId",request.get("videoId").getAsString());
+        if(videos.isEmpty()) {
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "video not found");
+        }
+        else {
+            Video video = videos.get(0);
+
+            db.delete(video);
+            data.addProperty("status", "success");
+        }
+        return gson.toJson(data);
+    }
+
     //教务查看所有课
     public String showAdminList(String jsonData) {
         EnrollmentShowRequest request = gson.fromJson(jsonData, EnrollmentShowRequest.class);
