@@ -52,7 +52,7 @@ public class UserController {
 
                 if(user.getRole()==0) {
                     List<Course> coursetoday = new java.util.ArrayList<>();
-                    List<Enrollment> enrollments = db.getWhere(Enrollment.class, "studentId", user.getUserId());
+                    List<Enrollment> enrollments = db.getWhere(Enrollment.class, "studentid", user.getUserId());
 
                     for (Enrollment enroll : enrollments) {
                         List<Course> courses = db.getWhere(Course.class, "courseId", enroll.getcourseid());
