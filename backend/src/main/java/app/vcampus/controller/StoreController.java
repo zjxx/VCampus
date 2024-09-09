@@ -324,7 +324,7 @@ public class StoreController {
             newItem.setPrice(request.get("price").getAsInt());
             newItem.setBarcode(request.get("barcode").getAsString());
             newItem.setStock(request.get("stock").getAsInt());
-            newItem.setSalesVolume(request.get("salesVolume").getAsInt());
+            newItem.setSalesVolume(request.get("salesVolumn").getAsInt());
             newItem.setDescription(request.get("description").getAsString());
             String filepath = "C:\\Users\\Administrator\\Desktop\\server\\img\\" + newItem.getUuid() + ".jpg";
             FileOutputStream fileOutputStream = new FileOutputStream(filepath);
