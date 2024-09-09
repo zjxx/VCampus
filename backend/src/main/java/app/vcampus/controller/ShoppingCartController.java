@@ -22,8 +22,18 @@ public class ShoppingCartController {
            String userId = request.get("userId").getAsString();
            UUID itemId = UUID.fromString(request.get("itemId").getAsString());
            int quantity = request.get("quantity").getAsInt();
-
            DataBase db = DataBaseManager.getInstance();
+           List<ShoppingCartItem> cartItems = db.getWhere(ShoppingCartItem.class, "userId", userId);
+              for (ShoppingCartItem cartItem : cartItems) {
+                if (cartItem.getItemId().equals(itemId)) {
+                     cartItem.setQuantity(cartItem.getQuantity() + quantity);
+                     db.persist(cartItem);
+                     JsonObject response = new JsonObject();
+                     response.addProperty("status", "success");
+                     return gson.toJson(response);
+                }
+              }
+
            ShoppingCartItem cartItem = new ShoppingCartItem();
            cartItem.setUuid(UUID.randomUUID()); // Set the UUID
            cartItem.setUserId(userId);
