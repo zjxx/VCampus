@@ -30,7 +30,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         if (chunk.contains("file_upload")) {
             isFileUpload = true;
             // Initialize file output stream
-            fileOutputStream = new FileOutputStream("uploaded_image.jpg");
             //初始化initJson,保留}及之前的字符串
             initJson = chunk.substring(0,chunk.indexOf("}")+1);
             if(chunk.contains("}")){
@@ -49,8 +48,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             if (chunk.endsWith("END_OF_MESSAGE")) {
                 //将stringbuilder base64解密
                 byte[] bytes = java.util.Base64.getDecoder().decode(stringBuilder.toString());
-                fileOutputStream.write(bytes);
-                fileOutputStream.close();
+
                 String jsonResponse = controllerManager.handleRequestWithParams(initJson,stringBuilder.toString());
 
                 // Write JSON response

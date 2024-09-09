@@ -20,6 +20,8 @@ public class ControllerManager {
         routeMapping.registerRoute("login", userController::login);
         routeMapping.registerRoute("addEmail", userController::addEmail);
         routeMapping.registerRoute("sendCode",userController::sendVerificationCode);
+        routeMapping.registerRoute("updatePassword", userController::updatePassword);
+        routeMapping.registerRoute("updateEmail", userController::updateEmail);
 
         routeMapping.registerRoute("lib/search", libraryController::searchBookInfo);
         routeMapping.registerRoute("lib/addtolist", libraryController::borrowBook);
@@ -67,6 +69,8 @@ public class ControllerManager {
         routeMapping.registerRoute("course/table",courseController::showStudentCourseTable);//查看课表
         routeMapping.registerRoute("course/modify",courseController::modifyCourse);//教务修改课程信息
         routeMapping.registerRoute("course/getCoursesByTeacherId",courseController::getCoursesByTeacherId);//查看课程信息
+        routeMapping.registerRoute("course/getCourseRecord",courseController::getRecordCourses);//老师查看录课信息
+        routeMapping.registerRoute("course/getCourseRecordByStudent",courseController::getRecordCoursesByStudent);//学生查看录课信息
         routeMapping.registerRouteWithParams("course/file_upload/video",courseController::videoUpload);//教务添加课程
 
         routeMapping.registerRoute("score/give",scoreController::giveScore);//老师打分

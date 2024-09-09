@@ -1,11 +1,6 @@
 package app.vcampus.controller;
 
-import app.vcampus.domain.Course;
-import app.vcampus.domain.Enrollment;
-import app.vcampus.domain.Score;
-import app.vcampus.domain.User;
-import app.vcampus.domain.Student;
-import app.vcampus.domain.Video;
+import app.vcampus.domain.*;
 import app.vcampus.interfaces.CourseSelectRequest;
 import app.vcampus.interfaces.EnrollmentShowRequest;
 import app.vcampus.interfaces.CourseUnselectRequest;
@@ -14,10 +9,11 @@ import app.vcampus.interfaces.CourseTableShowRequest;
 import app.vcampus.interfaces.CourseStudentShowRequest;
 import app.vcampus.interfaces.CourseAddRequest;
 import app.vcampus.interfaces.CourseDeleteRequest;
-import app.vcampus.interfaces.VideoShowRequest;
 import app.vcampus.interfaces.VideoDeleteRequest;
+import app.vcampus.interfaces.VideoShowRequest;
 import app.vcampus.interfaces.VideoWatchRequest;
 import app.vcampus.interfaces.VideoListRequest;
+import app.vcampus.interfaces.VideoUploadRequest;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
 
@@ -27,9 +23,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.io.FileOutputStream;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.text.SimpleDateFormat;
 
 public class CourseController {
@@ -335,12 +329,18 @@ public class CourseController {
             data.addProperty("reason", "course not found");
         } else {
             Course course = courses.get(0);
-            db.delete(course);
+
             List<Enrollment> records = db.getWhere(Enrollment.class, "courseid", request.getCourseId());
             for (int i = 0; i < records.size(); i++) {
                 Enrollment record = records.get(i);
                 db.delete(record);
             }
+            List<Score> scores = db.getWhere(Score.class, "courseId", request.getCourseId());
+            for (int i = 0; i < scores.size(); i++) {
+                Score score = scores.get(i);
+                db.delete(score);
+            }
+            db.delete(course);
             data.addProperty("status", "success");
         }
         return gson.toJson(data);
@@ -519,19 +519,120 @@ public class CourseController {
         return gson.toJson(data);
     }
 
+    public String getRecordCourses(String jsonData) {
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+        String teacherId = request.get("teacherId").getAsString();
+        JsonObject data = new JsonObject();
+        DataBase db = DataBaseManager.getInstance();
+
+        // 查询该老师的所有课程
+        List<Course> courses = db.getWhere(Course.class, "teacherId", teacherId);
+        if (courses.isEmpty()) {
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "no courses found for this teacher");
+            return gson.toJson(data);
+        }
+
+        // 构建返回数据
+        data.addProperty("number", String.valueOf(courses.size()));
+        for (int i = 0; i < courses.size(); i++) {
+            Course course = courses.get(i);
+            JsonObject courseData = new JsonObject();
+            courseData.addProperty("courseName", course.getcourseName());
+            courseData.addProperty("courseId", course.getcourseId());
+            courseData.addProperty("time", course.getTime());
+            courseData.addProperty("location", course.getLocation());
+            // 查询选修该课程的所有video
+            List<Video> videos = db.getWhere(Video.class, "courseId", course.getcourseId());
+            JsonObject videosData = new JsonObject();
+            videosData.addProperty("number", String.valueOf(videos.size()));
+            for (int j = 0; j < videos.size(); j++) {
+                Video video = videos.get(j);
+                JsonObject videoData = new JsonObject();
+                videoData.addProperty("videoId", video.getVideoId().toString());
+                videoData.addProperty("videoName", video.getVideoName());
+                videoData.addProperty("upload_Date", video.getUpload_Date().toString());
+
+                videosData.add("video" + j, videoData);
+            }
+            courseData.add("videos", videosData);
+            data.add("course" + i, courseData);
+        }
+        data.addProperty("status", "success");
+        return gson.toJson(data);
+    }
+
+    public String getRecordCoursesByStudent(String jsonData) {
+        JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+        String studentId = request.get("studentId").getAsString();
+        JsonObject data = new JsonObject();
+        DataBase db = DataBaseManager.getInstance();
+
+        List<Enrollment> enrollments = db.getWhere(Enrollment.class, "studentid", studentId);
+
+        // 查询该老师的所有课程
+        List<Course> courses = new ArrayList<>();
+        for (Enrollment enrollment : enrollments) {
+            List<Course> thiscourse = db.getWhere(Course.class, "courseId", enrollment.getcourseid());
+            courses.addAll(thiscourse);
+        }
+
+        if (courses.isEmpty()) {
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "no courses found for this teacher");
+            return gson.toJson(data);
+        }
+
+        // 构建返回数据
+        data.addProperty("number", String.valueOf(courses.size()));
+        for (int i = 0; i < courses.size(); i++) {
+            Course course = courses.get(i);
+            JsonObject courseData = new JsonObject();
+            courseData.addProperty("courseName", course.getcourseName());
+            courseData.addProperty("courseId", course.getcourseId());
+            courseData.addProperty("time", course.getTime());
+            courseData.addProperty("location", course.getLocation());
+            // 查询选修该课程的所有video
+            List<Video> videos = db.getWhere(Video.class, "courseId", course.getcourseId());
+            JsonObject videosData = new JsonObject();
+            videosData.addProperty("number", String.valueOf(videos.size()));
+            for (int j = 0; j < videos.size(); j++) {
+                Video video = videos.get(j);
+                JsonObject videoData = new JsonObject();
+                videoData.addProperty("videoId", video.getVideoId().toString());
+                videoData.addProperty("videoName", video.getVideoName());
+                videoData.addProperty("upload_Date", video.getUpload_Date().toString());
+
+                videosData.add("video" + j, videoData);
+            }
+            courseData.add("videos", videosData);
+            data.add("course" + i, courseData);
+        }
+        data.addProperty("status", "success");
+        return gson.toJson(data);
+    }
 
     public String videoUpload(String jsonData, String additionalParam) {
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
-
-        String filepath = "ts.mp4";
+        Video video = new Video();
+        List<Video> videos = DataBaseManager.getInstance().getWhere(Video.class, "courseId", request.get("courseId").getAsString());
+        String videoId = UUID.randomUUID().toString();
+        video.setCourseId(request.get("courseId").getAsString());
+        video.setVideoName(request.get("videoName").getAsString());
+        video.setVideoId(videoId);
+        video.setUpload_Date(new Date());
+        //筛选出一个string的纯数字部分
+        String filepath = "C:\\Users\\Administrator\\Desktop\\server\\img\\" + videoId + ".mp4";
         try {
             fileOutputStream = new FileOutputStream(filepath);//指定保持路径
-            byte[] bytes = java.util.Base64.getDecoder().decode(additionalParam);
+            byte[] bytes = Base64.getDecoder().decode(additionalParam);
             fileOutputStream.write(bytes);
             fileOutputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        DataBase db = DataBaseManager.getInstance();
+        db.save(video);
         JsonObject data = new JsonObject();
         data.addProperty("status", "success");
         return gson.toJson(data);
@@ -541,11 +642,11 @@ public class CourseController {
         VideoDeleteRequest request = gson.fromJson(jsonData, VideoDeleteRequest.class);
         JsonObject data = new JsonObject();
         DataBase db = DataBaseManager.getInstance();
-        List<Video> videos= db.getWhere(Video.class,"videoId",request.getVideoId());
-        if(videos.isEmpty()){
+        List<Video> videos = db.getWhere(Video.class, "videoId", request.getVideoId());
+        if (videos.isEmpty()) {
             data.addProperty("status", "failed");
             data.addProperty("reason", "video not found");
-        }else{
+        } else {
             Video video = videos.get(0);
             db.delete(video);
             data.addProperty("status", "success");
@@ -554,7 +655,7 @@ public class CourseController {
     }
 
     //向学生展示视频
-    public String ShowVideo(String jsonData){
+    public String ShowVideo(String jsonData) {
         VideoShowRequest request = gson.fromJson(jsonData, VideoShowRequest.class);
         JsonObject data = new JsonObject();
         DataBase db = DataBaseManager.getInstance();
@@ -564,8 +665,7 @@ public class CourseController {
             data.addProperty("status", "failed");
             data.addProperty("reason", "no course found");
             return gson.toJson(data);
-        }
-        else{
+        } else {
             //按照课程传课程视频
             for (int i = 0; i < enrollments.size(); i++) {
                 Enrollment enrollment = enrollments.get(i);
@@ -578,8 +678,7 @@ public class CourseController {
                 List<Video> videos = db.getWhere(Video.class, "courseId", enrollment.getcourseid());
                 if (videos.isEmpty()) {
                     courseData.addProperty("number", "0");
-                }
-                else{
+                } else {
                     courseData.addProperty("number", String.valueOf(videos.size()));
                     for (int j = 0; j < videos.size(); j++) {
                         Video video = videos.get(j);
@@ -615,18 +714,18 @@ public class CourseController {
             return gson.toJson(data);
         }
         //将视频按照课程号排序
-        videos.sort((o1,o2)->o1.getCourseId().compareTo(o2.getCourseId()));
-        String tempCourseId ="";
-        int cnt =0;
+        videos.sort((o1, o2) -> o1.getCourseId().compareTo(o2.getCourseId()));
+        String tempCourseId = "";
+        int cnt = 0;
         JsonObject videoData = new JsonObject();
         for (int i = 0; i < videos.size(); i++) {
             Video video = videos.get(i);
-            if(tempCourseId.equals(video.getCourseId())){
+            if (tempCourseId.equals(video.getCourseId())) {
 
-            }else{
-                if(!tempCourseId.equals("")) {
+            } else {
+                if (!tempCourseId.equals("")) {
                     data.add("course" + cnt, videoData);
-                    cnt ++;
+                    cnt++;
                     tempCourseId = video.getCourseId();
                 }
             }
@@ -636,4 +735,5 @@ public class CourseController {
             data.add("video" + i, videoData);
         }
 
+    }
 }

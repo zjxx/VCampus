@@ -24,7 +24,7 @@ public class StoreController {
     private final StoreTransactionController storeTransactionController = new StoreTransactionController();
 
     //创建商品的JSON对象
-    private String createItemJsonObject(StoreItem item)
+    public String createItemJsonObject(StoreItem item)
     {
         String description = "";
         if (item.getDescription() != null) {
@@ -269,6 +269,7 @@ public class StoreController {
 
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");
+            response.addProperty("length", String.valueOf(transactions.size()));
             response.addProperty("transactions", gson.toJson(transactionsObject));
             return gson.toJson(response);
         }
