@@ -21,4 +21,5 @@ val Navis = arrayListOf(
     NaviItem("商城", "/shop", Icons.Default.ShoppingCart, listOf("shop_user", "shop_staff")),
     NaviItem("财务", "/finance", Icons.Default.Savings, listOf("finance_user", "finance_staff")),
     NaviItem("管理员", "/admin", Icons.Default.ManageAccounts, listOf("admin")),
+    NaviItem("办事平台", "/affairs", Icons.Default.Build, listOf("affairs_staff")),
 )

@@ -16,12 +16,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import data.Course
 import data.UserSession
 import module.LoginModule
 import view.component.EmailDialog
 import view.component.DialogManager
 import java.util.*
+import androidx.compose.animation.core.*
+import androidx.compose.ui.unit.IntOffset
 
 @Composable
 fun HomeScene(onLogout: () -> Unit) {
@@ -55,6 +56,16 @@ fun HomeScene(onLogout: () -> Unit) {
 
     val courses = remember { mutableStateOf(UserSession.courses) }
 
+    val infiniteTransition = rememberInfiniteTransition()
+    val offsetX by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1000f, // Adjust this value based on your text length and screen width
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 10000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
     Box(modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(16.dp)) {
         Column {
             Column(modifier = Modifier.width(200.dp).height(80.dp)) {
@@ -65,7 +76,9 @@ fun HomeScene(onLogout: () -> Unit) {
                 )
             }
             Column(modifier = Modifier.fillMaxSize()) {
-                Text("$greeting, $userName$roleTitle")
+                Box(modifier = Modifier.offset { IntOffset(offsetX.toInt(), 0) }) {
+                    Text("$greeting, $userName$roleTitle")
+                }
                 Spacer(modifier = Modifier.height(16.dp))
                 // 添加更多内容
                 if (role == "student") {
@@ -84,7 +97,6 @@ fun HomeScene(onLogout: () -> Unit) {
                                     modifier = Modifier
                                         .padding(vertical = 8.dp)
                                         .height(2.dp),
-                                    color = Color.Black,
                                     thickness = 2.dp
                                 )
                                 courses.value.forEach { course ->
@@ -101,7 +113,6 @@ fun HomeScene(onLogout: () -> Unit) {
                             modifier = Modifier
                                 .padding(vertical = 8.dp)
                                 .height(2.dp),
-                            color = Color.Black,
                             thickness = 2.dp
                         )
                         Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
