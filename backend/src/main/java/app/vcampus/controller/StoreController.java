@@ -109,7 +109,7 @@ public class StoreController {
            // 返回成功消息和用户余额
            JsonObject response = new JsonObject();
            response.addProperty("status", "success");
-           response.addProperty("balance", user.getBalance());
+           response.addProperty("balance", String.valueOf(user.getBalance()));
            return gson.toJson(response);
        }
         catch (Exception e)
