@@ -368,7 +368,10 @@ public class StoreController {
 
             db.disableForeignKeyChecks();
             db.remove(item);
-
+            List<StoreTransaction> transactions = db.getWhere(StoreTransaction.class, "itemUuid", uuid);
+            for (StoreTransaction transaction : transactions) {
+                db.remove(transaction);
+            }
             //从购物车中删除商品
             List<ShoppingCartItem> cartItems = db.getWhere(ShoppingCartItem.class, "itemId", uuid);
             for (ShoppingCartItem cartItem : cartItems) {
