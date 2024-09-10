@@ -3,10 +3,10 @@ package view
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Divider
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,19 +23,62 @@ import java.io.File
 fun MerchandiseAdminScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
     val item = GlobalState.selectedItem ?: Merchandise()
 
+    var showDeleteDialog by remember { mutableStateOf(false) }
     var currentScene by remember { mutableStateOf("MerchandiseAdminScene") }
     //var selectedItem by remember { mutableStateOf<Merchandise?>(null) }
 
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("确认删除") },
+            text = { Text("你确定要删除该商品吗？") },
+            confirmButton = {
+                TextButton(onClick = {
+                    onNavigateBack()
+                    shopModule.shopDeleteItem(item.itemUuid)
+                }
+                ) {
+                    Text("确定")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("取消")
+                }
+            }
+        )
+    }
+
     if (currentScene == "MerchandiseAdminScene") {
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-            // Back button
-            Text(
-                text = "<",
-                fontSize = 32.sp,
+            Row(
                 modifier = Modifier
-                    .clickable { onNavigateBack() }
-                    .padding(8.dp)
-            )
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                // Back button
+                Text(
+                    text = "<",
+                    fontSize = 32.sp,
+                    modifier = Modifier
+                        .clickable { onNavigateBack() }
+                        .padding(8.dp)
+                )
+                Button(
+                    onClick = { showDeleteDialog = true },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                    shape = CircleShape,
+                    modifier = Modifier.size(48.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete",
+                        tint = Color.Black
+                    )
+                }
+            }
+
 
             // Upper half: Image and details
             Row(

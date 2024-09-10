@@ -14,15 +14,34 @@ import data.Merchandise
 import module.ShopModule
 
 @Composable
-fun PaymentMethodDialog(
+fun CartMethodDialog(
     onDismissRequest: () -> Unit,
     onCampusCardPay: () -> Unit,
     onQRCodePay: () -> Unit,
     shopModule: ShopModule,
-    item: Merchandise,
+    //items: List<Merchandise>,
 ) {
     var showWebViewDialog by remember { mutableStateOf(false) }
     var paymentResult by remember { mutableStateOf<String?>(null) }
+    var tempItems by remember { mutableStateOf(listOf<Merchandise>()) }
+    var balance by remember { mutableStateOf<String?>(null) }
+    val shopModule = ShopModule(
+        onSearchSuccess = {},
+        onBuySuccess = { result ->
+            balance = result
+        },
+        onEnterSuccess = {},
+        onAddItemToCartSuccess = {},
+        onRemoveItemFromCartSuccesss = {},
+        onShopAddToListSuccess = {},
+        onGetAllTransactionsSuccess = {},
+        onGetTransactionsByCardNumberSuccess = {},
+        onViewSuccess = { result ->
+            tempItems = emptyList()
+            tempItems = result
+        },
+        //onViewCartComplete = {},
+    )
 
     if (showWebViewDialog) {
         PaymentWebViewDialog(amount = 1.0) { result ->
@@ -44,8 +63,13 @@ fun PaymentMethodDialog(
             ) {
                 Button(
                     onClick = {
-                        onCampusCardPay()
-                        shopModule.shopBuy(item.itemUuid, item.quantity, item.itemname)
+                        shopModule.viewCart{
+                            println("size: ${tempItems.size}")
+                            onCampusCardPay()
+                            for (i in 0 until tempItems.size) {
+                                shopModule.shopBuy(tempItems[i].itemUuid, tempItems[i].quantity, tempItems[i].itemname)
+                            }
+                        }
                     },
                     modifier = Modifier.size(120.dp, 42.dp)
                 ) {
@@ -57,12 +81,22 @@ fun PaymentMethodDialog(
 //                ) {
 //                    Text("扫码支付")
 //                }
-                PaymentWebViewDialog(amount = 1.0) { result ->
+                var price = 0.0
+                if (tempItems.isNotEmpty()) {
+                    for (i in 0 until tempItems.size) {
+                        price = price + tempItems[i].price.toDouble()
+                    }
+                } else {
+                    price = 1.0
+                }
+                PaymentWebViewDialog(amount = price) { result ->
                     paymentResult = result
                     showWebViewDialog = false
                     println("Payment result: $paymentResult")
                     if (paymentResult == "success") {
-                        shopModule.shopQRBuy(item.itemUuid, item.quantity, item.itemname)
+                        for (i in 0 until tempItems.size) {
+                            shopModule.shopBuy(tempItems[i].itemUuid, tempItems[i].quantity, tempItems[i].itemname)
+                        }
                     }
                 }
             }

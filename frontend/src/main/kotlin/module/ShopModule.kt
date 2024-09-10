@@ -19,7 +19,8 @@ class ShopModule (
     private val onShopAddToListSuccess: (String) -> Unit,
     private val onGetAllTransactionsSuccess: (List<StoreTransaction>) -> Unit,
     private val onGetTransactionsByCardNumberSuccess: (List<StoreTransaction>) -> Unit,
-    private val onViewSuccess: (List<Merchandise>) -> Unit
+    private val onViewSuccess: (List<Merchandise>) -> Unit,
+    //private val onViewCartComplete: () -> Unit
     ){
     private val nettyClient = NettyClientProvider.nettyClient
     var tempItems = mutableListOf<Merchandise>()
@@ -28,7 +29,7 @@ class ShopModule (
 //______________________________________________________________________________________
    //搜索商品
     fun shopSearch(itemName: String) {
-        tempItems.clear()
+        //tempItems.clear()
         val request = mapOf("itemname" to itemName)
         nettyClient.sendRequest(request, "shop/search") { response: String ->
             handleShopSearch(response)
@@ -93,13 +94,13 @@ class ShopModule (
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         println("Response status: ${responseJson["status"]}")
+        val balance = responseJson["balance"] as String
 
         if (responseJson["status"] == "success") {
-            onBuySuccess("success")
-            DialogManager.showDialog("购买成功")
+            onBuySuccess(balance.toString())
+            DialogManager.showDialog("购买成功，校园卡余额: $balance")
         }
         else {
-            onBuySuccess("fail")
             DialogManager.showDialog(responseJson["reason"] as String)
         }
     }
@@ -224,10 +225,12 @@ class ShopModule (
 
     //_______________________________________________________________________________________
     //查看购物车
-    fun viewCart() {
+    fun viewCart(onViewCartComplete: () -> Unit) {
+        tempItems.clear()
         val request = mapOf("userId" to UserSession.userId.toString())
         nettyClient.sendRequest(request,"shop/viewCart") { response: String ->
             handleViewCart(response)
+            onViewCartComplete()
         }
     }
 
@@ -242,6 +245,7 @@ class ShopModule (
             val itemResponseJson = Gson().fromJson(itemResponse, MutableMap::class.java) as MutableMap<String, Any>
 
             if (!num.equals("0")) {
+
                 for (i in 0 until num.toInt()) {
 
                     val itemIndex = itemResponseJson["item" + i.toString()] as String
@@ -364,7 +368,8 @@ class ShopModule (
                 onGetAllTransactionsSuccess(tempTransactions)
             }
         } else {
-            DialogManager.showDialog(responseJson["reason"] as String)
+            val reason = responseJson.get("reason").asString
+            DialogManager.showDialog(reason)
         }
     }
 

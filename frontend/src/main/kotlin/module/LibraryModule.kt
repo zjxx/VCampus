@@ -12,13 +12,15 @@ class LibraryModule (
     private val onCheckSuccess: (List<Book>) -> Unit,
     private val onImageFetchSuccess: (String) -> Unit,
     private val onAddToListSuccess: (String) -> Unit,
-    private val onIdCheckSuccess: (List<String>) -> Unit,
+    private val onIdCheckSuccess: (List<Book>) -> Unit,
     private val onBookModifySuccess: (String) -> Unit,
 ) {
     private val nettyClient = NettyClientProvider.nettyClient
     var tempBooks = mutableListOf<Book>()
     var searchIdResult = mutableListOf<String>()
     //var filePath by remember { mutableStateOf<String?>(null) }
+
+    //__________________________________________________________________________________________
 
     fun libSearch(bookname: String, flag: String) {
         tempBooks.clear()
@@ -208,7 +210,7 @@ class LibraryModule (
     fun libIdCheck(searchId: String) {
         tempBooks.clear()
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "searchId" to searchId)
-        nettyClient.sendRequest(request, "lib/idcheck") { response: String ->
+        nettyClient.sendRequest(request, "lib/viewUserBorrowRecord") { response: String ->
             handleResponseIdCheck(response)
         }
     }
@@ -219,9 +221,76 @@ class LibraryModule (
         println("Response status: ${responseJson["status"]}")
 
         if (responseJson["status"] == "success" ) {
-             //尚未完成
+
+            val borrowingnum = responseJson["borrowing_number"] as String
+            val borrowednum = responseJson["haveBorrowed_number"] as String
+
+            if (borrowingnum.toInt() == 0 && borrowednum.toInt() == 0){
+                onCheckSuccess(tempBooks)
+            }
+
+            if (borrowingnum.toInt() != 0){
+                for (i in 0 until borrowingnum.toInt()){
+                    println("borrowing$i: ${responseJson["borrowing"+i.toString()]}")
+                    val res = responseJson["borrowing"+i.toString()] as String
+                    val bookjson = Gson().fromJson(res, MutableMap::class.java) as MutableMap<String, Any>
+                    println("Book name: ${bookjson["bookName"]}")
+
+                    val temp1 = Book(
+                        condition = "borrowing",
+                        bookname = bookjson["bookName"] as String,
+                        isbn = bookjson["ISBN"] as String,
+                        borrow_date = bookjson["borrow_date"] as String,
+                        return_date = bookjson["return_date"] as String,
+                        userId = bookjson["readerId"] as String
+                    )
+                    tempBooks.add(temp1)
+                }
+
+            }
+
+            if (borrowednum.toInt() != 0){
+                for (i in 0 until borrowednum.toInt()){
+                    val res = responseJson["haveBorrowed"+(i).toString()] as String
+                    val bookjson = Gson().fromJson(res, MutableMap::class.java) as MutableMap<String, Any>
+                    println("Book name: ${bookjson["bookName"]}")
+
+                    val temp2 = Book(
+                        condition = "haveBorrowed",
+                        bookname = bookjson["bookName"] as String,
+                        isbn = bookjson["ISBN"] as String,
+                        borrow_date = bookjson["borrow_date"] as String,
+                        return_date = bookjson["return_date"] as String,
+                        userId = bookjson["readerId"] as String
+                    )
+                    tempBooks.add(temp2)
+                }
+            }
+            onIdCheckSuccess(tempBooks)
+
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
         }
-        onIdCheckSuccess(searchIdResult)
+    }
+
+    //______________________________________________________________________________________
+    //删除请求
+    fun libDeleteBook(isbn: String) {
+        val request = mapOf("userId" to (UserSession.userId).toString(), "role" to UserSession.role, "ISBN" to isbn)
+        nettyClient.sendRequest(request, "lib/delete") { response: String ->
+            handleResponseDelete(response)
+        }
+    }
+
+    private fun handleResponseDelete(response: String) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        println("Response status: ${responseJson["status"]}")
+        if (responseJson["status"] == "success") {
+            DialogManager.showDialog("删除成功")
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
+        }
     }
 
     //——————————————————————————————————————————————————————————————————————————————————————

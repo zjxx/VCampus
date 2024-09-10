@@ -42,9 +42,7 @@ fun BookModifySubscene(onNavigateBack: () -> Unit, book: Book, type: String) {
         onCheckSuccess = {},
         onImageFetchSuccess = {},
         onAddToListSuccess = {},
-        onIdCheckSuccess = { result ->
-            idSearchResult = result
-        },
+        onIdCheckSuccess = {},
         onBookModifySuccess = {result ->
             modifyResult = result
         }
@@ -194,18 +192,19 @@ fun BookModifySubscene(onNavigateBack: () -> Unit, book: Book, type: String) {
                                 "quantity" to quantity,
                                 "Valid_Quantity" to valid)
                             //删除本地src/main/temp/ISBN.png
-                            val fileex = "src/main/temp/$isbn.png"
-                            val file = File(fileex)
-                            if (file.exists()) {
-                                try {
-                                    file.delete()
-                                    println("File deleted successfully.")
-                                } catch (e: Exception) {
-                                    println("Error deleting file: ${e.message}")
-                                }
-                            }
+
                             libraryModule.bookModify(request, type, filePath)
                             if (modifyResult == "success") {
+                                val fileex = "src/main/temp/$isbn.png"
+                                val file = File(fileex)
+                                if (file.exists()) {
+                                    try {
+                                        file.delete()
+                                        println("File deleted successfully.")
+                                    } catch (e: Exception) {
+                                        println("Error deleting file: ${e.message}")
+                                    }
+                                }
                                 onNavigateBack()
                             }
                         },

@@ -48,7 +48,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     var selectedOption1 by remember { mutableStateOf("书名") }
     var addtolistresult by remember { mutableStateOf("") }
     var selectedPdfPath by remember { mutableStateOf<String?>(null) }
-    var idSearchResult by remember { mutableStateOf(listOf<String>()) }
+    //var idSearchResult by remember { mutableStateOf(listOf<String>()) }
     var modifyResult by remember { mutableStateOf("") }
 
     var isCollapsed by remember { mutableStateOf(true) }
@@ -69,7 +69,8 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
             addtolistresult = result
         },
         onIdCheckSuccess = { result ->
-            idSearchResult = result
+            borrowedBooks = emptyList()
+            borrowedBooks = result
         },
         onBookModifySuccess = { result ->
             modifyResult = result
@@ -179,7 +180,10 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                 Text(text = "管理书籍", fontSize = 18.sp, color = Color.Black)
                             }
                             TextButton(
-                                onClick = { selectedOption = "查看借阅记录" },
+                                onClick = {
+                                    selectedOption = "查看借阅记录"
+                                    libraryModule.libIdCheck("")
+                                },
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
                                 Icon(imageVector = Icons.Default.List, contentDescription = "查看借阅记录")
@@ -395,23 +399,6 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                                     ) {
                                                         Text("还书", fontSize = 14.sp, color = Color.White)
                                                     }
-//                                                    Spacer(modifier = Modifier.height(8.dp))
-//                                                    Button(
-//                                                        onClick = {
-//                                                            libraryModule.libRenewBook(
-//                                                                UserSession.userId ?: "",
-//                                                                book.isbn
-//                                                            )
-//                                                        },
-//                                                        modifier = Modifier.size(100.dp, 36.dp),
-//                                                        colors = ButtonDefaults.buttonColors(
-//                                                            backgroundColor = Color(
-//                                                                0xFF228042
-//                                                            )
-//                                                        )
-//                                                    ) {
-//                                                        Text("续借", fontSize = 14.sp, color = Color.White)
-//                                                    }
                                                 }
                                             }
                                         }
@@ -582,6 +569,30 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                         .padding(16.dp)
                                 ) {
                                     Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp),
+                                        horizontalArrangement = Arrangement.End
+                                    ) {
+                                        Button(
+                                            onClick = {
+                                                selectedOption = "查看借阅记录"
+                                                UserSession.userId?.let { userId ->
+                                                    libraryModule.libIdCheck("")
+                                                }
+                                            },
+                                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                                            shape = CircleShape,
+                                            modifier = Modifier.size(48.dp)
+                                        ) {
+                                            Icon(
+                                                Icons.Default.Refresh,
+                                                contentDescription = "刷新",
+                                                tint = Color(0xFF228042)
+                                            )
+                                        }
+                                    }
+                                    Row(
                                         modifier = Modifier.fillMaxWidth(),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
@@ -606,12 +617,95 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                     }
                                     Spacer(modifier = Modifier.height(12.dp))
                                     Divider(color = Color.Gray, thickness = 1.dp)
-                                    // Display borrowing records
+                                    LazyVerticalGrid(
+                                        columns = GridCells.Fixed(2),
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .padding(8.dp)
+                                    ) {
+                                        items(borrowedBooks.size) { index ->
+                                            val book = borrowedBooks[index]
+                                            val backgroundColor =
+                                                if (book.condition == "borrowing") Color.White else Color(0xFFC1EAEF)
+                                            val textColor =
+                                                if (book.condition == "borrowing") Color(0xFF228042) else Color.Black
+                                            val conditionText =
+                                                if (book.condition == "borrowing") "借阅中" else "曾借阅"
+                                            Row(
+                                                modifier = Modifier
+                                                    .padding(8.dp)
+                                                    .clip(RoundedCornerShape(8.dp))
+                                                    .background(backgroundColor)
+                                                    .border(1.dp, Color.LightGray)
+                                                    .height(160.dp)
+                                                    .padding(8.dp)
+                                            ) {
+                                                Column(
+                                                    modifier = Modifier.weight(1f)
+                                                ) {
+                                                    Text(text = book.bookname, color = textColor, fontSize = 16.sp)
+                                                    Text(text = conditionText, color = textColor, fontSize = 16.sp)
+                                                    Text(
+                                                        text = "借书时间: ${book.borrow_date}\n还书时间: ${book.return_date}",
+                                                        fontSize = 12.sp
+                                                    )
+                                                    Text(text = "记录所属user：${book.userId}", color = textColor, fontSize = 16.sp)
+                                                }
+//                                                Column(
+//                                                    modifier = Modifier.align(Alignment.CenterVertically),
+//                                                    verticalArrangement = Arrangement.Center,
+//                                                    horizontalAlignment = Alignment.CenterHorizontally
+//                                                ) {
+//                                                    Button(
+//                                                        onClick = {
+//                                                            val imageISBN = book.isbn
+//                                                            val filePath = "src/main/temp/" + imageISBN + ".pdf"
+//                                                            //到时这个filePath改成src/main/temp/书的ISBN.pdf
+//                                                            if (!File(filePath).exists()) {
+//                                                                downloadPdfIfNotExists(
+//                                                                    "http://47.99.141.236/img/" + imageISBN + ".pdf",
+//                                                                    filePath
+//                                                                )
+//                                                            }
+//                                                            selectedPdfPath = filePath
+//                                                        },
+//                                                        modifier = Modifier.size(100.dp, 36.dp),
+//                                                        colors = ButtonDefaults.buttonColors(
+//                                                            backgroundColor = Color(
+//                                                                0xFF228042
+//                                                            )
+//                                                        ),
+//                                                        enabled = book.condition != "haveBorrowed"
+//                                                    ) {
+//                                                        Text("阅读", fontSize = 14.sp, color = Color.White)
+//                                                    }
+//                                                    Spacer(modifier = Modifier.height(8.dp))
+//                                                    Button(
+//                                                        onClick = {
+//                                                            libraryModule.libReturnBook(
+//                                                                UserSession.userId ?: "", book.isbn
+//                                                            )
+//                                                        },
+//                                                        modifier = Modifier.size(100.dp, 36.dp),
+//                                                        colors = ButtonDefaults.buttonColors(
+//                                                            backgroundColor = Color(
+//                                                                0xFF228042
+//                                                            )
+//                                                        ),
+//                                                        enabled = book.condition != "haveBorrowed"
+//                                                    ) {
+//                                                        Text("还书", fontSize = 14.sp, color = Color.White)
+//                                                    }
+//                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
+
 
             }
         }

@@ -10,5 +10,5 @@ data class Merchandise(
     val salesVolume: String = "",
     val description: String = "",
 
-    val quantity: String = "",
+    var quantity: String = "",
 )

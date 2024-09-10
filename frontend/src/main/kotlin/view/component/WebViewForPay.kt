@@ -66,7 +66,7 @@ fun ShowWebViewDialog(url: String, targetUrl: String,onDismiss: (String?) -> Uni
     }
 
     Button(onClick = { showDialog = true }) {
-        Text("支付")
+        Text("扫码支付")
     }
 
 }

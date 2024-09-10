@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import data.Merchandise
 import data.NaviItem
 import module.ShopModule
 
@@ -50,7 +49,7 @@ fun TopNavBar(naviItems: List<NaviItem>, onItemSelected: (NaviItem) -> Unit) {
                     .clickable {
                         selectedItem = item
                         if (item.path == "/shop") {
-                            shopModule.enterShop()
+                            //shopModule.enterShop()
                         }
                         onItemSelected(item)
                     }
