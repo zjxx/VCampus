@@ -29,6 +29,7 @@ fun getItem(): Merchandise {
 fun MerchandiseInfoScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
 
     var showDialog by remember { mutableStateOf(false) }
+    var quantity by remember { mutableIntStateOf(1) }
     val item = getItem()
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
@@ -103,7 +104,6 @@ fun MerchandiseInfoScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
                 .padding(16.dp),
             contentAlignment = Alignment.BottomEnd
         ) {
-            var quantity by remember { mutableStateOf(1) }
 
             Row {
                 Row(
@@ -154,7 +154,8 @@ fun MerchandiseInfoScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
 
                     Row {
                         Button(
-                            onClick = { shopModule.addItemToCart(item.itemUuid, quantity.toString()) },
+                            onClick = { item.quantity = quantity.toString()
+                                shopModule.addItemToCart(item.itemUuid, quantity.toString()) },
                             modifier = Modifier
                                 .size(136.dp, 48.dp)
                                 .clip(
@@ -177,7 +178,10 @@ fun MerchandiseInfoScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
                         }
                         Button(
                             //shopModule.shopBuy(item.itemUuid, quantity.toString(), item.itemname)
-                            onClick = { showDialog = true },
+                            onClick = {
+                                item.quantity = quantity.toString()
+                                showDialog = true
+                            },
                             modifier = Modifier
                                 .size(136.dp, 48.dp)
                                 .clip(

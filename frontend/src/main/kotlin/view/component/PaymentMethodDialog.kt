@@ -61,6 +61,9 @@ fun PaymentMethodDialog(
                     paymentResult = result
                     showWebViewDialog = false
                     println("Payment result: $paymentResult")
+                    if (paymentResult == "success") {
+                        shopModule.shopQRBuy(item.itemUuid, item.quantity, item.itemname)
+                    }
                 }
             }
         }

@@ -93,13 +93,14 @@ class ShopModule (
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         println("Response status: ${responseJson["status"]}")
+        val balance = responseJson["balance"] as String
 
         if (responseJson["status"] == "success") {
-            onBuySuccess("success")
-            DialogManager.showDialog("购买成功")
+            onBuySuccess(balance)
+            DialogManager.showDialog("购买成功，校园卡余额: $balance")
         }
         else {
-            onBuySuccess("fail")
+            onBuySuccess(balance)
             DialogManager.showDialog(responseJson["reason"] as String)
         }
     }
@@ -364,7 +365,8 @@ class ShopModule (
                 onGetAllTransactionsSuccess(tempTransactions)
             }
         } else {
-            DialogManager.showDialog(responseJson["reason"] as String)
+            val reason = responseJson.get("reason").asString
+            DialogManager.showDialog(reason)
         }
     }
 

@@ -22,7 +22,8 @@ data class Book(
     val borrow_date: String = "",
     val return_date: String = "",
 
-    val condition: String = ""
+    val condition: String = "",
+    val userId: String = ""
 ) {
 
 }

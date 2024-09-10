@@ -330,6 +330,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                         Button(
                                             onClick = {
                                                 selectedOption = "查看购物车"
+                                                tempItems = emptyList()
                                                 shopModule.viewCart()
                                             },
                                             colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
@@ -368,7 +369,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                     Text(text = item.itemname, color = Color.Black, fontSize = 16.sp)
                                                     //Text(text = conditionText, color = textColor, fontSize = 16.sp)
                                                     Text(
-                                                        text = "价格: ${item.price}\n库存: ${item.stock}\n数量：${item.quantity}",
+                                                        text = "价格: ￥${item.price}    库存: ${item.stock}\n数量：${item.quantity}",
                                                         fontSize = 12.sp
                                                     )
                                                 }
@@ -487,7 +488,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                     Text(text = transaction.itemName, color = Color.Black, fontSize = 16.sp)
                                                     //Text(text = conditionText, color = textColor, fontSize = 16.sp)
                                                     Text(
-                                                        text = "价格: ${transaction.itemPrice}\n数量: ${transaction.amount}",
+                                                        text = "价格: ￥${transaction.itemPrice}\n数量: ${transaction.amount}",
                                                         fontSize = 12.sp
                                                     )
                                                     Text(text = transaction.time, fontSize = 12.sp)
@@ -636,10 +637,11 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                     Text(text = transaction.itemName, color = Color.Black, fontSize = 16.sp)
                                                     //Text(text = conditionText, color = textColor, fontSize = 16.sp)
                                                     Text(
-                                                        text = "价格: ${transaction.itemPrice}\n数量: ${transaction.amount}",
+                                                        text = "价格: ￥${transaction.itemPrice}    数量: ${transaction.amount}",
                                                         fontSize = 12.sp
                                                     )
                                                     Text(text = transaction.time, fontSize = 12.sp)
+                                                    Text(text = "用户卡号：${transaction.cardNumber}", fontSize = 12.sp)
                                                 }
                                             }
                                         }
