@@ -52,7 +52,7 @@ public class Main {
 //
 //        //UUID uuid = UUID.fromString("223e4567-e89b-12d3-a456-426614174000");
 //
-//// 调用 deleteItem 方法并传入 UUID 对象
+//        // 调用 deleteItem 方法并传入 UUID 对象
 //        //storeItemController.deleteItem(uuid);
 //
 //
