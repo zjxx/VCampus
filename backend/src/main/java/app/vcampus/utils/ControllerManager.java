@@ -83,19 +83,19 @@ public class ControllerManager {
         routeMapping.registerRoute("score/modify",scoreController::modifyScore);//教师修改成绩
 
     }
-    public String handleRequest(String jsonData) {
+    public String handleRequest(String jsonData,String ipAddress) {
         // Parse JSON request
         Request request = gson.fromJson(jsonData, Request.class);
 
         // Call the appropriate controller method based on the request type
-        return routeMapping.handleRequest(request.getType(), jsonData);
+        return routeMapping.handleRequest(request.getType(), jsonData, ipAddress);
     }
 
-    public String handleRequestWithParams(String jsonData, String additionalParam) {
+    public String handleRequestWithParams(String jsonData, String additionalParam,String ipAddress) {
         // Parse JSON request
         Request request = gson.fromJson(jsonData, Request.class);
 
         // Call the appropriate controller method based on the request type
-        return routeMapping.handleRequestWithParams(request.getType(), jsonData, additionalParam);
+        return routeMapping.handleRequestWithParams(request.getType(), jsonData, additionalParam, ipAddress);
     }
 }

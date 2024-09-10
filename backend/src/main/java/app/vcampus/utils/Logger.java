@@ -17,18 +17,18 @@ public class Logger {
         }
     }
 
-    public static void logToFile(String message) {
+    public static void logToFile(String message, String ipAddress) {
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        writer.println(timestamp + " - " + message);
+        writer.println(timestamp + " - " + ipAddress + " - " + message);
     }
 
-    public static void logToConsole(String message) {
-        System.out.println(message);
+    public static void logToConsole(String message, String ipAddress) {
+        System.out.println(ipAddress + " - " + message);
     }
 
-    public static void log(String message) {
-        logToFile(message);
-        logToConsole(message);
+    public static void log(String message, String ipAddress) {
+        logToFile(message, ipAddress);
+        logToConsole(message, ipAddress);
     }
 
     public static void close() {

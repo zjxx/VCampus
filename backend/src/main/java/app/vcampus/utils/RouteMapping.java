@@ -20,8 +20,8 @@ public class RouteMapping {
         routesWithParams.put(type, handler);
     }
 
-    public String handleRequest(String type, String jsonData) {
-        Logger.log("Received request: type=" + type + ", data=" + jsonData);
+    public String handleRequest(String type, String jsonData, String ipAddress) {
+        Logger.log("Received request: type=" + type + ", data=" + jsonData, ipAddress);
         Function<String, String> handler = routes.get(type);
         String response;
         if (handler != null) {
@@ -31,12 +31,12 @@ public class RouteMapping {
             responseMessage.addProperty("message", "Unsupported request type: " + type);
             response = new Gson().toJson(responseMessage);
         }
-        Logger.log("Response: " + response);
+        Logger.log("Response: " + response, ipAddress);
         return response;
     }
 
-    public String handleRequestWithParams(String type, String jsonData, String additionalParam) {
-        Logger.log("Received request with params: type=" + type + ", data=" + jsonData + ", additionalParam=" + additionalParam);
+    public String handleRequestWithParams(String type, String jsonData, String additionalParam, String ipAddress) {
+        Logger.log("Received request with params: type=" + type + ", data=" + jsonData + ", additionalParam=" + additionalParam, ipAddress);
         BiFunction<String, String, String> handler = routesWithParams.get(type);
         String response;
         if (handler != null) {
@@ -46,7 +46,7 @@ public class RouteMapping {
             responseMessage.addProperty("message", "Unsupported request type: " + type);
             response = new Gson().toJson(responseMessage);
         }
-        Logger.log("Response: " + response);
+        Logger.log("Response: " + response, ipAddress);
         return response;
     }
 }
