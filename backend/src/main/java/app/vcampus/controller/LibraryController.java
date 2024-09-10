@@ -475,7 +475,7 @@ public class LibraryController {
                         }
                         //如果书籍状态为true，表示书籍未归还，则为正在借阅
                         if (borrowedBook.isBook_State()) {
-                            borrowingnumber++;
+
                             JsonObject bookData = new JsonObject();
                             bookData.addProperty("readerId", borrowedBook.getReader_ID());
                             bookData.addProperty("bookName", bookName);
@@ -483,19 +483,21 @@ public class LibraryController {
                             bookData.addProperty("borrow_date", borrowedBook.getBorrow_Date().toString());
                             //应还日期
                             bookData.addProperty("return_date", borrowedBook.getReturn_Date().toString());
-                            data.addProperty("borrowing" + i, gson.toJson(bookData));
+                            data.addProperty("borrowing" + borrowingnumber, gson.toJson(bookData));
+                            borrowingnumber++;
                         }
                         //如果书籍状态为false，表示书籍已归还，则为历史借阅
                         else
                         {
-                            haveBorrowednumber++;
+
                             JsonObject bookData = new JsonObject();
                             bookData.addProperty("readerId", borrowedBook.getReader_ID());
                             bookData.addProperty("bookName", bookName);
                             bookData.addProperty("ISBN", borrowedBook.getBook_ISBN());
                             bookData.addProperty("borrow_date", borrowedBook.getBorrow_Date().toString());
                             bookData.addProperty("return_date", borrowedBook.getReturn_Date().toString());
-                            data.addProperty("haveBorrowed" + i, gson.toJson(bookData));
+                            data.addProperty("haveBorrowed" + haveBorrowednumber, gson.toJson(bookData));
+                            haveBorrowednumber++;
                         }
                     }
                     data.addProperty("haveBorrowed_number", String.valueOf(haveBorrowednumber));
