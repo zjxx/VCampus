@@ -32,6 +32,7 @@ public class ControllerManager {
         routeMapping.registerRoute("lib/check", libraryController::viewBorrowRecord);
         routeMapping.registerRouteWithParams("lib/add/file_upload", libraryController::addBook);
         routeMapping.registerRouteWithParams("lib/modify/file_upload",libraryController::updateBook);
+        routeMapping.registerRoute("lib/delete", libraryController::deleteBook);
         routeMapping.registerRoute("lib/viewUserBorrowRecord",libraryController::viewUserBorrowRecord);//查看用户借阅记录
 
 
