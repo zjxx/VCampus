@@ -27,7 +27,7 @@ public class ShoppingCartController {
         jsonObject.addProperty("pictureLink", item.getPictureLink());
         jsonObject.addProperty("barcode", item.getBarcode());
         jsonObject.addProperty("stock",String.valueOf(item.getStock()) );
-        jsonObject.addProperty("salesVolumn", String.valueOf(item.getSalesVolume()));
+        jsonObject.addProperty("salesVolume", String.valueOf(item.getSalesVolume()));
         jsonObject.addProperty("description", description);
         jsonObject.addProperty("quantity",String.valueOf(quantity));
 
