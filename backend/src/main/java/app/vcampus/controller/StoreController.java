@@ -24,7 +24,7 @@ public class StoreController {
     private final StoreTransactionController storeTransactionController = new StoreTransactionController();
 
     //创建商品的JSON对象
-    public String createItemJsonObject(StoreItem item)
+    private String createItemJsonObject(StoreItem item)
     {
         String description = "";
         if (item.getDescription() != null) {
@@ -324,7 +324,7 @@ public class StoreController {
             newItem.setPrice(request.get("price").getAsInt());
             newItem.setBarcode(request.get("barcode").getAsString());
             newItem.setStock(request.get("stock").getAsInt());
-            newItem.setSalesVolume(request.get("salesVolume").getAsInt());
+            newItem.setSalesVolume(request.get("salesVolumn").getAsInt());
             newItem.setDescription(request.get("description").getAsString());
             String filepath = "C:\\Users\\Administrator\\Desktop\\server\\img\\" + newItem.getUuid() + ".jpg";
             FileOutputStream fileOutputStream = new FileOutputStream(filepath);
@@ -387,22 +387,23 @@ public class StoreController {
     public String updateItem(String jsonData, String additionalParam) {
         try {
             JsonObject request = gson.fromJson(jsonData, JsonObject.class);
-            String filepath = "C:\\Users\\Administrator\\Desktop\\server\\img\\" + request.get("uuid").getAsString() + ".jpg";
+            String filepath = "C:\\Users\\Administrator\\Desktop\\server\\img\\" + request.get("uuid") + ".jpg";
             FileOutputStream fileOutputStream = new FileOutputStream(filepath);
             byte[] bytes = java.util.Base64.getDecoder().decode(additionalParam);
             fileOutputStream.write(bytes);
             fileOutputStream.close();
 
             DataBase db = DataBaseManager.getInstance();
-            String uuid = request.get("uuid").getAsString();
-            StoreItem existingItem = db.getWhere(StoreItem.class, "uuid", uuid).get(0);
+            String itemname = request.get("itemName").getAsString();
+            StoreItem existingItem = db.getWhere(StoreItem.class, "itemName", itemname).get(0);
             existingItem.setItemName(request.get("itemName").getAsString());
             existingItem.setPrice(request.get("price").getAsInt());
             existingItem.setPictureLink(filepath);
             existingItem.setBarcode(request.get("barcode").getAsString());
             existingItem.setStock(request.get("stock").getAsInt());
-            existingItem.setSalesVolume(request.get("salesVolume").getAsInt());
+            existingItem.setSalesVolume(request.get("salesVolumn").getAsInt());
             existingItem.setDescription(request.get("description").getAsString());
+
             db.disableForeignKeyChecks();
             db.persist(existingItem);
             db.enableForeignKeyChecks();

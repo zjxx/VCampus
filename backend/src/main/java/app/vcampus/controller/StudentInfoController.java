@@ -7,6 +7,7 @@ import app.vcampus.enums.AcademyType;
 import app.vcampus.interfaces.studentInfoRequest;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
+import app.vcampus.utils.PasswordUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -62,7 +63,8 @@ public class StudentInfoController {
             User user = new User();
             user.setUserId(student.getStudentId());
             user.setUsername(student.getUsername());
-            user.setPassword("123456");
+            String password = PasswordUtils.hashPassword("123456");
+            user.setPassword(password);
             user.setGender(student.getGender());
             user.setRole(0);
             user.setBalance(0);

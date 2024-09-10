@@ -1,14 +1,18 @@
 package app.vcampus.controller;
 
+import app.vcampus.domain.Course;
+import app.vcampus.domain.Enrollment;
 import app.vcampus.domain.User;
 import app.vcampus.utils.EmailService;
 import app.vcampus.enums.UserType;
 import app.vcampus.interfaces.loginRequest;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
+import app.vcampus.utils.PasswordUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -26,10 +30,11 @@ public class UserController {
         loginRequest request = gson.fromJson(jsonData, loginRequest.class);
         JsonObject data = new JsonObject();
         DataBase db = DataBaseManager.getInstance();
-        List<User> users = db.getWhere(User.class,"userId",request.getUsername());
+        List<User> users = db.getWhere(User.class, "userId", request.getUsername());
         if (!users.isEmpty()) {
             User user = users.get(0);
-            if (user.getPassword().equals(request.getPassword())) {
+            String hashedPassword = PasswordUtils.hashPassword(request.getPassword());
+            if (user.getPassword().equals(hashedPassword)) {
                 if (user.getEmail() == null || user.getEmail().isEmpty()) {
                     data.addProperty("status", "noemail");
                 } else {
@@ -38,6 +43,44 @@ public class UserController {
                 data.addProperty("role", UserType.fromIndex((int) user.getRole()));
                 data.addProperty("userId", user.getUserId());
                 data.addProperty("username", user.getUsername());
+                               //获取今天是星期几的string
+                Date date = new Date();
+                int day = date.getDay();
+                if(day==0){
+                    day=7;
+                }
+
+                if(user.getRole()==0) {
+                    List<Course> coursetoday = new java.util.ArrayList<>();
+                    List<Enrollment> enrollments = db.getWhere(Enrollment.class, "studentid", user.getUserId());
+
+                    for (Enrollment enroll : enrollments) {
+                        List<Course> courses = db.getWhere(Course.class, "courseId", enroll.getcourseid());
+                        for (Course course : courses) {
+                            String[] time = course.getTime().split(";");
+                            for (int i = 0; i < time.length; i++) {
+                                if (time[i].startsWith(String.valueOf(day))) {
+                                    Course course1 = new Course();
+                                    course1.setcourseId(course.getcourseId());
+                                    course1.setcourseName(course.getcourseName());
+                                    course1.setteacherName(course.getteacherName());
+                                    course1.setLocation(course.getLocation().split(";")[i]);
+                                    course1.setTime(time[i]);
+                                    coursetoday.add(course1);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    data.addProperty("number", String.valueOf(coursetoday.size()));
+                    for (int i = 0; i < coursetoday.size(); i++) {
+                        JsonObject course = new JsonObject();
+                        course.addProperty("courseName", coursetoday.get(i).getcourseName());
+                        course.addProperty("location", coursetoday.get(i).getLocation());
+                        course.addProperty("time", coursetoday.get(i).getTime());
+                        data.add("course" + i, course);
+                    }
+                }
                 return gson.toJson(data);
             } else {
                 data.addProperty("message", "密码错误");
@@ -93,13 +136,15 @@ public class UserController {
         }
 
         User user = users.get(0);
-        if (!user.getPassword().equals(oldPassword)) {
+        String hashedOldPassword = PasswordUtils.hashPassword(oldPassword);
+        if (!user.getPassword().equals(hashedOldPassword)) {
             response.addProperty("status", "fail");
             response.addProperty("message", "旧密码错误");
             return gson.toJson(response);
         }
 
-        user.setPassword(newPassword);
+        String hashedNewPassword = PasswordUtils.hashPassword(newPassword);
+        user.setPassword(hashedNewPassword);
         db.persist(user);
 
         response.addProperty("status", "success");
@@ -152,13 +197,14 @@ public class UserController {
         User user = db.getWhere(User.class, "userId", userId).get(0);
         JsonObject response = new JsonObject();
 
-        if (user==null) {
+        if (user == null) {
             response.addProperty("status", "fail");
             response.addProperty("message", "没有找到对应用户");
             return gson.toJson(response);
         }
 
-        user.setPassword(newPassword);
+        String hashedNewPassword = PasswordUtils.hashPassword(newPassword);
+        user.setPassword(hashedNewPassword);
         db.persist(user);
 
         response.addProperty("status", "success");
