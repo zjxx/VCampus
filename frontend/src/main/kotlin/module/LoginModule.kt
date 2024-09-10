@@ -19,16 +19,19 @@ class LoginModule(
     }
 
     private fun handleResponse(response: String) {
-        println("Received response: $response")
-        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
-        if (responseJson["status"] == "success"||responseJson["status"] == "noemail") {
-            nettyClient.setRole(responseJson["role"] as String)
-            UserSession.userId = responseJson["userId"] as String
-            UserSession.role = responseJson["role"] as String
-            UserSession.status = responseJson["status"] as String
-            UserSession.userName = responseJson["username"] as String
-            val courses = mutableListOf<Course>()
-            val numberOfCourses = responseJson["number"]?.toString()?.toIntOrNull() ?: 0
+    println("Received response: $response")
+    val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+    if (responseJson["status"] == "success" || responseJson["status"] == "noemail") {
+        nettyClient.setRole(responseJson["role"] as String)
+        UserSession.userId = responseJson["userId"] as String
+        UserSession.role = responseJson["role"] as String
+        UserSession.status = responseJson["status"] as String
+        UserSession.userName = responseJson["username"] as String
+        val courses = mutableListOf<Course>()
+        val numberOfCourses = responseJson["number"]?.toString()?.toIntOrNull() ?: 0
+        if (numberOfCourses == 0) {
+            courses.add(Course(name = "今天暂无课程", time = "", classroom = ""))
+        } else {
             for (i in 0 until numberOfCourses) {
                 val courseJson = responseJson["course$i"] as? Map<String, String> ?: continue
                 val time = courseJson["time"] ?: "Unknown"
@@ -40,12 +43,13 @@ class LoginModule(
                 )
                 courses.add(course)
             }
-            UserSession.courses = courses
-            onLoginSuccess()
-        } else {
-            DialogManager.showDialog(responseJson["message"] as String)
         }
+        UserSession.courses = courses
+        onLoginSuccess()
+    } else {
+        DialogManager.showDialog(responseJson["message"] as String)
     }
+}
 
     fun sendVerificationCode(email: String, userId: String) {
         val request = mapOf("email" to email, "userId" to userId)
