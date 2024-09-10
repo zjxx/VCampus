@@ -289,7 +289,6 @@ public class Main {
 //        DataBase db = DataBaseManager.getInstance();
 //        List<Enrollment> enrollments = db.getWhere(Enrollment.class,"studentid","213240000");
 
-
         NettyServer nettyServer = new NettyServer(8066);
             nettyServer.start();
         }
