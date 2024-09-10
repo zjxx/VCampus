@@ -83,19 +83,11 @@ public class ShoppingCartController {
 
             DataBase db = DataBaseManager.getInstance();
             List<ShoppingCartItem> cartItems = db.getWhere(ShoppingCartItem.class, "userId", userId);
+            db.disableForeignKeyChecks();
             for (ShoppingCartItem cartItem : cartItems) {
-                if (cartItem.getItemId().equals(itemId) ) {
-                    if(quantity <= 0 )
-                    {
-                        db.remove(cartItem);
-                    }
-                    else {
-                        cartItem.setQuantity(quantity);
-                        db.persist(cartItem);
-                    }
-                    break;
-                }
+               db.remove(cartItem);
             }
+            db.enableForeignKeyChecks();
 
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");
