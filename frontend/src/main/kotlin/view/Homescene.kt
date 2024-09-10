@@ -102,7 +102,7 @@ fun HomeScene(onLogout: () -> Unit) {
                                 courses.value.forEach { course ->
                                     Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
                                         Column(modifier = Modifier.padding(8.dp)) {
-                                            Text("课程名: ${course.name}", fontWeight = FontWeight.Bold, color = Color.Black)
+                                            Text(" ${course.name}", fontWeight = FontWeight.Bold, color = Color.Black)
                                             Text(" ${course.time}节    教室： ${course.classroom}", color = Color.Gray, fontSize = 12.sp)
                                         }
                                     }
