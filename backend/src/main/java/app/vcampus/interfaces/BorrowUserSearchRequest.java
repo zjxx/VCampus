@@ -2,14 +2,14 @@ package app.vcampus.interfaces;
 
 public class BorrowUserSearchRequest {
     private String role;
-    private String UserId;
-    private String SearchId;
+    private String userId;
+    private String searchId;
 
 
     public BorrowUserSearchRequest(String role, String UserId, String SearchId) {
         this.role = role;
-        this.UserId = UserId;
-        this.SearchId = SearchId;
+        this.userId = UserId;
+        this.searchId = SearchId;
     }
 
     public String getRole() {
@@ -21,18 +21,18 @@ public class BorrowUserSearchRequest {
     }
 
     public String getUserId() {
-        return UserId;
+        return userId;
     }
 
     public void setUserId(String UserId) {
-        this.UserId = UserId;
+        this.userId = UserId;
     }
 
     public String getSearchId() {
-        return SearchId;
+        return searchId;
     }
 
     public void setSearchId(String SearchId) {
-        this.SearchId = SearchId;
+        this.searchId = SearchId;
     }
 }
