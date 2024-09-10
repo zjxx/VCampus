@@ -460,6 +460,8 @@ public class LibraryController {
             if (!readers.isEmpty()) {
                 //在借阅记录中查找该用户的所有借阅记录
                 List<Reader2Book> borrowedBooks = db.getLike(Reader2Book.class, "Reader_ID", request.getSearchId());
+                int borrowingnumber=0;
+                int haveBorrowednumber=0;
                 if (!borrowedBooks.isEmpty()) {
                     //遍历借阅记录，将借阅信息添加到json对象中
                     for (int i = 0; i < borrowedBooks.size(); i++) {
@@ -473,6 +475,7 @@ public class LibraryController {
                         }
                         //如果书籍状态为true，表示书籍未归还，则为正在借阅
                         if (borrowedBook.isBook_State()) {
+                            borrowingnumber++;
                             JsonObject bookData = new JsonObject();
                             bookData.addProperty("readerId", borrowedBook.getReader_ID());
                             bookData.addProperty("bookName", bookName);
@@ -485,6 +488,7 @@ public class LibraryController {
                         //如果书籍状态为false，表示书籍已归还，则为历史借阅
                         else
                         {
+                            haveBorrowednumber++;
                             JsonObject bookData = new JsonObject();
                             bookData.addProperty("readerId", borrowedBook.getReader_ID());
                             bookData.addProperty("bookName", bookName);
@@ -494,6 +498,8 @@ public class LibraryController {
                             data.addProperty("haveBorrowed" + i, gson.toJson(bookData));
                         }
                     }
+                    data.addProperty("haveBorrowed_number", String.valueOf(haveBorrowednumber));
+                    data.addProperty("borrowing_number", String.valueOf(borrowingnumber));
                     data.addProperty("status", "success");
                 }
                 else
