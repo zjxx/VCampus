@@ -21,24 +21,32 @@ public class RouteMapping {
     }
 
     public String handleRequest(String type, String jsonData) {
+        Logger.log("Received request: type=" + type + ", data=" + jsonData);
         Function<String, String> handler = routes.get(type);
+        String response;
         if (handler != null) {
-            return handler.apply(jsonData);
+            response = handler.apply(jsonData);
         } else {
             JsonObject responseMessage = new JsonObject();
             responseMessage.addProperty("message", "Unsupported request type: " + type);
-            return new Gson().toJson(responseMessage);
+            response = new Gson().toJson(responseMessage);
         }
+        Logger.log("Response: " + response);
+        return response;
     }
 
     public String handleRequestWithParams(String type, String jsonData, String additionalParam) {
+        Logger.log("Received request with params: type=" + type + ", data=" + jsonData + ", additionalParam=" + additionalParam);
         BiFunction<String, String, String> handler = routesWithParams.get(type);
+        String response;
         if (handler != null) {
-            return handler.apply(jsonData, additionalParam);
+            response = handler.apply(jsonData, additionalParam);
         } else {
             JsonObject responseMessage = new JsonObject();
             responseMessage.addProperty("message", "Unsupported request type: " + type);
-            return new Gson().toJson(responseMessage);
+            response = new Gson().toJson(responseMessage);
         }
+        Logger.log("Response: " + response);
+        return response;
     }
 }
