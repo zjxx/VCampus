@@ -52,7 +52,7 @@ public class Main {
 //
 //        //UUID uuid = UUID.fromString("223e4567-e89b-12d3-a456-426614174000");
 //
-//// 调用 deleteItem 方法并传入 UUID 对象
+//        // 调用 deleteItem 方法并传入 UUID 对象
 //        //storeItemController.deleteItem(uuid);
 //
 //
@@ -167,6 +167,11 @@ public class Main {
 //            String jsonData8 = gson.toJson(request8);
 //            String result8 = library.viewUserBorrowRecord(jsonData8);
 //            System.out.println(result8);
+//        //测试viewUserBorrowRecord函数
+//        BorrowUserSearchRequest request9 = new BorrowUserSearchRequest("admin","123456789","");
+//        String jsonData9 = gson.toJson(request9);
+//        String result9 = library.viewUserBorrowRecord(jsonData9);
+//        System.out.println(result9);
 //        }
 
 
@@ -224,11 +229,11 @@ public class Main {
 //            System.out.println(result8);
 //        }
 //
-//            //测试ScoreController
-//            {
+////            //测试ScoreController
+////            {
 //                ScoreController scoreController = new ScoreController();
 //                Gson gson = new Gson();
-//
+////
 //                //测试教师添加成绩函数
 //                ScoreGiveRequest request0 = new ScoreGiveRequest("113220000",
 //                        "213220159", "CS000001", "90",
@@ -280,10 +285,9 @@ public class Main {
 //                String jsonData7 = gson.toJson(request7);
 //                String result7 = scoreController.viewAllScore(jsonData7);
 //                System.out.println(result7);
-//            }
-        DataBase db = DataBaseManager.getInstance();
-        List<Enrollment> enrollments = db.getWhere(Enrollment.class,"studentid","213240000");
-
+////            }
+//        DataBase db = DataBaseManager.getInstance();
+//        List<Enrollment> enrollments = db.getWhere(Enrollment.class,"studentid","213240000");
 
         NettyServer nettyServer = new NettyServer(8066);
             nettyServer.start();

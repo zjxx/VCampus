@@ -37,8 +37,10 @@ public class ScoreController {
             data.addProperty("reason", "student is not enrolled in the course");
             return gson.toJson(data);
         }
+
         //查看该学生是否已经提交过该课程的成绩
         List<Score> scores = db.getWhere(Score.class, "courseId", request.getCourseId());
+        //学生无成绩
         if (scores.isEmpty() || scores.stream().noneMatch(score -> score.getStudentId().equals(request.getStudentId()))) {
             try {
                 // 获取课程并保存成绩
@@ -63,31 +65,41 @@ public class ScoreController {
             } catch (NumberFormatException e) {
                 throw new RuntimeException(e);
             }
+            catch (Exception e) {
+                data.addProperty("status", "failed");
+                data.addProperty("reason", e.getMessage());
+            }
         }
         //如果该学生已经提交过该课程的成绩，检查成绩的status是不是审核未通过，如果是，则更新成绩，否则不更新
         else if(scores.stream().anyMatch(score -> score.getStudentId().equals(request.getStudentId()) && score.getStatus().equals("审核未通过")))
         {
-            // 获取课程并更新成绩
-            Course myCourse = courses.stream().filter(course -> course.getcourseId().equals(request.getCourseId())).findFirst().orElse(null);//找到课程
-            if (myCourse != null) {
-                Score score = scores.stream().filter(score1 -> score1.getStudentId().equals(request.getStudentId())).findFirst().orElse(null);
-                if (score != null) {
-                    score.setParticipationScore(Integer.parseInt(request.getParticipationScore()));
-                    score.setMidtermScore(Integer.parseInt(request.getMidtermScore()));
-                    score.setFinalScore(Integer.parseInt(request.getFinalScore()));
-                    score.setScore(Integer.parseInt(request.getScore()));
-                    score.setCredit(myCourse.getCredit());
-                    score.setSemester(myCourse.getSemester());
-                    score.setStatus("未审核");
-                    db.update(score);
-                    data.addProperty("status", "success");
+            try {
+                // 获取课程并更新成绩
+                Course myCourse = courses.stream().filter(course -> course.getcourseId().equals(request.getCourseId())).findFirst().orElse(null);//找到课程
+                if (myCourse != null) {
+                    Score score = scores.stream().filter(score1 -> score1.getStudentId().equals(request.getStudentId())).findFirst().orElse(null);
+                    if (score != null) {
+                        score.setParticipationScore(Integer.parseInt(request.getParticipationScore()));
+                        score.setMidtermScore(Integer.parseInt(request.getMidtermScore()));
+                        score.setFinalScore(Integer.parseInt(request.getFinalScore()));
+                        score.setScore(Integer.parseInt(request.getScore()));
+                        score.setCredit(myCourse.getCredit());
+                        score.setSemester(myCourse.getSemester());
+                        score.setStatus("未审核");
+                        db.update(score);
+                        data.addProperty("status", "success");
+                    } else {
+                        data.addProperty("status", "failed");
+                        data.addProperty("reason", "score not found");
+                    }
                 } else {
                     data.addProperty("status", "failed");
-                    data.addProperty("reason", "score not found");
+                    data.addProperty("reason", "course not found");
                 }
-            } else {
+            }
+            catch (Exception e) {
                 data.addProperty("status", "failed");
-                data.addProperty("reason", "course not found");
+                data.addProperty("reason", e.getMessage());
             }
         }
         else {
@@ -255,7 +267,7 @@ public class ScoreController {
             if (request.getStatus().equals("审核通过")) {
                 for (Score score : scores) {
                     score.setStatus("审核通过");
-                    db.save(score);
+                    db.update(score);
                 }
                 data.addProperty("status", "success");
                 data.addProperty("message", "score is passed");
@@ -265,7 +277,7 @@ public class ScoreController {
             else if (request.getStatus().equals("审核未通过")) {
                 for (Score score : scores) {
                     score.setStatus("审核未通过");
-                    db.save(score);
+                    db.update(score);
                 }
                 data.addProperty("status", "success");
                 data.addProperty("message", "score is not passed");

@@ -27,6 +27,6 @@ public class ScoreCheckRequest {
     public String getStatus() {
         return classStatus;}
 
-    public void setStatus(String status) {
-        this.classStatus = status;}
+    public void setStatus(String classStatus) {
+        this.classStatus = classStatus;}
 }

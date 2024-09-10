@@ -454,11 +454,12 @@ public class LibraryController {
         DataBase db = DataBaseManager.getInstance();
         //判断用户身份,如果是管理员,则显示用户借阅记录
         if (request.getRole().equals("admin")) {
+            //如果request.getSearchId()为空，则显示所有借阅记录
             //判断用户存不存在
-            List<User> readers = db.getWhere(User.class, "userId", request.getSearchId());
+            List<User> readers = db.getWhere(User.class, "userId", request.getUserId());
             if (!readers.isEmpty()) {
                 //在借阅记录中查找该用户的所有借阅记录
-                List<Reader2Book> borrowedBooks = db.getWhere(Reader2Book.class, "Reader_ID", request.getSearchId());
+                List<Reader2Book> borrowedBooks = db.getLike(Reader2Book.class, "Reader_ID", request.getSearchId());
                 if (!borrowedBooks.isEmpty()) {
                     //遍历借阅记录，将借阅信息添加到json对象中
                     for (int i = 0; i < borrowedBooks.size(); i++) {
@@ -473,6 +474,7 @@ public class LibraryController {
                         //如果书籍状态为true，表示书籍未归还，则为正在借阅
                         if (borrowedBook.isBook_State()) {
                             JsonObject bookData = new JsonObject();
+                            bookData.addProperty("readerId", borrowedBook.getReader_ID());
                             bookData.addProperty("bookName", bookName);
                             bookData.addProperty("ISBN", borrowedBook.getBook_ISBN());
                             bookData.addProperty("borrow_date", borrowedBook.getBorrow_Date().toString());
@@ -484,6 +486,7 @@ public class LibraryController {
                         else
                         {
                             JsonObject bookData = new JsonObject();
+                            bookData.addProperty("readerId", borrowedBook.getReader_ID());
                             bookData.addProperty("bookName", bookName);
                             bookData.addProperty("ISBN", borrowedBook.getBook_ISBN());
                             bookData.addProperty("borrow_date", borrowedBook.getBorrow_Date().toString());
