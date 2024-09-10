@@ -105,6 +105,30 @@ class ShopModule (
     }
 
     //_______________________________________________________________________________________
+    //QRCode支付
+    fun shopQRBuy(uuid: String, amount: String, itemName: String) {
+        val request = mapOf("itemUuid" to uuid, "amount" to amount, "cardNumber" to UserSession.userId.toString(), "itemName" to itemName)
+        nettyClient.sendRequest(request, "shop/QRbuy") { response: String ->
+            handleShopQRBuy(response)
+        }
+    }
+
+    private fun handleShopQRBuy(response: String) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        println("Response status: ${responseJson["status"]}")
+
+        if (responseJson["status"] == "success") {
+            onBuySuccess("success")
+            DialogManager.showDialog("购买成功")
+        }
+        else {
+            onBuySuccess("fail")
+            DialogManager.showDialog(responseJson["reason"] as String)
+        }
+    }
+
+    //_______________________________________________________________________________________
     //获取随机商品
     fun enterShop() {
         val request = mapOf("" to String)

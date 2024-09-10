@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import data.Merchandise
 import module.ShopModule
 import view.component.GlobalState
+import view.component.PaymentMethodDialog
 import java.io.File
 
 fun getItem(): Merchandise {
@@ -27,6 +28,7 @@ fun getItem(): Merchandise {
 @Composable
 fun MerchandiseInfoScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
 
+    var showDialog by remember { mutableStateOf(false) }
     val item = getItem()
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
@@ -174,7 +176,8 @@ fun MerchandiseInfoScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
                             )
                         }
                         Button(
-                            onClick = { shopModule.shopBuy(item.itemUuid, quantity.toString(), item.itemname) },
+                            //shopModule.shopBuy(item.itemUuid, quantity.toString(), item.itemname)
+                            onClick = { showDialog = true },
                             modifier = Modifier
                                 .size(136.dp, 48.dp)
                                 .clip(
@@ -193,6 +196,21 @@ fun MerchandiseInfoScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
                                 color = Color.White,
                                 fontSize = 18.sp,
                                 fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                            )
+                        }
+                        if (showDialog) {
+                            PaymentMethodDialog(
+                                onDismissRequest = { showDialog = false },
+                                onCampusCardPay = {
+                                    // Handle campus card payment
+                                    showDialog = false
+                                },
+                                onQRCodePay = {
+                                    // Handle QR code payment
+                                    showDialog = false
+                                },
+                                shopModule = shopModule,
+                                item = item,
                             )
                         }
                     }
