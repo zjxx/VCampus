@@ -349,8 +349,7 @@ public class LibraryController {
                 data.addProperty("status", "failed");
                 data.addProperty("reason", "No book found.");
             }
-        } else
-        {
+        } else {
             data.addProperty("status", "failed");
             data.addProperty("reason", "You don't have permission to delete book.");
         }
