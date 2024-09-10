@@ -366,6 +366,7 @@ public class StoreController {
                 }
             }
 
+            db.disableForeignKeyChecks();
             db.remove(item);
 
             //从购物车中删除商品
@@ -374,6 +375,7 @@ public class StoreController {
                 db.remove(cartItem);
             }
             db.remove(item);
+            db.enableForeignKeyChecks();
 
             response.addProperty("status", "success");
         } catch (Exception e) {

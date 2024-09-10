@@ -1,6 +1,7 @@
 package app.vcampus.domain;
 
 import jakarta.persistence.*;
+import app.vcampus.domain.StoreItem;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
