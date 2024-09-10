@@ -20,6 +20,8 @@ class LibraryModule (
     var searchIdResult = mutableListOf<String>()
     //var filePath by remember { mutableStateOf<String?>(null) }
 
+    //__________________________________________________________________________________________
+
     fun libSearch(bookname: String, flag: String) {
         tempBooks.clear()
         val request = mapOf("role" to UserSession.role, "bookname" to bookname, "flag" to flag)//加上一个flag区分是否时bookName和ISBN

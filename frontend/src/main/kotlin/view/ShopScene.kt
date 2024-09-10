@@ -25,6 +25,7 @@ import data.Merchandise
 import data.StoreTransaction
 import data.UserSession
 import module.ShopModule
+import view.component.CartMethodDialog
 import view.component.GlobalState
 import view.component.selectedItemList
 import java.io.File
@@ -42,7 +43,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
     var tempTransactions by remember { mutableStateOf(listOf<StoreTransaction>()) }
     var currentScene by remember { mutableStateOf("ShopScene") }
     var isCollapsed by remember { mutableStateOf(true) }
-    //var totalPrice by remember { mutableStateOf(0.0) }
+    var showDialog by remember { mutableStateOf(false) }
 
     val shopModule = ShopModule(
         onSearchSuccess = { result ->
@@ -68,7 +69,8 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
         onViewSuccess = { result ->
             tempItems = emptyList()
             tempItems = result
-        }
+        },
+        //onViewCartComplete = {},
     )
 
     LaunchedEffect(shopModule.tempItems) {
@@ -150,7 +152,8 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                             TextButton(
                                 onClick = {
                                     selectedOption = "查看购物车"
-                                    shopModule.viewCart()
+                                    tempItems = emptyList()
+                                    shopModule.viewCart {}
                                 },
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
@@ -331,7 +334,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                             onClick = {
                                                 selectedOption = "查看购物车"
                                                 tempItems = emptyList()
-                                                shopModule.viewCart()
+                                                shopModule.viewCart {}
                                             },
                                             colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
                                             shape = CircleShape,
@@ -390,7 +393,6 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                         colors = ButtonDefaults.buttonColors(
                                                             backgroundColor = Color(0xFF228042)
                                                         ),
-                                                        //enabled = item. != "haveBorrowed"
                                                     ) {
                                                         Text(
                                                             "移除",
@@ -412,7 +414,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                     ) {
                                         Button(
                                             onClick = {
-                                                // e
+                                                showDialog = true
                                             },
                                             modifier = Modifier
                                                 .size(136.dp, 48.dp)
@@ -432,6 +434,22 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                 color = Color.White,
                                                 fontSize = 18.sp,
                                                 fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                                            )
+                                        }
+                                        if (showDialog) {
+                                            println("tempItems size = ${tempItems.size}")
+                                            CartMethodDialog(
+                                                onDismissRequest = { showDialog = false },
+                                                onCampusCardPay = {
+                                                    // Handle campus card payment
+                                                    showDialog = false
+                                                },
+                                                onQRCodePay = {
+                                                    // Handle QR code payment
+                                                    showDialog = false
+                                                },
+                                                shopModule = shopModule,
+                                                //items = tempItems,
                                             )
                                         }
                                     }
