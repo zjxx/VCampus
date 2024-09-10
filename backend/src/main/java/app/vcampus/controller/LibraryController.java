@@ -339,6 +339,11 @@ public class LibraryController {
                 Book book = books.get(0);
                 //删除书籍
                 db.delete(book);
+                //删除借阅记录
+                List<Reader2Book> borrowedBooks = db.getWhere(Reader2Book.class, "Book_ISBN", request.getISBN());
+                for (Reader2Book borrowedBook : borrowedBooks) {
+                    db.delete(borrowedBook);
+                }
                 data.addProperty("status", "success");
             } else {
                 data.addProperty("status", "failed");
