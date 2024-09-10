@@ -83,10 +83,15 @@ public class ShoppingCartController {
 
             DataBase db = DataBaseManager.getInstance();
             List<ShoppingCartItem> cartItems = db.getWhere(ShoppingCartItem.class, "userId", userId);
-            db.disableForeignKeyChecks();
-            for (ShoppingCartItem cartItem : cartItems) {
-               db.remove(cartItem);
-            }
+            for(ShoppingCartItem cartItem : cartItems) {
+                if (cartItem.getItemId().equals(itemId)) {
+                    db.remove(cartItem);
+                    break;
+                    }
+                }
+
+
+
             db.enableForeignKeyChecks();
 
             JsonObject response = new JsonObject();
