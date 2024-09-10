@@ -419,5 +419,42 @@ public class StoreController {
         }
     }
 
+    // 通过二维码购买商品
+    public String QRbuy(String jsonData) {
+        try {
+            JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+            String cardNumber = request.get("cardNumber").getAsString();
+            String itemUuid = request.get("itemUuid").getAsString();
+            int amount = request.get("amount").getAsInt();
+            String itemName = request.get("itemName").getAsString();
+
+            DataBase db = DataBaseManager.getInstance();
+            StoreItem storeItem = db.getWhere(StoreItem.class, "itemName", itemName).get(0);
+            User user = db.getWhere(User.class, "userId", cardNumber).get(0);
+
+
+
+            storeItem.setSalesVolume(storeItem.getSalesVolume() + amount);
+            db.persist(storeItem);
+
+            StoreTransaction transaction = new StoreTransaction();
+            transaction.setUuid(UUID.randomUUID());
+            transaction.setStoreItem(storeItem);
+            transaction.setItemUuid(storeItem.getUuid());
+            transaction.setTime(LocalDateTime.now());
+            transaction.setAmount(amount);
+            transaction.setCardNumber(cardNumber);
+            db.persist(transaction);
+
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "success");
+            return gson.toJson(response);
+        } catch (Exception e) {
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "failed");
+            response.addProperty("reason", e.getMessage());
+            return gson.toJson(response);
+        }
+    }
 
 }
