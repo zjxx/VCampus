@@ -103,7 +103,7 @@ class NettyClient(private val host: String, private val port: Int) {
                 req["role"] = role // 添加新的键值对
                 req["type"] = type // 添加新的键值对
                 val jsonRequest = gson.toJson(req)
-                val chunks = splitData(encodedFile, 64) // Split data into 512B chunks
+                val chunks = splitData(encodedFile, 16) // Split data into 512B chunks
 
                 // 发送请求
                 future.channel().writeAndFlush(jsonRequest)
