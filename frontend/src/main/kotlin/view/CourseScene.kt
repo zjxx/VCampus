@@ -98,7 +98,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                         selectedMenuItem = "选课"
                         courseModule.listCourse()
                     }) {
-                        Icon(imageVector = Icons.Default.Person, contentDescription = "选课")
+                        Icon(imageVector = Icons.Default.Person, contentDescription = "选课", tint = Color.Black)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("选课", color = Color.Black)
                     }
@@ -106,7 +106,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                         selectedMenuItem = "查看我的课表"
                         courseModule.classTable()
                     }) {
-                        Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看我的课表")
+                        Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看我的课表", tint = Color.Black)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("查看我的课表", color = Color.Black)
                     }
@@ -114,7 +114,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                         selectedMenuItem = "查看我的成绩"
                         courseModule.viewScore()
                     }) {
-                        Icon(imageVector = Icons.Default.PhotoCamera, contentDescription = "查看我的课表")
+                        Icon(imageVector = Icons.Default.PhotoCamera, contentDescription = "查看我的课表", tint = Color.Black)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("查看我的成绩", color = Color.Black)
                     }
@@ -124,7 +124,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                             videoclasses = receivedClasses
                         }
                     }) {
-                        Icon(imageVector = Icons.Default.Videocam, contentDescription = "查看我的课表")
+                        Icon(imageVector = Icons.Default.Videocam, contentDescription = "云课堂", tint = Color.Black)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("云课堂", color = Color.Black)
                     }
@@ -133,7 +133,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                     TextButton(onClick = {
                         selectedMenuItem = "增加课程"
                     }) {
-                        Icon(imageVector = Icons.Default.Add, contentDescription = "增加课程")
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "增加课程", tint = Color.Black)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("增加课程", color = Color.Black)
                     }
@@ -141,7 +141,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                         selectedMenuItem = "修改课程"
                         courseModule.ShowAllCourse()
                     }) {
-                        Icon(imageVector = Icons.Default.Edit, contentDescription = "修改课程")
+                        Icon(imageVector = Icons.Default.Edit, contentDescription = "修改课程", tint = Color.Black)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("修改课程", color = Color.Black)
                     }
@@ -151,7 +151,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                             classes = receivedClasses
                         }
                     }) {
-                        Icon(imageVector = Icons.Default.Calculate, contentDescription = "成绩管理")
+                        Icon(imageVector = Icons.Default.Calculate, contentDescription = "成绩管理", tint = Color.Black)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("成绩管理", color = Color.Black)
                     }
@@ -163,7 +163,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                             classes = receivedClasses
                         }
                     }) {
-                        Icon(imageVector = Icons.Default.ViewList, contentDescription = "查看课程")
+                        Icon(imageVector = Icons.Default.ViewList, contentDescription = "查看课程", tint = Color.Black)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("查看课程", color = Color.Black)
                     }
@@ -173,7 +173,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                             videoclasses = receivedClasses
                         }
                     }) {
-                        Icon(imageVector = Icons.Default.Radio, contentDescription = "查看课程")
+                        Icon(imageVector = Icons.Default.Radio, contentDescription = "查看课程", tint = Color.Black)
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("录课", color = Color.Black)
                     }
