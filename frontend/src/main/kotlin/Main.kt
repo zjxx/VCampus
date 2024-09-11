@@ -1,8 +1,8 @@
 // src/main/kotlin/Main.kt
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -85,6 +85,7 @@ fun App() {
                                 NaviItem("超市", "/shop", Icons.Default.ShoppingCart, listOf("shop_user", "shop_staff")),
                                 NaviItem("课程", "/course", Icons.Default.DateRange, listOf("student", "affairs_staff")),
                                 NaviItem("办事平台", "/affairs", Icons.Default.Build, listOf("affairs_staff")),
+                                NaviItem("退出", "/logout", Icons.Default.ExitToApp, listOf("user"))
                             )
                             "admin" -> listOf(
                                 NaviItem("主页", "/home", Icons.Default.Home, listOf("user")),
@@ -93,6 +94,7 @@ fun App() {
                                 NaviItem("超市", "/shop", Icons.Default.ShoppingCart, listOf("shop_user", "shop_staff")),
                                 NaviItem("课程管理", "/course", Icons.Default.DateRange, listOf("student", "affairs_staff")),
                                 NaviItem("办事平台", "/affairs", Icons.Default.Build, listOf("affairs_staff")),
+                                NaviItem("退出", "/logout", Icons.Default.ExitToApp, listOf("user"))
                                 )
                             "teacher" -> listOf(
                                 NaviItem("主页", "/home", Icons.Default.Home, listOf("user")),
@@ -100,6 +102,7 @@ fun App() {
                                 NaviItem("超市", "/shop", Icons.Default.ShoppingCart, listOf("shop_user", "shop_staff")),
                                 NaviItem("课程", "/course", Icons.Default.DateRange, listOf("student", "affairs_staff")),
                                 NaviItem("办事平台", "/affairs", Icons.Default.Build, listOf("affairs_staff")),
+                                NaviItem("退出", "/logout", Icons.Default.ExitToApp, listOf("user"))
                             )
 
                             else -> emptyList()
@@ -126,6 +129,9 @@ fun App() {
                     "/affairs" -> AffairsScene(onNavigate = { path ->
                         currentScene = path
                     }, role = UserSession.role ?: "")
+                    "/logout" -> {
+                        currentScene = "LoginScene"
+                    }
                 // 添加更多场景
                 }
             }
@@ -133,6 +139,7 @@ fun App() {
         }
     }
 }
+
 
 fun main() = application {
     Window(
