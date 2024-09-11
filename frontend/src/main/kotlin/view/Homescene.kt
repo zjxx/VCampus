@@ -124,12 +124,6 @@ fun HomeScene(onLogout: () -> Unit) {
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                Button(
-                    onClick = { loginModule.logout() },
-                    modifier = Modifier.align(Alignment.End).padding(16.dp)
-                ) {
-                    Text("登出")
-                }
             }
         }
     }

@@ -19,7 +19,7 @@ data class Course(
     var credit: String,
     var teacher: String,
     var time: String,
-    var timeSlots: List<TimeSlot>,
+    var timeAndLocationCards: List<TimeAndLocationCardData>,
     var location: String,
     var capacity: String,
     var validCapacity: String, // Change to var to allow modification
@@ -39,7 +39,8 @@ data class GroupedCourse(
 data class TimeSlot(
     var week: String,
     var begin: String,
-    var end: String
+    var end: String,
+    var location: String
 )
 data class CourseData(
     var courseName: String,
@@ -197,9 +198,16 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
                     val courseIdPrefix = courseId.substring(0, 7)
                     val teacherNumber = courseId[7].toString()
                     val time = courseJson["time"] as String
-                    val timeSlots = time.split(";").map {
-                        val parts = it.split("-")
-                        TimeSlot(parts[0], parts[1], parts[2])
+                    val location=courseJson["location"] as String
+                    val timeAndLocationCards = time.split(";").zip(location.split(";")).map {
+                        val (timeSlot, loc) = it
+                        val parts = timeSlot.split("-")
+                        TimeAndLocationCardData(
+                            dayOfWeek = mapDayOfWeekNumberToChinese(parts[0]),
+                            startPeriod = parts[1],
+                            endPeriod = parts[2],
+                            location = loc
+                        )
                     }
                     val course = Course(
                         courseId,
@@ -208,8 +216,8 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
                         credit,
                         courseJson["teacher"] as String,
                         time,
-                        timeSlots,
-                        courseJson["location"] as String,
+                        timeAndLocationCards,
+                        location,
                         courseJson["capacity"] as String,
                         courseJson["validCapacity"] as String,
                         courseJson["property"] as String,

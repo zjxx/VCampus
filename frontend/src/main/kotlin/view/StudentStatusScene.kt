@@ -87,20 +87,20 @@ Box(
             selectedMenuItem = "查看个人信息"
             studentStatusModule.searchStudentStatus()
         }) {
-            Icon(imageVector = Icons.Default.Person, contentDescription = "查看个人信息")
+            Icon(imageVector = Icons.Default.Person, contentDescription = "查看个人信息", tint = Color.Black)
             Spacer(modifier = Modifier.width(8.dp))
             Text("查看个人信息", color = Color.Black)
         }
         TextButton(onClick = {
             selectedMenuItem = "修改密码"
         }) {
-            Icon(imageVector = Icons.Default.Lock, contentDescription = "修改密码")
+            Icon(imageVector = Icons.Default.Lock, contentDescription = "修改密码", tint = Color.Black)
             Spacer(modifier = Modifier.width(8.dp))
             Text("修改密码", color = Color.Black)
         }
     } else if (role == "admin") {
         TextButton(onClick = { selectedMenuItem = "增加学籍" }) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = "增加学籍")
+            Icon(imageVector = Icons.Default.Add, contentDescription = "增加学籍", tint = Color.Black)
             Spacer(modifier = Modifier.width(8.dp))
             Text("增加学籍", color = Color.Black)
         }
@@ -109,7 +109,7 @@ Box(
                 searchResults = results
             }
         }) {
-            Icon(imageVector = Icons.Default.Edit, contentDescription = "修改学籍")
+            Icon(imageVector = Icons.Default.Edit, contentDescription = "修改学籍", tint = Color.Black)
             Spacer(modifier = Modifier.width(8.dp))
             Text("修改学籍", color = Color.Black)
         }

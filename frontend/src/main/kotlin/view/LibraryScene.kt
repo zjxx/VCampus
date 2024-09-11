@@ -152,7 +152,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                 onClick = { selectedOption = "查找书籍" },
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Person, contentDescription = "查找书籍")
+                                Icon(imageVector = Icons.Default.Person, contentDescription = "查找书籍", tint = Color.Black)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(text = "查找书籍", fontSize = 18.sp, color = Color.Black)
                             }
@@ -165,7 +165,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                 },
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看已借阅书籍信息")
+                                Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看已借阅书籍信息", tint = Color.Black)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(text = "查看已借阅书籍信息", fontSize = 18.sp, color = Color.Black)
                             }
@@ -181,7 +181,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                 onClick = { selectedOption = "显示图片" },
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Image, contentDescription = "显示图片")
+                                Icon(imageVector = Icons.Default.Image, contentDescription = "显示图片", tint = Color.Black)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(text = "显示图片", fontSize = 18.sp, color = Color.Black)
                             }
@@ -190,7 +190,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                 onClick = { selectedOption = "管理书籍" },
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Add, contentDescription = "管理书籍")
+                                Icon(imageVector = Icons.Default.Add, contentDescription = "管理书籍", tint = Color.Black)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(text = "管理书籍", fontSize = 18.sp, color = Color.Black)
                             }
@@ -201,7 +201,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                 },
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.List, contentDescription = "查看借阅记录")
+                                Icon(imageVector = Icons.Default.List, contentDescription = "查看借阅记录", tint = Color.Black)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(text = "查看借阅记录", fontSize = 18.sp, color = Color.Black)
                             }
@@ -233,7 +233,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                         readOnly = true,
                                         trailingIcon = {
                                             IconButton(onClick = { expanded = true }) {
-                                                Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                                                Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = Color.Black)
                                             }
                                         }
                                     )
