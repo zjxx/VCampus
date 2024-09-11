@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -269,7 +270,10 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                     load = { loadImageBitmap(File(item.imageRes)) },
                                                     painterFor = { remember { BitmapPainter(it) } },
                                                     contentDescription = "Item Image",
-                                                    modifier = Modifier.size(108.dp)
+                                                    modifier = Modifier
+                                                        .size(108.dp)
+                                                        .fillMaxSize(),
+                                                    contentScale = ContentScale.Crop
                                                 )
                                             }
                                             Spacer(modifier = Modifier.width(4.dp))
