@@ -303,7 +303,8 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                                 load = { loadImageBitmap(File(book.coverImage)) },
                                                 painterFor = { remember { BitmapPainter(it) } },
                                                 contentDescription = "Book Cover",
-                                                modifier = Modifier.size(108.dp)
+                                                modifier = Modifier
+                                                    .size(108.dp)
                                             )
                                             Text(text = book.bookname, fontSize = 14.sp)
                                         }
