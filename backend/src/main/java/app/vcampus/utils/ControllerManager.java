@@ -29,6 +29,7 @@ public class ControllerManager {
         routeMapping.registerRoute("lib/renewbook", libraryController::delayReturnBook);
         routeMapping.registerRoute("lib/fetchImageUrl", libraryController::searchBookInfo);
         routeMapping.registerRoute("lib/search", libraryController::searchBookInfo);
+        routeMapping.registerRoute("lib/articleSearch", libraryController::articleSearch);
         routeMapping.registerRoute("lib/check", libraryController::viewBorrowRecord);
         routeMapping.registerRouteWithParams("lib/add/file_upload", libraryController::addBook);
         routeMapping.registerRouteWithParams("lib/modify/file_upload",libraryController::updateBook);

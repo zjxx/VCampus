@@ -41,6 +41,9 @@ public class Book {
     @Column
     private Integer Valid_Quantity;
 
+    @Column
+    private String materialType;
+
 
     public Book() {
         this.BookName = "";
@@ -54,22 +57,8 @@ public class Book {
         this.Description = "";
         this.Quantity = 0;
         this.Valid_Quantity = 0;
+        this.materialType = "";
     }
-
-    public Book(String BookName, String Author, String Publisher, String ISBN, String Language, String Kind, Integer PublishedYear, String Description, int Quantity, int Valid_Quantity) {
-        this.BookName = BookName;
-        this.Author = Author;
-        this.Publisher = Publisher;
-        this.ISBN = ISBN;
-        //this.Cover = Cover;
-        this.Language = Language;
-        this.Kind = Kind;
-        this.PublishedYear = PublishedYear;
-        this.Description = Description;
-        this.Quantity = Quantity;
-        this.Valid_Quantity = Quantity;
-    }
-
 
 
     public String getBookName() {return BookName;}
@@ -110,4 +99,8 @@ public class Book {
 
     public int getValid_Quantity() {return Valid_Quantity;}
     public void setValid_Quantity(int Valid_Quantity) {this.Valid_Quantity = Valid_Quantity;}
+
+
+    public String getMaterialType() {return materialType;}
+    public void setMaterialType(String materialType) {this.materialType = materialType;}
 }

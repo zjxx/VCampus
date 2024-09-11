@@ -3,12 +3,10 @@ package app.vcampus.interfaces;
 public class BookSearchingRequest {
     private String role;
     private String bookname;
-    private String flag;
 
-    public BookSearchingRequest(String role, String bookName,String flag) {
+    public BookSearchingRequest(String role, String bookName) {
         this.role = role;
         this.bookname = bookName;
-        this.flag = flag;
     }
     public String getRole() {return role;}
 
