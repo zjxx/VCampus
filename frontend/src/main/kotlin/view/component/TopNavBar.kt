@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.NaviItem
-import module.ShopModule
+import data.BackgroundColor
 
 
 @Composable
@@ -28,7 +28,7 @@ fun TopNavBar(naviItems: List<NaviItem>, onItemSelected: (NaviItem) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .background(Color(0xFF006400)),
+            .background(BackgroundColor.colors[0].value),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -41,7 +41,7 @@ fun TopNavBar(naviItems: List<NaviItem>, onItemSelected: (NaviItem) -> Unit) {
                             selectedItem = item
                             onItemSelected(item)
                         }
-                        .background(if (item == selectedItem) Color(0xFF004d00) else Color.Transparent)
+                        .background(if (item == selectedItem) BackgroundColor.colors[0].value else Color.Transparent)
                         .padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -52,7 +52,7 @@ fun TopNavBar(naviItems: List<NaviItem>, onItemSelected: (NaviItem) -> Unit) {
             }
         }
         Spacer(modifier = Modifier.weight(1f)) // Add spacer here
-        Button(onClick = { onItemSelected(naviItems.first { it.name == "退出" }) },colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF006400))) {
+        Button(onClick = { onItemSelected(naviItems.first { it.name == "退出" }) },colors = ButtonDefaults.buttonColors(backgroundColor = BackgroundColor.colors[0].value)) {
             Icon(imageVector = Icons.Default.ExitToApp, contentDescription = "退出", tint = Color.White)
         }
     }
