@@ -9,7 +9,7 @@ import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.*;
+
 
 import java.io.FileOutputStream;
 import java.util.Collections;
@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class StoreController {
     private final Gson gson = new Gson();
     private final StoreItemController storeItemController = new StoreItemController();
-    private final StoreTransactionController storeTransactionController = new StoreTransactionController();
+
 
     //创建商品的JSON对象
     private String createItemJsonObject(StoreItem item)
@@ -206,7 +206,7 @@ public class StoreController {
             JsonObject response = new JsonObject();
             response.addProperty("status", "success");
             response.addProperty("length", String.valueOf(transactions.size()));
-            response.add("transactions", transactionsObject);
+            response.addProperty("transactions", gson.toJson(transactionsObject));
             return gson.toJson(response);
         } catch (Exception e) {
             JsonObject response = new JsonObject();
