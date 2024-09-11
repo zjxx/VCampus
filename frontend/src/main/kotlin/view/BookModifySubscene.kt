@@ -45,7 +45,8 @@ fun BookModifySubscene(onNavigateBack: () -> Unit, book: Book, type: String) {
         onIdCheckSuccess = {},
         onBookModifySuccess = {result ->
             modifyResult = result
-        }
+        },
+        onArticleSearch = {}
     )
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {

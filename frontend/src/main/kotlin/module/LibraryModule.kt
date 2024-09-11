@@ -14,6 +14,7 @@ class LibraryModule (
     private val onAddToListSuccess: (String) -> Unit,
     private val onIdCheckSuccess: (List<Book>) -> Unit,
     private val onBookModifySuccess: (String) -> Unit,
+    private val onArticleSearch: (List<Book>) -> Unit,
 ) {
     private val nettyClient = NettyClientProvider.nettyClient
     var tempBooks = mutableListOf<Book>()
@@ -67,6 +68,42 @@ class LibraryModule (
                     tempBooks.add(temp)
                 }
                 onSearchSuccess(tempBooks)
+            }
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
+        }
+    }
+
+    fun libArticleSearch(articleName: String) {//文章搜索
+        val request = mapOf("role" to UserSession.role, "articleName" to articleName)
+        nettyClient.sendRequest(request, "lib/articleSearch") { response: String ->
+            handleResponseArticleSearch(response)
+        }
+    }
+
+    private fun handleResponseArticleSearch(response: String) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        println("Response status: ${responseJson["status"]}")
+        if (responseJson["status"] == "success") {
+            val num = responseJson["number"] as String
+            if(!num.equals("0")) {
+                for (i in 0 until num.toInt()) {
+                    val bookindex = responseJson["a" + i.toString()] as String
+                    val bookjson = Gson().fromJson(bookindex, MutableMap::class.java) as MutableMap<String, Any>
+                    println("Book name: ${bookjson["bookName"]}")
+                    println("Bookjson: ${bookjson}")
+
+                    val temp = Book(
+                        bookname = bookjson["bookName"] as String,
+                        isbn = bookjson["ISBN"] as String,
+                        publisher = bookjson["publisher"] as String,
+                        publishDate = bookjson["publishDate"] as String,
+                    )
+                    println("image: ${temp.coverImage}")
+                    tempBooks.add(temp)
+                }
+                onArticleSearch(tempBooks)
             }
         } else {
             DialogManager.showDialog(responseJson["reason"] as String)
