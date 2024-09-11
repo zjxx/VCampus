@@ -22,7 +22,10 @@ import view.component.EmailDialog
 import view.component.DialogManager
 import java.util.*
 import androidx.compose.animation.core.*
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
+import data.BackgroundColor
 
 @Composable
 fun HomeScene(onLogout: () -> Unit) {
@@ -44,7 +47,6 @@ fun HomeScene(onLogout: () -> Unit) {
     }
 
     val greeting = getGreeting()
-    val userId = UserSession.userId ?: "Unknown ID"
     val userName = UserSession.userName ?: "Unknown User"
     val role = UserSession.role ?: "Unknown Role"
     val roleTitle = when (role) {
@@ -55,25 +57,73 @@ fun HomeScene(onLogout: () -> Unit) {
     }
 
     val courses = remember { mutableStateOf(UserSession.courses) }
-
     val infiniteTransition = rememberInfiniteTransition()
     val offsetX by infiniteTransition.animateFloat(
         initialValue = 0f,
-        targetValue = 1000f, // Adjust this value based on your text length and screen width
+        targetValue = 1000f,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 10000, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
-        )
+        )//字体左右滚动
     )
+    var expanded by remember { mutableStateOf(false) }
+    val colors = listOf("Black","Red", "Green", "Blue")
 
     Box(modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(16.dp)) {
         Column {
+            Row{
             Column(modifier = Modifier.width(200.dp).height(80.dp)) {
                 Image(
                     painter = painterResource("p1.jpg"),
                     contentDescription = null,
                     modifier = Modifier.fillMaxWidth().height(100.dp)
                 )
+            }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("切换主题颜色")
+                    IconButton(onClick = { expanded = true }) {
+                        Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Select Color")
+                    }
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        offset = DpOffset(x = 800.dp, y = 0.dp) // Adjust the offset to position the dropdown below the button
+                    ) {
+                        colors.forEach { color ->
+                            DropdownMenuItem(onClick = {
+                                BackgroundColor.colors[0].value  = when (color) {
+                                    "Black"-> Color.Black
+                                    "Red" -> Color.Red
+                                    "Green" -> Color(0xFF006400)
+                                    "Blue" -> Color.Blue
+                                    else -> Color.White
+                                }
+                                BackgroundColor.colors[1].value = when (color) {
+                                    "Black"-> Color.Black
+                                    "Red" -> Color.Red
+                                    "Green" -> Color(0xFF006400)
+                                    "Blue" -> Color.Blue
+                                    else -> Color.White
+                                }
+                                BackgroundColor.colors[2].value  = when (color) {
+                                    "Black"-> Color.Black
+                                    "Red" -> Color.Red
+                                    "Green" -> Color(0xFF006400)
+                                    "Blue" -> Color.Blue
+                                    else -> Color.White
+                                }
+                                expanded = false
+                            }) {
+                                Text(color)
+                            }
+                        }
+                    }
+                }
+
             }
             Column(modifier = Modifier.fillMaxSize()) {
                 Box(modifier = Modifier.offset { IntOffset(offsetX.toInt(), 0) }) {
