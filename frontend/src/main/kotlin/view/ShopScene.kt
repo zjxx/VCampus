@@ -145,7 +145,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                 },
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Person, contentDescription = "购物")
+                                Icon(imageVector = Icons.Default.Person, contentDescription = "购物", tint = Color.Black)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(text = "购物", fontSize = 18.sp, color = Color.Black)
                             }
@@ -157,7 +157,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                 },
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看购物车")
+                                Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看购物车", tint = Color.Black)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(text = "查看购物车", fontSize = 18.sp, color = Color.Black)
                             }
@@ -169,7 +169,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                 },
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Image, contentDescription = "消费记录")
+                                Icon(imageVector = Icons.Default.Image, contentDescription = "消费记录", tint = Color.Black)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(text = "消费记录", fontSize = 18.sp, color = Color.Black)
                             }
@@ -178,7 +178,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                 onClick = { selectedOption = "管理商品" },
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Add, contentDescription = "管理商品")
+                                Icon(imageVector = Icons.Default.Add, contentDescription = "管理商品", tint = Color.Black)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(text = "管理商品", fontSize = 18.sp, color = Color.Black)
                             }
@@ -189,7 +189,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                 },
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.List, contentDescription = "消费记录")
+                                Icon(imageVector = Icons.Default.List, contentDescription = "消费记录", tint = Color.Black)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(text = "交易记录", fontSize = 18.sp, color = Color.Black)
                             }
