@@ -31,15 +31,12 @@ public class LibraryController {
             books = db.getLike(Book.class, "BookName", request.getBookName());//模糊搜索
         } else if (request.getFlag().equals("ISBN")) {
             books = db.getWhere(Book.class, "ISBN", request.getBookName());//精确搜索
-        }else if (request.getFlag().equals("article")) {
-            books = db.getWhere(Book.class, "Article", request.getBookName());//精确搜索
         }
         //后续可以进行部分匹配的搜索
         if (!books.isEmpty()) {//如果有同名书籍
             //先加入一个number属性，表示同名书籍的数量
             data.addProperty("number", String.valueOf(books.size()));
             //返回所有同名书籍信息,遍历list里面的每一个book，添加到json对象里,json对象返回一个数组，里面是每一本book的所有信息
-            if (request.getFlag().equals("bookName") || request.getFlag().equals("ISBN")) {
                 for (int i = 0; i < books.size(); i++) {
                     Book book = books.get(i);
                     JsonObject bookData = new JsonObject();
@@ -59,19 +56,32 @@ public class LibraryController {
 
                 }
                 data.addProperty("status", "success");
-            }
-            else if (request.getFlag().equals("article")) {
-                Book book = books.get(0);
-                JsonObject bookData = new JsonObject();
-                bookData.addProperty("bookName", book.getBookName());
-                bookData.addProperty("ISBN", book.getISBN());
-                bookData.addProperty("publisher", book.getPublisher());
-                data.addProperty("a", gson.toJson(bookData));
-                data.addProperty("status", "success");
-            }
         }
         else
         {
+            data.addProperty("status", "failed");
+            data.addProperty("reason", "No book found.");
+        }
+        return gson.toJson(data);
+    }
+
+    public String articleSearch(String jsonData) {
+        ArticleSearchRequest request = gson.fromJson(jsonData, ArticleSearchRequest.class);
+        JsonObject data = new JsonObject();
+        DataBase db = DataBaseManager.getInstance();
+        List<Book> books = db.getWhere(Book.class, "bookName", request.getArticleName());
+        if (!books.isEmpty()) {
+            Book book = books.get(0);
+            if (book.getMaterialType().equals("article")) {
+                data.addProperty("title", book.getBookName());
+                data.addProperty("publisher", book.getPublisher());
+                data.addProperty("ISBN", book.getISBN());
+                data.addProperty("publishDate", book.getPublishedYear().toString());
+                data.addProperty("status", "success");
+            } else {
+                data.addProperty("status", "failed");
+                data.addProperty("reason", "The book is not an article.");}
+        } else {
             data.addProperty("status", "failed");
             data.addProperty("reason", "No book found.");
         }
