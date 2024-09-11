@@ -2,6 +2,7 @@ package view
 
 
 import PaymentWebViewDialog
+import WebViewDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -511,17 +512,57 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                         }
                                     }
                                 } else if (articles.size == 0) {
-                                    Box {
+
+                                    var showDialog by remember { mutableStateOf(false) }
+                                    var url by remember { mutableStateOf("") }
+
+                                    Box (
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                    ) {
                                         Column(
                                             modifier = Modifier
-                                                .fillMaxWidth()
                                                 .padding(16.dp)
+                                                .align(Alignment.TopStart),
                                         ) {
-                                            Text("未找到相关学术文章", color = Color.Red, fontSize = 18.sp)
+                                            Text("未找到相关学术文章，推荐使用以下相关连接：", color = Color.Red, fontSize = 18.sp)
                                             Spacer(modifier = Modifier.height(8.dp))
 
+                                            val headers = listOf("东大图书馆", "外部链接")//大标题
+                                            val data = listOf(
+                                                listOf("数据库导航", "校外访问"),
+                                                listOf("IEEE", "ACM", "知网", "万方")
+                                            )
+
+                                            fun navigateToWebView(cellData: String) {
+                                                url = when (cellData) {
+                                                    "数据库导航" -> "http://www.lib.seu.edu.cn/list.php?fid=19"
+                                                    "校外访问" -> "http://www.lib.seu.edu.cn/list.php?fid=122"
+                                                    "IEEE" -> "https://ieeexplore.ieee.org/"
+                                                    "ACM" -> "http://dl.acm.org/"
+                                                    "知网" -> "https://www.cnki.net/"
+                                                    "万方" -> "https://g.wanfangdata.com.cn/"
+                                                    else -> ""
+                                                }
+                                                showDialog = true
+                                            }
+
+                                            MultiColumnTable(headers = headers, data = data) { cellData ->
+                                                // Handle cell click
+                                                println("Clicked on: $cellData")
+                                                navigateToWebView(cellData)
+
+                                            }
+                                            if (showDialog) {
+                                                WebViewDialog(url = url, onDismiss = { showDialog = false })
+                                            }
+
+//                                            MultiColumnTable(headers = headers, data = data, onCellClick = { cellData ->
+//
+//                                            })
                                         }
                                     }
+
                                 }
                             }
 
