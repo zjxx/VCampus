@@ -8,7 +8,7 @@ import jakarta.persistence.*;//为什么换成*:因为jpa的注解都在这个�
 @Table(name = "book") //指定表名
 public class Book {
     @Id //主键
-    @Column(length = 30)
+    @Column(length = 100)
     private String BookName;//书名
 
     @Column(length = 50)
