@@ -1,7 +1,6 @@
 package app.vcampus.controller;
 
 import app.vcampus.domain.ShoppingCartItem;
-import app.vcampus.controller.StoreController;
 import app.vcampus.domain.StoreItem;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
@@ -13,7 +12,6 @@ import java.util.UUID;
 
 public class ShoppingCartController {
     private final Gson gson = new Gson();
-    private final StoreController storeController = new StoreController();
     private String createShoppingCartObjectJson(StoreItem item,int quantity)
     {
         String description = "";
@@ -78,8 +76,7 @@ public class ShoppingCartController {
         try {
             JsonObject request = gson.fromJson(jsonData, JsonObject.class);
             String userId = request.get("userId").getAsString();
-            UUID itemId = UUID.fromString(request.get("itemId").getAsString());// Get the UUID
-            int quantity = request.get("quantity").getAsInt();
+            UUID itemId = UUID.fromString(request.get("itemId").getAsString());
 
             DataBase db = DataBaseManager.getInstance();
             List<ShoppingCartItem> cartItems = db.getWhere(ShoppingCartItem.class, "userId", userId);
@@ -127,7 +124,6 @@ public class ShoppingCartController {
                 ShoppingCartItem cartItem = cartItems.get(i);
                 StoreItem item = db.getWhere(StoreItem.class, "uuid", cartItem.getItemId()).get(0);
                 String shoppingCartObjectJson = createShoppingCartObjectJson(item,cartItem.getQuantity());
-                JsonObject itemObject = new JsonObject();
                 itemsObject.addProperty("item" + i, shoppingCartObjectJson);
             }
 
