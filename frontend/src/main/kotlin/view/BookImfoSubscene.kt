@@ -70,7 +70,7 @@ fun BookImfoSubscene(onNavigateBack: () -> Unit, libraryModule: LibraryModule) {
                     .weight(0.6f)
                     .padding(16.dp)
             ) {
-                Text(text = "《 ${book.bookname} 》   作者: ${book.author}", fontSize = 24.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                Text(text = "《 ${book.bookname} 》   \n作者: ${book.author}", fontSize = 24.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
                 Text(text = "\n> 出版社: ${book.publisher}\n> 语言: ${book.language}", fontSize = 16.sp, color = Color.DarkGray)
                 Spacer(modifier = Modifier.height(8.dp))
 

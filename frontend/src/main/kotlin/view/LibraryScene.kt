@@ -50,6 +50,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     var selectedPdfPath by remember { mutableStateOf<String?>(null) }
     //var idSearchResult by remember { mutableStateOf(listOf<String>()) }
     var modifyResult by remember { mutableStateOf("") }
+    var articles by remember { mutableStateOf(listOf<Book>()) }
 
     var isCollapsed by remember { mutableStateOf(true) }
 
@@ -74,6 +75,10 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
         },
         onBookModifySuccess = { result ->
             modifyResult = result
+        },
+        onArticleSearch = { result ->
+            articles = emptyList()
+            articles = result
         }
     )
 
@@ -111,6 +116,8 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                 Icon(imageVector = Icons.Default.Person, contentDescription = "查找书籍")
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看已借阅书籍信息")
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Icon(imageVector = Icons.Default.Image, contentDescription = "学术查找")
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Icon(imageVector = Icons.Default.Image, contentDescription = "显示图片")
                             } else if (role == "admin") {
@@ -161,6 +168,14 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                 Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看已借阅书籍信息", tint = Color.Black)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(text = "查看已借阅书籍信息", fontSize = 18.sp, color = Color.Black)
+                            }
+                            TextButton(
+                                onClick = { selectedOption = "学术查找" },
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                            ) {
+                                Icon(imageVector = Icons.Default.Person, contentDescription = "学术查找")
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(text = "学术查找", fontSize = 18.sp, color = Color.Black)
                             }
                             TextButton(
                                 onClick = { selectedOption = "显示图片" },
@@ -321,6 +336,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                             )
                                         }
                                     }
+
                                     LazyVerticalGrid(
                                         columns = GridCells.Fixed(2),
                                         modifier = Modifier
@@ -409,6 +425,106 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                 }
                             }
 
+                            "学术查找" -> {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+
+                                    OutlinedTextField(
+                                        value = searchText,
+                                        onValueChange = { searchText = it },
+                                        modifier = Modifier.weight(1f),
+                                        singleLine = true
+                                    )
+                                    Spacer(modifier = Modifier.width(16.dp))
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(Color(0xFF228042))
+                                            .clickable {
+                                                libraryModule.libArticleSearch(searchText.text)//__________学术搜索相关
+                                            }
+                                            .padding(16.dp)
+                                    ) {
+                                        Text(text = "搜索", color = Color.White, fontSize = 16.sp)
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Divider(color = Color.Gray, thickness = 1.dp)
+                                if (articles.isNotEmpty()) {
+                                    LazyVerticalGrid(
+                                        columns = GridCells.Fixed(2),
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .padding(8.dp)
+                                    ) {
+
+                                        items(tempBooks.size) { index ->
+                                            val book = tempBooks[index]
+
+                                            Row(
+                                                modifier = Modifier
+                                                    .padding(8.dp)
+                                                    .clip(RoundedCornerShape(8.dp))
+                                                    .background(Color.LightGray)
+                                                    .border(1.dp, Color.DarkGray)
+                                                    .height(160.dp)
+                                                    .padding(8.dp)
+                                            ) {
+                                                Column(
+                                                    modifier = Modifier.weight(1f)
+                                                ) {
+                                                    val textColor = Color.Black
+                                                    Text(text = book.bookname, color = textColor, fontSize = 16.sp)
+                                                }
+                                                Column(
+                                                    modifier = Modifier.align(Alignment.CenterVertically),
+                                                    verticalArrangement = Arrangement.Center,
+                                                    horizontalAlignment = Alignment.CenterHorizontally
+                                                ) {
+                                                    Button(
+                                                        onClick = {
+                                                            val imageISBN = book.isbn
+                                                            val filePath = "src/main/temp/" + imageISBN + ".pdf"
+                                                            //到时这个filePath改成src/main/temp/书的ISBN.pdf
+                                                            if (!File(filePath).exists()) {
+                                                                downloadPdfIfNotExists(
+                                                                    "http://47.99.141.236/img/" + imageISBN + ".pdf",
+                                                                    filePath
+                                                                )
+                                                            }
+                                                            selectedPdfPath = filePath
+                                                        },
+                                                        modifier = Modifier.size(100.dp, 36.dp),
+                                                        colors = ButtonDefaults.buttonColors(
+                                                            backgroundColor = Color(
+                                                                0xFF228042
+                                                            )
+                                                        ),
+                                                    ) {
+                                                        Text("下载阅读", fontSize = 14.sp, color = Color.White)
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else if (articles.size == 0) {
+                                    Box {
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(16.dp)
+                                        ) {
+                                            Text("未找到相关学术文章", color = Color.Red, fontSize = 18.sp)
+                                            Spacer(modifier = Modifier.height(8.dp))
+
+                                        }
+                                    }
+                                }
+                            }
+
                             "显示图片" -> {
                                 Column(modifier = Modifier.padding(top = 8.dp)) {
                                     PaymentWebViewDialog(1.0) {//最低1块钱
@@ -417,30 +533,12 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                         }
 
                                     }
-                                //                                    FilePicker()
-                                    //VideoPlayerScreen()
-//                                    Button(onClick = {
-//                                        val imageISBN = "9787550263932"
-//                                        val filePath = "src/main/temp/" + imageISBN + ".pdf"
-//                                        //到时这个filePath改成src/main/temp/书的ISBN.pdf
-//                                        if (!File(filePath).exists()) {
-//                                            downloadPdfIfNotExists(
-//                                                "http://47.99.141.236/img/" + imageISBN + ".pdf",
-//                                                filePath
-//                                            )
-//                                        }
-//                                        selectedPdfPath = filePath
-//                                    }) {
-//                                        Text("展示pdf")
-//                                    }
-//                                    selectedPdfPath?.let { path ->
-//                                        LocalPdfViewer(filePath = path, onDismiss = { selectedPdfPath = null })
-//                                    }
+
                                 }
                             }
                         }
                     }
-                    //________________________________________________________________________________________ ↓ for admin ↓
+//_______________________________________________________________________________________________________ ↓ for admin ↓
 
                     else if (role == "admin") {
                         when (selectedOption) {
@@ -637,7 +735,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                                     .clip(RoundedCornerShape(8.dp))
                                                     .background(backgroundColor)
                                                     .border(1.dp, Color.LightGray)
-                                                    .height(160.dp)
+                                                    .height(180.dp)
                                                     .padding(8.dp)
                                             ) {
                                                 Column(
@@ -651,52 +749,8 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                                     )
                                                     Text(text = "记录所属user：${book.userId}", color = textColor, fontSize = 16.sp)
                                                 }
-//                                                Column(
-//                                                    modifier = Modifier.align(Alignment.CenterVertically),
-//                                                    verticalArrangement = Arrangement.Center,
-//                                                    horizontalAlignment = Alignment.CenterHorizontally
-//                                                ) {
-//                                                    Button(
-//                                                        onClick = {
-//                                                            val imageISBN = book.isbn
-//                                                            val filePath = "src/main/temp/" + imageISBN + ".pdf"
-//                                                            //到时这个filePath改成src/main/temp/书的ISBN.pdf
-//                                                            if (!File(filePath).exists()) {
-//                                                                downloadPdfIfNotExists(
-//                                                                    "http://47.99.141.236/img/" + imageISBN + ".pdf",
-//                                                                    filePath
-//                                                                )
-//                                                            }
-//                                                            selectedPdfPath = filePath
-//                                                        },
-//                                                        modifier = Modifier.size(100.dp, 36.dp),
-//                                                        colors = ButtonDefaults.buttonColors(
-//                                                            backgroundColor = Color(
-//                                                                0xFF228042
-//                                                            )
-//                                                        ),
-//                                                        enabled = book.condition != "haveBorrowed"
-//                                                    ) {
-//                                                        Text("阅读", fontSize = 14.sp, color = Color.White)
-//                                                    }
-//                                                    Spacer(modifier = Modifier.height(8.dp))
-//                                                    Button(
-//                                                        onClick = {
-//                                                            libraryModule.libReturnBook(
-//                                                                UserSession.userId ?: "", book.isbn
-//                                                            )
-//                                                        },
-//                                                        modifier = Modifier.size(100.dp, 36.dp),
-//                                                        colors = ButtonDefaults.buttonColors(
-//                                                            backgroundColor = Color(
-//                                                                0xFF228042
-//                                                            )
-//                                                        ),
-//                                                        enabled = book.condition != "haveBorrowed"
-//                                                    ) {
-//                                                        Text("还书", fontSize = 14.sp, color = Color.White)
-//                                                    }
-//                                                }
+
+
                                             }
                                         }
                                     }

@@ -76,7 +76,7 @@ fun MerchandiseInfoScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
                     fontSize = 24.sp,
                     fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                 )
-                Text(text = "\n> 价格: ${item.price}", fontSize = 16.sp, color = Color.DarkGray)
+                Text(text = "\n> 价格: ￥${item.price}", fontSize = 20.sp, color = Color(0xFFD33C05))
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Divider(color = Color(0xFF228042), thickness = 1.dp)

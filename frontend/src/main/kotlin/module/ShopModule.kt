@@ -218,6 +218,7 @@ class ShopModule (
         println("Response status: ${responseJson["status"]}")
         if (responseJson["status"] == "success") {
             onRemoveItemFromCartSuccesss
+            DialogManager.showDialog("已移除")
         } else {
             DialogManager.showDialog(responseJson["reason"] as String)
         }
