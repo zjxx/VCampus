@@ -39,25 +39,36 @@ public class LibraryController {
             //先加入一个number属性，表示同名书籍的数量
             data.addProperty("number", String.valueOf(books.size()));
             //返回所有同名书籍信息,遍历list里面的每一个book，添加到json对象里,json对象返回一个数组，里面是每一本book的所有信息
-            for (int i = 0; i < books.size(); i++) {
-                Book book = books.get(i);
+            if (request.getFlag().equals("bookName") || request.getFlag().equals("ISBN")) {
+                for (int i = 0; i < books.size(); i++) {
+                    Book book = books.get(i);
+                    JsonObject bookData = new JsonObject();
+                    bookData.addProperty("bookName", book.getBookName());
+                    bookData.addProperty("author", book.getAuthor());
+                    bookData.addProperty("publisher", book.getPublisher());
+                    bookData.addProperty("publishDate", book.getPublishedYear().toString());
+                    bookData.addProperty("language", book.getLanguage());
+                    bookData.addProperty("author", book.getAuthor());
+                    bookData.addProperty("ISBN", book.getISBN());
+                    bookData.addProperty("description", book.getDescription());
+//                  bookData.addProperty("Cover",book.getCover());
+                    bookData.addProperty("Kind", book.getKind());
+                    bookData.addProperty("quantity", book.getQuantity());
+                    bookData.addProperty("Valid_Quantity", book.getValid_Quantity());
+                    data.addProperty("b" + i, gson.toJson(bookData));
+
+                }
+                data.addProperty("status", "success");
+            }
+            else if (request.getFlag().equals("article")) {
+                Book book = books.get(0);
                 JsonObject bookData = new JsonObject();
                 bookData.addProperty("bookName", book.getBookName());
-                bookData.addProperty("author", book.getAuthor());
-                bookData.addProperty("publisher", book.getPublisher());
-                bookData.addProperty("publishDate", book.getPublishedYear().toString());
-                bookData.addProperty("language", book.getLanguage());
-                bookData.addProperty("author", book.getAuthor());
                 bookData.addProperty("ISBN", book.getISBN());
-                bookData.addProperty("description", book.getDescription());
-//                  bookData.addProperty("Cover",book.getCover());
-                bookData.addProperty("Kind", book.getKind());
-                bookData.addProperty("quantity", book.getQuantity());
-                bookData.addProperty("Valid_Quantity", book.getValid_Quantity());
-                data.addProperty("b" + i, gson.toJson(bookData));
-
+                bookData.addProperty("publisher", book.getPublisher());
+                data.addProperty("a", gson.toJson(bookData));
+                data.addProperty("status", "success");
             }
-            data.addProperty("status", "success");
         }
         else
         {
