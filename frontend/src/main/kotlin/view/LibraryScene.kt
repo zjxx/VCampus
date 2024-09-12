@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
+import kotlinx.coroutines.delay
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -20,14 +22,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.awt.FileDialog
 import data.Book
 import data.UserSession
+import kotlinx.coroutines.launch
 import module.LibraryModule
 import utils.downloadPdfIfNotExists
+import view.component.DialogManager
 import view.component.GlobalState
 import view.component.LocalPdfViewer
 import java.io.File
@@ -52,8 +58,9 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
     //var idSearchResult by remember { mutableStateOf(listOf<String>()) }
     var modifyResult by remember { mutableStateOf("") }
     var articles by remember { mutableStateOf(listOf<Book>()) }
-
+    var showDownloadDialog by remember { mutableStateOf(false) }
     var isCollapsed by remember { mutableStateOf(true) }
+    var progress by remember { mutableStateOf(0f) }
 
     val libraryModule = LibraryModule(
         onSearchSuccess = { result ->
@@ -463,8 +470,8 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                             .padding(8.dp)
                                     ) {
 
-                                        items(tempBooks.size) { index ->
-                                            val book = tempBooks[index]
+                                        items(articles.size) { index ->
+                                            val book = articles[index]
 
                                             Row(
                                                 modifier = Modifier
@@ -490,25 +497,40 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                                 ) {
                                                     Button(
                                                         onClick = {
-                                                            val imageISBN = book.isbn
-                                                            val filePath = "src/main/temp/" + imageISBN + ".pdf"
-                                                            //到时这个filePath改成src/main/temp/书的ISBN.pdf
-                                                            if (!File(filePath).exists()) {
-                                                                downloadPdfIfNotExists(
-                                                                    "http://47.99.141.236/img/" + imageISBN + ".pdf",
-                                                                    filePath
-                                                                )
+                                                            val fileDialog = FileDialog(ComposeWindow(), "选择文件保存地址", FileDialog.SAVE)
+                                                            fileDialog.isVisible = true
+                                                            val directory = fileDialog.directory
+                                                            val file = fileDialog.file
+                                                            if (directory != null && file != null) {
+                                                                val filePath = "$directory$file"
+                                                                val imageISBN = book.isbn
+                                                                val remoteUrl = "http://47.99.141.236/img/$imageISBN.pdf"
+                                                                downloadPdfIfNotExists(remoteUrl, filePath)
+                                                                showDownloadDialog = true
                                                             }
-                                                            selectedPdfPath = filePath
                                                         },
                                                         modifier = Modifier.size(100.dp, 36.dp),
                                                         colors = ButtonDefaults.buttonColors(
-                                                            backgroundColor = Color(
-                                                                0xFF228042
-                                                            )
+                                                            backgroundColor = Color(0xFF228042)
                                                         ),
                                                     ) {
                                                         Text("下载阅读", fontSize = 14.sp, color = Color.White)
+                                                    }
+                                                    if (showDownloadDialog) {
+                                                        LaunchedEffect(Unit) {
+                                                            for (i in 1..5) {
+                                                                delay(1000)
+                                                                progress = i / 5f
+                                                            }
+                                                            DialogManager.showDialog("下载成功")
+                                                            showDownloadDialog = false
+                                                        }
+                                                        LinearProgressIndicator(//进度条
+                                                            progress = progress,
+                                                            modifier = Modifier
+                                                                .fillMaxWidth()
+                                                                .padding(16.dp)
+                                                        )
                                                     }
 
                                                 }

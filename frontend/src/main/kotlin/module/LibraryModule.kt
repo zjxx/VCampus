@@ -95,7 +95,7 @@ class LibraryModule (
                     println("Bookjson: ${bookjson}")
 
                     val temp = Book(
-                        bookname = bookjson["bookName"] as String,
+                        bookname = bookjson["title"] as String,
                         isbn = bookjson["ISBN"] as String,
                         publisher = bookjson["publisher"] as String,
                         publishDate = bookjson["publishDate"] as String,

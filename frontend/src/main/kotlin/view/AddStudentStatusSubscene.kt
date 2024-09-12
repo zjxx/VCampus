@@ -1,4 +1,3 @@
-// src/main/kotlin/view/AddStudentStatusSubscene.kt
 package view
 
 import androidx.compose.foundation.layout.*
@@ -27,6 +26,22 @@ fun AddStudentStatusSubscene() {
     var filePath by remember { mutableStateOf("") }
     val genderOptions = listOf("男", "女")
     var expanded by remember { mutableStateOf(false) }
+    val validMajors = listOf(
+        "建筑学", "城乡规划", "风景园林", "机械工程", "能源与动力工程", "建筑环境与能源应用工程",
+        "核I程与核技术", "新能源科学与工程", "环境工程", "自动化", "机器人工程", "电气工程及其自动化",
+        "智能感知工程", "测控技术与仪器", "材料科学与工程", "土木工程", "给排水科学与工程", "工程管理",
+        "智能建造", "交通工程", "交通运输", "港口航道与海岸工程", "城市地下空间工程", "道路桥梁与渡河工程",
+        "智慧交通", "信息工程", "海洋信息工程", "电子科学与技术", "信息工程"
+    )
+    val validAcademies = listOf(
+        "电子科学与技术", "物联网工程", "计算机科学与技术", "软件工程", "网络空间安全", "人工智能",
+        "生物医学工程", "化学工程与工艺", "制药工程", "生物工程", "数学与应用数学", "信息与计算科学",
+        "统计学", "应用物理学", "物理学", "工程力学", "密码科学与技术", "信息管理与信息系统",
+        "电子商务", "物流管理", "工商管理", "工业工程", "生物医学工程", "信息工程等四年制理工科专业",
+        "劳动与社会保障", "生物科学", "医学检验技术", "智能医学工程", "生物信息学"
+    )
+    var majorError by remember { mutableStateOf(false) }
+    var academyError by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.padding(start = 16.dp)) {
         pageTitle(heading = "增加学籍信息", caption = "填写学籍信息")
@@ -90,19 +105,38 @@ fun AddStudentStatusSubscene() {
             )
         }
 
+        // 第三行
         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
             OutlinedTextField(
                 value = studentStatusModule.major,
-                onValueChange = { studentStatusModule.major = it },
+                onValueChange = {
+                    studentStatusModule.major = it
+                    majorError = !validMajors.contains(it)
+                },
                 label = { Text("专业") },
-                modifier = Modifier.weight(1f).padding(end = 16.dp)
+                modifier = Modifier.weight(1f).padding(end = 16.dp),
+                isError = majorError
             )
+            if (majorError) {
+                Text("未找到相关专业", color = MaterialTheme.colors.error, modifier = Modifier.padding(start = 16.dp))
+            }
+        }
+
+        // 第四行
+        Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
             OutlinedTextField(
                 value = studentStatusModule.academy,
-                onValueChange = { studentStatusModule.academy = it },
+                onValueChange = {
+                    studentStatusModule.academy = it
+                    academyError = !validAcademies.contains(it)
+                },
                 label = { Text("学院") },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f).padding(end = 16.dp),
+                isError = academyError
             )
+            if (academyError) {
+                Text("未找到相关学院", color = MaterialTheme.colors.error, modifier = Modifier.padding(start = 16.dp))
+            }
         }
 
         // 从文件导入和提交按钮
@@ -166,6 +200,66 @@ fun AddStudentStatusSubscene() {
             dismissButton = {
                 Button(onClick = { showDialog = false }) {
                     Text("取消")
+                }
+            }
+        )
+    }
+    if (studentStatusModule.majorErrorDialog) {
+        AlertDialog(
+            onDismissRequest = { studentStatusModule.majorErrorDialog = false },
+            title = { Text("错误") },
+            text = { Text("未找到相关专业，请检查输入。") },
+            confirmButton = {
+                Button(onClick = { studentStatusModule.majorErrorDialog = false }) {
+                    Text("确定")
+                }
+            }
+        )
+    }
+    if (studentStatusModule.fieldErrorDialog) {
+        AlertDialog(
+            onDismissRequest = { studentStatusModule.fieldErrorDialog = false },
+            title = { Text("错误") },
+            text = { Text("所有字段均不能为空，请检查输入。") },
+            confirmButton = {
+                Button(onClick = { studentStatusModule.fieldErrorDialog = false }) {
+                    Text("确定")
+                }
+            }
+        )
+    }
+    if (studentStatusModule.cardNumberErrorDialog) {
+        AlertDialog(
+            onDismissRequest = { studentStatusModule.cardNumberErrorDialog = false },
+            title = { Text("错误") },
+            text = { Text("一卡通号必须以2开头且为9位，请检查输入。") },
+            confirmButton = {
+                Button(onClick = { studentStatusModule.cardNumberErrorDialog = false }) {
+                    Text("确定")
+                }
+            }
+        )
+    }
+    if (studentStatusModule.nameErrorDialog) {
+        AlertDialog(
+            onDismissRequest = { studentStatusModule.nameErrorDialog = false },
+            title = { Text("错误") },
+            text = { Text("姓名格式不正确，请检查输入。") },
+            confirmButton = {
+                Button(onClick = { studentStatusModule.nameErrorDialog = false }) {
+                    Text("确定")
+                }
+            }
+        )
+    }
+    if (studentStatusModule.raceErrorDialog) {
+        AlertDialog(
+            onDismissRequest = { studentStatusModule.raceErrorDialog = false },
+            title = { Text("错误") },
+            text = { Text("未找到相关民族，请检查输入。") },
+            confirmButton = {
+                Button(onClick = { studentStatusModule.raceErrorDialog = false }) {
+                    Text("确定")
                 }
             }
         )

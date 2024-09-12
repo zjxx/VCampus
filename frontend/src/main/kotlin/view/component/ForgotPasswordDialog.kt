@@ -21,6 +21,7 @@ fun ForgotPasswordDialog(onDismiss: () -> Unit, onLoginSuccess: () -> Unit, onLo
     var verificationCode by remember { mutableStateOf("") }
     var showModifyPasswordDialog by remember { mutableStateOf(false) }
     val loginModule = LoginModule(onLoginSuccess,onLogout)
+    val emailPattern = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$".toRegex()
 
     if (showModifyPasswordDialog) {
         ModifyPasswordDialog(
@@ -67,11 +68,13 @@ fun ForgotPasswordDialog(onDismiss: () -> Unit, onLoginSuccess: () -> Unit, onLo
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Button(
-                            onClick = { if (email.contains("@")) {
-                                loginModule.sendVerificationCode(email, cardNumber)
-                            } else {
-                                DialogManager.showDialog("邮箱输入错误，请重新输入")
-                            } },
+                            onClick = {
+                                if (email.matches(emailPattern)) {
+                                    loginModule.sendVerificationCode(email, cardNumber)
+                                } else {
+                                    DialogManager.showDialog("邮箱输入错误，请重新输入")
+                                }
+                            },
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = Color(0xFF006400),
                                 contentColor = Color.White
