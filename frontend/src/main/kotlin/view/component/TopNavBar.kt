@@ -13,21 +13,23 @@ import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import data.NaviItem
 import data.BackgroundColor
+import data.NaviItem
 
 
 @Composable
 fun TopNavBar(naviItems: List<NaviItem>, onItemSelected: (NaviItem) -> Unit) {
-    var selectedItem by remember { mutableStateOf<NaviItem?>(null) }
+    var selectedItem by remember { mutableStateOf<NaviItem?>(naviItems.firstOrNull { it.name == "主页" }) }
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(64.dp)
             .background(BackgroundColor.colors[0].value),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -37,12 +39,22 @@ fun TopNavBar(naviItems: List<NaviItem>, onItemSelected: (NaviItem) -> Unit) {
                 Row(
                     modifier = Modifier
                         .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .width(108.dp)
                         .clickable {
                             selectedItem = item
                             onItemSelected(item)
                         }
                         .background(if (item == selectedItem) BackgroundColor.colors[0].value else Color.Transparent)
-                        .padding(8.dp),
+                        .drawBehind {
+                            if (item == selectedItem) {
+                                drawLine(
+                                    color = Color.Yellow,
+                                    start = Offset(0f, 0f),
+                                    end = Offset(size.width, 0f),
+                                    strokeWidth = 3.dp.toPx()
+                                )}
+                        }
+                        .padding(6.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(imageVector = item.icon, contentDescription = item.name, tint = Color.White)

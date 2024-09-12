@@ -2,8 +2,6 @@
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -12,7 +10,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
@@ -25,12 +25,12 @@ import data.NaviItem
 import data.UserSession
 import dev.datlag.kcef.KCEF
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import view.*
 import view.component.GlobalDialog
 import view.component.TopNavBar
 import java.io.File
 import kotlin.math.max
-import kotlinx.coroutines.withContext
 
 fun generateWatermarkTexts(text: String, count: Int): List<String> {
     return List(count) { text }
@@ -117,7 +117,20 @@ fun App() {
                         currentScene = item.path
                     })
                 }
-                Box(modifier = Modifier.fillMaxSize()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.Gray, // 渐变开始的颜色
+                                    Color.White // 渐变结束的颜色
+                                ),
+                                startY = with(LocalDensity.current) { 0.dp.toPx() }, // 渐变开始的位置
+                                endY = with(LocalDensity.current) { 12.dp.toPx() } // 渐变结束的位置
+                            )
+                        )
+                ) {
                     when (currentScene) {
                         "LoginScene" -> LoginScene(onLoginSuccess = {
                             currentScene = "/home"
