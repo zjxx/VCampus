@@ -3,16 +3,31 @@ package app.vcampus.controller;
 import app.vcampus.domain.ShoppingCartItem;
 import app.vcampus.domain.StoreItem;
 import app.vcampus.domain.User;
+import app.vcampus.domain.StoreTransaction;
+import app.vcampus.interfaces.PurchaseRequest;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 public class ShoppingCartController {
     private final Gson gson = new Gson();
+    private StoreTransaction createStoreTransaction(StoreItem storeItem, PurchaseRequest request) {
+        StoreTransaction transaction = new StoreTransaction();
+        transaction.setUuid(UUID.randomUUID());
+        transaction.setStoreItem(storeItem);
+        transaction.setItemUuid(storeItem.getUuid()); // 设置 itemUuid 字段
+        transaction.setTime(LocalDateTime.now());
+        transaction.setAmount(request.getAmount());
+        transaction.setCardNumber(request.getCardNumber());
+        return transaction;
+    }
     private String createShoppingCartObjectJson(StoreItem item,int quantity)
     {
         String description = "";
@@ -190,6 +205,14 @@ public class ShoppingCartController {
                 item.setSalesVolume(item.getSalesVolume() + quantity);
                 db.persist(item);
 
+                StoreTransaction transaction = new StoreTransaction();
+                transaction.setUuid(UUID.randomUUID());
+                transaction.setStoreItem(item);
+                transaction.setItemUuid(item.getUuid());
+                transaction.setTime(LocalDateTime.now());
+                transaction.setAmount(quantity);
+                transaction.setCardNumber(userId);
+                db.persist(transaction);
                 List<ShoppingCartItem> cartItems = db.getWhere(ShoppingCartItem.class, "userId", userId);
                 for (ShoppingCartItem cartItem : cartItems) {
                     if (cartItem.getItemId().equals(itemId)) {
