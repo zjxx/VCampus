@@ -2,11 +2,12 @@ package app.vcampus.controller;
 
 import app.vcampus.domain.ShoppingCartItem;
 import app.vcampus.domain.StoreItem;
+import app.vcampus.domain.User;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
+import com.google.gson.JsonArray;
 import java.util.List;
 import java.util.UUID;
 
@@ -131,6 +132,81 @@ public class ShoppingCartController {
             response.addProperty("status", "success");
             response.addProperty("length", String.valueOf(cartItems.size()));
             response.addProperty("items", gson.toJson(itemsObject));
+            return gson.toJson(response);
+        } catch (Exception e) {
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "failed");
+            response.addProperty("reason", e.getMessage());
+            return gson.toJson(response);
+        }
+    }
+
+    public String handleCartPurchase(String jsonData) {
+        try {
+            JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+            String userId = request.get("userId").getAsString();
+            int length = request.get("length").getAsInt();
+
+            // 解析 items 字段为 JsonArray
+            String itemsString = request.get("items").getAsString();
+            JsonArray itemsArray = gson.fromJson(itemsString, JsonArray.class);
+
+            DataBase db = DataBaseManager.getInstance();
+            int totalCost = 0;
+
+            // 检查库存并计算总价格
+            for (int i = 0; i < length; i++) {
+                JsonObject itemObject = itemsArray.get(i).getAsJsonObject();
+                UUID itemId = UUID.fromString(itemObject.get("itemUuid").getAsString());
+                int quantity = itemObject.get("quantity").getAsInt();
+
+                StoreItem item = db.getWhere(StoreItem.class, "uuid", itemId).get(0);
+                if (item.getStock() < quantity) {
+                    JsonObject response = new JsonObject();
+                    response.addProperty("status", "failed");
+                    response.addProperty("reason", "库存不足: " + item.getItemName());
+                    return gson.toJson(response);
+                }
+                totalCost += item.getPrice() * quantity;
+            }
+
+            // 检查用户余额
+            User user = db.getWhere(User.class, "userId", userId).get(0);
+            if (user.getBalance() < totalCost) {
+                JsonObject response = new JsonObject();
+                response.addProperty("status", "failed");
+                response.addProperty("reason", "余额不足");
+                return gson.toJson(response);
+            }
+
+            // 更新库存、销售量并扣除用户余额
+            for (int i = 0; i < length; i++) {
+                JsonObject itemObject = itemsArray.get(i).getAsJsonObject();
+                UUID itemId = UUID.fromString(itemObject.get("itemUuid").getAsString());
+                int quantity = itemObject.get("quantity").getAsInt();
+
+                StoreItem item = db.getWhere(StoreItem.class, "uuid", itemId).get(0);
+                item.setStock(item.getStock() - quantity);
+                item.setSalesVolume(item.getSalesVolume() + quantity);
+                db.persist(item);
+
+                List<ShoppingCartItem> cartItems = db.getWhere(ShoppingCartItem.class, "userId", userId);
+                for (ShoppingCartItem cartItem : cartItems) {
+                    if (cartItem.getItemId().equals(itemId)) {
+                        db.disableForeignKeyChecks();
+                        db.remove(cartItem);
+                        db.enableForeignKeyChecks();
+                        break;
+                    }
+                }
+            }
+
+            // 扣除用户余额
+            user.setBalance(user.getBalance() - totalCost);
+            db.persist(user);
+
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "success");
             return gson.toJson(response);
         } catch (Exception e) {
             JsonObject response = new JsonObject();
