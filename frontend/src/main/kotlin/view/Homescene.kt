@@ -1,31 +1,33 @@
 // src/main/kotlin/view/HomeScene.kt
 package view
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
-import data.UserSession
-import module.LoginModule
-import view.component.EmailDialog
-import view.component.DialogManager
-import java.util.*
-import androidx.compose.animation.core.*
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import data.BackgroundColor
+import data.UserSession
+import module.LoginModule
+import view.component.DialogManager
+import view.component.EmailDialog
+import java.util.*
 
 @Composable
 fun HomeScene(onLogout: () -> Unit) {
@@ -165,7 +167,18 @@ fun HomeScene(onLogout: () -> Unit) {
                                 .height(2.dp),
                             thickness = 2.dp
                         )
-                        Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
+                                .drawBehind {
+                                    drawLine(
+                                        color = Color.Yellow,
+                                        start = Offset(0f, 0f),
+                                        end = Offset(0f, size.height),
+                                        strokeWidth = 8.dp.toPx()
+                                    )}
+                        ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text("跑操次数: 10", fontWeight = FontWeight.Bold, color = Color.Black)
                                 Text("srtp学分: 5", fontWeight = FontWeight.Bold, color = Color.Black)

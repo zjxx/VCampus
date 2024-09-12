@@ -127,7 +127,7 @@ fun MerchandiseInfoScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
                         value = quantity.toString(),
                         onValueChange = { newValue ->
                             newValue.toIntOrNull()?.let {
-                                if (it >= 1) quantity = it
+                                if (it >= 1) {quantity = it}
                             }
                         },
                         modifier = Modifier
