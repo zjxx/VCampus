@@ -38,7 +38,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(0.03f)
-                    .background(Color(0xff373836))
+                    .background(ColorPack.sideColor2[choose.value].value)
                     .drawBehind {
                         drawLine(
                             color = ColorPack.mainColor2[choose.value].value,
@@ -59,27 +59,27 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                         imageVector = Icons.Default.ArrowForward,
                         contentDescription = "Expand",
                         modifier = Modifier.clickable { isCollapsed = false },
-                        tint = Color.White,
+                        tint = ColorPack.backgroundColor1[choose.value].value,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     if (role == "student") {
-                        Icon(imageVector = Icons.Default.Person, contentDescription = "选课", tint = Color.White)
+                        Icon(imageVector = Icons.Default.Person, contentDescription = "选课", tint = ColorPack.backgroundColor1[choose.value].value)
                         Spacer(modifier = Modifier.height(16.dp))
-                        Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看我的课表", tint = Color.White)
+                        Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看我的课表", tint = ColorPack.backgroundColor1[choose.value].value)
                         Spacer(modifier = Modifier.height(16.dp))
-                        Icon(imageVector = Icons.Default.PlaylistAddCheck, contentDescription = "查看我的成绩", tint = Color.White)
+                        Icon(imageVector = Icons.Default.PlaylistAddCheck, contentDescription = "查看我的成绩", tint = ColorPack.backgroundColor1[choose.value].value)
                         Spacer(modifier = Modifier.height(16.dp))
-                        Icon(imageVector = Icons.Default.Videocam, contentDescription = "云课堂", tint = Color.White)
+                        Icon(imageVector = Icons.Default.Videocam, contentDescription = "云课堂", tint = ColorPack.backgroundColor1[choose.value].value)
                     } else if (role == "admin") {
-                        Icon(imageVector = Icons.Default.Add, contentDescription = "增加课程", tint = Color.White)
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "增加课程", tint = ColorPack.backgroundColor1[choose.value].value)
                         Spacer(modifier = Modifier.height(16.dp))
-                        Icon(imageVector = Icons.Default.Edit, contentDescription = "修改课程", tint = Color.White)
+                        Icon(imageVector = Icons.Default.Edit, contentDescription = "修改课程", tint = ColorPack.backgroundColor1[choose.value].value)
                         Spacer(modifier = Modifier.height(16.dp))
-                        Icon(imageVector = Icons.Default.Calculate, contentDescription = "成绩管理", tint = Color.White)
+                        Icon(imageVector = Icons.Default.Calculate, contentDescription = "成绩管理", tint = ColorPack.backgroundColor1[choose.value].value)
                     } else if (role == "teacher") {
-                        Icon(imageVector = Icons.Default.ViewList, contentDescription = "查看课程", tint = Color.White)
+                        Icon(imageVector = Icons.Default.ViewList, contentDescription = "查看课程", tint = ColorPack.backgroundColor1[choose.value].value)
                         Spacer(modifier = Modifier.height(16.dp))
-                        Icon(imageVector = Icons.Default.Radio, contentDescription = "录课", tint = Color.White)
+                        Icon(imageVector = Icons.Default.Radio, contentDescription = "录课", tint = ColorPack.backgroundColor1[choose.value].value)
                     }
                 }
             }
@@ -88,7 +88,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(0.2f)
-                    .background(Color(0xff373836))
+                    .background(ColorPack.sideColor2[choose.value].value)
                     .drawBehind {
                         drawLine(
                             color = ColorPack.mainColor2[choose.value].value,
@@ -110,12 +110,12 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "Collapse",
                         modifier = Modifier.clickable { isCollapsed = true },
-                        tint = Color.White,
+                        tint = ColorPack.backgroundColor1[choose.value].value,
                     )
                 }
                 Text(
                     text = "课程管理",
-                    color = Color.White,
+                    color = ColorPack.backgroundColor1[choose.value].value,
                     modifier = Modifier.padding(16.dp)
                 )
                 Divider(color = Color.Gray, thickness = 1.dp)
@@ -124,25 +124,25 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                         selectedMenuItem = "选课"
                         courseModule.listCourse()
                     }) {
-                        Icon(imageVector = Icons.Default.Person, contentDescription = "选课", tint = Color.White)
+                        Icon(imageVector = Icons.Default.Person, contentDescription = "选课", tint = ColorPack.backgroundColor1[choose.value].value)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("选课", fontSize = 16.sp, color = Color.White)
+                        Text("选课", fontSize = 16.sp, color = ColorPack.backgroundColor1[choose.value].value)
                     }
                     TextButton(onClick = {
                         selectedMenuItem = "查看我的课表"
                         courseModule.classTable()
                     }) {
-                        Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看我的课表", tint = Color.White)
+                        Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看我的课表", tint = ColorPack.backgroundColor1[choose.value].value)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("查看我的课表", fontSize = 16.sp, color = Color.White)
+                        Text("查看我的课表", fontSize = 16.sp, color = ColorPack.backgroundColor1[choose.value].value)
                     }
                     TextButton(onClick = {
                         selectedMenuItem = "查看我的成绩"
                         courseModule.viewScore()
                     }) {
-                        Icon(imageVector = Icons.Default.PlaylistAddCheck, contentDescription = "查看我的课表", tint = Color.White)
+                        Icon(imageVector = Icons.Default.PlaylistAddCheck, contentDescription = "查看我的课表", tint = ColorPack.backgroundColor1[choose.value].value)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("查看我的成绩", fontSize = 16.sp, color = Color.White)
+                        Text("查看我的成绩", fontSize = 16.sp, color = ColorPack.backgroundColor1[choose.value].value)
                     }
                     TextButton(onClick = {
                         selectedMenuItem = "云课堂"
@@ -150,26 +150,26 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                             videoclasses = receivedClasses
                         }
                     }) {
-                        Icon(imageVector = Icons.Default.Videocam, contentDescription = "云课堂", tint = Color.White)
+                        Icon(imageVector = Icons.Default.Videocam, contentDescription = "云课堂", tint = ColorPack.backgroundColor1[choose.value].value)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("云课堂", fontSize = 16.sp, color = Color.White)
+                        Text("云课堂", fontSize = 16.sp, color = ColorPack.backgroundColor1[choose.value].value)
                     }
                 }
                 if (role == "admin") {
                     TextButton(onClick = {
                         selectedMenuItem = "增加课程"
                     }) {
-                        Icon(imageVector = Icons.Default.Add, contentDescription = "增加课程", tint = Color.White)
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "增加课程", tint = ColorPack.backgroundColor1[choose.value].value)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("增加课程", fontSize = 16.sp, color = Color.White)
+                        Text("增加课程", fontSize = 16.sp, color = ColorPack.backgroundColor1[choose.value].value)
                     }
                     TextButton(onClick = {
                         selectedMenuItem = "修改课程"
                         courseModule.ShowAllCourse()
                     }) {
-                        Icon(imageVector = Icons.Default.Edit, contentDescription = "修改课程", tint = Color.White)
+                        Icon(imageVector = Icons.Default.Edit, contentDescription = "修改课程", tint = ColorPack.backgroundColor1[choose.value].value)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("修改课程", fontSize = 16.sp, color = Color.White)
+                        Text("修改课程", fontSize = 16.sp, color = ColorPack.backgroundColor1[choose.value].value)
                     }
                     TextButton(onClick = {
                         selectedMenuItem = "成绩管理"
@@ -177,9 +177,9 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                             classes = receivedClasses
                         }
                     }) {
-                        Icon(imageVector = Icons.Default.Calculate, contentDescription = "成绩管理", tint = Color.White)
+                        Icon(imageVector = Icons.Default.Calculate, contentDescription = "成绩管理", tint = ColorPack.backgroundColor1[choose.value].value)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("成绩管理", fontSize = 16.sp, color = Color.White)
+                        Text("成绩管理", fontSize = 16.sp, color = ColorPack.backgroundColor1[choose.value].value)
                     }
                 }
                 if (role == "teacher") {
@@ -189,9 +189,9 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                             classes = receivedClasses
                         }
                     }) {
-                        Icon(imageVector = Icons.Default.ViewList, contentDescription = "查看课程", tint = Color.White)
+                        Icon(imageVector = Icons.Default.ViewList, contentDescription = "查看课程", tint = ColorPack.backgroundColor1[choose.value].value)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("查看课程", fontSize = 16.sp, color = Color.White)
+                        Text("查看课程", fontSize = 16.sp, color = ColorPack.backgroundColor1[choose.value].value)
                     }
                     TextButton(onClick = {
                         selectedMenuItem = "录课"
@@ -199,9 +199,9 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                             videoclasses = receivedClasses
                         }
                     }) {
-                        Icon(imageVector = Icons.Default.Radio, contentDescription = "查看课程", tint = Color.White)
+                        Icon(imageVector = Icons.Default.Radio, contentDescription = "查看课程", tint = ColorPack.backgroundColor1[choose.value].value)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("录课", fontSize = 16.sp, color = Color.White)
+                        Text("录课", fontSize = 16.sp, color = ColorPack.backgroundColor1[choose.value].value)
                     }
                 }
             }
