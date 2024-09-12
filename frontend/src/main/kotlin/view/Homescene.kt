@@ -76,9 +76,9 @@ fun HomeScene(onLogout: () -> Unit) {
             Row{
             Column(modifier = Modifier.width(200.dp).height(80.dp)) {
                 Image(
-                    painter = painterResource("p1.jpg"),
+                    painter = painterResource("p1.png"),
                     contentDescription = null,
-                    modifier = Modifier.fillMaxWidth().height(100.dp)
+                    modifier = Modifier.fillMaxWidth().height(120.dp)
                 )
             }
                 Row(

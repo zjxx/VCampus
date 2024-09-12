@@ -123,11 +123,11 @@ fun App() {
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
-                                    Color.Gray, // 渐变开始的颜色
-                                    Color.White // 渐变结束的颜色
+                                    Color(0xff9eb397), // 渐变开始的颜色
+                                    Color(0xfff4f7f1)// 渐变结束的颜色
                                 ),
                                 startY = with(LocalDensity.current) { 0.dp.toPx() }, // 渐变开始的位置
-                                endY = with(LocalDensity.current) { 12.dp.toPx() } // 渐变结束的位置
+                                endY = with(LocalDensity.current) { 14.dp.toPx() } // 渐变结束的位置
                             )
                         )
                 ) {
