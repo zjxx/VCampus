@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class EmailService {
     private final String username = "2385321200@qq.com";
-    private final String password = "sxqmtwysjnhhebgf"; // QQ邮箱的授权码
+    private final String password = "sxqmtwysjnhhebgf"; // QQ邮箱授权码
 
     public void sendEmail(String to, String subject, String body) {
         // 配置QQ邮箱的SMTP服务器属性

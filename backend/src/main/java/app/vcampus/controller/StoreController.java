@@ -65,7 +65,6 @@ public class StoreController {
         jsonObject.addProperty("amount", String.valueOf(transaction.getAmount()));
         jsonObject.addProperty("cardNumber", transaction.getCardNumber());
         jsonObject.addProperty("time", transaction.getTransactionTime().toString());
-        jsonObject.addProperty("pictureLink", transaction.getStoreItem().getPictureLink()); // 添加 pictureLink 字段
         return jsonObject;
     }
 
