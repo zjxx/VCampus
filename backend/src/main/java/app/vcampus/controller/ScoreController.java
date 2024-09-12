@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ScoreController {
@@ -122,7 +123,7 @@ public class ScoreController {
         } else {
             int sum=0;
             for (int i = 0; i < scores.size(); i++) {
-                if(scores.get(i).getStatus()!="审核通过"){
+                if(Objects.equals(scores.get(i).getStatus(), "审核通过")){
                     sum++;
                 }
             }
