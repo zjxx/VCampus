@@ -14,6 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import data.ColorPack
+import data.ColorPack.choose
 import data.Merchandise
 import module.ShopModule
 import view.component.GlobalState
@@ -148,9 +150,9 @@ fun MerchandiseAdminScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
                         currentScene = "MerchandiseModifyScene"
                     },
                     modifier = Modifier.size(168.dp, 48.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF228042))
+                    colors = ButtonDefaults.buttonColors(backgroundColor = ColorPack.mainColor1[choose.value].value)
                 ) {
-                    Text(text = "修改", color = Color.White, fontSize = 18.sp)
+                    Text(text = "修改", color = ColorPack.backgroundColor1[choose.value].value, fontSize = 18.sp)
                 }
             }
         }

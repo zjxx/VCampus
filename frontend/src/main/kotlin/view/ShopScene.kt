@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.BitmapPainter
@@ -93,7 +94,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                         modifier = Modifier
                             .fillMaxHeight()
                             .weight(0.034f)
-                            .background(Color(0xff373836))
+                            .background(ColorPack.sideColor2[choose.value].value)
                             .drawBehind {
                                 drawLine(
                                     color = ColorPack.mainColor2[choose.value].value,
@@ -113,19 +114,19 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                 imageVector = Icons.Default.ArrowForward,
                                 contentDescription = "Expand",
                                 modifier = Modifier.clickable { isCollapsed = false },
-                                tint = Color.White,
+                                tint = ColorPack.backgroundColor1[choose.value].value,
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             if (role == "student" || role == "teacher") {
-                                Icon(imageVector = Icons.Default.ShoppingBasket, contentDescription = "购物", tint = Color.White)
+                                Icon(imageVector = Icons.Default.ShoppingBasket, contentDescription = "购物", tint = ColorPack.backgroundColor1[choose.value].value)
                                 Spacer(modifier = Modifier.height(16.dp))
-                                Icon(imageVector = Icons.Default.ShoppingCartCheckout, contentDescription = "查看购物车", tint = Color.White)
+                                Icon(imageVector = Icons.Default.ShoppingCartCheckout, contentDescription = "查看购物车", tint = ColorPack.backgroundColor1[choose.value].value)
                                 Spacer(modifier = Modifier.height(16.dp))
-                                Icon(imageVector = Icons.Default.History, contentDescription = "消费记录", tint = Color.White)
+                                Icon(imageVector = Icons.Default.History, contentDescription = "消费记录", tint = ColorPack.backgroundColor1[choose.value].value)
                             } else if (role == "admin") {
-                                Icon(imageVector = Icons.Default.Checklist, contentDescription = "管理商品", tint = Color.White)
+                                Icon(imageVector = Icons.Default.Checklist, contentDescription = "管理商品", tint = ColorPack.backgroundColor1[choose.value].value)
                                 Spacer(modifier = Modifier.height(16.dp))
-                                Icon(imageVector = Icons.Default.History, contentDescription = "交易记录", tint = Color.White)
+                                Icon(imageVector = Icons.Default.History, contentDescription = "交易记录", tint = ColorPack.backgroundColor1[choose.value].value)
                             }
                         }
                     }
@@ -134,7 +135,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                         modifier = Modifier
                             .fillMaxHeight()
                             .weight(0.2f)
-                            .background(Color(0xff373836))
+                            .background(ColorPack.sideColor2[choose.value].value)
                             .drawBehind {
                                 drawLine(
                                     color = ColorPack.mainColor2[choose.value].value,
@@ -157,12 +158,12 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                 imageVector = Icons.Default.ArrowBack,
                                 contentDescription = "Collapse",
                                 modifier = Modifier.clickable { isCollapsed = true },
-                                tint = Color.White,
+                                tint = ColorPack.backgroundColor1[choose.value].value,
                             )
                         }
                         Text(
                             text = "校园超市",
-                            color = Color.White,
+                            color = ColorPack.backgroundColor1[choose.value].value,
                             modifier = Modifier.padding(16.dp)
                         )
                         Divider(color = Color.Gray, thickness = 1.dp)
@@ -174,9 +175,9 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                 },
                                 //modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.ShoppingBasket, contentDescription = "购物", tint = Color.White)
+                                Icon(imageVector = Icons.Default.ShoppingBasket, contentDescription = "购物", tint = ColorPack.backgroundColor1[choose.value].value)
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "购物", fontSize = 16.sp, color = Color.White)
+                                Text(text = "购物", fontSize = 16.sp, color = ColorPack.backgroundColor1[choose.value].value)
                             }
                             TextButton(
                                 onClick = {
@@ -186,9 +187,9 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                 },
                                 //modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.ShoppingCartCheckout, contentDescription = "查看购物车", tint = Color.White)
+                                Icon(imageVector = Icons.Default.ShoppingCartCheckout, contentDescription = "查看购物车", tint = ColorPack.backgroundColor1[choose.value].value)
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "查看购物车", fontSize = 16.sp, color = Color.White)
+                                Text(text = "查看购物车", fontSize = 16.sp, color = ColorPack.backgroundColor1[choose.value].value)
                             }
                             TextButton(
                                 onClick = {
@@ -198,18 +199,18 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                 },
                                 //modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.History, contentDescription = "消费记录", tint = Color.White)
+                                Icon(imageVector = Icons.Default.History, contentDescription = "消费记录", tint = ColorPack.backgroundColor1[choose.value].value)
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "消费记录", fontSize = 16.sp, color = Color.White)
+                                Text(text = "消费记录", fontSize = 16.sp, color = ColorPack.backgroundColor1[choose.value].value)
                             }
                         } else if (role == "admin") {
                             TextButton(
                                 onClick = { selectedOption = "管理商品" },
                                 //modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Checklist, contentDescription = "管理商品", tint = Color.White)
+                                Icon(imageVector = Icons.Default.Checklist, contentDescription = "管理商品", tint = ColorPack.backgroundColor1[choose.value].value)
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "管理商品", fontSize = 16.sp, color = Color.White)
+                                Text(text = "管理商品", fontSize = 16.sp, color = ColorPack.backgroundColor1[choose.value].value)
                             }
                             TextButton(
                                 onClick = {
@@ -218,9 +219,9 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                 },
                                 //modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.History, contentDescription = "消费记录", tint = Color.White)
+                                Icon(imageVector = Icons.Default.History, contentDescription = "消费记录", tint = ColorPack.backgroundColor1[choose.value].value)
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "交易记录", fontSize = 16.sp, color = Color.White)
+                                Text(text = "交易记录", fontSize = 16.sp, color = ColorPack.backgroundColor1[choose.value].value)
                             }
                         }
                     }
@@ -257,22 +258,22 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                     Box(
                                         modifier = Modifier
                                             .clip(RoundedCornerShape(8.dp))
-                                            .background(Color(0xFF228042))
+                                            .background(ColorPack.mainColor1[choose.value].value)
                                             .clickable {
                                                 tempItems = emptyList()
                                                 shopModule.shopSearch(searchText.text)
                                             }
                                             .padding(16.dp)
                                     ) {
-                                        Text(text = "搜索", color = Color.White, fontSize = 16.sp)
+                                        Text(text = "搜索", color = ColorPack.backgroundColor1[choose.value].value, fontSize = 16.sp)
                                     }
                                 }
                                 Spacer(modifier = Modifier.height(12.dp))
-                                Divider(color = Color.Gray, thickness = 1.dp)
+                                Divider(color = ColorPack.sideColor1[choose.value].value, thickness = 1.dp)
                                 LazyVerticalGrid(
                                     columns = GridCells.Fixed(4),
                                     modifier = Modifier
-                                        .weight(1f)
+                                        .weight(1.5f)
                                         .padding(top = 8.dp)
                                 ) {
                                     items(tempItems.size) { index ->
@@ -281,12 +282,21 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                             modifier = Modifier
                                                 .padding(6.dp)
                                                 .clip(RoundedCornerShape(8.dp))
-                                                .background(Color(0xFFFDFBEC))
+                                                .background(ColorPack.backgroundColor1[choose.value].value)
                                                 .clickable {
                                                     GlobalState.selectedItem = item
                                                     currentScene = "MerchandiseInfoScene"
                                                 }
                                                 .padding(6.dp)
+                                                .drawBehind {
+                                                    drawLine(
+                                                        color = ColorPack.mainColor1[choose.value].value,
+                                                        start = Offset(size.width, 0f),
+                                                        end = Offset(size.width, size.height),
+                                                        strokeWidth = 2.dp.toPx()
+                                                    )
+                                                }
+                                                .shadow(2.dp, spotColor = ColorPack.sideColor2[choose.value].value, ambientColor = ColorPack.backgroundColor2[choose.value].value, clip = false)
                                         ) {
                                             Box(
                                                 modifier = Modifier
@@ -299,7 +309,6 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                     painterFor = { remember { BitmapPainter(it) } },
                                                     contentDescription = "Item Image",
                                                     modifier = Modifier
-                                                        .size(108.dp)
                                                         .fillMaxSize(),
                                                     contentScale = ContentScale.Crop
                                                 )
@@ -319,7 +328,8 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                 Text(
                                                     text = item.itemname,
                                                     fontSize = 20.sp,
-                                                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                                                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                                                    modifier = Modifier.padding(8.dp)
                                                 )
                                                 Row(
                                                     modifier = Modifier.fillMaxWidth(),
@@ -341,7 +351,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                         )
                                                     }
                                                     Text(
-                                                        text = item.salesVolume + "人付款",
+                                                        text = item.salesVolume + "人付款  ",
                                                         fontSize = 14.sp,
                                                         color = Color.DarkGray
                                                     )
@@ -368,14 +378,14 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                 tempItems = emptyList()
                                                 shopModule.viewCart {}
                                             },
-                                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                                            colors = ButtonDefaults.buttonColors(backgroundColor = ColorPack.backgroundColor1[choose.value].value),
                                             shape = CircleShape,
                                             modifier = Modifier.size(48.dp)
                                         ) {
                                             Icon(
                                                 Icons.Default.Refresh,
                                                 contentDescription = "刷新",
-                                                tint = Color(0xFF228042)
+                                                tint = ColorPack.mainColor1[choose.value].value
                                             )
                                         }
                                     }
@@ -389,24 +399,43 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                             val item = tempItems[index]
                                             //totalPrice = totalPrice + (item.price.toDouble() * item.quantity.toDouble())
 
+
                                             Row(
                                                 modifier = Modifier
                                                     .padding(8.dp)
                                                     .clip(RoundedCornerShape(8.dp))
-                                                    .background(Color(0xFFFDFBEC))
-                                                    .border(1.dp, Color.LightGray)
-                                                    .height(120.dp)
+                                                    .background(ColorPack.sideColor2[choose.value].value)
+                                                    .border(1.dp, ColorPack.sideColor1[choose.value].value)
+                                                    .height(160.dp)
                                                     .padding(8.dp)
                                             ) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .size(140.dp)
+                                                        .clip(RoundedCornerShape(8.dp))
+                                                        .background(Color(0xFFFAF6DB))
+                                                ) {
+                                                    AsyncImage(
+                                                        load = { loadImageBitmap(File(item.imageRes)) },
+                                                        painterFor = { remember { BitmapPainter(it) } },
+                                                        contentDescription = "Item Image",
+                                                        modifier = Modifier
+                                                            .fillMaxSize(),
+                                                        contentScale = ContentScale.Crop
+                                                    )
+                                                }
+                                                Spacer(modifier = Modifier.width(4.dp))
                                                 Column(
                                                     modifier = Modifier.weight(1f)
                                                 ) {
-                                                    Text(text = item.itemname, color = Color.Black, fontSize = 16.sp)
+                                                    Text(text = item.itemname, color = ColorPack.backgroundColor1[choose.value].value, fontSize = 18.sp)
                                                     //Text(text = conditionText, color = textColor, fontSize = 16.sp)
                                                     Text(
-                                                        text = "价格: ￥${item.price}    库存: ${item.stock}\n数量：${item.quantity}",
-                                                        fontSize = 12.sp
+                                                        text = "\n加入数量：${item.quantity}",
+                                                        fontSize = 14.sp,
+                                                        color = ColorPack.backgroundColor1[choose.value].value
                                                     )
+                                                    Text(text = "价格: ￥${item.price}", fontSize = 18.sp, color = Color(0xFFD33C05), fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
                                                 }
                                                 Column(
                                                     modifier = Modifier
@@ -425,15 +454,15 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                                 item.quantity,
                                                             )
                                                         },
-                                                        modifier = Modifier.size(100.dp, 36.dp),
+                                                        modifier = Modifier.size(120.dp, 36.dp),
                                                         colors = ButtonDefaults.buttonColors(
-                                                            backgroundColor = Color(0xFF228042)
+                                                            backgroundColor = ColorPack.mainColor2[choose.value].value
                                                         ),
                                                     ) {
                                                         Text(
                                                             "移除",
-                                                            fontSize = 14.sp,
-                                                            color = Color.White,
+                                                            fontSize = 12.sp,
+                                                            color = ColorPack.mainColor1[choose.value].value,
                                                             fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                                                         )
                                                     }
@@ -530,22 +559,31 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                             Row(
                                                 modifier = Modifier
                                                     .padding(8.dp)
-                                                    .clip(RoundedCornerShape(8.dp))
-                                                    .background(Color(0xFFFDFBEC))
-                                                    .border(1.dp, Color.LightGray)
-                                                    .height(120.dp)
-                                                    .padding(8.dp)
+                                                    .background(ColorPack.backgroundColor1[choose.value].value)
+                                                    .clip(RoundedCornerShape(5.dp))
+                                                    .border(0.8.dp, ColorPack.mainColor1[choose.value].value)
+                                                    .height(160.dp)
+                                                    .drawBehind {
+                                                        drawLine(
+                                                            color = ColorPack.mainColor1[choose.value].value,
+                                                            start = Offset(0f, 0f),
+                                                            end = Offset(0f, size.height),
+                                                            strokeWidth = 10.dp.toPx()
+                                                        )
+                                                    }
+                                                    .padding(8.dp),
                                             ) {
                                                 Column(
                                                     modifier = Modifier.weight(1f)
                                                 ) {
-                                                    Text(text = transaction.itemName, color = Color.Black, fontSize = 16.sp)
+                                                    Text(text = transaction.itemName, color = ColorPack.sideColor2[choose.value].value, fontSize = 18.sp)
                                                     //Text(text = conditionText, color = textColor, fontSize = 16.sp)
                                                     Text(
-                                                        text = "价格: ￥${transaction.itemPrice}\n数量: ${transaction.amount}",
-                                                        fontSize = 12.sp
+                                                        text = "\n 价格: ￥${transaction.itemPrice}    数量: ${transaction.amount}",
+                                                        fontSize = 16.sp,
+                                                        color= ColorPack.sideColor2[choose.value].value
                                                     )
-                                                    Text(text = transaction.time, fontSize = 12.sp)
+                                                    Text(text = "\n 交易时间：${transaction.time}", fontSize = 18.sp, color = ColorPack.sideColor2[choose.value].value)
                                                 }
                                             }
                                         }
@@ -580,13 +618,13 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                         Box(
                                             modifier = Modifier
                                                 .clip(RoundedCornerShape(8.dp))
-                                                .background(Color(0xFF228042))
+                                                .background(ColorPack.mainColor1[choose.value].value)
                                                 .clickable {
                                                     shopModule.shopSearch(searchText.text)
                                                 }
                                                 .padding(16.dp)
                                         ) {
-                                            Text(text = "搜索", color = Color.White, fontSize = 16.sp)
+                                            Text(text = "搜索", color = ColorPack.backgroundColor1[choose.value].value, fontSize = 16.sp)
                                         }
                                     }
                                     Spacer(modifier = Modifier.height(12.dp))
@@ -599,28 +637,69 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                     ) {
                                         items(tempItems.size) { index ->
                                             val item = tempItems[index]
-                                            Column(
+                                            Row(
                                                 modifier = Modifier
-                                                    .padding(8.dp)
+                                                    .padding(6.dp)
                                                     .clip(RoundedCornerShape(8.dp))
-                                                    .background(Color.White)
+                                                    .background(ColorPack.backgroundColor1[choose.value].value)
                                                     .clickable {
                                                         GlobalState.selectedItem = item
                                                         currentScene = "MerchandiseAdminScene"
                                                     }
-                                                    .padding(8.dp)
+                                                    .padding(6.dp)
+                                                    .drawBehind {
+                                                        drawLine(
+                                                            color = ColorPack.mainColor1[choose.value].value,
+                                                            start = Offset(size.width, 0f),
+                                                            end = Offset(size.width, size.height),
+                                                            strokeWidth = 2.dp.toPx()
+                                                        )
+                                                    }
+                                                    .shadow(2.dp, spotColor = ColorPack.sideColor2[choose.value].value, ambientColor = ColorPack.backgroundColor2[choose.value].value, clip = false)
                                             ) {
-                                                AsyncImage(
-                                                    load = { loadImageBitmap(File(item.imageRes)) },
-                                                    painterFor = { remember { BitmapPainter(it) } },
-                                                    contentDescription = "Item Image",
-                                                    modifier = Modifier.size(108.dp)
+                                                Box(
+                                                    modifier = Modifier
+                                                        .size(108.dp)
+                                                        .clip(RoundedCornerShape(8.dp))
+                                                        .background(Color(0xFFFAF6DB))
+                                                ) {
+                                                    AsyncImage(
+                                                        load = { loadImageBitmap(File(item.imageRes)) },
+                                                        painterFor = { remember { BitmapPainter(it) } },
+                                                        contentDescription = "Item Image",
+                                                        modifier = Modifier
+                                                            .fillMaxSize(),
+                                                        contentScale = ContentScale.Crop
+                                                    )
+                                                }
+                                                Spacer(modifier = Modifier.width(4.dp))
+                                                Divider(
+                                                    color = Color.DarkGray,
+                                                    modifier = Modifier
+                                                        .fillMaxHeight()
+                                                        .width(2.dp)
                                                 )
-                                                Text(text = item.itemname, fontSize = 14.sp)
+                                                Spacer(modifier = Modifier.width(4.dp))
+                                                Column(
+                                                    modifier = Modifier.height(108.dp),
+                                                    verticalArrangement = Arrangement.SpaceBetween
+                                                ) {
+                                                    Text(
+                                                        text = item.itemname,
+                                                        fontSize = 16.sp,
+                                                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                                                        modifier = Modifier.padding(8.dp)
+                                                    )
+                                                    Text(
+                                                        text = "库存：${item.stock}",
+                                                        fontSize = 14.sp,
+                                                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                                                        modifier = Modifier.padding(8.dp)
+                                                    )
+                                                }
                                             }
                                         }
                                     }
-                                    // New Row for buttons
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -630,13 +709,13 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                         Box(
                                             modifier = Modifier
                                                 .clip(RoundedCornerShape(8.dp))
-                                                .background(Color(0xFF228042))
+                                                .background(ColorPack.mainColor1[choose.value].value)
                                                 .clickable {
                                                     currentScene = "MerchandiseModifyScene"
                                                 }
                                                 .padding(10.dp)
                                         ) {
-                                            Text(text = "添加商品", color = Color.White, fontSize = 16.sp)
+                                            Text(text = "添加商品", color = ColorPack.backgroundColor1[choose.value].value, fontSize = 16.sp)
                                         }
                                     }
                                 }
@@ -662,7 +741,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                             Icon(
                                                 Icons.Default.Refresh,
                                                 contentDescription = "刷新",
-                                                tint = Color(0xFF228042)
+                                                tint = ColorPack.mainColor1[choose.value].value
                                             )
                                         }
                                     }
@@ -679,11 +758,19 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                             Row(
                                                 modifier = Modifier
                                                     .padding(8.dp)
-                                                    .clip(RoundedCornerShape(8.dp))
-                                                    .background(Color(0xFFFDFBEC))
-                                                    .border(1.dp, Color.LightGray)
-                                                    .height(120.dp)
-                                                    .padding(8.dp)
+                                                    .background(ColorPack.backgroundColor1[choose.value].value)
+                                                    .clip(RoundedCornerShape(5.dp))
+                                                    .border(0.8.dp, ColorPack.mainColor1[choose.value].value)
+                                                    .height(160.dp)
+                                                    .drawBehind {
+                                                        drawLine(
+                                                            color = ColorPack.mainColor1[choose.value].value,
+                                                            start = Offset(0f, 0f),
+                                                            end = Offset(0f, size.height),
+                                                            strokeWidth = 10.dp.toPx()
+                                                        )
+                                                    }
+                                                    .padding(8.dp),
                                             ) {
                                                 Column(
                                                     modifier = Modifier.weight(1f)
@@ -692,10 +779,10 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                     //Text(text = conditionText, color = textColor, fontSize = 16.sp)
                                                     Text(
                                                         text = "价格: ￥${transaction.itemPrice}    数量: ${transaction.amount}",
-                                                        fontSize = 12.sp
+                                                        fontSize = 16.sp
                                                     )
-                                                    Text(text = transaction.time, fontSize = 12.sp)
-                                                    Text(text = "用户卡号：${transaction.cardNumber}", fontSize = 12.sp)
+                                                    Text(text = transaction.time, fontSize = 14.sp)
+                                                    Text(text = "用户卡号：${transaction.cardNumber}", fontSize = 16.sp)
                                                 }
                                             }
                                         }

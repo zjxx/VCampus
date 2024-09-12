@@ -15,6 +15,8 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import data.ColorPack
+import data.ColorPack.choose
 import data.Merchandise
 import module.ShopModule
 import view.component.GlobalState
@@ -36,6 +38,7 @@ fun MerchandiseInfoScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
         // Back button
         Text(
             text = "<",
+            color = ColorPack.sideColor2[choose.value].value,
             fontSize = 32.sp,
             modifier = Modifier
                 .clickable { onNavigateBack() }

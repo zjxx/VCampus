@@ -69,7 +69,7 @@ fun HomeScene(onLogout: () -> Unit) {
         )//字体左右滚动
     )
     var expanded by remember { mutableStateOf(false) }
-    val colors = listOf("东大", "经典")
+    val colors = listOf("苍翠", "日出")
 
     Box(modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(16.dp)) {
         Column {
@@ -98,8 +98,8 @@ fun HomeScene(onLogout: () -> Unit) {
                         colors.forEach { color ->
                             DropdownMenuItem(onClick = {
                                 ColorPack.choose.value = when (color) {
-                                    "东大" -> 1
-                                    "经典" -> 0
+                                    "日出" -> 1
+                                    "苍翠" -> 0
                                     else -> 2
                                 }
                                 expanded = false
