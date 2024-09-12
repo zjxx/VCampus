@@ -66,9 +66,7 @@ fun CartMethodDialog(
                         shopModule.viewCart{
                             println("size: ${tempItems.size}")
                             onCampusCardPay()
-                            for (i in 0 until tempItems.size) {
-                                shopModule.shopBuy(tempItems[i].itemUuid, tempItems[i].quantity, tempItems[i].itemname)
-                            }
+                            shopModule.shopCartBuy(tempItems)
                         }
                     },
                     modifier = Modifier.size(120.dp, 42.dp)
@@ -83,9 +81,7 @@ fun CartMethodDialog(
 //                }
                 var price = 0.0
                 if (tempItems.isNotEmpty()) {
-                    for (i in 0 until tempItems.size) {
-                        price = price + tempItems[i].price.toDouble()
-                    }
+                    shopModule.shopCartBuy(tempItems)
                 } else {
                     price = 1.0
                 }
@@ -94,9 +90,7 @@ fun CartMethodDialog(
                     showWebViewDialog = false
                     println("Payment result: $paymentResult")
                     if (paymentResult == "success") {
-                        for (i in 0 until tempItems.size) {
-                            shopModule.shopBuy(tempItems[i].itemUuid, tempItems[i].quantity, tempItems[i].itemname)
-                        }
+
                     }
                 }
             }
