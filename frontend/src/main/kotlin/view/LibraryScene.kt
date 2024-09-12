@@ -21,12 +21,16 @@ import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.Book
+import data.ColorPack
+import data.ColorPack.choose
 import data.UserSession
 import kotlinx.coroutines.delay
 import module.LibraryModule
@@ -105,7 +109,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                             .weight(0.034f)
                             .background(Color(0xff373836)).drawBehind {
                                 drawLine(
-                                    color = Color.Yellow,
+                                    color = ColorPack.mainColor2[choose.value].value,
                                     start = Offset(size.width, 0f),
                                     end = Offset(size.width, size.height),
                                     strokeWidth = 4.dp.toPx()
@@ -131,8 +135,8 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                 Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看已借阅书籍信息", tint = Color.White)
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Icon(imageVector = Icons.Default.Book, contentDescription = "学术查找", tint = Color.White)
-                                Spacer(modifier = Modifier.height(16.dp))
-                                Icon(imageVector = Icons.Default.Image, contentDescription = "显示图片", tint = Color.White)
+//                                Spacer(modifier = Modifier.height(16.dp))
+//                                Icon(imageVector = Icons.Default.Image, contentDescription = "显示图片", tint = Color.White)
                             } else if (role == "admin") {
                                 Icon(imageVector = Icons.Default.Checklist, contentDescription = "管理书籍", tint = Color.White)
                                 Spacer(modifier = Modifier.height(16.dp))
@@ -148,7 +152,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                             .background(Color(0xff373836))
                             .drawBehind {
                                 drawLine(
-                                    color = Color.Yellow,
+                                    color = ColorPack.mainColor2[choose.value].value,
                                     start = Offset(0f, 0f),
                                     end = Offset(0f, size.height),
                                     strokeWidth = 8.dp.toPx()
@@ -207,14 +211,14 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(text = "学术查找", fontSize = 16.sp, color = Color.White)
                             }
-                            TextButton(
-                                onClick = { selectedOption = "显示图片" },
-                                //modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-                            ) {
-                                Icon(imageVector = Icons.Default.Image, contentDescription = "显示图片", tint = Color.White)
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "显示图片", fontSize = 16.sp, color = Color.White)
-                            }
+//                            TextButton(
+//                                onClick = { selectedOption = "显示图片" },
+//                                //modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+//                            ) {
+//                                Icon(imageVector = Icons.Default.Image, contentDescription = "显示图片", tint = Color.White)
+//                                Spacer(modifier = Modifier.width(8.dp))
+//                                Text(text = "显示图片", fontSize = 16.sp, color = Color.White)
+//                            }
                         } else if (role == "admin") {
                             TextButton(
                                 onClick = { selectedOption = "管理书籍" },
@@ -298,19 +302,19 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                     Box(
                                         modifier = Modifier
                                             .clip(RoundedCornerShape(8.dp))
-                                            .background(Color(0xFF228042))
+                                            .background(ColorPack.mainColor1[choose.value].value)
                                             .clickable {
                                                 libraryModule.libSearch(searchText.text, searchType)
                                             }
                                             .padding(16.dp)
                                     ) {
-                                        Text(text = "搜索", color = Color.White, fontSize = 16.sp)
+                                        Text(text = "搜索", color = ColorPack.backgroundColor1[choose.value].value, fontSize = 16.sp)
                                     }
                                 }
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Divider(color = Color.Gray, thickness = 1.dp)
                                 LazyVerticalGrid(
-                                    columns = GridCells.Fixed(4),
+                                    columns = GridCells.Fixed(5),
                                     modifier = Modifier
                                         .weight(1f)
                                         .padding(top = 8.dp)
@@ -318,24 +322,40 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                     items(tempBooks.size) { index ->
                                         val book = tempBooks[index]
                                         Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally,
                                             modifier = Modifier
                                                 .padding(8.dp)
-                                                .clip(RoundedCornerShape(8.dp))
-                                                .background(Color.White)
+                                                //.clip(RoundedCornerShape(8.dp))
+                                                .height(280.dp)
+                                                .background(ColorPack.backgroundColor2[choose.value].value)
                                                 .clickable {
                                                     GlobalState.selectedBook = book
                                                     currentScene = "BookImfoSubscene"
                                                 }
                                                 .padding(8.dp)
+                                                .drawBehind {
+                                                    drawLine(
+                                                        color = ColorPack.sideColor2[choose.value].value,
+                                                        start = Offset(0f, size.height),
+                                                        end = Offset(size.width, size.height),
+                                                        strokeWidth = 4.dp.toPx()
+                                                    )
+                                                },
                                         ) {
                                             AsyncImage(
                                                 load = { loadImageBitmap(File(book.coverImage)) },
                                                 painterFor = { remember { BitmapPainter(it) } },
                                                 contentDescription = "Book Cover",
                                                 modifier = Modifier
-                                                    .size(108.dp)
+                                                    .size(120.dp)
+                                                    .weight(0.9f)
                                             )
-                                            Text(text = book.bookname, fontSize = 14.sp)
+                                            Text(
+                                                text = book.bookname,
+                                                fontSize = 16.sp,
+                                                color = ColorPack.sideColor2[choose.value].value
+                                            )
+                                            Spacer(modifier = Modifier.height(4.dp))
                                         }
                                     }
                                 }
@@ -363,7 +383,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                             Icon(
                                                 Icons.Default.Refresh,
                                                 contentDescription = "刷新",
-                                                tint = Color(0xFF228042)
+                                                tint = ColorPack.mainColor1[choose.value].value
                                             )
                                         }
                                     }
@@ -377,28 +397,37 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                         items(borrowedBooks.size) { index ->
                                             val book = borrowedBooks[index]
                                             val backgroundColor =
-                                                if (book.condition == "borrowing") Color.White else Color(0xFFC1EAEF)
+                                                if (book.condition == "borrowing") ColorPack.backgroundColor1[choose.value].value else ColorPack.backgroundColor2[choose.value].value
                                             val textColor =
-                                                if (book.condition == "borrowing") Color(0xFF228042) else Color.Black
+                                                if (book.condition == "borrowing") ColorPack.mainColor1[choose.value].value else ColorPack.sideColor2[choose.value].value
                                             val conditionText =
-                                                if (book.condition == "borrowing") "借阅中" else "曾借阅"
+                                                if (book.condition == "borrowing") " - 状态：借阅中" else " - 状态：曾借阅"
                                             Row(
                                                 modifier = Modifier
                                                     .padding(8.dp)
-                                                    .clip(RoundedCornerShape(8.dp))
                                                     .background(backgroundColor)
-                                                    .border(1.dp, Color.LightGray)
+                                                    .clip(RoundedCornerShape(5.dp))
+                                                    .border(0.8.dp, ColorPack.mainColor1[choose.value].value)
                                                     .height(160.dp)
-                                                    .padding(8.dp)
+                                                    .drawBehind {
+                                                        drawLine(
+                                                            color = ColorPack.mainColor1[choose.value].value,
+                                                            start = Offset(0f, 0f),
+                                                            end = Offset(0f, size.height),
+                                                            strokeWidth = 10.dp.toPx()
+                                                        )
+                                                    }
+                                                    .padding(8.dp),
                                             ) {
                                                 Column(
                                                     modifier = Modifier.weight(1f)
                                                 ) {
                                                     Text(text = book.bookname, color = textColor, fontSize = 16.sp)
                                                     Text(text = conditionText, color = textColor, fontSize = 16.sp)
+                                                    Divider(color = ColorPack.mainColor2[choose.value].value, thickness = 1.2.dp)
                                                     Text(
                                                         text = "借书时间 > ${book.borrow_date}\n还书时间 > ${book.return_date}",
-                                                        fontSize = 12.sp
+                                                        fontSize = 14.sp
                                                     )
                                                 }
                                                 Column(
@@ -406,6 +435,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                                     verticalArrangement = Arrangement.Center,
                                                     horizontalAlignment = Alignment.CenterHorizontally
                                                 ) {
+                                                    Spacer(modifier = Modifier.weight(0.36f))
                                                     Button(
                                                         onClick = {
                                                             val imageISBN = book.isbn
@@ -421,13 +451,11 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                                         },
                                                         modifier = Modifier.size(100.dp, 36.dp),
                                                         colors = ButtonDefaults.buttonColors(
-                                                            backgroundColor = Color(
-                                                                0xFF228042
-                                                            )
+                                                            backgroundColor = ColorPack.mainColor1[choose.value].value
                                                         ),
                                                         enabled = book.condition != "haveBorrowed"
                                                     ) {
-                                                        Text("阅读", fontSize = 14.sp, color = Color.White)
+                                                        Text("阅读", fontSize = 14.sp, color = ColorPack.backgroundColor1[choose.value].value)
                                                     }
                                                     Spacer(modifier = Modifier.height(8.dp))
                                                     Button(
@@ -438,13 +466,11 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                                         },
                                                         modifier = Modifier.size(100.dp, 36.dp),
                                                         colors = ButtonDefaults.buttonColors(
-                                                            backgroundColor = Color(
-                                                                0xFF228042
-                                                            )
+                                                            backgroundColor = ColorPack.mainColor1[choose.value].value
                                                         ),
                                                         enabled = book.condition != "haveBorrowed"
                                                     ) {
-                                                        Text("还书", fontSize = 14.sp, color = Color.White)
+                                                        Text("还书", fontSize = 14.sp, color = ColorPack.backgroundColor1[choose.value].value)
                                                     }
                                                 }
                                             }
@@ -472,14 +498,14 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                     Box(
                                         modifier = Modifier
                                             .clip(RoundedCornerShape(8.dp))
-                                            .background(Color(0xFF228042))
+                                            .background(ColorPack.mainColor1[choose.value].value)
                                             .clickable {
                                                 articles = emptyList()
                                                 libraryModule.libArticleSearch(searchText.text)//__________学术搜索相关
                                             }
                                             .padding(16.dp)
                                     ) {
-                                        Text(text = "搜索", color = Color.White, fontSize = 16.sp)
+                                        Text(text = "搜索", color = ColorPack.backgroundColor1[choose.value].value, fontSize = 16.sp)
                                     }
                                 }
                                 Spacer(modifier = Modifier.height(12.dp))
@@ -499,24 +525,34 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                                 modifier = Modifier
                                                     .padding(8.dp)
                                                     .clip(RoundedCornerShape(8.dp))
-                                                    .background(Color.LightGray)
-                                                    .border(1.dp, Color.DarkGray)
+                                                    .background(
+                                                        brush = Brush.horizontalGradient(
+                                                            colors = listOf(
+                                                                ColorPack.backgroundColor2[choose.value].value, // 渐变开始的颜色
+                                                                ColorPack.backgroundColor1[choose.value].value// 渐变结束的颜色
+                                                            ),
+                                                            startX = with(LocalDensity.current) { 0.dp.toPx() }, // 渐变开始的位置
+                                                            endX = with(LocalDensity.current) { 260.dp.toPx() } // 渐变结束的位置
+                                                        )
+                                                    )
                                                     .height(160.dp)
                                                     .padding(8.dp)
                                             ) {
                                                 Column(
                                                     modifier = Modifier.weight(1f)
                                                 ) {
-                                                    val textColor = Color.Black
-                                                    Text(text = book.bookname, color = textColor, fontSize = 16.sp)
-                                                    Text(text = book.publisher, color = textColor, fontSize = 12.sp)
-                                                    Text(text = book.publishDate, color = textColor, fontSize = 12.sp)
+                                                    val textColor = ColorPack.sideColor2[choose.value].value
+                                                    Text(text = book.bookname, color = textColor, fontSize = 18.sp)
+                                                    Divider(color = ColorPack.sideColor1[choose.value].value, thickness = 2.dp)
+                                                    Text(text = "Published by: ${book.publisher}", color = textColor, fontSize = 16.sp)
+                                                    Text(text = book.publishDate, color = textColor, fontSize = 16.sp)
                                                 }
                                                 Column(
                                                     modifier = Modifier.align(Alignment.CenterVertically),
                                                     verticalArrangement = Arrangement.Center,
                                                     horizontalAlignment = Alignment.CenterHorizontally
                                                 ) {
+                                                    Spacer(modifier = Modifier.weight(0.4f))
                                                     Button(
                                                         onClick = {
                                                             val fileDialog = FileDialog(ComposeWindow(), "选择文件保存地址", FileDialog.SAVE)
@@ -531,12 +567,13 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                                                 showDownloadDialog = true
                                                             }
                                                         },
-                                                        modifier = Modifier.size(100.dp, 36.dp),
+                                                        modifier = Modifier.size(96.dp, 40.dp),
                                                         colors = ButtonDefaults.buttonColors(
-                                                            backgroundColor = Color(0xFF228042)
+                                                            backgroundColor = ColorPack.backgroundColor1[choose.value].value
                                                         ),
                                                     ) {
-                                                        Text("下载阅读", fontSize = 14.sp, color = Color.White)
+                                                        Icon(imageVector = Icons.Default.Download, contentDescription = "下载阅读", tint = ColorPack.sideColor2[choose.value].value)
+                                                        Text(text = "PDF", fontSize = 14.sp, color = ColorPack.sideColor2[choose.value].value)
                                                     }
                                                     if (showDownloadDialog) {
                                                         LaunchedEffect(Unit) {
@@ -687,19 +724,19 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                         Box(
                                             modifier = Modifier
                                                 .clip(RoundedCornerShape(8.dp))
-                                                .background(Color(0xFF228042))
+                                                .background(ColorPack.mainColor1[choose.value].value)
                                                 .clickable {
                                                     libraryModule.libSearch(searchText.text, searchType)
                                                 }
                                                 .padding(16.dp)
                                         ) {
-                                            Text(text = "搜索", color = Color.White, fontSize = 16.sp)
+                                            Text(text = "搜索", color = ColorPack.backgroundColor1[choose.value].value, fontSize = 16.sp)
                                         }
                                     }
                                     Spacer(modifier = Modifier.height(12.dp))
                                     Divider(color = Color.Gray, thickness = 1.dp)
                                     LazyVerticalGrid(
-                                        columns = GridCells.Fixed(4),
+                                        columns = GridCells.Fixed(5),
                                         modifier = Modifier
                                             .weight(1f)
                                             .padding(top = 8.dp)
@@ -707,23 +744,40 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                         items(tempBooks.size) { index ->
                                             val book = tempBooks[index]
                                             Column(
+                                                horizontalAlignment = Alignment.CenterHorizontally,
                                                 modifier = Modifier
                                                     .padding(8.dp)
-                                                    .clip(RoundedCornerShape(8.dp))
-                                                    .background(Color.White)
+                                                    //.clip(RoundedCornerShape(8.dp))
+                                                    .height(280.dp)
+                                                    .background(ColorPack.backgroundColor2[choose.value].value)
                                                     .clickable {
                                                         GlobalState.selectedBook = book
                                                         currentScene = "BookAdminSubscene"
                                                     }
                                                     .padding(8.dp)
+                                                    .drawBehind {
+                                                        drawLine(
+                                                            color = ColorPack.sideColor2[choose.value].value,
+                                                            start = Offset(0f, size.height),
+                                                            end = Offset(size.width, size.height),
+                                                            strokeWidth = 4.dp.toPx()
+                                                        )
+                                                    },
                                             ) {
                                                 AsyncImage(
                                                     load = { loadImageBitmap(File(book.coverImage)) },
                                                     painterFor = { remember { BitmapPainter(it) } },
                                                     contentDescription = "Book Cover",
-                                                    modifier = Modifier.size(108.dp)
+                                                    modifier = Modifier
+                                                        .size(120.dp)
+                                                        .weight(0.9f)
                                                 )
-                                                Text(text = book.bookname, fontSize = 14.sp)
+                                                Text(
+                                                    text = book.bookname,
+                                                    fontSize = 16.sp,
+                                                    color = ColorPack.sideColor2[choose.value].value
+                                                )
+                                                Spacer(modifier = Modifier.height(4.dp))
                                             }
                                         }
                                     }
@@ -737,13 +791,13 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                         Box(
                                             modifier = Modifier
                                                 .clip(RoundedCornerShape(8.dp))
-                                                .background(Color(0xFF228042))
+                                                .background(ColorPack.mainColor1[choose.value].value)
                                                 .clickable {
                                                     currentScene = "BookModifySubscene"
                                                 }
                                                 .padding(10.dp)
                                         ) {
-                                            Text(text = "录入图书", color = Color.White, fontSize = 16.sp)
+                                            Text(text = "录入图书", color = ColorPack.backgroundColor1[choose.value].value, fontSize = 16.sp)
                                         }
                                     }
                                 }
@@ -775,7 +829,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                             Icon(
                                                 Icons.Default.Refresh,
                                                 contentDescription = "刷新",
-                                                tint = Color(0xFF228042)
+                                                tint = ColorPack.mainColor1[choose.value].value
                                             )
                                         }
                                     }
@@ -793,13 +847,13 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                         Box(
                                             modifier = Modifier
                                                 .clip(RoundedCornerShape(8.dp))
-                                                .background(Color(0xFF228042))
+                                                .background(ColorPack.mainColor1[choose.value].value)
                                                 .clickable {
                                                     libraryModule.libIdCheck(searchText.text)
                                                 }
                                                 .padding(16.dp)
                                         ) {
-                                            Text(text = "搜索", color = Color.White, fontSize = 16.sp)
+                                            Text(text = "搜索", color = ColorPack.backgroundColor1[choose.value].value, fontSize = 16.sp)
                                         }
                                     }
                                     Spacer(modifier = Modifier.height(12.dp))
@@ -813,19 +867,27 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                         items(borrowedBooks.size) { index ->
                                             val book = borrowedBooks[index]
                                             val backgroundColor =
-                                                if (book.condition == "borrowing") Color.White else Color(0xFFC1EAEF)
+                                                if (book.condition == "borrowing") ColorPack.backgroundColor1[choose.value].value else ColorPack.backgroundColor2[choose.value].value
                                             val textColor =
-                                                if (book.condition == "borrowing") Color(0xFF228042) else Color.Black
+                                                if (book.condition == "borrowing") ColorPack.mainColor1[choose.value].value else ColorPack.sideColor2[choose.value].value
                                             val conditionText =
-                                                if (book.condition == "borrowing") "借阅中" else "曾借阅"
+                                                if (book.condition == "borrowing") " - 状态：借阅中" else " - 状态：曾借阅"
                                             Row(
                                                 modifier = Modifier
                                                     .padding(8.dp)
-                                                    .clip(RoundedCornerShape(8.dp))
                                                     .background(backgroundColor)
-                                                    .border(1.dp, Color.LightGray)
-                                                    .height(180.dp)
-                                                    .padding(8.dp)
+                                                    .clip(RoundedCornerShape(5.dp))
+                                                    .border(0.8.dp, ColorPack.mainColor1[choose.value].value)
+                                                    .height(160.dp)
+                                                    .drawBehind {
+                                                        drawLine(
+                                                            color = ColorPack.mainColor1[choose.value].value,
+                                                            start = Offset(0f, 0f),
+                                                            end = Offset(0f, size.height),
+                                                            strokeWidth = 10.dp.toPx()
+                                                        )
+                                                    }
+                                                    .padding(8.dp),
                                             ) {
                                                 Column(
                                                     modifier = Modifier.weight(1f)

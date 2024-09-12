@@ -13,6 +13,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import data.ColorPack
+import data.ColorPack.choose
 import module.LoginModule
 import view.component.ForgotPasswordDialog
 import view.component.pageTitle
@@ -31,7 +33,7 @@ fun LoginScene(onLoginSuccess: () -> Unit) {
     Box(Modifier.fillMaxSize().shadow(8.dp), contentAlignment = Alignment.Center) {
         Box(
             Modifier.size(1064.dp, 600.dp)
-                .background(Color.White)
+                .background(ColorPack.backgroundColor1[choose.value].value)
         ) {
             Row {
                 Row(
@@ -84,7 +86,7 @@ fun LoginScene(onLoginSuccess: () -> Unit) {
                                         loginModule.onLoginClick(username, password)
                                     },
                                     colors = ButtonDefaults.buttonColors(
-                                        backgroundColor = Color(0xFF006400),
+                                        backgroundColor = ColorPack.mainColor1[choose.value].value,
                                         contentColor = Color.White
                                     ),
                                     modifier = Modifier.fillMaxWidth()
@@ -99,7 +101,7 @@ fun LoginScene(onLoginSuccess: () -> Unit) {
                                     TextButton(
                                         onClick = { showForgotPasswordDialog = true },
                                         colors = ButtonDefaults.textButtonColors(
-                                            contentColor = Color(0xFF006400)
+                                            contentColor = ColorPack.mainColor1[choose.value].value
                                         )
                                     ) {
                                         Text("忘记密码？")

@@ -19,6 +19,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import data.ColorPack
+import data.ColorPack.choose
 import module.CourseModule
 
 @Composable
@@ -39,7 +41,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                     .background(Color(0xff373836))
                     .drawBehind {
                         drawLine(
-                            color = Color.Yellow,
+                            color = ColorPack.mainColor2[choose.value].value,
                             start = Offset(size.width, 0f),
                             end = Offset(size.width, size.height),
                             strokeWidth = 4.dp.toPx()
@@ -89,7 +91,7 @@ fun CourseScene(onNavigate: (String) -> Unit, role: String) {
                     .background(Color(0xff373836))
                     .drawBehind {
                         drawLine(
-                            color = Color.Yellow,
+                            color = ColorPack.mainColor2[choose.value].value,
                             start = Offset(0f, 0f),
                             end = Offset(0f, size.height),
                             strokeWidth = 8.dp.toPx()
