@@ -381,8 +381,12 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                                     )
                                                 }
                                                 Column(
-                                                    modifier = Modifier.align(Alignment.CenterVertically),
-                                                    verticalArrangement = Arrangement.Center,
+                                                    modifier = Modifier
+                                                        .fillMaxHeight()
+                                                        .weight(0.5f)
+                                                        .padding(16.dp),
+                                                        //.align(Alignment.CenterVertically),
+                                                    verticalArrangement = Arrangement.Bottom,
                                                     horizontalAlignment = Alignment.CenterHorizontally
                                                 ) {
 
