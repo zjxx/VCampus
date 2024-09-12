@@ -15,6 +15,8 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.Book
+import data.ColorPack
+import data.ColorPack.choose
 import data.UserSession
 import module.LibraryModule
 import view.component.GlobalState
@@ -36,6 +38,7 @@ fun BookImfoSubscene(onNavigateBack: () -> Unit, libraryModule: LibraryModule) {
         Text(
             text = "<",
             fontSize = 32.sp,
+            color = ColorPack.sideColor2[choose.value].value,
             modifier = Modifier
                 .clickable { onNavigateBack() }
                 .padding(8.dp)
@@ -52,7 +55,7 @@ fun BookImfoSubscene(onNavigateBack: () -> Unit, libraryModule: LibraryModule) {
             // Book cover image
             Box(
                 modifier = Modifier
-                    .weight(0.4f)
+                    .weight(0.45f)
                     .padding(16.dp),
                 contentAlignment = Alignment.TopStart
             ) {
@@ -70,21 +73,22 @@ fun BookImfoSubscene(onNavigateBack: () -> Unit, libraryModule: LibraryModule) {
                     .weight(0.6f)
                     .padding(16.dp)
             ) {
-                Text(text = "《 ${book.bookname} 》   \n作者: ${book.author}", fontSize = 24.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
-                Text(text = "\n> 出版社: ${book.publisher}\n> 语言: ${book.language}", fontSize = 16.sp, color = Color.DarkGray)
+                Text(text = "《 ${book.bookname} 》", fontSize = 24.sp, color = ColorPack.sideColor2[choose.value].value, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                Text(text = "\n作者: ${book.author}", fontSize = 20.sp, color = ColorPack.sideColor2[choose.value].value)
+                Text(text = "\n> 出版社: ${book.publisher}\n> 语言: ${book.language}", fontSize = 16.sp, color = ColorPack.sideColor2[choose.value].value)
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Divider(color = Color(0xFF228042), thickness = 1.dp)
+                Divider(color = ColorPack.mainColor1[choose.value].value, thickness = 1.dp)
 
-                Text(text = "\n描述:  ${book.description}", fontSize = 18.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                Text(text = "\n描述:  ${book.description}", fontSize = 18.sp,  color = ColorPack.sideColor2[choose.value].value, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "\n种类:  ${book.kind}\n", fontSize = 18.sp)
+                Text(text = "\n种类:  ${book.kind}\n", fontSize = 18.sp, color = ColorPack.sideColor2[choose.value].value)
 
-                Divider(color = Color(0xFF228042), thickness = 1.dp)
+                Divider(color = ColorPack.mainColor1[choose.value].value, thickness = 1.dp)
 
                 Spacer(modifier = Modifier.height(8.dp))
-                val quantityColor = if (book.quantity == 0) Color.Red else Color.Black
-                val validColor = if (book.quantity == 0) Color.Red else Color.Black
+                val quantityColor = if (book.quantity == 0) Color.Red else ColorPack.sideColor2[choose.value].value
+                val validColor = if (book.quantity == 0) Color.Red else ColorPack.sideColor2[choose.value].value
                 Text(text = "书籍总数: ${book.quantity}", fontSize = 16.sp, color = quantityColor)
                 Text(text = "剩余可借: ${book.valid}", fontSize = 16.sp, color = validColor)
             }
@@ -100,9 +104,9 @@ fun BookImfoSubscene(onNavigateBack: () -> Unit, libraryModule: LibraryModule) {
             Button(
                 onClick = { libraryModule.libAddToLits(book.isbn) },
                 modifier = Modifier.size(168.dp, 48.dp),
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF228042))
+                colors = ButtonDefaults.buttonColors(backgroundColor = ColorPack.mainColor1[choose.value].value)
             ) {
-                Text(text = "借书", color = Color.White, fontSize = 18.sp)
+                Text(text = "借书", color = ColorPack.backgroundColor1[choose.value].value, fontSize = 18.sp)
             }
         }
     }

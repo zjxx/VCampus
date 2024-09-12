@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import data.ColorPack
+import data.ColorPack.choose
 import data.NaviItem
 import data.UserSession
 import dev.datlag.kcef.KCEF
@@ -123,8 +125,8 @@ fun App() {
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
-                                    Color(0xff9eb397), // 渐变开始的颜色
-                                    Color(0xfff4f7f1)// 渐变结束的颜色
+                                    ColorPack.sideColor1[choose.value].value, // 渐变开始的颜色
+                                    ColorPack.backgroundColor1[choose.value].value// 渐变结束的颜色
                                 ),
                                 startY = with(LocalDensity.current) { 0.dp.toPx() }, // 渐变开始的位置
                                 endY = with(LocalDensity.current) { 14.dp.toPx() } // 渐变结束的位置

@@ -23,6 +23,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import data.ColorPack
+import data.ColorPack.choose
 import data.Merchandise
 import data.StoreTransaction
 import data.UserSession
@@ -94,7 +96,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                             .background(Color(0xff373836))
                             .drawBehind {
                                 drawLine(
-                                    color = Color.Yellow,
+                                    color = ColorPack.mainColor2[choose.value].value,
                                     start = Offset(size.width, 0f),
                                     end = Offset(size.width, size.height),
                                     strokeWidth = 4.dp.toPx()
@@ -135,7 +137,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                             .background(Color(0xff373836))
                             .drawBehind {
                                 drawLine(
-                                    color = Color.Yellow,
+                                    color = ColorPack.mainColor2[choose.value].value,
                                     start = Offset(size.width, 0f),
                                     end = Offset(size.width, size.height),
                                     strokeWidth = 4.dp.toPx()

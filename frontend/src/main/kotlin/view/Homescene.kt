@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import data.BackgroundColor
+import data.ColorPack
 import data.UserSession
 import module.LoginModule
 import view.component.DialogManager
@@ -69,7 +69,7 @@ fun HomeScene(onLogout: () -> Unit) {
         )//字体左右滚动
     )
     var expanded by remember { mutableStateOf(false) }
-    val colors = listOf("Black","Red", "Green", "Blue")
+    val colors = listOf("东大", "经典")
 
     Box(modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(16.dp)) {
         Column {
@@ -97,26 +97,10 @@ fun HomeScene(onLogout: () -> Unit) {
                     ) {
                         colors.forEach { color ->
                             DropdownMenuItem(onClick = {
-                                BackgroundColor.colors[0].value  = when (color) {
-                                    "Black"-> Color.Black
-                                    "Red" -> Color.Red
-                                    "Green" -> Color(0xFF006400)
-                                    "Blue" -> Color.Blue
-                                    else -> Color.White
-                                }
-                                BackgroundColor.colors[1].value = when (color) {
-                                    "Black"-> Color.Black
-                                    "Red" -> Color.Red
-                                    "Green" -> Color(0xFF006400)
-                                    "Blue" -> Color.Blue
-                                    else -> Color.White
-                                }
-                                BackgroundColor.colors[2].value  = when (color) {
-                                    "Black"-> Color.Black
-                                    "Red" -> Color.Red
-                                    "Green" -> Color(0xFF006400)
-                                    "Blue" -> Color.Blue
-                                    else -> Color.White
+                                ColorPack.choose.value = when (color) {
+                                    "东大" -> 1
+                                    "经典" -> 0
+                                    else -> 2
                                 }
                                 expanded = false
                             }) {

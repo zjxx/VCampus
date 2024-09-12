@@ -18,7 +18,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import data.BackgroundColor
+import data.ColorPack
+import data.ColorPack.choose
 import data.NaviItem
 
 
@@ -30,7 +31,7 @@ fun TopNavBar(naviItems: List<NaviItem>, onItemSelected: (NaviItem) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .height(64.dp)
-            .background(BackgroundColor.colors[0].value),
+            .background(ColorPack.mainColor1[choose.value].value),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -44,11 +45,11 @@ fun TopNavBar(naviItems: List<NaviItem>, onItemSelected: (NaviItem) -> Unit) {
                             selectedItem = item
                             onItemSelected(item)
                         }
-                        .background(if (item == selectedItem) BackgroundColor.colors[0].value else Color.Transparent)
+                        .background(if (item == selectedItem) ColorPack.mainColor1[choose.value].value else Color.Transparent)
                         .drawBehind {
                             if (item == selectedItem) {
                                 drawLine(
-                                    color = Color.Yellow,
+                                    color = ColorPack.mainColor2[choose.value].value,
                                     start = Offset(0f, 0f),
                                     end = Offset(size.width, 0f),
                                     strokeWidth = 3.dp.toPx()
@@ -64,8 +65,8 @@ fun TopNavBar(naviItems: List<NaviItem>, onItemSelected: (NaviItem) -> Unit) {
             }
         }
         Spacer(modifier = Modifier.weight(1f)) // Add spacer here
-        Button(onClick = { onItemSelected(naviItems.first { it.name == "退出" }) },colors = ButtonDefaults.buttonColors(backgroundColor = BackgroundColor.colors[0].value)) {
-            Icon(imageVector = Icons.Default.ExitToApp, contentDescription = "退出", tint = Color.White)
+        Button(onClick = { onItemSelected(naviItems.first { it.name == "退出" }) },colors = ButtonDefaults.buttonColors(backgroundColor = ColorPack.mainColor1[choose.value].value)) {
+            Icon(imageVector = Icons.Default.ExitToApp, contentDescription = "退出", tint = ColorPack.backgroundColor1[choose.value].value)
         }
     }
 }
