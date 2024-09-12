@@ -31,7 +31,7 @@ fun AddStudentStatusSubscene() {
         "核I程与核技术", "新能源科学与工程", "环境工程", "自动化", "机器人工程", "电气工程及其自动化",
         "智能感知工程", "测控技术与仪器", "材料科学与工程", "土木工程", "给排水科学与工程", "工程管理",
         "智能建造", "交通工程", "交通运输", "港口航道与海岸工程", "城市地下空间工程", "道路桥梁与渡河工程",
-        "智慧交通", "信息工程", "海洋信息工程", "电子科学与技术", "信息工程"
+        "智慧交通", "信息工程", "海洋信息工程", "电子科学与技术", "信息工程","计算机"
     )
     val validAcademies = listOf(
         "电子科学与技术", "物联网工程", "计算机科学与技术", "软件工程", "网络空间安全", "人工智能",
@@ -141,6 +141,7 @@ fun AddStudentStatusSubscene() {
 
         // 从文件导入和提交按钮
         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+           Column{
             Button(
                 onClick = {
                     val fileChooser = JFileChooser().apply {
@@ -156,10 +157,18 @@ fun AddStudentStatusSubscene() {
                         showDialog = true
                     }
                 },
-                modifier = Modifier.width(120.dp) // Set the width of the import button
+                modifier = Modifier.width(160.dp) // Set the width of the import button
             ) {
                 Text("从文件导入")
             }
+            Button(
+                onClick = {
+                },
+                modifier = Modifier.width(160.dp) // Set the width of the download button
+            ) {
+                Text("下载示例文件")
+            }
+           }
             Button(
                 onClick = {
                     scope.launch {
