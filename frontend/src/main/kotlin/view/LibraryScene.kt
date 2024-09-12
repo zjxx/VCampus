@@ -445,6 +445,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                             .clip(RoundedCornerShape(8.dp))
                                             .background(Color(0xFF228042))
                                             .clickable {
+                                                articles = emptyList()
                                                 libraryModule.libArticleSearch(searchText.text)//__________学术搜索相关
                                             }
                                             .padding(16.dp)
@@ -479,6 +480,8 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                                 ) {
                                                     val textColor = Color.Black
                                                     Text(text = book.bookname, color = textColor, fontSize = 16.sp)
+                                                    Text(text = book.publisher, color = textColor, fontSize = 12.sp)
+                                                    Text(text = book.publishDate, color = textColor, fontSize = 12.sp)
                                                 }
                                                 Column(
                                                     modifier = Modifier.align(Alignment.CenterVertically),
