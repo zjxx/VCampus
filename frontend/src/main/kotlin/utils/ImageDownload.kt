@@ -103,3 +103,36 @@ fun downloadMp4(mp4Url: String, localPath: String) {
     inputStream.close()
     connection.disconnect()
 }
+
+//download xls
+fun downloadXlsIfNotExists(xlsUrl: String, localPath: String) {
+    val file = File(localPath)
+    val parentDir = file.parentFile
+    if (!parentDir.exists()) {
+        parentDir.mkdirs()
+    }
+    if (!file.exists()) {
+        downloadXls(xlsUrl, localPath)
+    }
+}
+
+fun downloadXls(xlsUrl: String, localPath: String) {
+    val url = URL(xlsUrl)
+    val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+    connection.requestMethod = "GET"
+    connection.doInput = true
+    connection.connect()
+
+    val inputStream: InputStream = connection.inputStream
+    val outputStream = FileOutputStream(localPath)
+
+    val buffer = ByteArray(1024)
+    var bytesRead: Int
+    while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+        outputStream.write(buffer, 0, bytesRead)
+    }
+
+    outputStream.close()
+    inputStream.close()
+    connection.disconnect()
+}
