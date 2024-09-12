@@ -1,17 +1,18 @@
 package app.vcampus.controller;
 
-import app.vcampus.domain.Student;
-import app.vcampus.domain.User;
-import app.vcampus.domain.ShoppingCartItem;
+import app.vcampus.domain.*;
 import app.vcampus.enums.AcademyType;
 import app.vcampus.interfaces.studentInfoRequest;
 import app.vcampus.utils.DataBase;
 import app.vcampus.utils.DataBaseManager;
 import app.vcampus.utils.PasswordUtils;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public class StudentInfoController {
     private final Gson gson = new Gson();
@@ -206,5 +207,57 @@ public class StudentInfoController {
             }
         }
         return false;
+    }
+
+    public String arcFile(String jsonData) {
+        try {
+            JsonObject request = gson.fromJson(jsonData, JsonObject.class);
+            int length = request.get("length").getAsInt();
+
+            // 解析 items 字段为 JsonArray
+            String itemsString = request.get("items").getAsString();
+            JsonArray itemsArray = gson.fromJson(itemsString, JsonArray.class);
+        for (int i = 0; i < length; i++) {
+            Student student = gson.fromJson(itemsArray.get(i), Student.class);
+            if (!checkvalidAcademy(student.getAcademy())) {
+                JsonObject data = new JsonObject();
+                data.addProperty("status", "failed");
+                data.addProperty("reason", "学院输入错误");
+                return gson.toJson(data);
+            }
+            if (student.getStudentId() == null || student.getStudentId().isEmpty() ||
+                    student.getUsername() == null || student.getUsername().isEmpty() ||
+                    student.getRace() == null || student.getRace().isEmpty() ||
+                    student.getMajor() == null ||
+                    student.getAcademy() == null || student.getAcademy().isEmpty() ||
+                    student.getNativePlace() == null || student.getNativePlace().isEmpty()) {
+                JsonObject data = new JsonObject();
+                data.addProperty("status", "failed");
+                data.addProperty("reason", "字段不能为空");
+                return gson.toJson(data);
+            }
+            DataBase db = DataBaseManager.getInstance();
+
+            // 同时向 User 库添加一条数据
+            User user = new User();
+            user.setUserId(student.getStudentId());
+            user.setUsername(student.getUsername());
+            String password = PasswordUtils.hashPassword("123456");
+            user.setPassword(password);
+            user.setGender(student.getGender());
+            user.setRole(0);
+            user.setBalance(0);
+            db.persist(user);
+            db.persist(student);
+        }
+            JsonObject data = new JsonObject();
+            data.addProperty("status", "success");
+            return gson.toJson(data);
+        } catch (Exception e) {
+            JsonObject response = new JsonObject();
+            response.addProperty("status", "failed");
+            response.addProperty("reason", e.getMessage());
+            return gson.toJson(response);
+        }
     }
 }

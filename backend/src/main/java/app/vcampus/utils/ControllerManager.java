@@ -60,6 +60,7 @@ public class ControllerManager {
         routeMapping.registerRoute("arc/search", studentInfoController::searchStudent);//
         routeMapping.registerRoute("arc/modify", studentInfoController::updateStudentStatus);//
         routeMapping.registerRoute(("arc/modifyPassword"), userController::modifyPassword);//修改密码);
+        routeMapping.registerRoute("arc/file", studentInfoController::arcFile);//获取所有学生信息
 
         routeMapping.registerRoute("course/listAll", courseController::showEnrollList);//向登录学生展示方案课程
         routeMapping.registerRoute("course/select", courseController::selectCourse);//学生选择课程
