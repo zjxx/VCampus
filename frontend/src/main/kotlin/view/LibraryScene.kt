@@ -10,32 +10,30 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
-import kotlinx.coroutines.delay
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.awt.FileDialog
 import data.Book
 import data.UserSession
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import module.LibraryModule
 import utils.downloadPdfIfNotExists
 import view.component.DialogManager
 import view.component.GlobalState
 import view.component.LocalPdfViewer
+import java.awt.FileDialog
 import java.io.File
 
 
@@ -452,6 +450,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                             .clip(RoundedCornerShape(8.dp))
                                             .background(Color(0xFF228042))
                                             .clickable {
+                                                articles = emptyList()
                                                 libraryModule.libArticleSearch(searchText.text)//__________学术搜索相关
                                             }
                                             .padding(16.dp)
@@ -486,6 +485,8 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                                 ) {
                                                     val textColor = Color.Black
                                                     Text(text = book.bookname, color = textColor, fontSize = 16.sp)
+                                                    Text(text = book.publisher, color = textColor, fontSize = 12.sp)
+                                                    Text(text = book.publishDate, color = textColor, fontSize = 12.sp)
                                                 }
                                                 Column(
                                                     modifier = Modifier.align(Alignment.CenterVertically),

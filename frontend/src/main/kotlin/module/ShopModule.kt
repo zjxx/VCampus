@@ -130,6 +130,27 @@ class ShopModule (
     }
 
     //_______________________________________________________________________________________
+    //购物车购买
+    fun shopCartBuy (itemList: List<Merchandise>) {
+        val request = mapOf("userId" to UserSession.userId.toString(), "length" to (itemList.size).toString(), "items" to Gson().toJson(itemList))
+        nettyClient.sendRequest(request, "shop/cartBuy") { response: String ->
+            handleShopCartBuy(response)
+        }
+    }
+
+    private fun handleShopCartBuy (response: String) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        println("Response status: ${responseJson["status"]}")
+
+        if (responseJson["status"] == "success") {
+            DialogManager.showDialog("购买成功")
+        } else {
+            DialogManager.showDialog(responseJson["reason"] as String)
+        }
+    }
+
+    //_______________________________________________________________________________________
     //获取随机商品
     fun enterShop() {
         val request = mapOf("" to String)
