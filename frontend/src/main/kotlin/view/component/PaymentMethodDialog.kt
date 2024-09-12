@@ -25,7 +25,7 @@ fun PaymentMethodDialog(
     var paymentResult by remember { mutableStateOf<String?>(null) }
 
     if (showWebViewDialog) {
-        PaymentWebViewDialog(amount = 1.0) { result ->
+        PaymentWebViewDialog(amount = item.quantity.toDouble() * item.price.toDouble()) { result ->
             paymentResult = result
             showWebViewDialog = false
         }

@@ -15,7 +15,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
@@ -89,9 +90,16 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                     Box(
                         modifier = Modifier
                             .fillMaxHeight()
-                            .weight(0.03f)
-                            .background(Color.LightGray)
-                            .shadow(4.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = false),
+                            .weight(0.034f)
+                            .background(Color(0xff373836))
+                            .drawBehind {
+                                drawLine(
+                                    color = Color.Yellow,
+                                    start = Offset(size.width, 0f),
+                                    end = Offset(size.width, size.height),
+                                    strokeWidth = 4.dp.toPx()
+                                )
+                            },
                         contentAlignment = Alignment.TopCenter
                     ) {
                         Column(
@@ -102,19 +110,20 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                             Icon(
                                 imageVector = Icons.Default.ArrowForward,
                                 contentDescription = "Expand",
-                                modifier = Modifier.clickable { isCollapsed = false }
+                                modifier = Modifier.clickable { isCollapsed = false },
+                                tint = Color.White,
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             if (role == "student" || role == "teacher") {
-                                Icon(imageVector = Icons.Default.Person, contentDescription = "购物")
+                                Icon(imageVector = Icons.Default.ShoppingBasket, contentDescription = "购物", tint = Color.White)
                                 Spacer(modifier = Modifier.height(16.dp))
-                                Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看购物车")
+                                Icon(imageVector = Icons.Default.ShoppingCartCheckout, contentDescription = "查看购物车", tint = Color.White)
                                 Spacer(modifier = Modifier.height(16.dp))
-                                Icon(imageVector = Icons.Default.Image, contentDescription = "消费记录")
+                                Icon(imageVector = Icons.Default.History, contentDescription = "消费记录", tint = Color.White)
                             } else if (role == "admin") {
-                                Icon(imageVector = Icons.Default.Add, contentDescription = "管理商品")
+                                Icon(imageVector = Icons.Default.Checklist, contentDescription = "管理商品", tint = Color.White)
                                 Spacer(modifier = Modifier.height(16.dp))
-                                Icon(imageVector = Icons.Default.List, contentDescription = "交易记录")
+                                Icon(imageVector = Icons.Default.History, contentDescription = "交易记录", tint = Color.White)
                             }
                         }
                     }
@@ -123,32 +132,49 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                         modifier = Modifier
                             .fillMaxHeight()
                             .weight(0.2f)
-                            .background(Color.LightGray)
-                            .shadow(4.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = false)
+                            .background(Color(0xff373836))
+                            .drawBehind {
+                                drawLine(
+                                    color = Color.Yellow,
+                                    start = Offset(size.width, 0f),
+                                    end = Offset(size.width, size.height),
+                                    strokeWidth = 4.dp.toPx()
+                                )
+                            },
+                            //.shadow(4.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = false)
                     ) {
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.End
                         ) {
                             Icon(
                                 imageVector = Icons.Default.ArrowBack,
                                 contentDescription = "Collapse",
-                                modifier = Modifier.clickable { isCollapsed = true }
+                                modifier = Modifier.clickable { isCollapsed = true },
+                                tint = Color.White,
                             )
                         }
+                        Text(
+                            text = "校园超市",
+                            color = Color.White,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                        Divider(color = Color.Gray, thickness = 1.dp)
                         if (role == "student" || role == "teacher") {
                             TextButton(
                                 onClick = {
                                     selectedOption = "购物"
                                     //shopModule.enterShop()
                                 },
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                                //modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Person, contentDescription = "购物", tint = Color.Black)
+                                Icon(imageVector = Icons.Default.ShoppingBasket, contentDescription = "购物", tint = Color.White)
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "购物", fontSize = 18.sp, color = Color.Black)
+                                Text(text = "购物", fontSize = 16.sp, color = Color.White)
                             }
                             TextButton(
                                 onClick = {
@@ -156,11 +182,11 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                     tempItems = emptyList()
                                     shopModule.viewCart {}
                                 },
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                                //modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看购物车", tint = Color.Black)
+                                Icon(imageVector = Icons.Default.ShoppingCartCheckout, contentDescription = "查看购物车", tint = Color.White)
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "查看购物车", fontSize = 18.sp, color = Color.Black)
+                                Text(text = "查看购物车", fontSize = 16.sp, color = Color.White)
                             }
                             TextButton(
                                 onClick = {
@@ -168,31 +194,31 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                                     UserSession.userId?.let { userId ->
                                         shopModule.getTransactionsByCardNumber(userId)}
                                 },
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                                //modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Image, contentDescription = "消费记录", tint = Color.Black)
+                                Icon(imageVector = Icons.Default.History, contentDescription = "消费记录", tint = Color.White)
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "消费记录", fontSize = 18.sp, color = Color.Black)
+                                Text(text = "消费记录", fontSize = 16.sp, color = Color.White)
                             }
                         } else if (role == "admin") {
                             TextButton(
                                 onClick = { selectedOption = "管理商品" },
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                                //modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Add, contentDescription = "管理商品", tint = Color.Black)
+                                Icon(imageVector = Icons.Default.Checklist, contentDescription = "管理商品", tint = Color.White)
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "管理商品", fontSize = 18.sp, color = Color.Black)
+                                Text(text = "管理商品", fontSize = 16.sp, color = Color.White)
                             }
                             TextButton(
                                 onClick = {
                                     selectedOption = "交易记录"
                                     shopModule.getAllTransactions()
                                 },
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                                //modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.List, contentDescription = "消费记录", tint = Color.Black)
+                                Icon(imageVector = Icons.Default.History, contentDescription = "消费记录", tint = Color.White)
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "交易记录", fontSize = 18.sp, color = Color.Black)
+                                Text(text = "交易记录", fontSize = 16.sp, color = Color.White)
                             }
                         }
                     }

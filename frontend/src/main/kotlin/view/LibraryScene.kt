@@ -19,7 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.text.input.TextFieldValue
@@ -96,15 +97,20 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
         Row(modifier = Modifier.fillMaxSize()) {
             // 侧边导航栏
 
-
             Row(modifier = Modifier.fillMaxSize()) {
                 if (isCollapsed) {
                     Box(
                         modifier = Modifier
                             .fillMaxHeight()
-                            .weight(0.03f)
-                            .background(Color.LightGray)
-                            .shadow(4.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = false),
+                            .weight(0.034f)
+                            .background(Color(0xff373836)).drawBehind {
+                                drawLine(
+                                    color = Color.Yellow,
+                                    start = Offset(size.width, 0f),
+                                    end = Offset(size.width, size.height),
+                                    strokeWidth = 4.dp.toPx()
+                                )
+                            },
                         contentAlignment = Alignment.TopCenter
                     ) {
                         Column(
@@ -115,21 +121,22 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                             Icon(
                                 imageVector = Icons.Default.ArrowForward,
                                 contentDescription = "Expand",
-                                modifier = Modifier.clickable { isCollapsed = false }
+                                modifier = Modifier.clickable { isCollapsed = false },
+                                tint = Color.White,
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             if (role == "student"||role == "teacher") {
-                                Icon(imageVector = Icons.Default.Person, contentDescription = "查找书籍")
+                                Icon(imageVector = Icons.Default.Search, contentDescription = "查找书籍", tint = Color.White)
                                 Spacer(modifier = Modifier.height(16.dp))
-                                Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看已借阅书籍信息")
+                                Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看已借阅书籍信息", tint = Color.White)
                                 Spacer(modifier = Modifier.height(16.dp))
-                                Icon(imageVector = Icons.Default.Image, contentDescription = "学术查找")
+                                Icon(imageVector = Icons.Default.Book, contentDescription = "学术查找", tint = Color.White)
                                 Spacer(modifier = Modifier.height(16.dp))
-                                Icon(imageVector = Icons.Default.Image, contentDescription = "显示图片")
+                                Icon(imageVector = Icons.Default.Image, contentDescription = "显示图片", tint = Color.White)
                             } else if (role == "admin") {
-                                Icon(imageVector = Icons.Default.Add, contentDescription = "管理书籍")
+                                Icon(imageVector = Icons.Default.Checklist, contentDescription = "管理书籍", tint = Color.White)
                                 Spacer(modifier = Modifier.height(16.dp))
-                                Icon(imageVector = Icons.Default.List, contentDescription = "查看借阅记录")
+                                Icon(imageVector = Icons.Default.History, contentDescription = "查看借阅记录", tint = Color.White)
                             }
                         }
                     }
@@ -138,29 +145,46 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                         modifier = Modifier
                             .fillMaxHeight()
                             .weight(0.2f)
-                            .background(Color.LightGray)
-                            .shadow(4.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = false)
+                            .background(Color(0xff373836))
+                            .drawBehind {
+                                drawLine(
+                                    color = Color.Yellow,
+                                    start = Offset(0f, 0f),
+                                    end = Offset(0f, size.height),
+                                    strokeWidth = 8.dp.toPx()
+                                )
+                            }
+                            //.shadow(4.dp, spotColor = Color.Gray, ambientColor = Color.Gray, clip = false)
                     ) {
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().padding(8.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.End
                         ) {
                             Icon(
                                 imageVector = Icons.Default.ArrowBack,
                                 contentDescription = "Collapse",
-                                modifier = Modifier.clickable { isCollapsed = true }
+                                modifier = Modifier.clickable {
+                                    isCollapsed = true
+                                },
+                                tint = Color.White,
                             )
                         }
+                        Text(
+                            text = "图书管",
+                            color = Color.White,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                        Divider(color = Color.Gray, thickness = 1.dp)
                         if (role == "student" || role == "teacher") {
                             TextButton(
                                 onClick = { selectedOption = "查找书籍" },
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                                //modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Person, contentDescription = "查找书籍", tint = Color.Black)
+                                Icon(imageVector = Icons.Default.Search, contentDescription = "查找书籍", tint = Color.White)
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "查找书籍", fontSize = 18.sp, color = Color.Black)
+                                Text(text = "查找书籍", fontSize = 16.sp, color = Color.White)
                             }
                             TextButton(
                                 onClick = {
@@ -169,47 +193,47 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                                         libraryModule.libCheck(userId)
                                     }
                                 },
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                                //modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看已借阅书籍信息", tint = Color.Black)
+                                Icon(imageVector = Icons.Default.Schedule, contentDescription = "查看已借阅书籍信息", tint = Color.White)
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "查看已借阅书籍信息", fontSize = 18.sp, color = Color.Black)
+                                Text(text = "查看已借阅书籍信息", fontSize = 16.sp, color = Color.White)
                             }
                             TextButton(
                                 onClick = { selectedOption = "学术查找" },
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                                //modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Person, contentDescription = "学术查找")
+                                Icon(imageVector = Icons.Default.Book, contentDescription = "学术查找", tint = Color.White)
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "学术查找", fontSize = 18.sp, color = Color.Black)
+                                Text(text = "学术查找", fontSize = 16.sp, color = Color.White)
                             }
                             TextButton(
                                 onClick = { selectedOption = "显示图片" },
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                                //modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Image, contentDescription = "显示图片", tint = Color.Black)
+                                Icon(imageVector = Icons.Default.Image, contentDescription = "显示图片", tint = Color.White)
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "显示图片", fontSize = 18.sp, color = Color.Black)
+                                Text(text = "显示图片", fontSize = 16.sp, color = Color.White)
                             }
                         } else if (role == "admin") {
                             TextButton(
                                 onClick = { selectedOption = "管理书籍" },
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                                //modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.Add, contentDescription = "管理书籍", tint = Color.Black)
+                                Icon(imageVector = Icons.Default.Checklist, contentDescription = "管理书籍", tint = Color.White)
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "管理书籍", fontSize = 18.sp, color = Color.Black)
+                                Text(text = "管理书籍", fontSize = 16.sp, color = Color.White)
                             }
                             TextButton(
                                 onClick = {
                                     selectedOption = "查看借阅记录"
                                     libraryModule.libIdCheck("")
                                 },
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                                //modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.List, contentDescription = "查看借阅记录", tint = Color.Black)
+                                Icon(imageVector = Icons.Default.History, contentDescription = "查看借阅记录", tint = Color.White)
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = "查看借阅记录", fontSize = 18.sp, color = Color.Black)
+                                Text(text = "查看借阅记录", fontSize = 16.sp, color = Color.White)
                             }
                         }
                     }

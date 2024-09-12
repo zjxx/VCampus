@@ -8,15 +8,14 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.draw.shadow
-import view.component.ErrorDialog
-import view.component.pageTitle
-import view.component.ForgotPasswordDialog
 import module.LoginModule
+import view.component.ForgotPasswordDialog
+import view.component.pageTitle
 
 @Composable
 fun LoginScene(onLoginSuccess: () -> Unit) {
@@ -52,7 +51,7 @@ fun LoginScene(onLoginSuccess: () -> Unit) {
                         ) {
                             Column {
                                 Image(
-                                    painterResource("p1.jpg"),
+                                    painterResource("p1.png"),
                                     contentDescription = "SEU top",
                                     modifier = Modifier.width(200.dp).height(80.dp)
                                 )

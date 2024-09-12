@@ -127,7 +127,7 @@ fun MerchandiseInfoScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
                         value = quantity.toString(),
                         onValueChange = { newValue ->
                             newValue.toIntOrNull()?.let {
-                                if (it >= 1) quantity = it
+                                if (it >= 1) {quantity = it}
                             }
                         },
                         modifier = Modifier
@@ -167,6 +167,7 @@ fun MerchandiseInfoScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
                                     )
                                 )
                                 .padding(end = 1.dp), // Remove padding between buttons
+                            enabled = item.stock.toInt() > 0,
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFFEAE00))
                         ) {
                             Text(
@@ -193,6 +194,7 @@ fun MerchandiseInfoScene(onNavigateBack: () -> Unit, shopModule: ShopModule) {
                                     )
                                 )
                                 .padding(start = 0.dp), // Remove padding between buttons
+                            enabled = item.stock.toInt() > 0,
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFFE5A00))
                         ) {
                             Text(
