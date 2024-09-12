@@ -49,7 +49,8 @@ public class ControllerManager {
         routeMapping.registerRoute(("shop/addItemToCart"), ShoppingCartController::addItemToCart);//添加商品到购物车
         routeMapping.registerRoute(("shop/removeItemFromCart"), ShoppingCartController::removeItemFromCart);//从购物车移除商品
         routeMapping.registerRoute(("shop/viewCart"), ShoppingCartController::viewCart);//查看购物车内容
-        routeMapping.registerRoute(("shop/QRbuy"), storeController::QRbuy);
+        routeMapping.registerRoute(("shop/QRbuy"), storeController::QRbuy);//二维码购买
+        routeMapping.registerRoute(("shop/cartBuy"), ShoppingCartController::handleCartPurchase);//购物车购买
 
 
 
