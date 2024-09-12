@@ -8,6 +8,16 @@ import data.UserSession
 import utils.NettyClientProvider
 import view.component.DialogManager
 
+data class Merchandise(
+    val username: String,
+    val gender: String,
+    val race: String,
+    val nativePlace: String,
+    val studentId: String,
+    val major: String,
+    val academy: String
+)
+
 class StudentStatusModule {
     private val nettyClient = NettyClientProvider.nettyClient
 
@@ -242,6 +252,21 @@ private fun handleResponseAdd(response: String) {
             DialogManager.showDialog("密码修改成功")
         }
         else if(responseJson["status"] == "fail") {
+            DialogManager.showDialog(responseJson["reason"] as String)
+        }
+    }
+    fun Studentfile (itemList: List<module.Merchandise>) {
+        val request = mapOf("userId" to UserSession.userId.toString(), "length" to (itemList.size).toString(), "items" to Gson().toJson(itemList))
+        nettyClient.sendRequest(request, "arc/file") { response: String ->
+            handleAddfile(response)
+        }
+    }
+    private fun handleAddfile(response: String) {
+        println("Received response: $response")
+        val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
+        if (responseJson["status"] == "success") {
+            DialogManager.showDialog("添加成功")
+        } else {
             DialogManager.showDialog(responseJson["reason"] as String)
         }
     }

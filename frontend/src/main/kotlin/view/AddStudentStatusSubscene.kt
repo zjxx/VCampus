@@ -198,9 +198,19 @@ val validAcademies = listOf(
             confirmButton = {
                 Button(onClick = {
                     scope.launch {
-                        studentStatusModule.students.forEach { student ->
-                            student.addStudentStatus()
+
+                        val studentList = studentStatusModule.students.map { student ->
+                            module.Merchandise(
+                                username = student.name,
+                                gender = if (student.gender == "男") "0" else "1",
+                                race = student.race,
+                                nativePlace = student.nativePlace,
+                                studentId = student.studentId,
+                                major = student.major,
+                                academy = student.academy
+                            )
                         }
+                        studentStatusModule.Studentfile(studentList)
                         showDialog = false
                     }
                 }) {
