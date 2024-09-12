@@ -142,6 +142,7 @@ val validAcademies = listOf(
 
         // 从文件导入和提交按钮
         Row(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+           Column{
             Button(
                 onClick = {
                     val fileChooser = JFileChooser().apply {
@@ -157,10 +158,18 @@ val validAcademies = listOf(
                         showDialog = true
                     }
                 },
-                modifier = Modifier.width(120.dp) // Set the width of the import button
+                modifier = Modifier.width(160.dp) // Set the width of the import button
             ) {
                 Text("从文件导入")
             }
+            Button(
+                onClick = {
+                },
+                modifier = Modifier.width(160.dp) // Set the width of the download button
+            ) {
+                Text("下载示例文件")
+            }
+           }
             Button(
                 onClick = {
                     scope.launch {
