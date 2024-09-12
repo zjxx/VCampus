@@ -20,7 +20,27 @@ class StudentStatusModule {
     var academy by mutableStateOf("")
     var number by mutableStateOf("")
     var searchResults by mutableStateOf(listOf<StudentStatusModule>())
-    var students by mutableStateOf(listOf<StudentStatusModule>()) // Add this line
+    var students by mutableStateOf(listOf<StudentStatusModule>())
+    var majorErrorDialog by mutableStateOf(false)
+    var fieldErrorDialog by mutableStateOf(false)
+    var cardNumberErrorDialog by mutableStateOf(false)
+    var nameErrorDialog by mutableStateOf(false)
+    var raceErrorDialog by mutableStateOf(false)
+    val validMajors = listOf(
+        "建筑学", "城乡规划", "风景园林", "机械工程", "能源与动力工程", "建筑环境与能源应用工程",
+        "核I程与核技术", "新能源科学与工程", "环境工程", "自动化", "机器人工程", "电气工程及其自动化",
+        "智能感知工程", "测控技术与仪器", "材料科学与工程", "土木工程", "给排水科学与工程", "工程管理",
+        "智能建造", "交通工程", "交通运输", "港口航道与海岸工程", "城市地下空间工程", "道路桥梁与渡河工程",
+        "智慧交通", "信息工程", "海洋信息工程", "电子科学与技术", "信息工程"
+    )
+    val validRaces = listOf(
+        "汉", "蒙古", "回", "藏", "维吾尔", "苗", "彝", "壮", "布依", "朝鲜",
+        "满", "侗", "瑶", "白", "土家", "哈尼", "哈萨克", "傣", "黎", "傈僳",
+        "佤", "畲", "高山", "拉祜", "水", "东乡", "纳西", "景颇", "柯尔克孜", "土",
+        "达斡尔", "仫佬", "羌", "布朗", "撒拉", "毛南", "仡佬", "锡伯", "阿昌", "普米",
+        "塔吉克", "怒", "乌孜别克", "俄罗斯", "鄂温克", "德昂", "保安", "裕固", "京", "塔塔尔",
+        "独龙", "鄂伦春", "赫哲", "门巴", "珞巴", "基诺"
+    )
 
     fun searchStudentStatus() {
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId)
@@ -41,8 +61,29 @@ class StudentStatusModule {
         academy = responseJson["academy"] ?: ""
         number = responseJson["number"] ?: ""
     }
+    private val nameRegex = Regex("^[\\u4e00-\\u9fa5]+(·[\\u4e00-\\u9fa5]+)*$|^[\\u4e00-\\u9fa5]{2,20}$")
 
     fun addStudentStatus() {
+        if (name.isEmpty() || gender.isEmpty() || race.isEmpty() || nativePlace.isEmpty() || studentId.isEmpty() || major.isEmpty() || academy.isEmpty()) {
+            fieldErrorDialog = true // Set the error dialog state to true if any field is empty
+            return
+        }
+        if (!nameRegex.matches(name)) {
+            nameErrorDialog = true // Set the error dialog state to true if the name is invalid
+            return
+        }
+        if (!validRaces.contains(race)) {
+            raceErrorDialog = true
+            return
+        }
+        if (!validMajors.contains(major)) {
+            majorErrorDialog = true // Set the error dialog state to true
+            return
+        }
+        if (studentId.length != 9 || !studentId.startsWith("2")) {
+            cardNumberErrorDialog = true // Set the error dialog state to true if the card number is invalid
+            return
+        }
         var gender_int =0
         if(gender=="女"){
             gender_int=1
