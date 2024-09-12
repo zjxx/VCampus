@@ -76,22 +76,29 @@ public class LibraryController {
         ArticleSearchRequest request = gson.fromJson(jsonData, ArticleSearchRequest.class);
         JsonObject data = new JsonObject();
         DataBase db = DataBaseManager.getInstance();
-        List<Book> books = db.getWhere(Book.class, "bookName", request.getArticleName());
-        if (!books.isEmpty()) {
-            Book book = books.get(0);
-            if (book.getMaterialType().equals("article")) {
-                data.addProperty("title", book.getBookName());
-                data.addProperty("publisher", book.getPublisher());
-                data.addProperty("ISBN", book.getISBN());
-                data.addProperty("publishDate", book.getPublishedYear().toString());
-                data.addProperty("status", "success");
-            } else {
-                data.addProperty("status", "failed");
-                data.addProperty("reason", "The book is not an article.");}
+        List<Book> books = db.getLike(Book.class, "BookName", request.getArticleName());
+        int numofarticle=0;
+        data.addProperty("number", String.valueOf(books.size()));
+        if(!books.isEmpty()) {
+            data.addProperty("status", "success");
+            for(int i=0;i<books.size();i++) {
+                Book book = books.get(i);
+                JsonObject bookData = new JsonObject();
+                if (book.getMaterialType().equals("article")) {
+
+                    bookData.addProperty("title", book.getBookName());
+                    bookData.addProperty("publisher", book.getPublisher());
+                    bookData.addProperty("ISBN", book.getISBN());
+                    bookData.addProperty("publishDate", book.getPublishedYear().toString());
+                    data.addProperty("a" + numofarticle, gson.toJson(bookData));
+                    numofarticle+=1;
+                }
+        }
         } else {
             data.addProperty("status", "failed");
             data.addProperty("reason", "No book found.");
         }
+        data.addProperty("number", String.valueOf(numofarticle));
         return gson.toJson(data);
     }
 
