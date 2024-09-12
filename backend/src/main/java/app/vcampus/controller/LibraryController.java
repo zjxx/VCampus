@@ -475,6 +475,7 @@ public class LibraryController {
             book.setKind(request.get("kind").getAsString());
             book.setQuantity(request.get("quantity").getAsInt());
             book.setValid_Quantity(request.get("Valid_Quantity").getAsInt());
+            book.setMaterialType("book");
 
             db.save(book);
             data.addProperty("status", "success");
