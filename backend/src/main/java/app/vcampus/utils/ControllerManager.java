@@ -4,6 +4,10 @@ import app.vcampus.controller.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+/**
+ * ControllerManager is responsible for managing various controllers and routing requests
+ * to the appropriate controller methods based on the request type.
+ */
 public class ControllerManager {
     private final UserController userController = new UserController();
     private final StoreController storeController = new StoreController();
@@ -15,6 +19,9 @@ public class ControllerManager {
     private final ScoreController scoreController = new ScoreController();
     private final Gson gson = new Gson();
 
+    /**
+     * Constructs a ControllerManager and registers routes for various controllers.
+     */
     public ControllerManager() {
         // 注册路由
         routeMapping.registerRoute("login", userController::login);
@@ -87,6 +94,14 @@ public class ControllerManager {
         routeMapping.registerRoute("score/modify",scoreController::modifyScore);//教师修改成绩
 
     }
+
+    /**
+     * Handles a request by routing it to the appropriate controller method.
+     *
+     * @param jsonData the JSON data of the request
+     * @param ipAddress the IP address of the client
+     * @return the response from the controller method
+     */
     public String handleRequest(String jsonData,String ipAddress) {
         // Parse JSON request
         Request request = gson.fromJson(jsonData, Request.class);
@@ -95,6 +110,14 @@ public class ControllerManager {
         return routeMapping.handleRequest(request.getType(), jsonData, ipAddress);
     }
 
+    /**
+     * Handles a request with additional parameters by routing it to the appropriate controller method.
+     *
+     * @param jsonData the JSON data of the request
+     * @param additionalParam additional parameters for the request
+     * @param ipAddress the IP address of the client
+     * @return the response from the controller method
+     */
     public String handleRequestWithParams(String jsonData, String additionalParam,String ipAddress) {
         // Parse JSON request
         Request request = gson.fromJson(jsonData, Request.class);
