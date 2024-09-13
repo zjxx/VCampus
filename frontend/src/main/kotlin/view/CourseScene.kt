@@ -21,13 +21,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.ColorPack
 import data.ColorPack.choose
+import data.UserSession
 import module.CourseModule
 
 @Composable
 fun CourseScene(onNavigate: (String) -> Unit, role: String) {
-    var selectedMenuItem by remember { mutableStateOf("") }
+    var first = "选课"
+    if(UserSession.role == "admin") {
+        first = "增加课程"
+    } else if(UserSession.role == "teacher") {
+        first = "查看课程"
+    }
+    var selectedMenuItem by remember { mutableStateOf(first) }
     val courseModule = remember { CourseModule() }
-    var isCollapsed by remember { mutableStateOf(true) }
+    var isCollapsed by remember { mutableStateOf(false) }
     var classes by remember { mutableStateOf(emptyList<module.Class>()) }
     var videoclasses by remember { mutableStateOf(emptyList<module.videoClass>()) }
 

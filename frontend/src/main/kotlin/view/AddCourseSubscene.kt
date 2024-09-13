@@ -288,7 +288,17 @@ fun AddCourseSubscene() {
                 ) {
                     gradeOptions.forEach { option ->
                         DropdownMenuItem(onClick = {
-                            grade = option
+                            var validgrade = "24";
+                            if(option == "大二"){
+                                validgrade = "23";
+                            }
+                            else if(option == "大三"){
+                                validgrade = "22";
+                            }
+                            else if(option == "大四"){
+                                validgrade = "21";
+                            }
+                            grade = validgrade
                             expandedGrade = false
                         }) {
                             Text(option)
