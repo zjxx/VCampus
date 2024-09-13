@@ -176,7 +176,7 @@ fun LibraryScene(onNavigate: (String) -> Unit, role: String) {
                             )
                         }
                         Text(
-                            text = "图书管",
+                            text = "图书馆",
                             color = ColorPack.backgroundColor1[choose.value].value,
                             modifier = Modifier.padding(16.dp)
                         )
