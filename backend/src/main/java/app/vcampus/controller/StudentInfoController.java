@@ -19,6 +19,12 @@ public class StudentInfoController {
 
 
     //获取学生信息
+    /**
+     * Retrieves student information based on the provided JSON data.
+     *
+     * @param jsonData The JSON data containing the student ID.
+     * @return A JSON string containing the student information.
+     */
     public String getStudentInfo(String jsonData) {
         studentInfoRequest request = gson.fromJson(jsonData, studentInfoRequest.class);
         DataBase db = DataBaseManager.getInstance();
@@ -37,6 +43,12 @@ public class StudentInfoController {
     }
 
     //添加学生信息
+    /**
+     * Adds a new student status based on the provided JSON data.
+     *
+     * @param jsonData The JSON data containing the student information.
+     * @return A JSON string containing the status of the add operation.
+     */
     public String addStudentStatus(String jsonData) {
         try {
 
@@ -83,6 +95,12 @@ public class StudentInfoController {
     }
 
     // 删除学生信息
+    /**
+     * Deletes a student status based on the provided JSON data.
+     *
+     * @param jsonData The JSON data containing the student ID.
+     * @return A JSON string containing the status of the delete operation.
+     */
     public String deleteStudentStatus(String jsonData) {
         try {
             JsonObject request = gson.fromJson(jsonData, JsonObject.class);
@@ -112,6 +130,13 @@ public class StudentInfoController {
     }
 
     //根据姓名搜索学生信息，可以支持模糊搜索
+    /**
+     * Searches for student information based on the provided JSON data.
+     * Supports fuzzy search by student name.
+     *
+     * @param jsonData The JSON data containing the search keyword.
+     * @return A JSON string containing the search results.
+     */
     public String searchStudent(String jsonData) {
         try {
             JsonObject request = gson.fromJson(jsonData, JsonObject.class);
@@ -148,6 +173,12 @@ public class StudentInfoController {
     }
 
     // 修改学生信息
+    /**
+     * Updates student information based on the provided JSON data.
+     *
+     * @param jsonData The JSON data containing the updated student information.
+     * @return A JSON string containing the status of the update operation.
+     */
     public String updateStudentStatus(String jsonData) {
         try {
             Student updatedStudent = gson.fromJson(jsonData, Student.class);
@@ -200,6 +231,12 @@ public class StudentInfoController {
         }
     }
 
+    /**
+     * Checks if the provided major is valid by comparing it with the list of academy types.
+     *
+     * @param major The major to be checked.
+     * @return True if the major is valid, false otherwise.
+     */
     private Boolean checkvalidAcademy(String major){
         for (AcademyType academyType : AcademyType.values()) {
             if (academyType.getMajor().equals(major)) {
@@ -209,6 +246,12 @@ public class StudentInfoController {
         return false;
     }
 
+    /**
+     * Archives student information based on the provided JSON data.
+     *
+     * @param jsonData The JSON data containing the student information.
+     * @return A JSON string containing the status of the archive operation.
+     */
     public String arcFile(String jsonData) {
         try {
             JsonObject request = gson.fromJson(jsonData, JsonObject.class);

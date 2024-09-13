@@ -16,6 +16,11 @@ public class StoreTransactionController
 {
     private final Gson gson = new Gson();
 
+    /**
+     * Adds a new store transaction to the database.
+     *
+     * @param transaction The StoreTransaction object to be added.
+     */
     public void addTransaction(StoreTransaction transaction) {
         DataBase db = DataBaseManager.getInstance();
         db.persist(transaction);

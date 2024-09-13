@@ -19,12 +19,23 @@ import java.util.Random;
 public class UserController {
     private final Gson gson = new Gson();
     private final EmailService emailService = new EmailService();
+    /**
+     * Generates a verification code.
+     *
+     * @return A string representing a 6-digit verification code.
+     */
     private String generateVerificationCode() {
         Random random = new Random();
         int code = 100000 + random.nextInt(900000);
         return String.valueOf(code);
     }
 
+    /**
+     * Handles user login.
+     *
+     * @param jsonData The JSON data containing the login details.
+     * @return A JSON string containing the login status and user information.
+     */
     public String login(String jsonData) {
         // 解析 JSON 数据
         loginRequest request = gson.fromJson(jsonData, loginRequest.class);
@@ -94,6 +105,12 @@ public class UserController {
     }
 
     // 添加邮箱
+    /**
+     * Adds an email address to a user.
+     *
+     * @param jsonData The JSON data containing the user ID and email address.
+     * @return A JSON string containing the status of the add email request.
+     */
     public String addEmail(String jsonData) {
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         String userId = request.get("userId").getAsString();
@@ -119,6 +136,12 @@ public class UserController {
     }
 
     // 修改密码
+    /**
+     * Modifies the password of a user.
+     *
+     * @param jsonData The JSON data containing the user ID, old password, and new password.
+     * @return A JSON string containing the status of the modify password request.
+     */
     public String modifyPassword(String jsonData) {
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         String userId = request.get("userId").getAsString();
@@ -152,6 +175,12 @@ public class UserController {
         return gson.toJson(response);
     }
 
+    /**
+     * Sends a verification code to the user's email address.
+     *
+     * @param jsonData The JSON data containing the user ID and email address.
+     * @return A JSON string containing the status of the send verification code request.
+     */
     public String sendVerificationCode(String jsonData) {
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         String userId = request.get("userId").getAsString();
@@ -188,6 +217,12 @@ public class UserController {
         return gson.toJson(response);
     }
 
+    /**
+     * Updates the password of a user.
+     *
+     * @param jsonData The JSON data containing the user ID and new password.
+     * @return A JSON string containing the status of the update password request.
+     */
     public String updatePassword(String jsonData) {
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         String userId = request.get("userId").getAsString();
@@ -212,6 +247,12 @@ public class UserController {
         return gson.toJson(response);
     }
 
+    /**
+     * Updates the email address of a user.
+     *
+     * @param jsonData The JSON data containing the user ID and new email address.
+     * @return A JSON string containing the status of the update email request.
+     */
     public String updateEmail(String jsonData) {
        try{
            JsonObject request = gson.fromJson(jsonData, JsonObject.class);
