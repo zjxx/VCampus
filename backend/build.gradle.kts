@@ -16,10 +16,29 @@ dependencies {
     implementation("io.netty:netty-all:4.1.97.Final")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.sun.mail:javax.mail:1.6.2")
+    implementation("org.bouncycastle:bcpkix-jdk15on:1.65")
 
 }
+
+
+
 
 tasks.test {
     useJUnitPlatform()
 
+}
+
+
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] = "app.vcampus.Main"
+    }
+
+    doFirst {
+        from(configurations.runtimeClasspath.get().map {
+            if (it.isDirectory) it else zipTree(it)
+        })
+
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
 }
