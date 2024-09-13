@@ -1,16 +1,33 @@
 // src/main/kotlin/module/CourseModule.kt
 package module
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import com.google.gson.Gson
 import data.UserSession
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import utils.NettyClientProvider
 import view.component.DialogManager
-import java.lang.Class
+
+/**
+ * Data class representing a course.
+ *
+ * @property courseId The unique identifier for the course.
+ * @property courseIdPrefix The prefix of the course ID.
+ * @property courseName The name of the course.
+ * @property credit The credit value of the course.
+ * @property teacher The teacher of the course.
+ * @property time The time of the course.
+ * @property timeAndLocationCards The list of time and location cards for the course.
+ * @property location The location of the course.
+ * @property capacity The total capacity of the course.
+ * @property validCapacity The valid capacity of the course.
+ * @property property The property of the course.
+ * @property teacherNumber The teacher number for the course.
+ * @property isSelect Whether the course is selected.
+ */
 
 data class Course(
     var courseId: String,
@@ -28,6 +45,15 @@ data class Course(
     var isSelect: Boolean
 )
 
+/**
+ * Data class representing a grouped course.
+ *
+ * @property courseIdPrefix The prefix of the course ID.
+ * @property courseName The name of the course.
+ * @property credit The credit value of the course.
+ * @property property The property of the course.
+ * @property courses The list of courses.
+ */
 data class GroupedCourse(
     var courseIdPrefix: String,
     var courseName: String,
@@ -36,12 +62,39 @@ data class GroupedCourse(
     var courses: List<Course>
 )
 
+/**
+ * Data class representing a time slot.
+ *
+ * @property week The week of the time slot.
+ * @property begin The beginning time of the time slot.
+ * @property end The ending time of the time slot.
+ * @property location The location of the time slot.
+ */
 data class TimeSlot(
     var week: String,
     var begin: String,
     var end: String,
     var location: String
 )
+
+/**
+ * Data class representing course data.
+ *
+ * @property courseName The name of the course.
+ * @property courseId The unique identifier for the course.
+ * @property credit The credit value of the course.
+ * @property capacity The total capacity of the course.
+ * @property grade The grade of the course.
+ * @property major The major associated with the course.
+ * @property semester The semester of the course.
+ * @property property The property of the course.
+ * @property time The time of the course.
+ * @property location The location of the course.
+ * @property timeAndLocationCards The list of time and location cards for the course.
+ * @property teacher The teacher of the course.
+ * @property teacherId The ID of the teacher.
+ * @property courseIdPrefix The prefix of the course ID.
+ */
 data class CourseData(
     var courseName: String,
     var courseId: String,
@@ -59,12 +112,25 @@ data class CourseData(
     var courseIdPrefix: String
 )
 
+/**
+ * Data class representing a time and location card.
+ *
+ * @property dayOfWeek The day of the week.
+ * @property startPeriod The start period.
+ * @property endPeriod The end period.
+ * @property location The location.
+ */
 data class TimeAndLocationCardData(
     var dayOfWeek: String,
     var startPeriod: String,
     var endPeriod: String,
     var location: String
-){fun getDayOfWeekNumber(): String {
+){
+    /**
+     * Gets the day of the week number.
+     *
+     * @return The day of the week number.
+     */fun getDayOfWeekNumber(): String {
     return when (dayOfWeek) {
         "星期一" -> "1"
         "星期二" -> "2"
@@ -77,6 +143,17 @@ data class TimeAndLocationCardData(
     }
   }
 }
+
+/**
+ * Data class representing a course schedule item.
+ *
+ * @property courseName The name of the course.
+ * @property dayOfWeek The day of the week.
+ * @property startPeriod The start period.
+ * @property endPeriod The end period.
+ * @property location The location.
+ * @property teacherName The name of the teacher.
+ */
 data class CourseScheduleItem(
     val courseName: String,
     val dayOfWeek: String,
@@ -85,12 +162,34 @@ data class CourseScheduleItem(
     val location: String,
     val teacherName:String
 )
+
+/**
+ * Data class representing a video.
+ *
+ * @property videoId The unique identifier for the video.
+ * @property videoName The name of the video.
+ * @property courseId The unique identifier for the course.
+ * @property upload_Date The upload date of the video.
+ */
 data class Video(
     val videoId: String,
     val videoName: String,
     val courseId: String,
     val upload_Date:String
 )
+
+/**
+ * Data class representing a student.
+ *
+ * @property studentId The unique identifier for the student.
+ * @property name The name of the student.
+ * @property gender The gender of the student.
+ * @property score The score of the student.
+ * @property isScored Whether the student is scored.
+ * @property ParticipationScore The participation score of the student.
+ * @property MidtermScore The midterm score of the student.
+ * @property FinalScore The final score of the student.
+ */
 data class Student(
     val studentId: String,
     val name: String,
@@ -101,6 +200,18 @@ data class Student(
     var MidtermScore: String,
     var FinalScore: String
 )
+
+/**
+ * Data class representing a class.
+ *
+ * @property courseName The name of the course.
+ * @property courseId The unique identifier for the course.
+ * @property time The time of the class.
+ * @property location The location of the class.
+ * @property students The list of students in the class.
+ * @property timeAndLocationCards The list of time and location cards for the class.
+ * @property classStatus The status of the class.
+ */
 data class Class(
     val courseName: String,
     val courseId: String,
@@ -110,6 +221,17 @@ data class Class(
     val timeAndLocationCards: List<TimeAndLocationCardData>,
      val classStatus: String // New property
 )
+
+/**
+ * Data class representing a video class.
+ *
+ * @property courseName The name of the course.
+ * @property courseId The unique identifier for the course.
+ * @property time The time of the class.
+ * @property location The location of the class.
+ * @property videos The list of videos for the class.
+ * @property timeAndLocationCards The list of time and location cards for the class.
+ */
 data class videoClass(
     val courseName: String,
     val courseId: String,
@@ -118,6 +240,17 @@ data class videoClass(
     val videos: List<Video>,
     val timeAndLocationCards: List<TimeAndLocationCardData> // New property
 )
+
+/**
+ * Data class representing a student score.
+ *
+ * @property studentId The unique identifier for the student.
+ * @property courseId The unique identifier for the course.
+ * @property regularGrade The regular grade of the student.
+ * @property midtermGrade The midterm grade of the student.
+ * @property finalGrade The final grade of the student.
+ * @property overallGrade The overall grade of the student.
+ */
 data class StudentScore(
     val studentId: String,
     val courseId: String,
@@ -126,12 +259,31 @@ data class StudentScore(
     var finalGrade: String,
     var overallGrade: String,
 )
-
+/**
+ * Data class representing the score status.
+ *
+ * @property courseId The unique identifier for the course.
+ * @property classStatus The status of the class.
+ */
 data class ScoreStatus(
     val courseId: String,
     val classStatus: String
 
 )
+
+/**
+ * Data class representing the score of a student.
+ *
+ * @property courseName The name of the course.
+ * @property courseId The unique identifier for the course.
+ * @property semester The semester of the course.
+ * @property credit The credit value of the course.
+ * @property participationScore The participation score of the student.
+ * @property midtermScore The midterm score of the student.
+ * @property finalScore The final score of the student.
+ * @property score The overall score of the student.
+ * @property status The status of the score.
+ */
 data class ScoreMy(
     val courseName: String,
     val courseId: String,
@@ -143,6 +295,10 @@ data class ScoreMy(
     val score: String,
     val status: String
 )
+
+/**
+ * Module for handling course-related operations.
+ */
 class CourseModule {
     private val nettyClient = NettyClientProvider.nettyClient
 
@@ -156,6 +312,13 @@ class CourseModule {
     val courseSchedule: StateFlow<List<CourseScheduleItem>> get() = _courseSchedule
     private val _ScoreMy = MutableStateFlow<List<ScoreMy>>(emptyList())
     val ScoreMy: StateFlow<List<ScoreMy>> get() = _ScoreMy
+
+    /**
+     * Maps the day of the week number to Chinese.
+     *
+     * @param dayOfWeekNumber The day of the week number.
+     * @return The day of the week in Chinese.
+     */
 fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
     return when (dayOfWeekNumber) {
         "1" -> "星期一"
@@ -168,6 +331,12 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         else -> dayOfWeekNumber
     }
 }
+    /**
+     * Maps the grade to Chinese.
+     *
+     * @param grade The grade.
+     * @return The grade in Chinese.
+     */
     fun mapGradeToChinese(grade: String): String {
         return when (grade) {
             "21" -> "大四"
@@ -177,6 +346,10 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
             else -> grade
         }
     }
+
+    /**
+     * Lists all courses.
+     */
     fun listCourse() {
         val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId)
         nettyClient.sendRequest(request, "course/listAll") { response: String ->
@@ -184,6 +357,11 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         }
     }//显示所有课程
 
+    /**
+     * Handles the response for listing courses.
+     *
+     * @param response The response string from the server.
+     */
     private fun handleResponseList(response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -237,6 +415,12 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         }
     }
 
+    /**
+     * Selects a course.
+     *
+     * @param course The course to be selected.
+     * @param onSuccess Callback function to be called on successful selection.
+     */
     fun selectCourse(course: Course, onSuccess: (Boolean) -> Unit) {
         val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId, "courseId" to course.courseId)
         nettyClient.sendRequest(request, "course/select") { response: String ->
@@ -245,6 +429,13 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         }
     }//选课
 
+    /**
+     * Handles the response for selecting a course.
+     *
+     * @param response The response string from the server.
+     * @param course The course that was selected.
+     * @return True if the selection was successful, false otherwise.
+     */
     private fun handleResponseSelect(response: String, course: Course): Boolean {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -258,6 +449,12 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         }
     }
 
+    /**
+     * Unselects a course.
+     *
+     * @param course The course to be unselected.
+     * @param onSuccess Callback function to be called on successful unselection.
+     */
     fun unselectCourse(course: Course, onSuccess: (Boolean) -> Unit) {
         val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId, "courseId" to course.courseId)
         nettyClient.sendRequest(request, "course/unselect") { response: String ->
@@ -266,6 +463,13 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         }
     }//退选
 
+    /**
+     * Handles the response for unselecting a course.
+     *
+     * @param response The response string from the server.
+     * @param course The course that was unselected.
+     * @return True if the unselection was successful, false otherwise.
+     */
     private fun handleResponseUnselect(response: String, course: Course): Boolean {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -279,6 +483,12 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         }
     }
 
+    /**
+     * Adds a course.
+     *
+     * @param courseData The data of the course to be added.
+     * @param onSuccess Callback function to be called on successful addition.
+     */
     fun addCourse(courseData: CourseData, onSuccess: (Boolean) -> Unit) {
         val time = courseData.timeAndLocationCards.joinToString(";") { "${it.getDayOfWeekNumber()}-${it.startPeriod}-${it.endPeriod}" }
         val location = courseData.timeAndLocationCards.joinToString(";") { it.location }
@@ -315,6 +525,12 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         }
     }//教务增加课程
 
+    /**
+     * Handles the response for adding a course.
+     *
+     * @param response The JSON response as a String.
+     * @return `true` if the course was added successfully, `false` otherwise.
+     */
     private fun handleResponseAdd(response: String): Boolean {
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         return if (responseJson["status"] == "success") {
@@ -327,6 +543,13 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
     }
     // src/main/kotlin/module/CourseModule.kt
 // In `CourseModule.kt`
+
+    /**
+     * Handles the response for viewing courses and processes the received data.
+     *
+     * @param response The JSON response as a String.
+     * @param onClassesReceived Callback function to handle the list of received classes.
+     */
 
    private fun handleResponseView(response: String, onClassesReceived: (List<module.Class>) -> Unit) {
     println("Received response: $response")
@@ -380,6 +603,12 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         DialogManager.showDialog(responseJson["reason"] as String)
     }
 }
+
+    /**
+     * Sends a request to view the classes of the current user.
+     *
+     * @param onClassesReceived Callback function to handle the list of received classes.
+     */
     fun viewMyclass(onClassesReceived: (List<module.Class>) -> Unit) {
     val request = mapOf("role" to UserSession.role, "teacherId" to UserSession.userId)
     nettyClient.sendRequest(request, "course/getCoursesByTeacherId") { response: String ->
@@ -387,6 +616,11 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
     }
 }
 
+    /**
+     * Sends a request to get the course records of the current user.
+     *
+     * @param onClassesReceived Callback function to handle the list of received video classes.
+     */
     fun recordMyclass(onClassesReceived: (List<module.videoClass>) -> Unit) {
         val request = mapOf("role" to UserSession.role, "teacherId" to UserSession.userId)
         nettyClient.sendRequest(request, "course/getCourseRecord") { response: String ->
@@ -394,6 +628,11 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         }
     }
 
+    /**
+     * Sends a request to get the course records for a student.
+     *
+     * @param onClassesReceived Callback function to handle the list of received video classes.
+     */
 
     fun studentViewRecording(onClassesReceived: (List<module.videoClass>) -> Unit) {
         val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId)
@@ -402,6 +641,12 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         }
     }
 
+    /**
+     * Sends a request to delete a course.
+     *
+     * @param course The course data to be deleted.
+     * @param onDeleteSuccess Callback function to be called upon successful deletion.
+     */
     fun deleteCourse(course: CourseData,onDeleteSuccess: () -> Unit) {
         val request = mapOf("role" to UserSession.role,"userId" to UserSession.userId, "courseId" to course.courseId )
         nettyClient.sendRequest(request, "course/delete") { response: String ->
@@ -417,6 +662,12 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         }
     }
 
+    /**
+     * Sends a request to delete a video.
+     *
+     * @param video The video data to be deleted.
+     * @param onDeleteSuccess Callback function to be called upon successful deletion.
+     */
     fun deleteVideo(video: Video,onDeleteSuccess: () -> Unit) {
         val request = mapOf( "role" to UserSession.role,"videoId" to video.videoId )
         nettyClient.sendRequest(request, "course/deleteVideo") { response: String ->
@@ -433,6 +684,9 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
     }
 
 
+    /**
+     * Sends a request to show all courses.
+     */
     fun ShowAllCourse()
     {
         val request = mapOf("role" to UserSession.role, "UserId" to UserSession.userId)
@@ -440,6 +694,12 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
             handleResponseShowAll(response)
         }
     }
+
+    /**
+     * Handles the response for showing all courses.
+     *
+     * @param response The JSON response as a String.
+     */
    private fun handleResponseShowAll(response: String) {
     println("Received response: $response")
     val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -487,6 +747,12 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         DialogManager.showDialog(responseJson["reason"] as String)
     }
 }
+
+    /**
+     * Sends a request to modify a course.
+     *
+     * @param courseData The course data to be modified.
+     */
     fun modifyCourse(courseData: CourseData)
     {
         val time = courseData.timeAndLocationCards.joinToString(";") { "${it.getDayOfWeekNumber()}-${it.startPeriod}-${it.endPeriod}" }
@@ -509,6 +775,12 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
             handleResponseModify(response)
         }
     }
+
+    /**
+     * Handles the response for modifying a course.
+     *
+     * @param response The JSON response as a String.
+     */
     private fun handleResponseModify(response: String) {
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         if (responseJson["status"] == "success") {
@@ -517,6 +789,10 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
             DialogManager.showDialog(responseJson["reason"] as String)
         }
     }
+
+    /**
+     * Sends a request to get the class table for the current user.
+     */
     fun classTable()
     {
         val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId)
@@ -524,6 +800,12 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
             handleResponseTable(response)
         }
     }//课表
+
+    /**
+     * Handles the response for getting the class table.
+     *
+     * @param response The JSON response as a String.
+     */
     private fun handleResponseTable(response: String) {
     println("Received response: $response")
     val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -553,6 +835,12 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
     }
 }
 
+    /**
+     * Handles the response for getting course records and processes the received data.
+     *
+     * @param response The JSON response as a String.
+     * @param onClassesReceived Callback function to handle the list of received video classes.
+     */
     private fun handleResponseRecord(response: String, onClassesReceived: (List<module.videoClass>) -> Unit) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -601,7 +889,11 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
     }
 
 
-
+    /**
+     * Sends a request to give a score to a student.
+     *
+     * @param studentScore The score details of the student.
+     */
    fun giveScore(studentScore: StudentScore) {
     val request = mapOf(
         "role" to UserSession.role,
@@ -617,6 +909,12 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         handleResponseScore(response)
     }
 }
+
+    /**
+     * Handles the response for giving a score.
+     *
+     * @param response The JSON response as a String.
+     */
     fun handleResponseScore(response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -626,12 +924,22 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
             DialogManager.showDialog(responseJson["reason"] as String)
         }
     }
+
+    /**
+     * Sends a request to view the scores of the current user.
+     */
     fun viewScore() {
     val request = mapOf("role" to UserSession.role, "studentId" to UserSession.userId)
     nettyClient.sendRequest(request, "score/view") { response: String ->
         handleResponseViewScore(response)
       }
     }
+
+    /**
+     * Handles the response for viewing scores.
+     *
+     * @param response The JSON response as a String.
+     */
     private fun handleResponseViewScore(response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -662,9 +970,22 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
             DialogManager.showDialog(responseJson["message"] as String)
         }
     }
+
+    /**
+     * Updates the course cards with the given list of scores.
+     *
+     * @param courses The list of scores to update the UI with.
+     */
+
     fun updateCourseCards(courses: List<ScoreMy>) {
         _ScoreMy.value = courses
     }
+
+    /**
+     * Sends a request to modify the score of a student.
+     *
+     * @param studentScore The score details of the student to be modified.
+     */
     fun ModifyScore(studentScore: StudentScore) {
     val request = mapOf(
         "role" to UserSession.role,
@@ -680,6 +1001,12 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         handleResponseModifyScore(response)
        }
     }
+
+    /**
+     * Handles the response for modifying a score.
+     *
+     * @param response The JSON response as a String.
+     */
     private fun handleResponseModifyScore(response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -689,12 +1016,25 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
             DialogManager.showDialog(responseJson["reason"] as String)
         }
     }
+
+    /**
+     * Sends a request to confirm the grades.
+     *
+     * @param onClassesReceived Callback function to handle the list of received classes.
+     */
     fun ConfirmGrade(onClassesReceived: (List<module.Class>) -> Unit) {
         val request = mapOf("role" to UserSession.role, "teacherId" to UserSession.userId)
         nettyClient.sendRequest(request, "score/list") { response: String ->
             handleResponseConfirm(response, onClassesReceived)
         }
     }//教务审核
+
+    /**
+     * Handles the response for confirming grades.
+     *
+     * @param response The JSON response as a String.
+     * @param onClassesReceived Callback function to handle the list of received classes.
+     */
     private fun handleResponseConfirm(response: String, onClassesReceived: (List<module.Class>) -> Unit) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -748,6 +1088,11 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
         }
     }
 
+    /**
+     * Sends a request to check the grade status.
+     *
+     * @param scoreStatus The status details of the score.
+     */
     fun CheckGrade(scoreStatus: ScoreStatus)
     {
         val request = mapOf(
@@ -760,6 +1105,12 @@ fun mapDayOfWeekNumberToChinese(dayOfWeekNumber: String): String {
             handleResponseCheck(response)
         }
     }
+
+    /**
+     * Handles the response for checking the grade status.
+     *
+     * @param response The JSON response as a String.
+     */
     private fun handleResponseCheck(response:String)
     {
         println("Received response: $response")
