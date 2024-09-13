@@ -31,6 +31,12 @@ public class CourseController {
 
     private FileOutputStream fileOutputStream;
 
+    /**
+     * Handles the request to show the enrollment list for a student.
+     *
+     * @param jsonData The JSON data containing the student ID.
+     * @return A JSON string containing the status and the list of courses the student can enroll in.
+     */
     //向学生显示选课列表
     public String showEnrollList(String jsonData) {
         EnrollmentShowRequest request = gson.fromJson(jsonData, EnrollmentShowRequest.class);
@@ -83,6 +89,12 @@ public class CourseController {
         return gson.toJson(data);
     }
 
+    /**
+     * Handles the request for a student to select a course.
+     *
+     * @param jsonData The JSON data containing the student ID and course ID.
+     * @return A JSON string containing the status of the course selection.
+     */
     //学生选课函数
     public String selectCourse(String jsonData) {
         CourseSelectRequest request = gson.fromJson(jsonData, CourseSelectRequest.class);
@@ -163,6 +175,12 @@ public class CourseController {
         return gson.toJson(data);
     }
 
+    /**
+     * Handles the request for a student to unselect a course.
+     *
+     * @param jsonData The JSON data containing the student ID and course ID.
+     * @return A JSON string containing the status of the course unselection.
+     */
     //学生退课函数
     public String unselectCourse(String jsonData) {
         CourseUnselectRequest request = gson.fromJson(jsonData, CourseUnselectRequest.class);
@@ -196,6 +214,12 @@ public class CourseController {
     }
 
 
+    /**
+     * Handles the request to search for courses based on the course name.
+     *
+     * @param jsonData The JSON data containing the student ID and course name.
+     * @return A JSON string containing the status and the list of matching courses.
+     */
     //学生搜索课程
     public String searchCourse(String jsonData) {
         CourseSearchRequest request = gson.fromJson(jsonData, CourseSearchRequest.class);
@@ -234,6 +258,12 @@ public class CourseController {
         return gson.toJson(data);
     }
 
+    /**
+     * Handles the request to show the list of students enrolled in a course.
+     *
+     * @param jsonData The JSON data containing the course ID and teacher ID.
+     * @return A JSON string containing the status and the list of students enrolled in the course.
+     */
     //教师导出课程参与学生名单
     public String ShowCourseStudent(String jsonData) {
         CourseStudentShowRequest request = gson.fromJson(jsonData, CourseStudentShowRequest.class);
@@ -272,6 +302,12 @@ public class CourseController {
     //！教师申请临时调课函数
     //！管理员审批调课函数，审批通过后，前端发送公告给学生
     //管理员导入课程函数
+    /**
+     * Handles the request to add a new course.
+     *
+     * @param jsonData The JSON data containing the course details.
+     * @return A JSON string containing the status of the course addition.
+     */
     public String addCourse(String jsonData) {
         CourseAddRequest request = gson.fromJson(jsonData, CourseAddRequest.class);
         JsonObject data = new JsonObject();
@@ -319,6 +355,12 @@ public class CourseController {
 
 
     //管理员删除课程函数
+    /**
+     * Handles the request to delete a course.
+     *
+     * @param jsonData The JSON data containing the course ID.
+     * @return A JSON string containing the status of the course deletion.
+     */
     public String deleteCourse(String jsonData) {
         CourseDeleteRequest request = gson.fromJson(jsonData, CourseDeleteRequest.class);
         JsonObject data = new JsonObject();
@@ -348,6 +390,12 @@ public class CourseController {
 
 
     //删除课程视频
+    /**
+     * Handles the request to delete a video.
+     *
+     * @param jsonData The JSON data containing the video ID.
+     * @return A JSON string containing the status of the video deletion.
+     */
     public String deleteVideo(String jsonData){
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         JsonObject data = new JsonObject();
@@ -367,6 +415,12 @@ public class CourseController {
     }
 
     //教务查看所有课
+    /**
+     * Handles the request to show the list of all courses for the admin.
+     *
+     * @param jsonData The JSON data containing the request details.
+     * @return A JSON string containing the status and the list of all courses.
+     */
     public String showAdminList(String jsonData) {
         EnrollmentShowRequest request = gson.fromJson(jsonData, EnrollmentShowRequest.class);
         JsonObject data = new JsonObject();
@@ -400,6 +454,12 @@ public class CourseController {
     }
 
     //学生查看课表
+    /**
+     * Handles the request to show the student's course table.
+     *
+     * @param jsonData The JSON data containing the student ID.
+     * @return A JSON string containing the status and the list of courses the student is enrolled in.
+     */
     public String showStudentCourseTable(String jsonData) {
         CourseTableShowRequest request = gson.fromJson(jsonData, CourseTableShowRequest.class);
         JsonObject data = new JsonObject();
@@ -433,6 +493,12 @@ public class CourseController {
         return gson.toJson(data);
     }
 
+    /**
+     * Handles the request to modify a course.
+     *
+     * @param jsonData The JSON data containing the course details.
+     * @return A JSON string containing the status of the course modification.
+     */
     public String modifyCourse(String jsonData) {
         CourseAddRequest request = gson.fromJson(jsonData, CourseAddRequest.class);
         JsonObject data = new JsonObject();
@@ -462,6 +528,12 @@ public class CourseController {
     }
 
     // 根据老师ID查询该老师的所有课程，并返回对应课程的学生信息
+    /**
+     * Handles the request to get courses by teacher ID and returns the corresponding student information.
+     *
+     * @param jsonData The JSON data containing the teacher ID.
+     * @return A JSON string containing the status and the list of courses with student information.
+     */
     public String getCoursesByTeacherId(String jsonData) {
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         String teacherId = request.get("teacherId").getAsString();
@@ -539,6 +611,12 @@ public class CourseController {
         return gson.toJson(data);
     }
 
+    /**
+     * Handles the request to get the record of courses by teacher ID.
+     *
+     * @param jsonData The JSON data containing the teacher ID.
+     * @return A JSON string containing the status and the list of courses with their associated videos.
+     */
     public String getRecordCourses(String jsonData) {
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         String teacherId = request.get("teacherId").getAsString();
@@ -582,6 +660,12 @@ public class CourseController {
         return gson.toJson(data);
     }
 
+    /**
+     * Handles the request to get the record of courses by student ID.
+     *
+     * @param jsonData The JSON data containing the student ID.
+     * @return A JSON string containing the status and the list of courses with their associated videos.
+     */
     public String getRecordCoursesByStudent(String jsonData) {
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         String studentId = request.get("studentId").getAsString();
@@ -632,6 +716,13 @@ public class CourseController {
         return gson.toJson(data);
     }
 
+    /**
+     * Handles the request to upload a video.
+     *
+     * @param jsonData The JSON data containing the course ID and video details.
+     * @param additionalParam The additional parameter containing the video file data encoded in Base64.
+     * @return A JSON string containing the status of the video upload.
+     */
     public String videoUpload(String jsonData, String additionalParam) {
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         Video video = new Video();

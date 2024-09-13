@@ -18,6 +18,12 @@ public class ScoreController {
     private final Gson gson = new Gson();
 
     //教师打分
+    /**
+     * Handles the request to give a score to a student for a specific course.
+     *
+     * @param jsonData The JSON data containing the score details.
+     * @return A JSON string containing the status of the score submission.
+     */
     public String giveScore(String jsonData) {
         ScoreGiveRequest request = gson.fromJson(jsonData, ScoreGiveRequest.class);
         JsonObject data = new JsonObject();
@@ -111,6 +117,12 @@ public class ScoreController {
     }
 
     //学生查看成绩
+    /**
+     * Handles the request for a student to view all their scores.
+     *
+     * @param jsonData The JSON data containing the student ID.
+     * @return A JSON string containing the status and the list of scores.
+     */
     public String viewAllScore(String jsonData) {
         ScoreViewAllRequest request = gson.fromJson(jsonData, ScoreViewAllRequest.class);
         JsonObject data = new JsonObject();
@@ -163,6 +175,12 @@ public class ScoreController {
     }
 
     //教务查看未审核成绩
+    /**
+     * Lists all scores for a teacher's courses that have not been reviewed.
+     *
+     * @param jsonData The JSON data containing the request details.
+     * @return A JSON string containing the status and the list of unreviewed scores.
+     */
     public String listAllScore(String jsonData) {
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
         JsonObject data = new JsonObject();
@@ -254,6 +272,12 @@ public class ScoreController {
     }
 
     //教务审核成绩
+    /**
+     * Handles the request to check the scores of a course.
+     *
+     * @param jsonData The JSON data containing the course ID and the status to update.
+     * @return A JSON string containing the status of the check request.
+     */
     public String checkScore(String jsonData) {
         ScoreCheckRequest request = gson.fromJson(jsonData, ScoreCheckRequest.class);
         JsonObject data = new JsonObject();
@@ -292,6 +316,12 @@ public class ScoreController {
     }
 
     //教师登录后显示所有自己的课程成绩，未审核和审核分开显示
+    /**
+     * Handles the request for a teacher to view all their course scores, separated by review status.
+     *
+     * @param jsonData The JSON data containing the teacher ID.
+     * @return A JSON string containing the status and the list of scores.
+     */
     public String ViewMyCourseScore(String jsonData) {
         MyCourseScoreListRequest request = gson.fromJson(jsonData, MyCourseScoreListRequest.class);
         JsonObject data = new JsonObject();
@@ -430,6 +460,12 @@ public class ScoreController {
     }
 
     //教师修正成绩
+    /**
+     * Handles the request to modify a student's score for a specific course.
+     *
+     * @param jsonData The JSON data containing the score modification details.
+     * @return A JSON string containing the status of the modification request.
+     */
     public String modifyScore(String jsonData) {
         ScoreModifyRequest request = gson.fromJson(jsonData, ScoreModifyRequest.class);
         JsonObject data = new JsonObject();

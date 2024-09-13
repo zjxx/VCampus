@@ -20,6 +20,12 @@ public class LibraryController {
     private final Gson gson = new Gson();
     private FileOutputStream fileOutputStream;
     //前端输入role和bookName，后端返回相应的书籍信息
+    /**
+     * Searches for book information based on the provided JSON data.
+     *
+     * @param jsonData The JSON data containing the search criteria.
+     * @return A JSON string containing the status and the list of books matching the search criteria.
+     */
     public String searchBookInfo(String jsonData) {
         //解析JSON数据
         BookSearchingRequest request = gson.fromJson(jsonData, BookSearchingRequest.class);
@@ -72,6 +78,12 @@ public class LibraryController {
         return gson.toJson(data);
     }
 
+    /**
+     * Searches for articles based on the provided JSON data.
+     *
+     * @param jsonData The JSON data containing the search criteria.
+     * @return A JSON string containing the status and the list of articles matching the search criteria.
+     */
     public String articleSearch(String jsonData) {
         ArticleSearchRequest request = gson.fromJson(jsonData, ArticleSearchRequest.class);
         JsonObject data = new JsonObject();
@@ -103,6 +115,12 @@ public class LibraryController {
     }
 
     //借书功能
+    /**
+     * Handles the request to borrow a book.
+     *
+     * @param jsonData The JSON data containing the borrow request details.
+     * @return A JSON string containing the status of the borrow request.
+     */
     public String borrowBook(String jsonData) {
         // 解析JSON数据
         BookBorrowRequest request = gson.fromJson(jsonData, BookBorrowRequest.class);
@@ -176,6 +194,12 @@ public class LibraryController {
 
 
     //还书功能
+    /**
+     * Handles the request to return a borrowed book.
+     *
+     * @param jsonData The JSON data containing the return request details.
+     * @return A JSON string containing the status of the return request.
+     */
     public String returnBook(String jsonData) {
         //解析JSON数据
         BookReturnRequest request = gson.fromJson(jsonData, BookReturnRequest.class);
@@ -234,6 +258,12 @@ public class LibraryController {
     }
 
     //延期还书功能
+    /**
+     * Handles the request to delay the return of a borrowed book.
+     *
+     * @param jsonData The JSON data containing the delay return request details.
+     * @return A JSON string containing the status of the delay return request.
+     */
     public String delayReturnBook(String jsonData) {
         //解析JSON数据
         BookDelayReturnRequest request = gson.fromJson(jsonData, BookDelayReturnRequest.class);
@@ -304,6 +334,12 @@ public class LibraryController {
     }
 
     //普通用户查看借书记录功能（当前借阅和历史借阅）
+    /**
+     * Handles the request to view the borrow record of a user.
+     *
+     * @param jsonData The JSON data containing the request details.
+     * @return A JSON string containing the status and the borrow record of the user.
+     */
     public String viewBorrowRecord(String jsonData) {
         //解析JSON数据
         BookListRequest request = gson.fromJson(jsonData, BookListRequest.class);
@@ -363,6 +399,12 @@ public class LibraryController {
     }
 
     //管理员删除藏书
+    /**
+     * Deletes a book from the library.
+     *
+     * @param jsonData The JSON data containing the book deletion request details.
+     * @return A JSON string containing the status of the deletion request.
+     */
     public String deleteBook(String jsonData) {
         //解析JSON数据
         BookDeleteRequest request = gson.fromJson(jsonData, BookDeleteRequest.class);
@@ -394,6 +436,12 @@ public class LibraryController {
 
 
     //管理员查看借阅记录功能（所有借阅记录）
+    /**
+     * Views all borrow records.
+     *
+     * @param jsonData The JSON data containing the request details.
+     * @return A JSON string containing the status and the list of all borrow records.
+     */
     public String viewAllBorrowRecord(String jsonData) {
         //解析JSON数据
         BookListAllRequest request = gson.fromJson(jsonData, BookListAllRequest.class);
@@ -446,7 +494,15 @@ public class LibraryController {
         }
         return gson.toJson(data);
     }
+
     //管理员增加藏书功能
+    /**
+     * Adds a new book to the library.
+     *
+     * @param jsonData The JSON data containing the book details.
+     * @param additionalParam The additional parameter containing the book cover image data encoded in Base64.
+     * @return A JSON string containing the status of the add book request.
+     */
     public String addBook(String jsonData,String additionalParam){
         //解析JSON数据
         JsonObject data = new JsonObject();
@@ -489,7 +545,12 @@ public class LibraryController {
     };
 
     //管理员查看用户借书记录
-
+    /**
+     * Handles the request to view the borrow record of a user.
+     *
+     * @param jsonData The JSON data containing the request details.
+     * @return A JSON string containing the status and the borrow record of the user.
+     */
     public String viewUserBorrowRecord(String jsonData) {
         BorrowUserSearchRequest request = gson.fromJson(jsonData, BorrowUserSearchRequest.class);
         JsonObject data = new JsonObject();
@@ -567,6 +628,13 @@ public class LibraryController {
     }
 
     //修改藏书信息
+    /**
+     * Updates the information of a book in the library.
+     *
+     * @param jsonData The JSON data containing the updated book details.
+     * @param additionalParam The additional parameter containing the book cover image data encoded in Base64.
+     * @return A JSON string containing the status of the update request.
+     */
     public String updateBook(String jsonData, String additionalParam) {
         // 解析JSON数据
         JsonObject data = new JsonObject();

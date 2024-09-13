@@ -28,6 +28,14 @@ public class ShoppingCartController {
         transaction.setCardNumber(request.getCardNumber());
         return transaction;
     }
+
+    /**
+     * Creates a JSON representation of a shopping cart item.
+     *
+     * @param item The store item to be added to the shopping cart.
+     * @param quantity The quantity of the item to be added.
+     * @return A JSON string representing the shopping cart item.
+     */
     private String createShoppingCartObjectJson(StoreItem item,int quantity)
     {
         String description = "";
@@ -49,6 +57,12 @@ public class ShoppingCartController {
     }
 
     // 添加商品到购物车，传入 userId, itemId, quantity
+    /**
+     * Adds an item to the shopping cart.
+     *
+     * @param jsonData The JSON data containing userId, itemId, and quantity.
+     * @return A JSON string containing the status of the add item request.
+     */
     public String addItemToCart(String jsonData) {
        try {
            JsonObject request = gson.fromJson(jsonData, JsonObject.class);
@@ -88,6 +102,12 @@ public class ShoppingCartController {
 
 
     // 从购物车移除商品，传入 userId(用户一卡通号), itemId（商品uuid），quantity（数量）
+    /**
+     * Removes an item from the shopping cart.
+     *
+     * @param jsonData The JSON data containing userId and itemId.
+     * @return A JSON string containing the status of the remove item request.
+     */
     public String removeItemFromCart(String jsonData) {
         try {
             JsonObject request = gson.fromJson(jsonData, JsonObject.class);
@@ -120,6 +140,12 @@ public class ShoppingCartController {
     }
 
     // 查看购物车内容，传入 userId
+    /**
+     * Views the contents of the shopping cart.
+     *
+     * @param jsonData The JSON data containing the userId.
+     * @return A JSON string containing the status and the list of items in the cart.
+     */
     public String viewCart(String jsonData) {
         try {
             JsonObject request = gson.fromJson(jsonData, JsonObject.class);
@@ -156,6 +182,13 @@ public class ShoppingCartController {
         }
     }
 
+
+    /**
+     * Handles the purchase of items in the shopping cart.
+     *
+     * @param jsonData The JSON data containing the userId and the list of items to purchase.
+     * @return A JSON string containing the status of the purchase request.
+     */
     public String handleCartPurchase(String jsonData) {
         try {
             JsonObject request = gson.fromJson(jsonData, JsonObject.class);

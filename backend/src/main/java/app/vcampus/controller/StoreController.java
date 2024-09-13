@@ -24,6 +24,12 @@ public class StoreController {
 
 
     //创建商品的JSON对象
+    /**
+     * Creates a JSON representation of a store item.
+     *
+     * @param item The store item to be converted to JSON.
+     * @return A JSON string representing the store item.
+     */
     private String createItemJsonObject(StoreItem item)
     {
         String description = "";
@@ -44,6 +50,13 @@ public class StoreController {
     }
 
     //创建交易对象
+    /**
+     * Creates a store transaction object.
+     *
+     * @param storeItem The store item involved in the transaction.
+     * @param request The purchase request containing transaction details.
+     * @return A StoreTransaction object representing the transaction.
+     */
     private StoreTransaction createStoreTransaction(StoreItem storeItem, PurchaseRequest request) {
         StoreTransaction transaction = new StoreTransaction();
         transaction.setUuid(UUID.randomUUID());
@@ -56,6 +69,12 @@ public class StoreController {
     }
 
     //创建交易的JSON对象
+    /**
+     * Creates a JSON representation of a store transaction.
+     *
+     * @param transaction The store transaction to be converted to JSON.
+     * @return A JSON object representing the store transaction.
+     */
     private JsonObject createTransactionJsonObject(StoreTransaction transaction) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("uuid", transaction.getUuid().toString());
@@ -71,6 +90,12 @@ public class StoreController {
 
 
     //处理购买请求,传入itemUuid（商品的UUID）,amount(购买数量),cardNumber（一卡通号）,itemName（商品名称）
+    /**
+     * Handles a purchase request.
+     *
+     * @param jsonData The JSON data containing the purchase details.
+     * @return A JSON string containing the status of the purchase request.
+     */
     public String handlePurchase(String jsonData) {
        try {
            // 将 JSON 转换为 PurchaseRequest 对象
@@ -121,6 +146,12 @@ public class StoreController {
     }
 
     //根据关键词搜索商品，传入itemname（商品名称）
+    /**
+     * Searches for items based on a keyword.
+     *
+     * @param jsonData The JSON data containing the search keyword.
+     * @return A JSON string containing the status and the list of found items.
+     */
     public String searchItems(String jsonData) {
         try {
             JsonObject request = gson.fromJson(jsonData, JsonObject.class);
@@ -154,6 +185,12 @@ public class StoreController {
     }
 
     //获取所有商品
+    /**
+     * Retrieves all items in the store.
+     *
+     * @param jsonData The JSON data (not used in this method).
+     * @return A JSON string containing the status and the list of all items.
+     */
     public String getAllItems(String jsonData) {
         try {
             DataBase db = DataBaseManager.getInstance();
@@ -185,6 +222,12 @@ public class StoreController {
     }
 
     //获取所有交易记录
+    /**
+     * Retrieves all transaction records.
+     *
+     * @param jsonData The JSON data (not used in this method).
+     * @return A JSON string containing the status and the list of all transactions.
+     */
     public String getAllTransaction(String jsonData) {
         try {
             DataBase db = DataBaseManager.getInstance();
@@ -216,6 +259,12 @@ public class StoreController {
     }
 
     //获取随机商品，用于首页展示,返回随机商品列表
+    /**
+     * Retrieves a random selection of items for display on the homepage.
+     *
+     * @param jsonData The JSON data (not used in this method).
+     * @return A JSON string containing the status and the list of random items.
+     */
     public String enterStore(String jsonData) {
         try {
             DataBase db = DataBaseManager.getInstance();
@@ -243,6 +292,12 @@ public class StoreController {
     }
 
     //获取特定一卡通号的订单，传入cardNumber（一卡通号）
+    /**
+     * Retrieves transactions for a specific card number.
+     *
+     * @param jsonData The JSON data containing the card number.
+     * @return A JSON string containing the status and the list of transactions for the card number.
+     */
     public String getTransactionsByCardNumber(String jsonData) {
         try {
             // 从 JSON 请求中提取一卡通号
@@ -306,6 +361,13 @@ public class StoreController {
     }
 
     //添加商品，传入商品的JSON对象
+    /**
+     * Adds a new item to the store.
+     *
+     * @param jsonData The JSON data containing the item details.
+     * @param additionalParam The additional parameter containing the base64 encoded image data.
+     * @return A JSON string containing the status of the add item request.
+     */
     public String addItem(String jsonData, String additionalParam) {
         JsonObject data = new JsonObject();
         JsonObject request = gson.fromJson(jsonData, JsonObject.class);
@@ -344,6 +406,12 @@ public class StoreController {
         }
     }
 
+    /**
+     * Removes an item from the store.
+     *
+     * @param jsonData The JSON data containing the item UUID.
+     * @return A JSON string containing the status of the remove item request.
+     */
     // 删除商品，传入uuid（商品的UUID）
     public String removeItem(String jsonData) {
         JsonObject response = new JsonObject();
@@ -387,6 +455,13 @@ public class StoreController {
         return gson.toJson(response);
     }
 
+    /**
+     * Updates an existing item in the store.
+     *
+     * @param jsonData The JSON data containing the updated item details.
+     * @param additionalParam The additional parameter containing the base64 encoded image data.
+     * @return A JSON string containing the status of the update item request.
+     */
     // 修改商品
     public String updateItem(String jsonData, String additionalParam) {
         try {
@@ -423,6 +498,12 @@ public class StoreController {
         }
     }
 
+    /**
+     * Handles a purchase request via QR code.
+     *
+     * @param jsonData The JSON data containing the purchase details.
+     * @return A JSON string containing the status of the purchase request.
+     */
     // 通过二维码购买商品
     public String QRbuy(String jsonData) {
         try {
