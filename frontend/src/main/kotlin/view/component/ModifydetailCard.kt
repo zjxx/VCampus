@@ -284,7 +284,18 @@ fun ModifydetailCard(course: CourseData, onDeleteSuccess: () -> Unit) {
                             ) {
                                 listOf("大一", "大二", "大三", "大四").forEach { option ->
                                     DropdownMenuItem(onClick = {
-                                        course.grade = option
+                                        var validgrade = "24";
+                                        if(option == "大二"){
+                                            validgrade = "23";
+                                        }
+                                        else if(option == "大三"){
+                                            validgrade = "22";
+                                        }
+                                        else if(option == "大四"){
+                                            validgrade = "21";
+                                        }
+
+                                        course.grade = validgrade
                                         expandedGrade = false
                                     }) {
                                         Text(option)

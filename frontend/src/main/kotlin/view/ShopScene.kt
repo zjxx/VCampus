@@ -39,7 +39,7 @@ import java.io.File
 @Composable
 fun ShopScene(onNavigate: (String) -> Unit, role: String) {
     var selectedOption by remember {
-        if (role == "student") mutableStateOf("购物") else mutableStateOf("管理商品")
+        if (role == "student"||role=="teacher") mutableStateOf("购物") else mutableStateOf("管理商品")
     }
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var imageUrl by remember { mutableStateOf("") }
@@ -235,7 +235,7 @@ fun ShopScene(onNavigate: (String) -> Unit, role: String) {
                         .weight(0.8f)
                         .padding(16.dp)
                 ) {
-                    if (role == "student") {//学生界面
+                    if (role == "student"||role == "teacher") {//学生界面
                         when (selectedOption) {
                             "购物" -> {
                                 Text(

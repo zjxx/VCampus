@@ -21,12 +21,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.ColorPack
 import data.ColorPack.choose
+import data.UserSession
 import module.StudentStatusModule
 
 
 @Composable
 fun StudentStatusScene(onNavigate: (String) -> Unit, role: String) {
-    var selectedMenuItem by remember { mutableStateOf("") }
+    var firstscene = "查看个人信息"
+    if(UserSession.role == "admin") {
+        firstscene = "增加学籍"
+    }
+    var selectedMenuItem by remember { mutableStateOf(firstscene) }
     val studentStatusModule = remember { StudentStatusModule() }
     var searchResults by remember { mutableStateOf(listOf<StudentStatusModule>())}
     var isCollapsed by remember { mutableStateOf(true) }

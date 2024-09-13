@@ -10,6 +10,7 @@ import module.StudentStatusModule
 import view.component.pageTitle
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.ui.awt.ComposeWindow
 import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
@@ -17,6 +18,9 @@ import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.CellType
 import org.apache.poi.ss.usermodel.DataFormatter
+import utils.downloadPdfIfNotExists
+import utils.downloadXlsIfNotExists
+import java.awt.FileDialog
 
 @Composable
 fun AddStudentStatusSubscene() {
@@ -164,6 +168,15 @@ val validAcademies = listOf(
             }
             Button(
                 onClick = {
+                    val fileDialog = FileDialog(ComposeWindow(), "选择文件保存地址", FileDialog.SAVE)
+                    fileDialog.isVisible = true
+                    val directory = fileDialog.directory
+                    val file = fileDialog.file
+                    if (directory != null && file != null) {
+                        val filePath = "$directory$file"
+                        val remoteUrl = "http://47.99.141.236/img/student.xls"
+                        downloadXlsIfNotExists(remoteUrl, filePath)
+                    }
                 },
                 modifier = Modifier.width(160.dp) // Set the width of the download button
             ) {
@@ -198,9 +211,19 @@ val validAcademies = listOf(
             confirmButton = {
                 Button(onClick = {
                     scope.launch {
-                        studentStatusModule.students.forEach { student ->
-                            student.addStudentStatus()
+
+                        val studentList = studentStatusModule.students.map { student ->
+                            module.Merchandise(
+                                username = student.name,
+                                gender = if (student.gender == "男") "0" else "1",
+                                race = student.race,
+                                nativePlace = student.nativePlace,
+                                studentId = student.studentId,
+                                major = student.major,
+                                academy = student.academy
+                            )
                         }
+                        studentStatusModule.Studentfile(studentList)
                         showDialog = false
                     }
                 }) {

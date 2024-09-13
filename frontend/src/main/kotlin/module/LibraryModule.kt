@@ -435,10 +435,10 @@ class LibraryModule (
      * @param type The type of modification.
      * @param filePath The file path for the modification.
      */
-    fun bookModify(request: Any, type: String, filePath: String?) {
+    fun bookModify(request: Map<String, String>, type: String, filePath: String?) {
         filePath?.let {
             nettyClient.sendFile(request, type, it) { response: String ->
-                handleBookModifyRespose(response)
+                handleBookModifyRespose(response,request["ISBN"] as String)
             }
         }
     }
@@ -448,13 +448,24 @@ class LibraryModule (
      *
      * @param response The response string from the server.
      */
-    fun handleBookModifyRespose(response: String) {
+    fun handleBookModifyRespose(response: String,isbn: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
         println("Response status: ${responseJson["status"]}")
         val modifyResult: String
         if (responseJson["status"] == "success" ) {
             modifyResult = "success"
+            var localPath = "src/main/temp/" + isbn + ".png"
+            //删除Localpath的文件
+            val file = java.io.File(localPath)
+            if (file.exists()) {
+                try {
+                    file.delete()
+                    println("File deleted successfully.")
+                } catch (e: Exception) {
+                    println("Failed to delete the file.")
+                }
+            }
             DialogManager.showDialog("修改成功")
 
         }else {
