@@ -2,7 +2,9 @@ package app.vcampus.domain;
 import jakarta.persistence.*;
 
 import java.util.UUID;
-
+/**
+ * Represents a enrollment entity in the database.
+ */
 @Entity
 @Table(name = "enroll")
 public class Enrollment {

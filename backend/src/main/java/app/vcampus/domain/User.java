@@ -3,7 +3,9 @@ package app.vcampus.domain;
 
 import jakarta.persistence.*;
 
-
+/**
+ * Represents a user entity in the database.
+ */
 @Entity
 @Table(name="user")
 public class User {

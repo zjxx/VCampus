@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.UUID;
-
+/**
+ * Represents a video entity in the database.
+ */
 @Entity
 @Table(name = "video")
 public class Video {

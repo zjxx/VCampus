@@ -3,7 +3,9 @@ package app.vcampus.domain;
 
 
 import jakarta.persistence.*;//为什么换成*:因为jpa的注解都在这个包里，所以可以省略包名
-
+/**
+ * Represents a book entity in the database.
+ */
 @Entity
 @Table(name = "book") //指定表名
 public class Book {

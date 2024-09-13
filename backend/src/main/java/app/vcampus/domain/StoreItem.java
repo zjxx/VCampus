@@ -3,7 +3,9 @@ package app.vcampus.domain;
 import jakarta.persistence.*;
 
 import java.util.UUID;
-
+/**
+ * Represents a store item entity in the database.
+ */
 @Entity
 @Table(name="storeitem")
 public class StoreItem {

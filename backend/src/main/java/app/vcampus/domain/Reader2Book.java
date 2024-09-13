@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.UUID;
-
+/**
+ * Represents a book borrowing record entity in the database.
+ */
 @Entity
 @Table(name = "readertobook")
 public class Reader2Book {

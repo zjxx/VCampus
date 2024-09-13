@@ -1,7 +1,9 @@
 package app.vcampus.domain;
 
 import jakarta.persistence.*;
-
+/**
+ * Represents a student entity in the database.
+ */
 @Entity
 @Table(name = "student")
 public class Student {

@@ -6,7 +6,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import java.util.UUID;
-
+/**
+ * Represents a score entity in the database.
+ */
 @Entity
 @Table(name = "score")
 public class Score {

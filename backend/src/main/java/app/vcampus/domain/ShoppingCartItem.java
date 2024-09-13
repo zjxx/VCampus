@@ -6,7 +6,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import java.util.UUID;
-
+/**
+ * Represents a shopping cart item entity in the database.
+ */
 @Entity
 @Table(name="shoppingcartitem")
 public class ShoppingCartItem {

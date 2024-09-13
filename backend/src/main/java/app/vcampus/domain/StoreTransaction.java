@@ -5,7 +5,9 @@ import app.vcampus.domain.StoreItem;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
+/**
+ * Represents a store transaction in the database.
+ */
 @Entity
 @Table(name="storetransaction")
 public class StoreTransaction {
