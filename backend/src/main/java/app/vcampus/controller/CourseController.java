@@ -454,7 +454,7 @@ public class CourseController {
             course.setvalidGrade(request.getGrade());
             course.setProperty(request.getProperty());
             course.setvalidCapacity(course.getCapacity());
-            course.setSemester(course.getSemester());
+            course.setSemester(request.getSemester());
             db.update(course);
             data.addProperty("status", "success");
         }
