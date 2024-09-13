@@ -9,6 +9,19 @@ import utils.NettyClientProvider
 import utils.downloadImageIfNotExists
 import view.component.DialogManager
 
+/**
+ * Module for managing shop-related operations.
+ *
+ * @property onSearchSuccess Callback function to be called on successful search.
+ * @property onBuySuccess Callback function to be called on successful purchase.
+ * @property onEnterSuccess Callback function to be called on successful shop entry.
+ * @property onAddItemToCartSuccess Callback function to be called on successful addition to cart.
+ * @property onRemoveItemFromCartSuccess Callback function to be called on successful removal from cart.
+ * @property onShopAddToListSuccess Callback function to be called on successful addition or modification of shop item.
+ * @property onGetAllTransactionsSuccess Callback function to be called on successful retrieval of all transactions.
+ * @property onGetTransactionsByCardNumberSuccess Callback function to be called on successful retrieval of transactions by card number.
+ * @property onViewSuccess Callback function to be called on successful view of items.
+ */
 
 class ShopModule (
     private val onSearchSuccess: (List<Merchandise>) -> Unit,
@@ -28,6 +41,12 @@ class ShopModule (
 
 //______________________________________________________________________________________
    //搜索商品
+
+    /**
+     * Searches for items in the shop.
+     *
+     * @param itemName The name of the item to search for.
+     */
     fun shopSearch(itemName: String) {
         //tempItems.clear()
         val request = mapOf("itemname" to itemName)
@@ -35,6 +54,12 @@ class ShopModule (
             handleShopSearch(response)
         }
     }
+
+    /**
+     * Handles the response for shop search.
+     *
+     * @param response The response string from the server.
+     */
 
     private fun handleShopSearch(response: String) {
         println("Received response: $response")
@@ -83,12 +108,25 @@ class ShopModule (
 
     //_______________________________________________________________________________________
     //购买商品
+    /**
+     * Buys an item from the shop.
+     *
+     * @param uuid The UUID of the item.
+     * @param amount The amount of the item to buy.
+     * @param itemName The name of the item.
+     */
     fun shopBuy(uuid: String, amount: String, itemName: String) {
         val request = mapOf("itemUuid" to uuid, "amount" to amount, "cardNumber" to UserSession.userId.toString(), "itemName" to itemName)
         nettyClient.sendRequest(request, "shop/buy") { response: String ->
             handleShopBuy(response)
         }
     }
+
+    /**
+     * Handles the response for buying an item.
+     *
+     * @param response The response string from the server.
+     */
 
     private fun handleShopBuy(response: String) {
         println("Received response: $response")
@@ -107,6 +145,14 @@ class ShopModule (
 
     //_______________________________________________________________________________________
     //QRCode支付
+    /**
+     * Buys an item from the shop using QR code.
+     *
+     * @param uuid The UUID of the item.
+     * @param amount The amount of the item to buy.
+     * @param itemName The name of the item.
+     */
+
     fun shopQRBuy(uuid: String, amount: String, itemName: String) {
         val request = mapOf("itemUuid" to uuid, "amount" to amount, "cardNumber" to UserSession.userId.toString(), "itemName" to itemName)
         nettyClient.sendRequest(request, "shop/QRbuy") { response: String ->
@@ -114,6 +160,11 @@ class ShopModule (
         }
     }
 
+    /**
+     * Handles the response for buying an item using QR code.
+     *
+     * @param response The response string from the server.
+     */
     private fun handleShopQRBuy(response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -131,6 +182,11 @@ class ShopModule (
 
     //_______________________________________________________________________________________
     //购物车购买
+    /**
+     * Buys items from the cart.
+     *
+     * @param itemList The list of items to buy.
+     */
     fun shopCartBuy (itemList: List<Merchandise>) {
         val request = mapOf("userId" to UserSession.userId.toString(), "length" to (itemList.size).toString(), "items" to Gson().toJson(itemList))
         nettyClient.sendRequest(request, "shop/cartBuy") { response: String ->
@@ -138,6 +194,11 @@ class ShopModule (
         }
     }
 
+    /**
+     * Handles the response for buying items from the cart.
+     *
+     * @param response The response string from the server.
+     */
     private fun handleShopCartBuy (response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -152,6 +213,9 @@ class ShopModule (
 
     //_______________________________________________________________________________________
     //获取随机商品
+    /**
+     * Enters the shop and retrieves random items.
+     */
     fun enterShop() {
         val request = mapOf("" to String)
         nettyClient.sendRequest(request,"shop/enterStore") { response: String ->
@@ -159,6 +223,12 @@ class ShopModule (
         }
     }
 
+
+    /**
+     * Handles the response for entering the shop.
+     *
+     * @param response The response string from the server.
+     */
     private fun handleEnterShop(response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -206,13 +276,24 @@ class ShopModule (
 
     //_______________________________________________________________________________________
     //添加购物车
+
+    /**
+     * Adds an item to the cart.
+     *
+     * @param uuid The UUID of the item.
+     * @param quantity The quantity of the item to add.
+     */
     fun addItemToCart(uuid: String, quantity: String) {
         val request = mapOf("userId" to UserSession.userId.toString(), "itemId" to uuid, "quantity" to quantity)
         nettyClient.sendRequest(request,"shop/addItemToCart") { response: String ->
             handleAddItemToCart(response)
         }
     }
-
+    /**
+     * Handles the response for adding an item to the cart.
+     *
+     * @param response The response string from the server.
+     */
     private fun handleAddItemToCart (response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -226,6 +307,12 @@ class ShopModule (
 
     //_______________________________________________________________________________________
     //从购物车移除
+    /**
+     * Removes an item from the cart.
+     *
+     * @param uuid The UUID of the item.
+     * @param quantity The quantity of the item to remove.
+     */
     fun removeItemFromCart(uuid: String, quantity: String) {
         val request = mapOf("userId" to UserSession.userId.toString(), "itemId" to uuid, "quantity" to quantity)
         nettyClient.sendRequest(request,"shop/removeItemFromCart") { response: String ->
@@ -233,6 +320,11 @@ class ShopModule (
         }
     }
 
+    /**
+     * Handles the response for removing an item from the cart.
+     *
+     * @param response The response string from the server.
+     */
     private fun handleRemoveItemFromCart (response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -247,6 +339,11 @@ class ShopModule (
 
     //_______________________________________________________________________________________
     //查看购物车
+    /**
+     * Views the items in the cart.
+     *
+     * @param onViewCartComplete Callback function to be called on completion of viewing the cart.
+     */
     fun viewCart(onViewCartComplete: () -> Unit) {
         tempItems.clear()
         val request = mapOf("userId" to UserSession.userId.toString())
@@ -256,6 +353,11 @@ class ShopModule (
         }
     }
 
+    /**
+     * Handles the response for viewing the cart.
+     *
+     * @param response The response string from the server.
+     */
     private fun handleViewCart (response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -304,6 +406,13 @@ class ShopModule (
 
     //_______________________________________________________________________________________
     //增加商品or修改商品
+    /**
+     * Adds or modifies a shop item.
+     *
+     * @param request The request data.
+     * @param type The type of the request.
+     * @param filePath The file path of the item image.
+     */
     fun shopAddToList (request: Any, type: String, filePath: String?) {
         filePath?.let {
             nettyClient.sendFile(request, type, it) { response: String ->
@@ -312,6 +421,11 @@ class ShopModule (
         }
     }
 
+    /**
+     * Handles the response for adding or modifying a shop item.
+     *
+     * @param response The response string from the server.
+     */
     private fun handleShopAddToList (response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -330,6 +444,11 @@ class ShopModule (
 
     //_______________________________________________________________________________________
     //删除商品
+    /**
+     * Deletes a shop item.
+     *
+     * @param uuid The UUID of the item to delete.
+     */
     fun shopDeleteItem (uuid: String) {
         val request = mapOf("uuid" to uuid)
         nettyClient.sendRequest(request,"shop/deleteItem") { response: String ->
@@ -337,6 +456,11 @@ class ShopModule (
         }
     }
 
+    /**
+     * Handles the response for deleting a shop item.
+     *
+     * @param response The response string from the server.
+     */
     private fun handleShopDeleteItem (response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -351,6 +475,9 @@ class ShopModule (
 
     //_______________________________________________________________________________________
     //获取所有交易记录:Admin
+    /**
+     * Retrieves all transactions (Admin).
+     */
     fun getAllTransactions () {
         tempItems.clear()
         val request = mapOf("" to String)
@@ -359,6 +486,11 @@ class ShopModule (
         }
     }
 
+    /**
+     * Handles the response for retrieving all transactions.
+     *
+     * @param response The response string from the server.
+     */
     private fun handleGetAllTransactions (response: String) {
         println("Received response: $response")
         val responseJson = JsonParser.parseString(response).asJsonObject
@@ -397,6 +529,11 @@ class ShopModule (
 
     //_______________________________________________________________________________________
     //获取订单记录:User
+    /**
+     * Retrieves transactions by card number (User).
+     *
+     * @param cardNumber The card number to filter transactions.
+     */
     fun getTransactionsByCardNumber (cardNumber: String) {
         tempTransactions.clear()
         val request = mapOf("cardNumber" to cardNumber)
@@ -405,6 +542,11 @@ class ShopModule (
         }
     }
 
+    /**
+     * Handles the response for retrieving transactions by card number.
+     *
+     * @param response The response string from the server.
+     */
     private fun handleGetTransactionsByCardNumber (response: String) {
         println("Received response: $response")
         val responseJson = JsonParser.parseString(response).asJsonObject
