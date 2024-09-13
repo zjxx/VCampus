@@ -1,12 +1,16 @@
 package module
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.google.gson.Gson
 import data.UserSession
 import utils.NettyClientProvider
 import view.component.DialogManager
+
+/**
+ * Module for managing student status.
+ */
 
 class StudentStatusModule {
     private val nettyClient = NettyClientProvider.nettyClient
@@ -42,12 +46,21 @@ class StudentStatusModule {
         "独龙", "鄂伦春", "赫哲", "门巴", "珞巴", "基诺"
     )
 
+    /**
+     * Searches for student status.
+     */
+
     fun searchStudentStatus() {
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId)
         nettyClient.sendRequest(request, "arc/view") { response: String ->
             handleResponseView(response)
         }
     }
+
+    /**
+     * Handles the response for viewing student status.
+     * @param response The response string from the server.
+     */
 
     private fun handleResponseView(response: String) {
         println("Received response: $response")
@@ -62,6 +75,10 @@ class StudentStatusModule {
         number = responseJson["number"] ?: ""
     }
     private val nameRegex = Regex("^[\\u4e00-\\u9fa5]+(·[\\u4e00-\\u9fa5]+)*$|^[\\u4e00-\\u9fa5]{2,20}$")
+
+    /**
+     * Adds a new student status.
+     */
 
     fun addStudentStatus() {
         if (name.isEmpty() || gender.isEmpty() || race.isEmpty() || nativePlace.isEmpty() || studentId.isEmpty() || major.isEmpty() || academy.isEmpty()) {
@@ -101,6 +118,12 @@ class StudentStatusModule {
             handleResponseAdd(response)
         }
     }
+
+    /**
+     * Handles the response for adding a student status.
+     * @param response The response string from the server.
+     */
+
 private fun handleResponseAdd(response: String) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -110,6 +133,12 @@ private fun handleResponseAdd(response: String) {
             DialogManager.showDialog(responseJson["reason"] as String)
         }
     }
+
+    /**
+     * Modifies the student status.
+     * @param onModifySuccess Callback function to be called on successful modification.
+     */
+
     fun modifyStudentStatus(onModifySuccess: () -> Unit) {
         var gender_int ="0"
         if(gender=="女"){
@@ -130,6 +159,13 @@ private fun handleResponseAdd(response: String) {
             handleResponseModify(response, onModifySuccess)
         }
     }
+
+    /**
+     * Handles the response for modifying a student status.
+     * @param response The response string from the server.
+     * @param onModifySuccess Callback function to be called on successful modification.
+     */
+
     private fun handleResponseModify(response: String, onModifySuccess: () -> Unit) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -140,12 +176,25 @@ private fun handleResponseAdd(response: String) {
         }
     }
 
+    /**
+     * Searches for admin based on a keyword.
+     * @param keyword The keyword to search for.
+     * @param updateSearchResults Callback function to update the search results.
+     */
+
     fun searchAdmin(keyword: String, updateSearchResults: (List<StudentStatusModule>) -> Unit) {
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "keyword" to keyword)
         nettyClient.sendRequest(request, "arc/search") { response: String ->
             handleResponseSearch(response, updateSearchResults)
         }
     }
+
+    /**
+     * Handles the response for searching admin.
+     * @param response The response string from the server.
+     * @param updateSearchResults Callback function to update the search results.
+     */
+
     private fun handleResponseSearch(response: String, updateSearchResults: (List<StudentStatusModule>) -> Unit) {
     println("Received response: $response")
     val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, Any>
@@ -176,6 +225,12 @@ private fun handleResponseAdd(response: String) {
         DialogManager.showDialog(responseJson["reason"] as String)
     }
 }
+
+    /**
+     * Deletes a student status.
+     * @param onDeleteSuccess Callback function to be called on successful deletion.
+     */
+
     fun deleteStudentStatus(onDeleteSuccess: () -> Unit) {
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId, "studentId" to studentId)
         nettyClient.sendRequest(request, "arc/delete") { response: String ->
@@ -187,12 +242,25 @@ private fun handleResponseAdd(response: String) {
             }
         }
     }
+
+    /**
+     * Handles the click event for modifying student status.
+     * @param updateSearchResults Callback function to update the search results.
+     */
+
     fun onclickModifyStudentStatus(updateSearchResults: (List<StudentStatusModule>) -> Unit) {
         val request = mapOf("role" to UserSession.role, "userId" to UserSession.userId)
         nettyClient.sendRequest(request, "arc/clickmodify") { response: String ->
             handleResponseModify(response, updateSearchResults)
         }
     }
+
+    /**
+     * Handles the response for modifying student status on click.
+     * @param response The response string from the server.
+     * @param updateSearchResults Callback function to update the search results.
+     */
+
     private fun handleResponseModify(response: String, updateSearchResults: (List<StudentStatusModule>) -> Unit) {
         println("Received response: $response")
         val responseJson = Gson().fromJson(response, MutableMap::class.java) as MutableMap<String, String>
@@ -219,6 +287,13 @@ private fun handleResponseAdd(response: String) {
             }
         }
     }
+
+    /**
+     * Modifies the password.
+     * @param oldPassword The old password.
+     * @param newPassword The new password.
+     */
+
     fun modifyPassword(oldPassword: String, newPassword: String) {
         if (oldPassword.isEmpty() || newPassword.isEmpty()) {
             DialogManager.showDialog("旧密码和新密码不能为空")
@@ -234,6 +309,11 @@ private fun handleResponseAdd(response: String) {
             handleResponseModifyPassword(response)
         }
     }
+
+    /**
+     * Handles the response for modifying the password.
+     * @param response The response string from the server.
+     */
 
     private fun handleResponseModifyPassword(response: String) {
         println("Received response: $response")
